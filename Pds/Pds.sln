@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Web", "Pds.Web\Pds.Web.csproj", "{70D0A540-869E-48C3-8693-81A466F52070}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Api", "Pds.Api\Pds.Api.csproj", "{6CD3D49C-679E-4F07-8344-866926857373}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Services", "Pds.Services\Pds.Services.csproj", "{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70D0A540-869E-48C3-8693-81A466F52070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70D0A540-869E-48C3-8693-81A466F52070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70D0A540-869E-48C3-8693-81A466F52070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70D0A540-869E-48C3-8693-81A466F52070}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CD3D49C-679E-4F07-8344-866926857373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CD3D49C-679E-4F07-8344-866926857373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CD3D49C-679E-4F07-8344-866926857373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CD3D49C-679E-4F07-8344-866926857373}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
