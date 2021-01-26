@@ -1,6 +1,9 @@
 ﻿@page "/fetchdata"
 @attribute [Authorize] 
+@using Microsoft.Extensions.Configuration
+
 @inject HttpClient Http
+@inject IConfiguration Configuration
 
 <h1>Weather forecast</h1>
 
@@ -42,7 +45,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        var backendApiUrl = Configuration["BackendApi:Url"];
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>($"{backendApiUrl}/weather");
     }
 
     public class WeatherForecast

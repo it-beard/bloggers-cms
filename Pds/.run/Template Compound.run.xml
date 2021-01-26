@@ -1,0 +1,7 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="CompoundRunConfigurationType">
+    <toRun name="Pds.Web" type="LaunchSettings" />
+    <toRun name="Pds.Api" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>
