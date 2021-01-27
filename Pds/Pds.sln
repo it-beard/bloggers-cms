@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Api", "Pds.Api\Pds.Api.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Services", "Pds.Services\Pds.Services.csproj", "{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Data", "Pds.Data\Pds.Data.csproj", "{DE61254D-F1CB-470F-B598-8FFDBA11E130}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE61254D-F1CB-470F-B598-8FFDBA11E130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE61254D-F1CB-470F-B598-8FFDBA11E130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE61254D-F1CB-470F-B598-8FFDBA11E130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE61254D-F1CB-470F-B598-8FFDBA11E130}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
