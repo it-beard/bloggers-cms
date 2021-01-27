@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Data", "Pds.Data\Pds.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Core", "Pds.Core\Pds.Core.csproj", "{02E85632-861F-4A32-82C8-406DE16E6CBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Di", "Pds.Di\Pds.Di.csproj", "{1B6B5347-C29E-4DEF-BC1C-1D891E711595}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{02E85632-861F-4A32-82C8-406DE16E6CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02E85632-861F-4A32-82C8-406DE16E6CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02E85632-861F-4A32-82C8-406DE16E6CBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6B5347-C29E-4DEF-BC1C-1D891E711595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6B5347-C29E-4DEF-BC1C-1D891E711595}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6B5347-C29E-4DEF-BC1C-1D891E711595}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6B5347-C29E-4DEF-BC1C-1D891E711595}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

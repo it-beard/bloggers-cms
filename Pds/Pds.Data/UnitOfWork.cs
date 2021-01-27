@@ -4,7 +4,7 @@ using Pds.Data.Repositories.Interfaces;
 
 namespace Pds.Data
 {
-    public class UnitOfWork : IUnitOfWork
+    public sealed class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext context;
         private IPersonRepository personRepository;
@@ -32,7 +32,7 @@ namespace Pds.Data
 
         private bool disposed = false;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!this.disposed)
             {

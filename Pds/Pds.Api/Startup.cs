@@ -1,3 +1,5 @@
+using Autofac;
+using Pds.Di;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +25,12 @@ namespace Pds.Api
             services.AddControllers();
             services.AddCustomSwagger();
             services.AddSqlContext(Configuration);
+        }
+
+        // Do not delete, this is initialization of DI
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new ApiDiModule());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

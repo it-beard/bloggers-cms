@@ -4,4 +4,9 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Pds.Core\Pds.Core.csproj" />
+      <ProjectReference Include="..\Pds.Data\Pds.Data.csproj" />
+    </ItemGroup>
+
 </Project>
