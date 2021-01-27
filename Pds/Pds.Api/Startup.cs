@@ -25,6 +25,7 @@ namespace Pds.Api
             services.AddControllers();
             services.AddCustomSwagger();
             services.AddSqlContext(Configuration);
+            services.AddAutoMapperCustom();
         }
 
         // Do not delete, this is initialization of DI

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,13 +16,16 @@ namespace Pds.Api.Controllers
     public class PersonController : ApiControllerBase
     {
         private readonly ILogger<PersonController> logger;
+        private readonly IMapper mapper;
         private readonly IPersonService personService;
 
         public PersonController(
             ILogger<PersonController> logger,
+            IMapper mapper,
             IPersonService personService)
         {
             this.logger = logger;
+            this.mapper = mapper;
             this.personService = personService;
         }
 
@@ -30,7 +35,9 @@ namespace Pds.Api.Controllers
             try
             {
                 var persons = await personService.GetAllAsync();
-                return Ok(persons);
+                var result = mapper.Map<List<PersonContract>>(persons);
+
+                return Ok(result);
             }
             catch (Exception e)
             {
