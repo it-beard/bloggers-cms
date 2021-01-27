@@ -11,7 +11,7 @@ using Pds.Services.Interfaces;
 namespace Pds.Api.Controllers
 {
     [ApiController]
-    [Route("persons")]
+    [Route("api/persons")]
     [Authorize]
     public class PersonController : ApiControllerBase
     {
