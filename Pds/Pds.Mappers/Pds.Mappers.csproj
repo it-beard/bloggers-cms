@@ -5,8 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Pds.Core\Pds.Core.csproj" />
+      <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj" />
       <ProjectReference Include="..\Pds.Data\Pds.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="10.1.1" />
     </ItemGroup>
 
 </Project>

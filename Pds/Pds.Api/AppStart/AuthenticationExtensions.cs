@@ -36,7 +36,7 @@ namespace Pds.Api.AppStart
 
         public static void UsePdsCorsPolicy(this IApplicationBuilder app)
         {
-            app.UseCors("PdsUiPolicy");
+            app.UseCors(CorsPolicy);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Pds.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Pds.Data.Enums;
 
 namespace Pds.Data
 {
@@ -18,7 +19,9 @@ namespace Pds.Data
 
         private void UpdateStructure(ModelBuilder modelBuilder)
         {
-            // Place for specific fluent properties
+            modelBuilder.Entity<Person>()
+                .Property(b => b.Status)
+                .HasDefaultValue(PersonStatus.Active);
         }
     }
 }
