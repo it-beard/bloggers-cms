@@ -23,5 +23,3 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Debug
       working-directory: Pds
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
