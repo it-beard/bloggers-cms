@@ -1,10 +1,7 @@
 name: Deploy apps to Production
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy-pds-web:
