@@ -1,0 +1,66 @@
+﻿@page "/persons"
+@attribute [Authorize] 
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Net.Http.Headers
+
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject IAccessTokenProvider TokenProvider
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (persons == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Полное имя</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var person in persons)
+        {
+            <tr>
+                <td>@person.Id</td>
+                <td>@person.FullName</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Person[] persons;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var backendApiUrl = Configuration["BackendApi:Url"];
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{backendApiUrl}/api/persons");
+        var tokenResult = await TokenProvider.RequestAccessToken();
+
+        if (tokenResult.TryGetToken(out var token)) {
+            requestMessage.Headers.Authorization = 
+                new AuthenticationHeaderValue("Bearer", token.Value);
+            var response = await Http.SendAsync(requestMessage);
+            persons = await response.Content.ReadFromJsonAsync<Person[]>();
+        }
+    }
+
+    private class Person
+    {
+        public string Id { get; set; }
+
+        public string FullName { get; set; }
+    }
+
+}
