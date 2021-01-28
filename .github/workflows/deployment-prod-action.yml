@@ -2,7 +2,7 @@ name: Deploy apps to Production
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main ]
 
 jobs:
   build-and-deploy-pds-web:
