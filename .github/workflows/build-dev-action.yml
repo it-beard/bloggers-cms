@@ -1,10 +1,8 @@
-name: Build Solution from develop
+name: Build Solution on PR
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop ]
+    branches: [ develop, main ]
 
 jobs:
   build:
@@ -21,5 +19,5 @@ jobs:
       run: dotnet restore
       working-directory: Pds
     - name: Build
-      run: dotnet build --no-restore --configuration Debug
+      run: dotnet build --no-restore
       working-directory: Pds
