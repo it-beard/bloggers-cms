@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using Autofac;
 using Pds.Di;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +29,11 @@ namespace Pds.Api
             services.AddCustomSwagger();
             services.AddSqlContext(Configuration);
             services.AddAutoMapperCustom();
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.IncludeXmlComments(XmlCommentsFilePath);
+            });
         }
 
         // Do not delete, this is initialization of DI
@@ -52,6 +60,16 @@ namespace Pds.Api
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+        
+        private static string XmlCommentsFilePath
+        {
+            get
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                return xmlPath;
+            }
         }
     }
 }

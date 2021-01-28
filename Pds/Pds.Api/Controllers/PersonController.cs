@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Pds.Api.Contracts;
+using Pds.Api.Contracts.Person;
 using Pds.Services.Interfaces;
 
 namespace Pds.Api.Controllers
 {
-    [ApiController]
     [Route("api/persons")]
     [Authorize]
     public class PersonController : ApiControllerBase
@@ -29,15 +28,134 @@ namespace Pds.Api.Controllers
             this.personService = personService;
         }
 
+        /// <summary>
+        /// Return list of persons
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(typeof(GetPersonsResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll([FromQuery]GetPersonsRequest request)
         {
             try
             {
                 var persons = await personService.GetAllAsync();
-                var result = mapper.Map<List<PersonContract>>(persons);
 
-                return Ok(result);
+                var response = new GetPersonsResponse
+                {
+                    Items = mapper.Map<PersonDto[]>(persons),
+                    Total = persons.Count
+                };
+                
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Return details about specified person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        [HttpGet("personId:guid")]
+        [ProducesResponseType(typeof(GetPersonDetailsResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(Guid personId)
+        {
+            try
+            {
+                // var person = await personService.Get(personId);
+                // var result = mapper.Map<PersonDetailsContract>(persons);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Create a person
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(typeof(CreatePersonResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(CreatePersonRequest request)
+        {
+            try
+            {
+                // var person = await personService.Get(personId);
+                // var result = mapper.Map<PersonDetailsContract>(persons);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+        
+        /// <summary>
+        /// Update information about specified person
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Update(UpdatePersonRequest request)
+        {
+            try
+            {
+                // var person = await personService.Get(personId);
+                // var result = mapper.Map<PersonDetailsContract>(persons);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Create archive info about specified person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        [HttpPost("personId:guid/archive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Archive(Guid personId)
+        {
+            try
+            {
+                // var person = await personService.Get(personId);
+                // var result = mapper.Map<PersonDetailsContract>(persons);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+        
+        /// <summary>
+        /// Delete archive info about specified person
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        [HttpDelete("personId:guid/archive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Unarchive(Guid personId)
+        {
+            try
+            {
+                // var person = await personService.Get(personId);
+                // var result = mapper.Map<PersonDetailsContract>(persons);
+
+                return Ok();
             }
             catch (Exception e)
             {

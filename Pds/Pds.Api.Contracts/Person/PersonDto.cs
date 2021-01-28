@@ -1,6 +1,6 @@
-﻿namespace Pds.Api.Contracts
+﻿namespace Pds.Api.Contracts.Person
 {
-    public class PersonContract
+    public class PersonDto
     {
         public string Id { get; set; }
         
