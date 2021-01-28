@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Pds.Api.Controllers
 {
+    [ApiController]
+    [Produces("application/json")]
     public abstract class ApiControllerBase : ControllerBase
     {
         private string exceptionMessage = "Something went wrong";

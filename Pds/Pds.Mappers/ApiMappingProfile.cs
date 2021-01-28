@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
+using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
-using Pds.Api.Contracts;
 
-namespace Pds.Mappings
+namespace Pds.Mappers
 {
     public class ApiMappingProfile : Profile
     {
         public ApiMappingProfile()
         {
-            CreateMap<Person, PersonContract>()
+            CreateMap<Person, PersonDto>()
                 .ForMember(
                     dest => dest.FullName,
                     opt => opt

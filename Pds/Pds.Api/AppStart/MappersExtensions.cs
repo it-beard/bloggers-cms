@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Pds.Mappings;
 using Microsoft.Extensions.DependencyInjection;
+using Pds.Mappers;
 
 namespace Pds.Api.AppStart
 {
