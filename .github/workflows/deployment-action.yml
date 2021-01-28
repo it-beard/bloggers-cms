@@ -1,4 +1,4 @@
-name: Build & deploy Pds.Web
+name: Build, Publish & Deploy Pds.Web
 
 on:
   push:
@@ -23,15 +23,15 @@ jobs:
       run: dotnet restore
       working-directory: Pds/Pds.Web
       
-    - name: Build
+    - name: Build Pds.Web
       run: dotnet build --no-restore --configuration Release
       working-directory: Pds/Pds.Web
       
-    - name: Publish
+    - name: Publish Pds.Web
       run: dotnet publish -c Release -o pds_web
       working-directory: Pds/Pds.Web
       
-    - name: 'Deploy to Azure WebApp'
+    - name: 'Deploy Pds.Web to Azure WebApp'
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.PDS_WEB_AZURE_WEBAPP_NAME }}
