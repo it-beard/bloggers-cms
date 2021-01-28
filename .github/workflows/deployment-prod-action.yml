@@ -1,7 +1,8 @@
 name: Deploy apps to Production
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ develop ]
 
 jobs:
   build-and-deploy-pds-web:
