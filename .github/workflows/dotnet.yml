@@ -36,5 +36,5 @@ jobs:
       with:
         app-name: ${{ env.PDS_WEB_AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.PDS_WEB_AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: pds_web  
+        package: Pds/Pds.Web/pds_web/  
 
