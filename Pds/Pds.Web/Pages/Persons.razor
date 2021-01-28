@@ -3,6 +3,7 @@
 @using Microsoft.Extensions.Configuration
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Net.Http.Headers
+@using Pds.Api.Contracts.Person
 
 @inject HttpClient Http
 @inject IConfiguration Configuration
@@ -12,7 +13,7 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (persons == null)
+@if (personsInfo == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -28,7 +29,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var person in persons)
+        @foreach (var person in personsInfo.Items)
         {
             <tr>
                 <td>@person.Id</td>
@@ -40,7 +41,7 @@ else
 }
 
 @code {
-    private Person[] persons;
+    private GetPersonsResponse personsInfo;
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,15 +53,7 @@ else
             requestMessage.Headers.Authorization = 
                 new AuthenticationHeaderValue("Bearer", token.Value);
             var response = await Http.SendAsync(requestMessage);
-            persons = await response.Content.ReadFromJsonAsync<Person[]>();
+            personsInfo = await response.Content.ReadFromJsonAsync<GetPersonsResponse>();
         }
     }
-
-    private class Person
-    {
-        public string Id { get; set; }
-
-        public string FullName { get; set; }
-    }
-
 }

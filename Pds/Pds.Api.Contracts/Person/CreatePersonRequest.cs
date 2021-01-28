@@ -18,6 +18,6 @@ namespace Pds.Api.Contracts.Person
         /// <summary>
         /// Rate (int) - can be from 0 to 100 and used to understanding how attractable/hot user for the show
         /// </summary>
-        public int Rate { get; set; }
+        public int? Rate { get; set; }
     }
 }

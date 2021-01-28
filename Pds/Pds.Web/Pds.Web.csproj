@@ -20,4 +20,8 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>

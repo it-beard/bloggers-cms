@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -49,12 +52,23 @@ namespace Pds.Api.AppStart
                         new List<string>()
                     }
                 });
+                swagger.IncludeXmlComments(XmlCommentsFilePath);
             });
         }
 
         public static void UseCustomSwaggerUI(this IApplicationBuilder app)
         {
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pds.Api v1"));
+        }
+
+        private static string XmlCommentsFilePath
+        {
+            get
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                return xmlPath;
+            }
         }
     }
 }

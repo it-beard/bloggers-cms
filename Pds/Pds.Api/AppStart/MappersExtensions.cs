@@ -6,7 +6,7 @@ namespace Pds.Api.AppStart
 {
     public static class MappersExtensions
     {
-        public static void AddAutoMapperCustom(this IServiceCollection services)
+        public static void AddCustomAutoMapper(this IServiceCollection services)
         {
             var mappingConfig = new MapperConfiguration(mc =>
             {

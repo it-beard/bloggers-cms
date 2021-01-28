@@ -23,17 +23,12 @@ namespace Pds.Api
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuth0Authentication(Configuration);
-            services.AddPdsCorsPolicy(Configuration);
+            services.AddCustomAuth0Authentication(Configuration);
+            services.AddCustomPdsCorsPolicy(Configuration);
             services.AddControllers();
             services.AddCustomSwagger();
-            services.AddSqlContext(Configuration);
-            services.AddAutoMapperCustom();
-            
-            services.AddSwaggerGen(c =>
-            {
-                c.IncludeXmlComments(XmlCommentsFilePath);
-            });
+            services.AddCustomSqlContext(Configuration);
+            services.AddCustomAutoMapper();
         }
 
         // Do not delete, this is initialization of DI
@@ -51,7 +46,7 @@ namespace Pds.Api
                 app.UseCustomSwaggerUI();
             }
 
-            app.UsePdsCorsPolicy();
+            app.UseCustomPdsCorsPolicy();
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -60,16 +55,6 @@ namespace Pds.Api
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-        }
-        
-        private static string XmlCommentsFilePath
-        {
-            get
-            {
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                return xmlPath;
-            }
         }
     }
 }
