@@ -7,7 +7,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  build-&-deploy-pds-web:
+  build-and-deploy-pds-web:
     name: Build & Deploy Pds.Web
     runs-on: ubuntu-latest
     environment: pds_prod
