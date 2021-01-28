@@ -32,4 +32,5 @@ jobs:
       with:
         app-name: ${{ env.PDS_WEB_AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.PDS_WEB_AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: Pds/Pds.Web/bin/Debug/net5.0  
 
