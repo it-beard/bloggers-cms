@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Contracts.Person;
+using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 
 namespace Pds.Api.Controllers
@@ -35,7 +36,7 @@ namespace Pds.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(GetPersonsResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll([FromQuery]GetPersonsRequest request)
+        public async Task<IActionResult> GetAll([FromQuery] GetPersonsRequest request)
         {
             try
             {
@@ -46,7 +47,7 @@ namespace Pds.Api.Controllers
                     Items = mapper.Map<PersonDto[]>(persons),
                     Total = persons.Count
                 };
-                
+
                 return Ok(response);
             }
             catch (Exception e)
@@ -83,21 +84,26 @@ namespace Pds.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(CreatePersonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CreatePersonRequest request)
         {
             try
             {
-                // var person = await personService.Get(personId);
-                // var result = mapper.Map<PersonDetailsContract>(persons);
+                if (ModelState.IsValid)
+                {
+                    var newPerson = mapper.Map<Person>(request);
+                    var personId = await personService.CreateAsync(newPerson);
+                    return Ok(personId);
+                }
 
-                return Ok();
+                return BadRequest();
             }
             catch (Exception e)
             {
                 return ExceptionResult(e);
             }
         }
-        
+
         /// <summary>
         /// Update information about specified person
         /// </summary>
@@ -140,7 +146,7 @@ namespace Pds.Api.Controllers
                 return ExceptionResult(e);
             }
         }
-        
+
         /// <summary>
         /// Delete archive info about specified person
         /// </summary>

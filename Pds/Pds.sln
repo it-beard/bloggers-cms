@@ -16,6 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Mappers", "Pds.Mappers\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Api.Contracts", "Pds.Api.Contracts\Pds.Api.Contracts.csproj", "{DF4A2463-B2EE-43EB-B82A-08DB61A55CE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Services.Tests", "Pds.Services.Tests\Pds.Services.Tests.csproj", "{FFCE3C93-2CA1-4AE6-A526-A8961ECD1175}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Api.Tests", "Pds.Api.Tests\Pds.Api.Tests.csproj", "{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +58,13 @@ Global
 		{DF4A2463-B2EE-43EB-B82A-08DB61A55CE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF4A2463-B2EE-43EB-B82A-08DB61A55CE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF4A2463-B2EE-43EB-B82A-08DB61A55CE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFCE3C93-2CA1-4AE6-A526-A8961ECD1175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFCE3C93-2CA1-4AE6-A526-A8961ECD1175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFCE3C93-2CA1-4AE6-A526-A8961ECD1175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFCE3C93-2CA1-4AE6-A526-A8961ECD1175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
