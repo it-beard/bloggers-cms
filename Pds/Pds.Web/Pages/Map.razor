@@ -1,0 +1,17 @@
+﻿@page "/map"
+@attribute [Authorize]
+
+<h1>Карта</h1>
+
+<p>Скоро будет тут, а пока покликай: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Жмыхай!</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
