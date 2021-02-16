@@ -23,6 +23,14 @@ namespace Pds.Data.Entities
 
         public int? Rate { get; set; }
 
+        public string Country { get; set; }
+        
+        public string City { get; set; }
+
+        public string Latitude { get; set; }
+
+        public string Longitude { get; set; }
+
         public PersonStatus Status { get; set; }
 
         public DateTime CreatedAt { get; set; }
