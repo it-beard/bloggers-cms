@@ -1,4 +1,6 @@
-﻿namespace Pds.Api.Contracts.Person
+﻿using System.Collections.Generic;
+
+namespace Pds.Api.Contracts.Person
 {
     public class GetPersonDetailsResponse
     {

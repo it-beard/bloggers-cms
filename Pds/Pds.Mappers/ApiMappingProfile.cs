@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 
@@ -14,13 +15,22 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.FullName,
                     opt => opt
-                        .MapFrom(p => $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+                        .MapFrom(p => $"{p.FirstName} {p.ThirdName} {p.LastName}"))
+                .ForMember(
+                    dest => dest.Location,
+                    opt => opt
+                        .MapFrom(p => $"{p.Country} {p.City}"));
+            CreateMap<Resource, ResourceDto>();
             
             #endregion
 
             #region Contracts to Entities
             
             CreateMap<CreatePersonRequest, Person>();
+            CreateMap<ResourceDto, Resource>()
+                .ForMember(
+                    dest => dest.CreatedAt,opt => opt
+                        .MapFrom(p => DateTime.UtcNow));
             
             #endregion
         }

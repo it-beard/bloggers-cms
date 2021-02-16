@@ -10,7 +10,7 @@
 @inject IAccessTokenProvider TokenProvider
 
 <h1>Список персон</h1>
-<a href="/persons/add" class="btn btn-success" >Добавить</a>
+<a href="/persons/add" class="btn btn-success" >Добавить персону</a>
 @if (personsInfo == null)
 {
     <p>
@@ -22,16 +22,27 @@ else
     <table class="table">
         <thead>
         <tr>
-            <th>Айдишка</th>
             <th>Полное имя</th>
+            <th>Локация</th>
+            <th>Информация</th>
+            <th>Ссылки</th>
         </tr>
         </thead>
         <tbody>
         @foreach (var person in personsInfo.Items)
         {
             <tr>
-                <td>@person.Id</td>
-                <td>@person.FullName</td>
+                <td>@person.FullName (@person.Rate)</td>
+                <td>@person.Location</td>
+                <td>@person.Information</td>
+                <td>
+                    @foreach (var resource in person.Resources)
+                    {
+                        <div>
+                            <a href="@resource.Url" target="_blank">@resource.Name</a>
+                        </div>
+                    }
+                </td>
             </tr>
         }
         </tbody>

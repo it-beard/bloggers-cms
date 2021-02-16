@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Pds.Data.Entities;
 
 namespace Pds.Api.Contracts.Person
 {
@@ -11,6 +13,10 @@ namespace Pds.Api.Contracts.Person
         public string LastName { get; set; }
 
         public string ThirdName { get; set; }
+
+        public string Country { get; set; }
+
+        public string City { get; set; }
         
         /// <summary>
         /// General information about person
@@ -21,5 +27,8 @@ namespace Pds.Api.Contracts.Person
         /// Rate (int) - can be from 0 to 100 and used to understanding how attractable/hot user for the show
         /// </summary>
         public int? Rate { get; set; }
+        
+        [Required]
+        public List<ResourceDto> Resources { get; set; }
     }
 }

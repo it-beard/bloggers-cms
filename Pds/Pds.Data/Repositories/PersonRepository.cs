@@ -1,4 +1,8 @@
-﻿using Pds.Data.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
 
 namespace Pds.Data.Repositories
@@ -11,7 +15,13 @@ namespace Pds.Data.Repositories
         {
             this.context = context;
         }
-
-        // Can bee extended by any additional methods that do not present in RepositoryBase
+        
+        public async Task<List<Person>> GetAllWithResourcesAsync()
+        {
+            return await context.Persons.Include(p=>p.Resources)
+                .OrderByDescending(p =>p.Rate)
+                .ThenBy(p=>p.LastName)
+                .ToListAsync();
+        }
     }
 }

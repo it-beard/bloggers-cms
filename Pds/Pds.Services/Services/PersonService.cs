@@ -18,7 +18,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Person>> GetAllAsync()
         {
-            return await unitOfWork.Persons.GetAllAsync();
+            return await unitOfWork.Persons.GetAllWithResourcesAsync();
         }
 
         public async Task<Guid> CreateAsync(Person newPerson)
