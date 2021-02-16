@@ -6,8 +6,10 @@ namespace Pds.Api.Contracts.Person
     {
         [Required]
         public string FirstName { get; set; }
+
         [Required]
         public string LastName { get; set; }
+
         public string ThirdName { get; set; }
         
         /// <summary>

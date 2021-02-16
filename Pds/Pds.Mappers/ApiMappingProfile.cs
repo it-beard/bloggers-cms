@@ -8,11 +8,21 @@ namespace Pds.Mappers
     {
         public ApiMappingProfile()
         {
+            #region Entities to Contracts
+            
             CreateMap<Person, PersonDto>()
                 .ForMember(
                     dest => dest.FullName,
                     opt => opt
                         .MapFrom(p => $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+            
+            #endregion
+
+            #region Contracts to Entities
+            
+            CreateMap<CreatePersonRequest, Person>();
+            
+            #endregion
         }
     }
 }

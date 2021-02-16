@@ -1,0 +1,71 @@
+﻿@page "/persons/add"
+@attribute [Authorize] 
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Person
+@using System.Net.Http.Headers
+@using Newtonsoft.Json
+
+@inject HttpClient HttpClient
+@inject IConfiguration Configuration
+@inject IAccessTokenProvider TokenProvider
+@inject NavigationManager NavigationManager
+
+<h1>Добавление персоны</h1>
+<div>
+    <div class="form-group">
+        <label for="firstName">Имя</label>
+        <input class="form-control" type="text" required="required" id="firstName" @bind="person.FirstName" placeholder="Имя">
+        <small id="firstName" class="form-text text-muted">Введите имя персоны</small>
+    </div>
+
+    <div class="form-group">
+        <input class="form-control" type="text" required="required"  @bind="person.LastName" placeholder="Фамилия">
+    </div>
+
+    <div class="form-group">
+        <input class="form-control" type="text" @bind="person.ThirdName" placeholder="Отчество">
+    </div>
+
+    <div class="form-group">
+        <label for="information">Дополнительная информация</label>
+        <textarea class="form-control" id="information" @bind="person.Information" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+        <input class="form-control" type="number" max="100" min="0" @bind="person.Rate" placeholder="Рейтинг">
+    </div>
+
+    <div class="form-group">
+        <button @onclick="OnCreateButtonClick" class="btn btn-success">Создать</button>
+    </div>
+</div>
+
+@code {
+    private CreatePersonRequest person = new(){Rate = 0};
+    private async Task OnCreateButtonClick()
+    {
+        try
+        {
+            var backendApiUrl = Configuration["BackendApi:Url"];
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{backendApiUrl}/api/persons")
+            {
+                Content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(person)))
+            };
+
+            var tokenResult = await TokenProvider.RequestAccessToken();
+            if (tokenResult.TryGetToken(out var token)) {
+                requestMessage.Headers.Authorization = 
+                    new AuthenticationHeaderValue("Bearer", token.Value);
+                requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                
+                await HttpClient.SendAsync(requestMessage);
+                NavigationManager.NavigateTo("/persons");
+            }
+        }
+        catch (Exception)
+        {
+            
+        }
+    }
+}
