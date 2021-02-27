@@ -44,11 +44,11 @@ namespace Pds.Di
                 .Where(t => t.Name.EndsWith("Repository"))
                 .AsImplementedInterfaces();
         }
-        
+
         private void UnitOfWorkRegister(ref ContainerBuilder builder)
-                {
-                    builder.RegisterType(typeof(UnitOfWork))
-                        .As(typeof(IUnitOfWork));
-                }
+        {
+            builder.RegisterType(typeof(UnitOfWork))
+                .As(typeof(IUnitOfWork));
+        }
     }
 }

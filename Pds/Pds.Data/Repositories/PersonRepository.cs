@@ -16,12 +16,16 @@ namespace Pds.Data.Repositories
             this.context = context;
         }
         
-        public async Task<List<Person>> GetAllWithResourcesAsync()
+        public async Task<Person[]> GetAllWithResourcesAsync(int limit = 10, int offset = 0)
         {
-            return await context.Persons.Include(p=>p.Resources)
+            return await context.Persons
+                .AsNoTracking()
+                .Include(p=>p.Resources)
                 .OrderByDescending(p =>p.Rate)
                 .ThenBy(p=>p.LastName)
-                .ToListAsync();
+                .Skip(offset)
+                .Take(limit)
+                .ToArrayAsync();
         }
     }
 }

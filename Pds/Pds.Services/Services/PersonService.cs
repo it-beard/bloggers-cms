@@ -16,9 +16,12 @@ namespace Pds.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<List<Person>> GetAllAsync()
+        public async Task<(Person[] people, int total)> GetAsync(int limit = 10, int offset = 0)
         {
-            return await unitOfWork.Persons.GetAllWithResourcesAsync();
+            var result = await unitOfWork.Persons.GetAllWithResourcesAsync(limit, offset);
+            var total = await unitOfWork.Persons.Count();
+
+            return (result, total);
         }
 
         public async Task<Guid> CreateAsync(Person newPerson)
