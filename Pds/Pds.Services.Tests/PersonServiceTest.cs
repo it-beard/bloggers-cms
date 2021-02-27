@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
@@ -59,6 +60,40 @@ namespace Pds.Services.Tests
 
             // assert
             personRepositoryMock.Verify(x => x.InsertAsync(It.IsAny<Person>()), Times.Never);
+        }
+
+        [Test]
+        public async Task GetAsync_ShouldReturnPeople()
+        {
+            // arrange
+            var fixture = new Fixture();
+            var expectedId = fixture.Create<Guid>();
+            var limit = 10;
+            var offest = 10;
+
+            personRepositoryMock
+                .Setup(x => x.GetAllWithResourcesAsync(limit, offest))
+                .ReturnsAsync(new[]
+                {
+                    new Person
+                    {
+                        Id = expectedId
+                    }
+                });
+
+            personRepositoryMock
+               .Setup(x => x.Count())
+               .ReturnsAsync(1);
+
+            // act
+            var result = await service.GetAsync(limit, offest);
+
+            // assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.people);
+            Assert.IsNotEmpty(result.people);
+            Assert.True(result.total > 0);
+            Assert.True(result.people.Any(x => x.Id == expectedId));
         }
     }
 }
