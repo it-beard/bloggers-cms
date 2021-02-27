@@ -44,12 +44,12 @@ namespace Pds.Api.Controllers
         {
             try
             {
-                var persons = await personService.GetAllAsync();
+                var result = await personService.GetAsync(request.Limit, request.Offset);
 
                 var response = new GetPersonsResponse
                 {
-                    Items = mapper.Map<List<PersonDto>>(persons),
-                    Total = persons.Count
+                    Items = mapper.Map<PersonDto[]>(result.people),
+                    Total = result.total
                 };
 
                 return Ok(response);

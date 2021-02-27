@@ -1,0 +1,87 @@
+@page "/persons"
+@attribute [Authorize] 
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Net.Http.Headers
+@using Pds.Api.Contracts.Person
+
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject IAccessTokenProvider TokenProvider
+
+<h1>Список персон</h1>
+<a href="/persons/add" class="btn btn-success">Добавить персону</a>
+@if (personsInfo == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <a class="btn btn-link" @onclick="Previous">Prev</a>
+    <a class="btn btn-link" @onclick="Next">Next</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Полное имя</th>
+                <th>Локация</th>
+                <th>Информация</th>
+                <th>Ссылки</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in personsInfo.Items)
+            {
+                <tr>
+                    <td>@person.FullName (@person.Rate)</td>
+                    <td>@person.Location</td>
+                    <td>@person.Information</td>
+                    <td>
+                        @foreach (var resource in person.Resources)
+                        {
+                            <div>
+                                <a href="@resource.Url" target="_blank">@resource.Name</a>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GetPersonsResponse personsInfo;
+    private int pageSize = 2;
+    private int pageOffset = 0;
+    private int pageTotal = 2;
+
+    protected override async Task OnInitializedAsync()
+    {
+        personsInfo = await GetPeople(pageSize, pageOffset);
+        pageTotal = personsInfo.Total;
+    }
+
+    private async Task Next()
+    {
+        pageOffset = Math.Min(pageOffset + pageSize, pageTotal);
+        personsInfo = await GetPeople(pageSize, pageOffset);
+    }
+
+    private async Task Previous()
+    {
+        pageOffset = Math.Max(pageOffset - pageSize, 0);
+        personsInfo = await GetPeople(pageSize, pageOffset);
+    }
+
+    private async Task<GetPersonsResponse> GetPeople(int pageSize, int pageOffset)
+    {
+        var backendApiUrl = Configuration["BackendApi:Url"];
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{backendApiUrl}/api/persons?limit={pageSize}&offset={pageOffset}");
+
+        var response = await Http.SendAsync(requestMessage);
+        return await response.Content.ReadFromJsonAsync<GetPersonsResponse>();
+    }
+}

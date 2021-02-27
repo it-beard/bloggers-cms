@@ -1,15 +1,15 @@
 <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
     <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <Authorizing>
-                    <p>Восстанавливаю сессию, погодь...</p>
-                </Authorizing>
-                <NotAuthorized>
-                    <h1>Залогинься, блэт!</h1>
-                    <p>И будет тебе счастье.</p>
-                </NotAuthorized>
-            </AuthorizeRouteView>
-        </Found>
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <Authorizing>
+                <p>Восстанавливаю сессию, погодь...</p>
+            </Authorizing>
+            <NotAuthorized>
+                <h1>Залогинься, блэт!</h1>
+                <p>И будет тебе счастье.</p>
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
             <p>Опачки! Нет такой страницы.</p>

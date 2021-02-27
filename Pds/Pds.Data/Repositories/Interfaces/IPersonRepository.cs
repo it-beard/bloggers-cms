@@ -6,6 +6,6 @@ namespace Pds.Data.Repositories.Interfaces
 {
     public interface IPersonRepository : IRepositoryBase<Person>
     {
-        Task<List<Person>> GetAllWithResourcesAsync();
+        Task<Person[]> GetAllWithResourcesAsync(int limit = 10, int offset = 0);
     }
 }
