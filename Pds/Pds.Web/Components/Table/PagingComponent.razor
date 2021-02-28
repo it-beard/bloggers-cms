@@ -1,0 +1,10 @@
+﻿
+<div class="col">
+    <button class="btn btn-outline-info" @onclick="Previous">Prev</button>
+    <button class="btn btn-outline-info" @onclick="Next">Next</button>
+</div>
+
+@code {
+    [Parameter] public EventCallback Previous { get; set; }
+    [Parameter] public EventCallback Next { get; set; }
+}

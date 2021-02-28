@@ -1,0 +1,11 @@
+﻿<td>
+    <div class="@ColClass">
+        @ColFragment
+    </div>
+</td>
+
+@code {
+
+    [Parameter] public RenderFragment ColFragment { get; set; }
+    [Parameter] public string ColClass { get; set; } = "";
+}
