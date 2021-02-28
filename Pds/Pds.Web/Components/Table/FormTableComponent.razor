@@ -1,0 +1,52 @@
+﻿@*@typeparam TItem*@
+@using Pds.Api.Contracts.Person
+
+@if (ItemsCollection == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h2 class="text-center">@TableTitleFragment</h2>
+                @*Add Button*@
+                <div class="row mb-3">
+                    @TableTitleButtonFragment
+                </div>
+                @*Paging*@
+                <div class="row mb-3">
+                    @PagingFragment
+                </div>
+                <table class="table table-sm table-bordered table-hover ">
+                    @*Header*@
+                    <thead class="table-dark text-center">
+                        <tr>
+                            @TableHeaderFragment
+                        </tr>
+                    </thead>
+                    @*Body*@
+                    <tbody>
+                        @TableBodyFragment
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@code{
+    [Parameter] public RenderFragment TableTitleFragment { get; set; }
+    [Parameter] public RenderFragment TableTitleButtonFragment { get; set; }
+    [Parameter] public RenderFragment PagingFragment { get; set; }
+
+    [Parameter] public RenderFragment TableHeaderFragment { get; set; }
+    [Parameter] public RenderFragment TableBodyFragment { get; set; }
+    [Parameter] public GetPersonsResponse ItemsCollection { get; set; }
+
+}
