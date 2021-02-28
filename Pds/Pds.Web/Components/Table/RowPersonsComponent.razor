@@ -1,0 +1,39 @@
+﻿@using Pds.Api.Contracts.Person
+
+<tr>
+    <!--FullName-->
+    <TableColumnComponent>
+        <ColFragment>
+            @Person.FullName
+        </ColFragment>
+    </TableColumnComponent>
+    <!--Location-->
+    <TableColumnComponent>
+        <ColFragment>
+            @Person.Location
+        </ColFragment>
+    </TableColumnComponent>
+    <!--Information-->
+    <TableColumnComponent>
+        <ColFragment>
+            @Person.Information
+        </ColFragment>
+    </TableColumnComponent>
+    <!--Resources-->
+    <TableColumnComponent>
+        <ColFragment>
+            @foreach (var resource in Person.Resources)
+            {
+                <div>
+                    <a href="@resource.Url" target="_blank">@resource.Name</a>
+                </div>
+            }
+        </ColFragment>
+
+    </TableColumnComponent>
+</tr>
+
+@code 
+{
+    [Parameter] public PersonDto Person { get; set; }
+}
