@@ -1,6 +1,5 @@
-﻿
-<div class="form-group">
-    <label for="firstName">@Label</label>
+﻿<div class="form-group @AddFormClass">
+    <label>@Label</label>
     @InputFragment
 </div>
 
@@ -8,4 +7,5 @@
 {
     [Parameter] public string Label { get; set; }
     [Parameter] public RenderFragment InputFragment { get; set; }
+    [Parameter] public string AddFormClass { get; set; } = null;
 }
