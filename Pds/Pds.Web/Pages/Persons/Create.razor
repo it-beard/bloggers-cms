@@ -79,7 +79,7 @@ else
                         <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка" />
                     </div>
                     <div class="col-auto">
-                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
+                        <button @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</button>
                     </div>
                 </div>
             }

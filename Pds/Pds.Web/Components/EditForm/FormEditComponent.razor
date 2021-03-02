@@ -1,7 +1,6 @@
 ﻿
 <EditForm EditContext="@EditContext" OnValidSubmit="@HandleSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    
     <div class="container-fluid">
         <div class="row">
             <div class="col mt-2">
@@ -12,11 +11,19 @@
         </div>
         <div class="row">
             <div class="col">
-                @BodyFragment
+                <form>
+                    @BodyFragment
+                </form>
             </div>
         </div>
-        <div class="col text-center">
-            <button type="submit" class="btn btn-primary">@SubmitLabel</button>
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="row mb-2">
+            <div class="col">
+                <button type="submit" class="btn btn-primary">@SubmitLabel</button>
+            </div>
         </div>
     </div>
 </EditForm>
