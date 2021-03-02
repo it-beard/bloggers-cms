@@ -1,0 +1,11 @@
+﻿
+<div class="form-group">
+    <label for="firstName">@Label</label>
+    @InputFragment
+</div>
+
+@code
+{
+    [Parameter] public string Label { get; set; }
+    [Parameter] public RenderFragment InputFragment { get; set; }
+}

@@ -1,0 +1,32 @@
+﻿
+<EditForm EditContext="@EditContext" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col mt-2">
+                <h1>
+                    @TitleFragment
+                </h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                @BodyFragment
+            </div>
+        </div>
+        <div class="col text-center">
+            <button type="submit" class="btn btn-primary">@SubmitLabel</button>
+        </div>
+    </div>
+</EditForm>
+
+
+@code 
+{
+    [Parameter] public EditContext EditContext { get; set; }
+    [Parameter] public RenderFragment TitleFragment { get; set; }
+    [Parameter] public RenderFragment BodyFragment { get; set; }
+    [Parameter] public EventCallback HandleSubmit { get; set; }
+    [Parameter] public string SubmitLabel { get; set; }
+}

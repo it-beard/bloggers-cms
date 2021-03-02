@@ -1,10 +1,31 @@
 ﻿
 <div class="col">
-    <button class="btn btn-outline-info" @onclick="Previous">Prev</button>
-    <button class="btn btn-outline-info" @onclick="Next">Next</button>
+    <button class="btn btn-outline-info" @onclick="HandelPrevious">Prev</button>  
+    <button class="btn btn-outline-info" @onclick="HandelNext">Next</button>
 </div>
 
 @code {
-    [Parameter] public EventCallback Previous { get; set; }
-    [Parameter] public EventCallback Next { get; set; }
+    [Parameter] public EventCallback<int> Pagination { get; set; }
+
+
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public int TotalItems { get; set; }
+
+    private int pageOffset = 0;
+
+
+    private void HandelPrevious()
+    {
+        pageOffset = Math.Max(pageOffset - PageSize, 0);
+        Pagination.InvokeAsync(pageOffset);
+    }
+
+    private void HandelNext()
+    {
+        pageOffset = Math.Min(pageOffset + PageSize, TotalItems);
+        Pagination.InvokeAsync(pageOffset);
+    }
 }
