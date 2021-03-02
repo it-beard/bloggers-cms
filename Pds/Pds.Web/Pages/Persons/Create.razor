@@ -1,16 +1,5 @@
 ﻿@page "/persons/add"
-@*@attribute [Authorize]*@ 
-@using Microsoft.Extensions.Configuration
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Person
-@using System.Net.Http.Headers
-@using Newtonsoft.Json
-@using Pds.Data.Entities
-
-@inject HttpClient HttpClient
-@inject IConfiguration Configuration
-@inject IAccessTokenProvider TokenProvider
-@inject NavigationManager NavigationManager
+@inherits CreateBase
 
 @*<h1>Добавление персоны</h1>
 
@@ -89,43 +78,60 @@
         Добавление персоны
     </TitleFragment>
     <BodyFragment>
-        <FormEditInputComponent Label="Имя">
-            <InputFragment>
-                <InputText class="form-control" @bind-Value="person.FirstName" />
-            </InputFragment>
-        </FormEditInputComponent>
-        <FormEditInputComponent Label="Фамилия">
-            <InputFragment>
-                <InputText class="form-control" @bind-Value="person.LastName" />
-            </InputFragment>
-        </FormEditInputComponent>
-        <FormEditInputComponent Label="Отчество">
-            <InputFragment>
-                <InputText class="form-control" @bind-Value="person.ThirdName" />
-            </InputFragment>
-        </FormEditInputComponent>
-
-        <FormEditInputComponent Label="Адрес">
-            <InputFragment>
-                <InputText class="form-control mb-2" @bind-Value="person.Country" placeholder="Страна" />
-                <InputText class="form-control mb-2" @bind-Value="person.City" placeholder="Город" />
-            </InputFragment>
-        </FormEditInputComponent>
-
-        <FormEditInputComponent Label="Дополнительная информация">
-            <InputFragment>
-                <InputTextArea class="form-control" @bind-Value="person.Information" rows="3" />
-            </InputFragment>
-        </FormEditInputComponent>
-
-        <FormEditInputComponent Label="Рейтинг">
-            <InputFragment>
-                <InputNumber class="form-control Rating" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг" />
-            </InputFragment>
-        </FormEditInputComponent>
+        <FormRowComponent>
+            <RowFragment>
+                <FormEditInputComponent Label="Имя *" AddFormClass="col-4">
+                    <InputFragment>
+                        <InputText class="form-control" @bind-Value="person.FirstName" placeholder="Иван" />
+                    </InputFragment>
+                </FormEditInputComponent>
+                <FormEditInputComponent Label="Фамилия *" AddFormClass="col-4">
+                    <InputFragment>
+                        <InputText class="form-control" @bind-Value="person.LastName" placeholder="Иванов" />
+                    </InputFragment>
+                </FormEditInputComponent>
+                <FormEditInputComponent Label="Отчество" AddFormClass="col-4">
+                    <InputFragment>
+                        <InputText class="form-control" @bind-Value="person.ThirdName" placeholder="Иванович"/>
+                    </InputFragment>
+                </FormEditInputComponent>
+            </RowFragment>
+        </FormRowComponent> 
+        <FormRowComponent>
+            <RowFragment>
+                <FormEditInputComponent Label="Страна" AddFormClass="col-auto">
+                    <InputFragment>
+                        <InputText class="form-control" @bind-Value="person.Country" placeholder="Страна" />
+                    </InputFragment>
+                </FormEditInputComponent>
+                <FormEditInputComponent Label="Город" AddFormClass="col-auto">
+                    <InputFragment>
+                        <InputText class="form-control" @bind-Value="person.City" placeholder="Город" />
+                    </InputFragment>
+                </FormEditInputComponent>
+            </RowFragment>
+        </FormRowComponent>
+        <FormRowComponent>
+            <RowFragment>
+                <FormEditInputComponent Label="Дополнительная информация" AddFormClass="col-6">
+                    <InputFragment>
+                        <InputTextArea class="form-control" @bind-Value="person.Information" rows="3" />
+                    </InputFragment>
+                </FormEditInputComponent>
+            </RowFragment>
+        </FormRowComponent>
+        <FormRowComponent>
+            <RowFragment>
+                <FormEditInputComponent Label="Рейтинг" AddFormClass="col-1">
+                    <InputFragment>
+                        <InputNumber class="form-control" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг" />
+                    </InputFragment>
+                </FormEditInputComponent>
+            </RowFragment>
+        </FormRowComponent>
 
         <div class="form-group">
-            <label style="margin-right: 20px;">Ссылки</label>
+            <label class="mr-5">Ссылки</label>
             @foreach (var resource in person.Resources)
             {
                 <div class="form-row align-items-center">
@@ -136,74 +142,11 @@
                         <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка" />
                     </div>
                     <div class="col-auto">
-                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
+                        <button @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</button>
                     </div>
                 </div>
             }
-
-            <div @onclick="AddResource" class="btn btn-success btn-sm">Добавить ссылку</div>
+            <button @onclick="AddResource" class="btn btn-success btn-sm">Добавить ссылку</button>
         </div>
-
-
-
-
     </BodyFragment>
-    
-
 </FormEditComponent>
-
-@code {
-    private CreatePersonRequest person = new()
-    {
-        Rate = 0,
-        Resources = new List<ResourceDto>{}
-    };
-    private EditContext editContext;
-
-    protected override void OnInitialized()
-    {
-        editContext = new EditContext(person);
-    }
-
-    private async Task HandleSubmit()
-    {
-        var isValid = editContext.Validate();
-
-        if (isValid)
-        {
-            var backendApiUrl = Configuration["BackendApi:Url"];
-            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{backendApiUrl}/api/persons")
-            {
-                Content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(person)))
-            };
-
-            //var tokenResult = await TokenProvider.RequestAccessToken();
-            //if (tokenResult.TryGetToken(out var token))
-            //{
-            //    requestMessage.Headers.Authorization =
-            //        new AuthenticationHeaderValue("Bearer", token.Value);
-            //    requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            //    await HttpClient.SendAsync(requestMessage);
-            //    NavigationManager.NavigateTo("/persons");
-            //}
-
-            requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            await HttpClient.SendAsync(requestMessage);
-            NavigationManager.NavigateTo("/persons");
-
-        }
-    }
-
-    private async Task AddResource()
-    {
-        var resource = new ResourceDto();
-        person.Resources.Add(resource);
-    }
-
-    private async Task RemoveResource(ResourceDto resource)
-    {
-        person.Resources.Remove(resource);
-    }
-}

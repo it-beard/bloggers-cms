@@ -1,0 +1,19 @@
+﻿@inherits PagingComponentBase
+
+<nav class="col">
+    <ul class="pagination">
+        @foreach (var page in pages)
+        {
+            <li  class="page-item">
+                <button 
+                    class="btn mr-1 
+                    @(page.Active ? "btn-info" : "btn-outline-info") 
+                    @(page.Enabled ? null : "disabled")"
+                    @onclick="@(() => SelectedPage(page))"
+                >
+                    @(page.Text)
+                </button>
+            </li>
+        }
+    </ul>
+</nav>
