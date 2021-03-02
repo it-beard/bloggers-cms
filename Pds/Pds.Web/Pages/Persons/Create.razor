@@ -1,5 +1,5 @@
 ﻿@page "/persons/add"
-@attribute [Authorize] 
+@*@attribute [Authorize]*@ 
 @using Microsoft.Extensions.Configuration
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
@@ -12,7 +12,7 @@
 @inject IAccessTokenProvider TokenProvider
 @inject NavigationManager NavigationManager
 
-<h1>Добавление персоны</h1>
+@*<h1>Добавление персоны</h1>
 
 <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
     <div class="form-group">
@@ -79,7 +79,78 @@
     <div class="form-group">
         <button type="submit" class="btn btn-success">Создать персону</button>
     </div>
-</EditForm>
+</EditForm>*@
+
+<FormEditComponent 
+                   EditContext="editContext"
+                   HandleSubmit="HandleSubmit"
+                   SubmitLabel="Создать персону">
+    <TitleFragment>
+        Добавление персоны
+    </TitleFragment>
+    <BodyFragment>
+        <FormEditInputComponent Label="Имя">
+            <InputFragment>
+                <InputText class="form-control" @bind-Value="person.FirstName" />
+            </InputFragment>
+        </FormEditInputComponent>
+        <FormEditInputComponent Label="Фамилия">
+            <InputFragment>
+                <InputText class="form-control" @bind-Value="person.LastName" />
+            </InputFragment>
+        </FormEditInputComponent>
+        <FormEditInputComponent Label="Отчество">
+            <InputFragment>
+                <InputText class="form-control" @bind-Value="person.ThirdName" />
+            </InputFragment>
+        </FormEditInputComponent>
+
+        <FormEditInputComponent Label="Адрес">
+            <InputFragment>
+                <InputText class="form-control mb-2" @bind-Value="person.Country" placeholder="Страна" />
+                <InputText class="form-control mb-2" @bind-Value="person.City" placeholder="Город" />
+            </InputFragment>
+        </FormEditInputComponent>
+
+        <FormEditInputComponent Label="Дополнительная информация">
+            <InputFragment>
+                <InputTextArea class="form-control" @bind-Value="person.Information" rows="3" />
+            </InputFragment>
+        </FormEditInputComponent>
+
+        <FormEditInputComponent Label="Рейтинг">
+            <InputFragment>
+                <InputNumber class="form-control Rating" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг" />
+            </InputFragment>
+        </FormEditInputComponent>
+
+        <div class="form-group">
+            <label style="margin-right: 20px;">Ссылки</label>
+            @foreach (var resource in person.Resources)
+            {
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название" />
+                    </div>
+                    <div class="col-auto">
+                        <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка" />
+                    </div>
+                    <div class="col-auto">
+                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
+                    </div>
+                </div>
+            }
+
+            <div @onclick="AddResource" class="btn btn-success btn-sm">Добавить ссылку</div>
+        </div>
+
+
+
+
+    </BodyFragment>
+    
+
+</FormEditComponent>
 
 @code {
     private CreatePersonRequest person = new()
@@ -88,12 +159,12 @@
         Resources = new List<ResourceDto>{}
     };
     private EditContext editContext;
-    
+
     protected override void OnInitialized()
     {
         editContext = new EditContext(person);
     }
-    
+
     private async Task HandleSubmit()
     {
         var isValid = editContext.Validate();
@@ -106,16 +177,22 @@
                 Content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(person)))
             };
 
-            var tokenResult = await TokenProvider.RequestAccessToken();
-            if (tokenResult.TryGetToken(out var token))
-            {
-                requestMessage.Headers.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token.Value);
-                requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            //var tokenResult = await TokenProvider.RequestAccessToken();
+            //if (tokenResult.TryGetToken(out var token))
+            //{
+            //    requestMessage.Headers.Authorization =
+            //        new AuthenticationHeaderValue("Bearer", token.Value);
+            //    requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                await HttpClient.SendAsync(requestMessage);
-                NavigationManager.NavigateTo("/persons");
-            }
+            //    await HttpClient.SendAsync(requestMessage);
+            //    NavigationManager.NavigateTo("/persons");
+            //}
+
+            requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            await HttpClient.SendAsync(requestMessage);
+            NavigationManager.NavigateTo("/persons");
+
         }
     }
 
