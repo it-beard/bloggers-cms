@@ -13,7 +13,7 @@ using Pds.Services.Interfaces;
 namespace Pds.Api.Controllers
 {
     [Route("api/persons")]
-    [Authorize]
+    //[Authorize]
     public class PersonController : ApiControllerBase
     {
         private readonly ILogger<PersonController> logger;

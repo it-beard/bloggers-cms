@@ -106,7 +106,7 @@ else
         person.Channels = await GetChannels();
         editContext = new EditContext(person);
     }
-    
+
     private async Task HandleSubmit()
     {
         var isValid = editContext.Validate();
