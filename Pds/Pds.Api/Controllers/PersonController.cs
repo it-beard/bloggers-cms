@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
+using Pds.Data.Repositories;
 using Pds.Services.Interfaces;
 
 namespace Pds.Api.Controllers
@@ -39,13 +40,15 @@ namespace Pds.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost("search")]
         [ProducesResponseType(typeof(GetPersonsResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll([FromQuery] GetPersonsRequest request)
+        public async Task<IActionResult> GetAll([FromBody] GetPersonsRequest request)
         {
             try
             {
-                var result = await personService.GetAsync(request.Limit, request.Offset);
+                var searchSettings = mapper.Map<SearchSettings>(request);
+
+                var result = await personService.GetAsync(searchSettings);
 
                 var response = new GetPersonsResponse
                 {
