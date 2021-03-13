@@ -2,8 +2,7 @@
 
 namespace Pds.Api.Contracts.Person
 {
-    public class GetPersonsRequest : PageSettings
+    public class GetPersonsRequest : SearchSettings
     {
-        
     }
 }

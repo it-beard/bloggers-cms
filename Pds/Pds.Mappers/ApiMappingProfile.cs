@@ -3,6 +3,7 @@ using AutoMapper;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
+using Pds.Data.Repositories;
 
 namespace Pds.Mappers
 {
@@ -30,6 +31,12 @@ namespace Pds.Mappers
 
             #region Contracts to Entities
             
+            CreateMap<GetPersonsRequest, SearchSettings>();
+
+            CreateMap<Api.Contracts.Paging.OrderSetting, OrderSetting>();
+            CreateMap<Api.Contracts.Paging.PageSettings, PageSettings>();
+            CreateMap<Api.Contracts.Paging.FilterSettings, FilterSettings>();
+
             CreateMap<CreatePersonRequest, Person>();
             CreateMap<ResourceDto, Resource>()
                 .ForMember(

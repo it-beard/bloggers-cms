@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Pds.Web.Pages.Persons
 {
-    //[Authorize]
+    [Authorize]
     public class CreateBase : ComponentBase
     {
         [Inject] public HttpClient HttpClient { get; set; }
@@ -46,22 +46,21 @@ namespace Pds.Web.Pages.Persons
                     Content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(person)))
                 };
 
-                //var tokenResult = await TokenProvider.RequestAccessToken();
-                //if (tokenResult.TryGetToken(out var token))
-                //{
-                //    requestMessage.Headers.Authorization =
-                //        new AuthenticationHeaderValue("Bearer", token.Value);
-                //    requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var tokenResult = await TokenProvider.RequestAccessToken();
+                if (tokenResult.TryGetToken(out var token))
+                {
+                    requestMessage.Headers.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token.Value);
+                    requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                //    await HttpClient.SendAsync(requestMessage);
-                //    NavigationManager.NavigateTo("/persons");
-                //}
+                    await HttpClient.SendAsync(requestMessage);
+                    NavigationManager.NavigateTo("/persons");
+                }
 
-                requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                //requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                await HttpClient.SendAsync(requestMessage);
-                NavigationManager.NavigateTo("/persons");
-
+                //await HttpClient.SendAsync(requestMessage);
+                //NavigationManager.NavigateTo("/persons");
             }
         }
 

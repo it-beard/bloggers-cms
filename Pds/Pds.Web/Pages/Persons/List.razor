@@ -1,5 +1,6 @@
 @page "/persons"
-@inherits ListBase
+@inherits PersonsList
+@attribute [Authorize]
 
 <FormTableComponent ItemsCollection="personsInfo">
     <TableTitleFragment>
@@ -11,7 +12,7 @@
         </div>
     </TableTitleButtonFragment>
     <PagingFragment>
-        <PagingComponent PageSize="pageSize" TotalItems="personsInfo.Total" Radius="2" Pagination="Pagination"/>
+        <PagingComponent PageSize="pageSize" TotalItems="personsInfo.Total" Radius="2" Pagination="Pagination" />
     </PagingFragment>
     <TableHeaderFragment>
         <th scope="col">Полное имя</th>
