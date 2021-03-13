@@ -4,20 +4,20 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Pds.Api.Contracts.Person;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Pds.Web.Pages.Persons
 {
-    //[Authorize]
-    public class ListBase : ComponentBase
+    [Authorize]
+    public class PersonsList : ComponentBase
     {
-
-        [Inject] 
+        [Inject]
         public HttpClient Http { get; set; }
-        [Inject] 
+        [Inject]
         public IConfiguration Configuration { get; set; }
-        [Inject] 
+        [Inject]
         public IAccessTokenProvider TokenProvider { get; set; }
 
 
@@ -39,8 +39,20 @@ namespace Pds.Web.Pages.Persons
             var backendApiUrl = Configuration["BackendApi:Url"];
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{backendApiUrl}/api/persons?limit={pageSize}&offset={pageOffset}");
 
-            var response = await Http.SendAsync(requestMessage);
-            return await response.Content.ReadFromJsonAsync<GetPersonsResponse>();
+            var result = new GetPersonsResponse();
+
+            var tokenResult = await TokenProvider.RequestAccessToken();
+            if (tokenResult.TryGetToken(out var token))
+            {
+                requestMessage.Headers.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token.Value);
+                //requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                var response = await Http.SendAsync(requestMessage);
+                result = await response.Content.ReadFromJsonAsync<GetPersonsResponse>();
+            }
+
+            return result;
         }
     }
 }

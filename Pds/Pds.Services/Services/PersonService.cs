@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Data;
 using Pds.Data.Entities;
+using Pds.Data.Repositories;
 using Pds.Services.Interfaces;
 
 namespace Pds.Services.Services
@@ -16,9 +17,9 @@ namespace Pds.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<(Person[] people, int total)> GetAsync(int limit = 10, int offset = 0)
+        public async Task<(Person[] people, int total)> GetAsync(SearchSettings searchSettings)
         {
-            var result = await unitOfWork.Persons.GetAllWithResourcesAsync(limit, offset);
+            var result = await unitOfWork.Persons.GetAllWithResourcesAsync(searchSettings);
             var total = await unitOfWork.Persons.Count();
 
             return (result, total);
@@ -30,7 +31,7 @@ namespace Pds.Services.Services
             {
                 throw new ArgumentNullException(nameof(newPerson));
             }
-            
+
             newPerson.CreatedAt = DateTime.UtcNow;
             var result = await unitOfWork.Persons.InsertAsync(newPerson);
 

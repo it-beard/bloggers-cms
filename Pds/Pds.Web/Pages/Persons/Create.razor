@@ -1,77 +1,76 @@
 ﻿@page "/persons/add"
 @inherits CreateBase
-
+@attribute [Authorize]
 @*<h1>Добавление персоны</h1>
 
-<EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
-    <div class="form-group">
-        <label for="firstName">Имя</label>
-        <InputText class="form-control" id="firstName" @bind-Value="person.FirstName"/>
-    </div>
-
-    <div class="form-group">
-        <label for="lastName">Фамилия</label>
-        <InputText class="form-control" id="lastName" @bind-Value="person.LastName"/>
-    </div>
-
-    <div class="form-group">
-        <label for="thirdName">Отчество</label>
-        <InputText class="form-control" id="thirdName" @bind-Value="person.ThirdName"/>
-    </div>
-
-    <div class="form-group">
-        <label>Адрес</label>
-        <div class="form-row align-items-center">
-            <div class="col-auto">
-                <InputText class="form-control mb-2" id="country" @bind-Value="person.Country" placeholder="Страна"/>
-            </div>
-            <div class="col-auto">
-                <InputText class="form-control mb-2" id="city" @bind-Value="person.City" placeholder="Город"/>
-            </div>
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <div class="form-group">
+            <label for="firstName">Имя</label>
+            <InputText class="form-control" id="firstName" @bind-Value="person.FirstName"/>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label for="information">Дополнительная информация</label>
-        <InputTextArea class="form-control" id="information" @bind-Value="person.Information" rows="3"/>
-    </div>
-
-    <div class="form-group">
-        <div class="form-inline">
-            Рейтинг: <InputNumber style="width: 80px;" class="form-control" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
+        <div class="form-group">
+            <label for="lastName">Фамилия</label>
+            <InputText class="form-control" id="lastName" @bind-Value="person.LastName"/>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label style="margin-right: 20px;">Ссылки</label>
-        @foreach (var resource in person.Resources)
-        {
+        <div class="form-group">
+            <label for="thirdName">Отчество</label>
+            <InputText class="form-control" id="thirdName" @bind-Value="person.ThirdName"/>
+        </div>
+
+        <div class="form-group">
+            <label>Адрес</label>
             <div class="form-row align-items-center">
                 <div class="col-auto">
-                    <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название"/>
+                    <InputText class="form-control mb-2" id="country" @bind-Value="person.Country" placeholder="Страна"/>
                 </div>
                 <div class="col-auto">
-                    <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка"/>
-                </div>
-                <div class="col-auto">
-                    <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
+                    <InputText class="form-control mb-2" id="city" @bind-Value="person.City" placeholder="Город"/>
                 </div>
             </div>
-        }
+        </div>
 
-        <div @onclick="AddResource" class="btn btn-success btn-sm">Добавить ссылку</div>
-    </div>
+        <div class="form-group">
+            <label for="information">Дополнительная информация</label>
+            <InputTextArea class="form-control" id="information" @bind-Value="person.Information" rows="3"/>
+        </div>
 
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
+        <div class="form-group">
+            <div class="form-inline">
+                Рейтинг: <InputNumber style="width: 80px;" class="form-control" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-success">Создать персону</button>
-    </div>
-</EditForm>*@
+        <div class="form-group">
+            <label style="margin-right: 20px;">Ссылки</label>
+            @foreach (var resource in person.Resources)
+            {
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название"/>
+                    </div>
+                    <div class="col-auto">
+                        <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка"/>
+                    </div>
+                    <div class="col-auto">
+                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
+                    </div>
+                </div>
+            }
 
-<FormEditComponent 
-                   EditContext="editContext"
+            <div @onclick="AddResource" class="btn btn-success btn-sm">Добавить ссылку</div>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Создать персону</button>
+        </div>
+    </EditForm>*@
+
+<FormEditComponent EditContext="editContext"
                    HandleSubmit="HandleSubmit"
                    SubmitLabel="Создать персону">
     <TitleFragment>
@@ -92,11 +91,11 @@
                 </FormEditInputComponent>
                 <FormEditInputComponent Label="Отчество" AddFormClass="col-4">
                     <InputFragment>
-                        <InputText class="form-control" @bind-Value="person.ThirdName" placeholder="Иванович"/>
+                        <InputText class="form-control" @bind-Value="person.ThirdName" placeholder="Иванович" />
                     </InputFragment>
                 </FormEditInputComponent>
             </RowFragment>
-        </FormRowComponent> 
+        </FormRowComponent>
         <FormRowComponent>
             <RowFragment>
                 <FormEditInputComponent Label="Страна" AddFormClass="col-auto">
