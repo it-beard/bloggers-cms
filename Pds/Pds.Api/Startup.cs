@@ -45,7 +45,7 @@ namespace Pds.Api
                 app.UseSwagger();
                 app.UseCustomSwaggerUI();
             }
-
+            app.UseStaticFiles(); // необходимо дл€ компил€ции индивидуальных css
             app.UseCustomPdsCorsPolicy();
             app.UseHttpsRedirection();
 

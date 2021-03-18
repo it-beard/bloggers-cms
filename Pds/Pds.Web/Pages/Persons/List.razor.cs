@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Pds.Web.Pages.Persons
 {
-    //[Authorize]
+    [Authorize]
     public class ListBase : ComponentBase
     {
 
@@ -22,15 +22,19 @@ namespace Pds.Web.Pages.Persons
 
 
         protected GetPersonsResponse personsInfo;
-        protected readonly int pageSize = 5;
+        protected int[] pageSizesList = { 5, 10, 25, 50 };
+        private int pageSize;
 
         protected override async Task OnInitializedAsync()
         {
+            pageSize = pageSizesList[0];
             personsInfo = await GetPeople(pageSize, 0);
         }
 
-        protected async Task Pagination(int pageOffset)
+        protected async Task Pagination(int[] page)
         {
+            var pageOffset = page[0];
+            pageSize = page[1];
             personsInfo = await GetPeople(pageSize, pageOffset);
         }
 

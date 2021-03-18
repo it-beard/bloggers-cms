@@ -1,6 +1,6 @@
 @page "/persons"
 @inherits ListBase
-
+@* Аттрибут авторизации не нужен, он есть в базовом классе List *@
 <FormTableComponent ItemsCollection="personsInfo">
     <TableTitleFragment>
         Список персон
@@ -11,7 +11,7 @@
         </div>
     </TableTitleButtonFragment>
     <PagingFragment>
-        <PagingComponent PageSize="pageSize" TotalItems="personsInfo.Total" Radius="2" Pagination="Pagination"/>
+        <PagingComponent PageSize="pageSizesList" TotalItems="personsInfo.Total" Radius="2" Pagination="Pagination"/>
     </PagingFragment>
     <TableHeaderFragment>
         <th scope="col">Полное имя</th>
