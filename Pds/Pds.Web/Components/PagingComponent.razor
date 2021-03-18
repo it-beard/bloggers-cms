@@ -14,7 +14,7 @@
             </li>
         }
         <li>
-            <select class="form-control bg-info text-light"  @onchange="@SelectedPageSize">
+            <select class="form-control bg-info text-light page-size-selector"  @onchange="@SelectedPageSize">
                 @foreach (var item in PageSize)
                 {
                     <option value="@item">@item</option>

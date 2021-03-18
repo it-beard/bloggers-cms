@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Pds.Web.Pages.Persons
 {
     [Authorize]
-    public class ListBase : ComponentBase
+    public class PersonsList : ComponentBase
     {
 
         [Inject] 

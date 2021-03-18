@@ -1,4 +1,4 @@
-﻿@*@typeparam TItem*@
+﻿@typeparam TItem
 @using Pds.Api.Contracts.Person
 
 @if (ItemsCollection == null)
@@ -47,6 +47,6 @@ else
 
     [Parameter] public RenderFragment TableHeaderFragment { get; set; }
     [Parameter] public RenderFragment TableBodyFragment { get; set; }
-    [Parameter] public GetPersonsResponse ItemsCollection { get; set; }
+    [Parameter] public TItem ItemsCollection { get; set; }
 
 }
