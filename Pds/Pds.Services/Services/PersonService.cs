@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
 using Pds.Data;
@@ -18,7 +17,7 @@ namespace Pds.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<(Person[] people, int total)> GetAsync(SearchSettings searchSettings)
+        public async Task<(Person[] people, int total)> GetAsync(SearchSettings<PersonsFieldName> searchSettings)
         {
             var result = await unitOfWork.Persons.GetAllWithResourcesAsync(searchSettings);
             var total = await unitOfWork.Persons.Count();

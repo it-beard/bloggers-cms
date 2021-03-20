@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,6 +9,7 @@ using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Data.Repositories;
 using Pds.Services.Interfaces;
+using PersonsFieldName = Pds.Data.Repositories.PersonsFieldName;
 
 namespace Pds.Api.Controllers
 {
@@ -45,7 +45,7 @@ namespace Pds.Api.Controllers
         {
             try
             {
-                var searchSettings = mapper.Map<SearchSettings>(request);
+                var searchSettings = mapper.Map<GetPersonsRequest, SearchSettings<PersonsFieldName>>(request);
 
                 var result = await personService.GetAsync(searchSettings);
 

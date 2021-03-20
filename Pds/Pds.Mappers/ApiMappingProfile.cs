@@ -4,6 +4,7 @@ using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Data.Repositories;
+using PersonsFieldName = Pds.Api.Contracts.Person.PersonsFieldName;
 
 namespace Pds.Mappers
 {
@@ -30,10 +31,10 @@ namespace Pds.Mappers
             #endregion
 
             #region Contracts to Entities
-            
-            CreateMap<GetPersonsRequest, SearchSettings>();
 
-            CreateMap<Api.Contracts.Paging.OrderSetting, OrderSetting>();
+            CreateMap<GetPersonsRequest, SearchSettings<Data.Repositories.PersonsFieldName>>();
+            
+            CreateMap<Api.Contracts.Paging.OrderSetting<PersonsFieldName>, OrderSetting<Data.Repositories.PersonsFieldName>>();
             CreateMap<Api.Contracts.Paging.PageSettings, PageSettings>();
             CreateMap<Api.Contracts.Paging.FilterSettings, FilterSettings>();
 
