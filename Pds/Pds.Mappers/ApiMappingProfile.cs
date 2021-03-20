@@ -10,6 +10,7 @@ using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Data.Repositories;
+using PersonsFieldName = Pds.Api.Contracts.Person.PersonsFieldName;
 using Pds.Services.Models;
 using Pds.Services.Models.Content;
 
@@ -106,10 +107,10 @@ namespace Pds.Mappers
 
             CreateMap<CreateClientRequest, Client>();
             CreateMap<CreateCostRequest, Cost>();
-            
-            CreateMap<GetPersonsRequest, SearchSettings>();
 
-            CreateMap<Api.Contracts.Paging.OrderSetting, OrderSetting>();
+            CreateMap<GetPersonsRequest, SearchSettings<Data.Repositories.PersonsFieldName>>();
+            
+            CreateMap<Api.Contracts.Paging.OrderSetting<PersonsFieldName>, OrderSetting<Data.Repositories.PersonsFieldName>>();
             CreateMap<Api.Contracts.Paging.PageSettings, PageSettings>();
             CreateMap<Api.Contracts.Paging.FilterSettings, FilterSettings>();
 
