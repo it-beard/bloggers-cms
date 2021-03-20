@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Pds.Data.Entities;
@@ -15,7 +16,7 @@ namespace Pds.Data.Repositories
             this.context = context;
         }
 
-        public async Task<Person[]> GetAllWithResourcesAsync(SearchSettings searchSettings)
+        public async Task<Person[]> GetAllWithResourcesAsync(SearchSettings<PersonsFieldName> searchSettings)
         {
             var query = context.Persons
                 .AsNoTracking()
@@ -24,96 +25,15 @@ namespace Pds.Data.Repositories
 
             if (searchSettings.OrderSettings?.Length > 0)
             {
-                var orderSettings = searchSettings.OrderSettings;
-
-                IOrderedQueryable<Person> orderedQuery = null;
-
-                if (orderSettings[0].Ascending)
+                var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<Person>>
                 {
-                    switch (orderSettings[0].FieldName)
-                    {
-                        case FieldName.FullName:
-                            orderedQuery = query
-                                .OrderBy(p => p.LastName + p.FirstName + p.ThirdName);
-                            break;
-
-                        case FieldName.Rating:
-                            orderedQuery = query
-                                .OrderBy(p => p.Rate);
-                            break;
-
-                        case FieldName.Location:
-                            orderedQuery = query
-                                .OrderBy(p => p.Country + p.City);
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (orderSettings[0].FieldName)
-                    {
-                        case FieldName.FullName:
-                            orderedQuery = query
-                                .OrderByDescending(p => p.LastName + p.FirstName + p.ThirdName);
-                            break;
-
-                        case FieldName.Rating:
-                            orderedQuery = query
-                                .OrderByDescending(p => p.Rate);
-                            break;
-
-                        case FieldName.Location:
-                            orderedQuery = query
-                                 .OrderByDescending(p => p.Country + p.City);
-                            break;
-                    }
-                }
-
-                foreach (var orderSetting in orderSettings.Skip(1))
-                {
-                    if (orderSetting.Ascending)
-                    {
-                        switch (orderSetting.FieldName)
-                        {
-                            case FieldName.FullName:
-                                orderedQuery = orderedQuery
-                                    .ThenBy(p => p.LastName + p.FirstName + p.ThirdName);
-                                break;
-
-                            case FieldName.Rating:
-                                orderedQuery = orderedQuery
-                                    .ThenBy(p => p.Rate);
-                                break;
-
-                            case FieldName.Location:
-                                orderedQuery = orderedQuery
-                                    .ThenBy(p => p.Country + p.City);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch (orderSetting.FieldName)
-                        {
-                            case FieldName.FullName:
-                                orderedQuery = orderedQuery
-                                    .ThenByDescending(p => p.LastName + p.FirstName + p.ThirdName);
-                                break;
-
-                            case FieldName.Rating:
-                                orderedQuery = orderedQuery
-                                    .ThenByDescending(p => p.Rate);
-                                break;
-
-                            case FieldName.Location:
-                                orderedQuery = orderedQuery
-                                     .ThenByDescending(p => p.Country + p.City);
-                                break;
-                        }
-                    }
-                }
-
-                query = orderedQuery;
+                    {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
+                    {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
+                    {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
+                };
+                
+                var queryCreator = new PersonOrderQueryCreator(dictionary);
+                query = queryCreator.Create(searchSettings.OrderSettings, query);
             }
             else
             {
@@ -127,36 +47,5 @@ namespace Pds.Data.Repositories
                 .Take(searchSettings.PageSettings?.Limit ?? 10)
                 .ToArrayAsync();
         }
-    }
-
-    public class PageSettings
-    {
-        public int Limit { get; set; }
-        public int Offset { get; set; }
-    }
-
-    public class OrderSetting
-    {
-        public bool Ascending { get; set; }
-        public FieldName FieldName { get; set; }
-    }
-
-    public enum FieldName
-    {
-        FullName,
-        Rating,
-        Location
-    }
-
-    public class FilterSettings
-    {
-        public string Search { get; set; }
-    }
-
-    public class SearchSettings
-    {
-        public PageSettings PageSettings { get; set; }
-        public OrderSetting[] OrderSettings { get; set; }
-        public FilterSettings FilterSettings { get; set; }
     }
 }
