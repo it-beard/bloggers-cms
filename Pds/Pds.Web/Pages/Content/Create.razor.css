@@ -17,3 +17,9 @@
     display: inline-block;
     margin-left: 10px;
 }
+
+.btn-check:checked + .btn-secondary {
+    color: #fff;
+    background-color: #157347;
+    border-color: #146c43;
+}

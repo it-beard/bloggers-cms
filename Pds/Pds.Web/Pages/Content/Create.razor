@@ -100,7 +100,8 @@ else
 @code {
     private CreateContentRequest content = new ()
     {
-        ReleaseDate = DateTime.Today.Date
+        ReleaseDate = DateTime.Today.Date,
+        ChannelId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f") //Default АйТиБорода
     };
     private EditContext editContext;
     private List<ChannelDto> channels;
