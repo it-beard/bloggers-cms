@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Pds.Data.Enums;
@@ -33,14 +34,12 @@ namespace Pds.Data.Entities
 
         public PersonStatus Status { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
-
         public DateTime? ArchivedAt { get; set; }
 
         public DateTime? UnarchivedAt { get; set; }
 
-        public ICollection<Resource> Resources { get; set; }
+        public virtual ICollection<Resource> Resources { get; set; }
+
+        public virtual ICollection<Content> Contents { get; set; }
     }
 }

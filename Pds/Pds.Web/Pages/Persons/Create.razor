@@ -119,13 +119,13 @@
         }
     }
 
-    private async Task AddResource()
+    private void AddResource()
     {
         var resource = new ResourceDto();
         person.Resources.Add(resource);
     }
 
-    private async Task RemoveResource(ResourceDto resource)
+    private void RemoveResource(ResourceDto resource)
     {
         person.Resources.Remove(resource);
     }

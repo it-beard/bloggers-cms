@@ -11,10 +11,8 @@ namespace Pds.Data.Entities
         [Required]
         public string Url { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public Guid PersonId { get; set;  }
 
-        public DateTime? UpdatedAt { get; set; }
-
-        public Person Person { get; set;  }
+        public virtual Person Person { get; set;  }
     }
 }

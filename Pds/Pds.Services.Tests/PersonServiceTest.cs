@@ -51,7 +51,7 @@ namespace Pds.Services.Tests
         }
 
         [Test]
-        public async Task CreateAsync_NullPerson_ShouldThrowNullArgumentException()
+        public void CreateAsync_NullPerson_ShouldThrowNullArgumentException()
         {
             // arrange
             // act
