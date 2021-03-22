@@ -10,8 +10,10 @@
 @inject IConfiguration Configuration
 @inject IAccessTokenProvider TokenProvider
 
-<h1>Список персон</h1>
-<a href="/content/add" class="btn btn-success" >Добавить контент</a>
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Лента контента
+    <a href="/content/add" class="btn btn-success" >Добавить</a>
+</h3>
 @if (content == null)
 {
     <p>

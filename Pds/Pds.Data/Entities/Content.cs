@@ -18,17 +18,12 @@ namespace Pds.Data.Entities
         [Required]
         public SocialMediaType SocialMediaType { get; set; }
 
-        [Required]
         public string Comment { get; set; }
 
         [Required]
         public DateTime ReleaseDateUtc { get; set; }
 
         public DateTime? EndDateUtc { get; set; }
-
-        [Required]
-        [Column(TypeName = "varchar(300)")]
-        public string PrimaryContact { get; set; }
 
         public Guid OrderId { get; set; }
 

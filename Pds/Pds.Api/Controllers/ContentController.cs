@@ -58,6 +58,8 @@ namespace Pds.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get-channels")]
         public async Task<IActionResult> GetListOfChannels()
         {
             try
@@ -66,6 +68,28 @@ namespace Pds.Api.Controllers
                 var response = mapper.Map<List<ChannelDto>>(channels);
 
                 return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Create content & order
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateContentRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    return Ok();
+                }
+
+                return BadRequest();
             }
             catch (Exception e)
             {

@@ -1,0 +1,153 @@
+﻿@page "/content/add"
+@attribute [Authorize] 
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Person
+@using System.Net.Http.Headers
+@using Newtonsoft.Json
+@using Pds.Api.Contracts.Content
+@using Pds.Core.Enums
+
+@inject HttpClient HttpClient
+@inject IConfiguration Configuration
+@inject IAccessTokenProvider TokenProvider
+@inject NavigationManager NavigationManager
+
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Добавление контента
+    <a href="/content" class="btn btn-primary" >Назад</a>
+</h3>
+@if (channels == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <div class="form-group">
+            <InputRadioGroup Name="channel" @bind-Value="content.ChannelId">
+                @foreach (var channel in channels)
+                {
+                    <InputRadio Name="channel" class="btn-check" Value="channel.Id" Id="@channel.Id"/>
+                    <label class="btn btn-secondary" for="@channel.Id">@channel.Name</label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <InputRadioGroup Name="type" @bind-Value="content.Type">
+                @foreach (var type in (ContentType[])Enum
+                    .GetValues(typeof(ContentType)))
+                {
+                    <InputRadio Name="type" class="btn-check" Value="type" Id="@type"/>
+                    <label class="btn btn-secondary" for="@type">@type</label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <InputRadioGroup Name="social-media-type" @bind-Value="content.SocialMediaType">
+                @foreach (var socialMediaType in (SocialMediaType[])Enum
+                    .GetValues(typeof(SocialMediaType)))
+                {
+                    <InputRadio Name="social-media-type" class="btn-check" Value="socialMediaType" Id="@socialMediaType"/>
+                    <label class="btn btn-secondary" for="@socialMediaType">@socialMediaType</label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <label for="title" class="form-label">Заголовок</label>
+            <InputText class="form-control" id="title" @bind-Value="content.Title"/>
+        </div>
+
+        <div class="form-group">
+            <label for="release_date" class="form-label">Дата релиза:</label>
+            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
+        </div>
+
+        <div class="form-group">
+            <label for="comment" class="form-label">Комментарий к контенту</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="content.Comment" rows="3"/>
+        </div>
+
+        <div class="form-group">
+            <label for="order_cost" class="form-label">Стоимость USD:</label>
+            <InputNumber class="form-control order-cost" id="order_cost" @bind-Value="content.OrderCost"/>
+        </div>
+
+        <div class="form-group">
+            <label for="order_contact" class="form-label">Контакт заказчика</label>
+            <InputText class="form-control" id="order_contact" @bind-Value="content.OrderContact"/>
+        </div>
+
+        <div class="form-group">
+            <label for="order_comment" class="form-label">Комментарий к заказу</label>
+            <InputTextArea class="form-control" id="order_comment" @bind-Value="content.OrderComment" rows="3"/>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success ">Создать контент</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private CreateContentRequest content = new ()
+    {
+        ReleaseDate = DateTime.Today.Date
+    };
+    private EditContext editContext;
+    private List<ChannelDto> channels;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        editContext = new EditContext(content);
+        channels = await GetChannels();
+    }
+    
+    private async Task HandleSubmit()
+    {
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            var backendApiUrl = Configuration["BackendApi:Url"];
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{backendApiUrl}/api/content")
+            {
+                Content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(content)))
+            };
+
+            var tokenResult = await TokenProvider.RequestAccessToken();
+            if (tokenResult.TryGetToken(out var token))
+            {
+                requestMessage.Headers.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token.Value);
+                requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                await HttpClient.SendAsync(requestMessage);
+                NavigationManager.NavigateTo("/content");
+            }
+        }
+    }
+
+    private async Task<List<ChannelDto>> GetChannels()
+    {
+        var backendApiUrl = Configuration["BackendApi:Url"];
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{backendApiUrl}/api/content/get-channels");
+        var tokenResult = await TokenProvider.RequestAccessToken();
+
+        if (tokenResult.TryGetToken(out var token)) {
+            requestMessage.Headers.Authorization = 
+                new AuthenticationHeaderValue("Bearer", token.Value);
+            var response = await HttpClient.SendAsync(requestMessage);
+            return await response.Content.ReadFromJsonAsync<List<ChannelDto>>();
+        }
+        return new List<ChannelDto>();
+    }
+}

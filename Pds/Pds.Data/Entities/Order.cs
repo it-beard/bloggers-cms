@@ -15,7 +15,6 @@ namespace Pds.Data.Entities
         [Required]
         public OrderStatus Status { get; set; }
 
-        [Required]
         public string Comment { get; set; }
 
         [Required]
@@ -24,7 +23,7 @@ namespace Pds.Data.Entities
 
         public Guid ContentId { get; set; }
 
-        public Guid ClientId { get; set; }
+        public Guid? ClientId { get; set; }
 
         public virtual Content Content { get; set; }
 
