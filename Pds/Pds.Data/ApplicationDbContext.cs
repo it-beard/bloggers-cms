@@ -1,6 +1,6 @@
 ﻿using Pds.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Pds.Data.Enums;
+using Pds.Core.Enums;
 
 namespace Pds.Data
 {

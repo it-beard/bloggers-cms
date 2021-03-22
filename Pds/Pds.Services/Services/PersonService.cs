@@ -21,15 +21,15 @@ namespace Pds.Services.Services
             return await unitOfWork.Persons.GetAllWithResourcesAsync();
         }
 
-        public async Task<Guid> CreateAsync(Person newPerson)
+        public async Task<Guid> CreateAsync(Person person)
         {
-            if (newPerson == null)
+            if (person == null)
             {
-                throw new ArgumentNullException(nameof(newPerson));
+                throw new ArgumentNullException(nameof(person));
             }
             
-            newPerson.CreatedAt = DateTime.UtcNow;
-            var result = await unitOfWork.Persons.InsertAsync(newPerson);
+            person.CreatedAt = DateTime.UtcNow;
+            var result = await unitOfWork.Persons.InsertAsync(person);
 
             return result.Id;
         }

@@ -21,6 +21,7 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => $"{p.Country} {p.City}"));
             CreateMap<Resource, ResourceDto>();
+            CreateMap<Content, ContentDto>();
             
             #endregion
 

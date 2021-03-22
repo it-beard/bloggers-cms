@@ -1,4 +1,4 @@
-﻿namespace Pds.Data.Enums
+﻿namespace Pds.Core.Enums
 {
     public enum OrderStatus
     {

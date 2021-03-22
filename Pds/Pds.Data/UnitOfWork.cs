@@ -9,6 +9,7 @@ namespace Pds.Data
         private readonly ApplicationDbContext context;
         private IPersonRepository personRepository;
         private IResourceRepository resourceRepository;
+        private IContentRepository contentRepository;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -16,8 +17,8 @@ namespace Pds.Data
         }
 
         public IPersonRepository Persons => personRepository ??= new PersonRepository(context);
-
-        public IResourceRepository Resource => resourceRepository ??= new ResourceRepository(context);
+        public IResourceRepository Resources => resourceRepository ??= new ResourceRepository(context);
+        public IContentRepository Content => contentRepository ??= new ContentRepository(context);
 
         public void Save()
         {

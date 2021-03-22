@@ -5,9 +5,9 @@ using Pds.Data.Entities;
 
 namespace Pds.Services.Interfaces
 {
-    public interface IPersonService
+    public interface IContentService
     {
-        Task<List<Person>> GetAllAsync();
-        Task<Guid> CreateAsync(Person person);
+        Task<List<Content>> GetAllAsync();
+        Task<Guid> CreateAsync(Content content);
     }
 }

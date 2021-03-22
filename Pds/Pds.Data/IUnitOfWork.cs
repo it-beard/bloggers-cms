@@ -7,7 +7,9 @@ namespace Pds.Data
     {
         IPersonRepository Persons { get; }
 
-        IResourceRepository Resource { get; }
+        IResourceRepository Resources { get; }
+
+        IContentRepository Content { get; }
 
         void Save();
     }
