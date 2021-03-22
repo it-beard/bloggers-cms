@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoMapper;
+using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 
@@ -22,6 +23,7 @@ namespace Pds.Mappers
                         .MapFrom(p => $"{p.Country} {p.City}"));
             CreateMap<Resource, ResourceDto>();
             CreateMap<Content, ContentDto>();
+            CreateMap<Channel, Pds.Api.Contracts.Content.ChannelDto>();
             
             #endregion
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using Pds.Core.Enums;
 
-namespace Pds.Api.Contracts.Person
+namespace Pds.Api.Contracts.Content
 {
     public class ContentDto
     {

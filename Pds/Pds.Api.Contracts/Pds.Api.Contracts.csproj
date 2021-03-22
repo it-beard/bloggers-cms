@@ -8,8 +8,4 @@
       <ProjectReference Include="..\Pds.Data\Pds.Data.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Content" />
-    </ItemGroup>
-
 </Project>

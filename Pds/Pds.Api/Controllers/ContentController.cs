@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
@@ -47,6 +49,21 @@ namespace Pds.Api.Controllers
                     Items = mapper.Map<ContentDto[]>(content),
                     Total = content.Count
                 };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        public async Task<IActionResult> GetListOfChannels()
+        {
+            try
+            {
+                var channels = await contentService.GetChannelsAsync();
+                var response = mapper.Map<List<ChannelDto>>(channels);
 
                 return Ok(response);
             }
