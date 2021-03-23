@@ -9,8 +9,10 @@
 @inject IConfiguration Configuration
 @inject IAccessTokenProvider TokenProvider
 
-<h1>Список персон</h1>
-<a href="/persons/add" class="btn btn-success" >Добавить персону</a>
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Список персон
+    <a href="/persons/add" class="btn btn-success" >Добавить</a>
+</h3>
 @if (personsInfo == null)
 {
     <p>

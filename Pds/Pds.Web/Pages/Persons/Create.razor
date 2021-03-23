@@ -5,56 +5,51 @@
 @using Pds.Api.Contracts.Person
 @using System.Net.Http.Headers
 @using Newtonsoft.Json
-@using Pds.Data.Entities
 
 @inject HttpClient HttpClient
 @inject IConfiguration Configuration
 @inject IAccessTokenProvider TokenProvider
 @inject NavigationManager NavigationManager
 
-<h1>Добавление персоны</h1>
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Добавление персоны
+    <a href="/persons" class="btn btn-primary"> Назад </a>
+</h3>
 
 <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
     <div class="form-group">
-        <label for="firstName">Имя</label>
-        <InputText class="form-control" id="firstName" @bind-Value="person.FirstName"/>
+        <label for="first_name" class="form-label">Имя</label>
+        <InputText class="form-control" id="first_name" @bind-Value="person.FirstName"/>
     </div>
 
     <div class="form-group">
-        <label for="lastName">Фамилия</label>
-        <InputText class="form-control" id="lastName" @bind-Value="person.LastName"/>
+        <label for="last_name" class="form-label">Фамилия</label>
+        <InputText class="form-control" id="last_name" @bind-Value="person.LastName"/>
     </div>
 
     <div class="form-group">
-        <label for="thirdName">Отчество</label>
-        <InputText class="form-control" id="thirdName" @bind-Value="person.ThirdName"/>
+        <label for="third_name" class="form-label">Отчество</label>
+        <InputText class="form-control" id="third_name" @bind-Value="person.ThirdName"/>
     </div>
 
     <div class="form-group">
-        <label>Адрес</label>
-        <div class="form-row align-items-center">
-            <div class="col-auto">
-                <InputText class="form-control mb-2" id="country" @bind-Value="person.Country" placeholder="Страна"/>
-            </div>
-            <div class="col-auto">
-                <InputText class="form-control mb-2" id="city" @bind-Value="person.City" placeholder="Город"/>
-            </div>
-        </div>
+        <label class="form-label">Адрес: </label>
+        <InputText class="form-control person-country" id="country" @bind-Value="person.Country" placeholder="Страна"/>
+        <InputText class="form-control person-city" id="city" @bind-Value="person.City" placeholder="Город"/>
     </div>
 
     <div class="form-group">
-        <label for="information">Дополнительная информация</label>
+        <label for="information" class="form-label">Дополнительная информация</label>
         <InputTextArea class="form-control" id="information" @bind-Value="person.Information" rows="3"/>
     </div>
 
     <div class="form-group">
-        <div class="form-inline">
-            Рейтинг: <InputNumber style="width: 80px;" class="form-control" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
-        </div>
+        <label for="person_rate" class="form-label">Рейтинг: </label>
+        <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
     </div>
 
     <div class="form-group">
-        <label style="margin-right: 20px;">Ссылки</label>
+        <label class="form-label person-links">Ссылки:</label>
         @foreach (var resource in person.Resources)
         {
             <div class="form-row align-items-center">
@@ -70,14 +65,14 @@
             </div>
         }
 
-        <div @onclick="AddResource" class="btn btn-success btn-sm">Добавить ссылку</div>
+        <div @onclick="AddResource" class="btn btn-primary btn-sm">Добавить ссылку</div>
     </div>
 
     <DataAnnotationsValidator/>
     <ValidationSummary/>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-success">Создать персону</button>
+    <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" @onclick="AddResource" class="btn btn-success ">Создать</button>
     </div>
 </EditForm>
 
