@@ -4,16 +4,22 @@
     <ul class="pagination">
         @foreach (var page in pages)
         {
-            <li  class="page-item">
-                <button 
-                    class="btn mr-1 
-                    @(page.Active ? "btn-info" : "btn-outline-info") 
+            <li class="page-item">
+                <button class="btn mr-1
+                    @(page.Active ? "btn-info" : "btn-outline-info")
                     @(page.Enabled ? null : "disabled")"
-                    @onclick="@(() => SelectedPage(page))"
-                >
+                        @onclick="@(() => SelectedPage(page))">
                     @(page.Text)
                 </button>
             </li>
         }
+        <li>
+            <select class="form-control bg-info text-light page-size-selector" @onchange="@OnSelectPageSize" >
+                @foreach (var pageSize in PageSizeList)
+                {
+                    <option value="@pageSize">@pageSize</option>
+                }
+            </select>
+        </li>
     </ul>
 </nav>
