@@ -3,10 +3,14 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Pds.Api.Contracts.Person;
+using Pds.Api.Contracts.Paging;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Pds.Web.Components;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Pds.Web.Pages.Persons
 {
@@ -22,22 +26,40 @@ namespace Pds.Web.Pages.Persons
 
 
         protected GetPersonsResponse personsInfo;
-        protected readonly int pageSize = 5;
+        protected readonly int[] pageSizesList = { 5, 10, 25, 50 };
+        private int pageSize;
+        private int pageOffset;
 
         protected override async Task OnInitializedAsync()
         {
-            personsInfo = await GetPeople(pageSize, 0);
+            pageSize = pageSizesList[0];
+            personsInfo = await GetPeople(pageSize, pageOffset);
         }
 
-        protected async Task Pagination(int pageOffset)
+        protected async Task Pagination(PaginationSettings paggingSettings)
         {
+            pageOffset = paggingSettings.PageOffSet;
+            pageSize = paggingSettings.PageSize;
             personsInfo = await GetPeople(pageSize, pageOffset);
         }
 
         private async Task<GetPersonsResponse> GetPeople(int pageSize, int pageOffset)
         {
             var backendApiUrl = Configuration["BackendApi:Url"];
-            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{backendApiUrl}/api/persons?limit={pageSize}&offset={pageOffset}");
+            //using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{backendApiUrl}/api/persons?limit={pageSize}&offset={pageOffset}");
+
+            var requestBody = new GetPersonsRequest()
+            {
+                PageSettings = new PageSettings() { Limit = pageSize, Offset = pageOffset },
+                OrderSettings = new OrderSetting<PersonsFieldName>[] { 
+                new OrderSetting<PersonsFieldName>{Ascending = true, FieldName = PersonsFieldName.FullName}    
+                },
+                FilterSettings = new FilterSettings() { Search = ""}
+            };
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{backendApiUrl}/api/persons/search") 
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json")
+            };
 
             var result = new GetPersonsResponse();
 
