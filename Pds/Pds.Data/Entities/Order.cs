@@ -21,6 +21,9 @@ namespace Pds.Data.Entities
         [Column(TypeName = "varchar(300)")]
         public string PrimaryContact { get; set; }
 
+        [Required]
+        public ContactType PrimaryContactType { get; set; }
+
         public Guid ContentId { get; set; }
 
         public Guid? ClientId { get; set; }

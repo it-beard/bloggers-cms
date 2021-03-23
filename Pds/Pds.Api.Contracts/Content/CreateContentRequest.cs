@@ -24,8 +24,13 @@ namespace Pds.Api.Contracts.Person
         [Required]
         public DateTime ReleaseDate { get; set; }
 
+        public DateTime? EndDateUtc { get; set; }
+
         [Required]
         public string OrderContact { get; set; }
+
+        [Required, EnumDataType(typeof(ContactType))]
+        public ContactType OrderContactType { get; set; }
         
         [Required]
         [Range(0.00, Double.MaxValue, ErrorMessage = "The field {0} must be greater than {1}.")]
