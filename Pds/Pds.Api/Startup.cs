@@ -49,6 +49,7 @@ namespace Pds.Api
             app.UseCustomPdsCorsPolicy();
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
             app.UseRouting();
             
             app.UseAuthentication();
