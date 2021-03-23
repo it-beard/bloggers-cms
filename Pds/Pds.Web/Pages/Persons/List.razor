@@ -1,12 +1,12 @@
 ﻿@page "/persons"
-@attribute [Authorize] 
-@using Microsoft.Extensions.Configuration
+@attribute [Authorize]
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Net.Http.Headers
 @using Pds.Api.Contracts.Person
+@using Pds.Web.Common
+@using System.Net
 
-@inject HttpClient Http
-@inject IConfiguration Configuration
+@inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
 <h3 class="card-header d-flex justify-content-between align-items-center">
@@ -56,15 +56,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var backendApiUrl = Configuration["BackendApi:Url"];
-        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{backendApiUrl}/api/persons");
-        var tokenResult = await TokenProvider.RequestAccessToken();
-
-        if (tokenResult.TryGetToken(out var token)) {
-            requestMessage.Headers.Authorization = 
-                new AuthenticationHeaderValue("Bearer", token.Value);
-            var response = await Http.SendAsync(requestMessage);
-            personsInfo = await response.Content.ReadFromJsonAsync<GetPersonsResponse>();
-        }
+        personsInfo = await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
     }
 }

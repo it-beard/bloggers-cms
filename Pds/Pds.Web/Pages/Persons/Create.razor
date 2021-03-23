@@ -1,15 +1,12 @@
 ﻿@page "/persons/add"
-@attribute [Authorize] 
-@using Microsoft.Extensions.Configuration
+@attribute [Authorize]
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
-@using System.Net.Http.Headers
-@using Newtonsoft.Json
+@using Pds.Web.Common
 
-@inject HttpClient HttpClient
-@inject IConfiguration Configuration
-@inject IAccessTokenProvider TokenProvider
 @inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
 
 <h3 class="card-header d-flex justify-content-between align-items-center">
     Добавление персоны
@@ -72,7 +69,7 @@
     <ValidationSummary/>
 
     <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
-        <button type="submit" @onclick="AddResource" class="btn btn-success ">Создать</button>
+        <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
     </div>
 </EditForm>
 
@@ -83,9 +80,11 @@
         Resources = new List<ResourceDto>{}
     };
     private EditContext editContext;
+    private bool isCreateButtonDisabled;
     
     protected override void OnInitialized()
     {
+        isCreateButtonDisabled = false;
         editContext = new EditContext(person);
     }
     
@@ -95,22 +94,9 @@
 
         if (isValid)
         {
-            var backendApiUrl = Configuration["BackendApi:Url"];
-            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{backendApiUrl}/api/persons")
-            {
-                Content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(person)))
-            };
-
-            var tokenResult = await TokenProvider.RequestAccessToken();
-            if (tokenResult.TryGetToken(out var token))
-            {
-                requestMessage.Headers.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token.Value);
-                requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                await HttpClient.SendAsync(requestMessage);
-                NavigationManager.NavigateTo("/persons");
-            }
+            isCreateButtonDisabled = true;
+            await ApiClient.Post<object, CreatePersonRequest>(TokenProvider, "persons", person);
+            NavigationManager.NavigateTo("/persons");
         }
     }
 

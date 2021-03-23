@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Pds.Data.Entities;
 
 namespace Pds.Api.Contracts.Person
 {

@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Pds.Data\Pds.Data.csproj" />
+      <ProjectReference Include="..\Pds.Core\Pds.Core.csproj" />
     </ItemGroup>
 
 </Project>
