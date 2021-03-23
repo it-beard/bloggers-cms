@@ -8,7 +8,6 @@ namespace Pds.Web.Components
     {
         [Parameter]
         public EventCallback<PaginationSettings> Pagination { get; set; }
-
         [Parameter]
         public int[] PageSizeList { get; set; }
         [Parameter]
@@ -19,14 +18,14 @@ namespace Pds.Web.Components
         private int pageOffset;
         private int currentPage;
         private int totalPages;
+        private int currentPageSize;
 
         protected List<PageModel> pages;
-        private int currentPageSize;
 
         protected override void OnInitialized()
         {
             currentPageSize = PageSizeList[0];
-            currentPage = 1;
+            SetDefaultPagination();
         }
 
         protected override void OnParametersSet()
@@ -37,16 +36,17 @@ namespace Pds.Web.Components
             LoadPages();
         }
 
-        protected void OnSelectPageSize(ChangeEventArgs e)
+        protected void OnChangePageSize(ChangeEventArgs e)
         {
-            currentPageSize = int.Parse(e.Value.ToString());
+            var isPageSizeChanged = int.TryParse(e.Value.ToString(), out currentPageSize);
+            if (!isPageSizeChanged)
+                currentPageSize = PageSizeList[0];
+
             SetDefaultPagination();
-            var res = new PaginationSettings(currentPageSize, pageOffset);
-            int[] result = new int[] { 0, currentPageSize };
-            Pagination.InvokeAsync(res);
+            PaginationInvoke();
         }
 
-        protected void SelectedPage(PageModel page)
+        protected void OnChangePage(PageModel page)
         {
             if (page.Page == currentPage)
             {
@@ -58,15 +58,19 @@ namespace Pds.Web.Components
                 return;
             }
             currentPage = page.Page;
-
             pageOffset = (currentPage - 1) * currentPageSize;
-            var res = new PaginationSettings(currentPageSize, pageOffset);
-            int[] result = new int[] { pageOffset, currentPageSize };
-            Pagination.InvokeAsync(res);
+            PaginationInvoke();
+        }
+
+        private void PaginationInvoke()
+        {
+            var settings = new PaginationSettings(currentPageSize, pageOffset);
+            Pagination.InvokeAsync(settings);
         }
 
         private void SetDefaultPagination()
         {
+            pageOffset = default;
             currentPage = 1;
             LoadPages();
         }
@@ -117,7 +121,7 @@ namespace Pds.Web.Components
         public int PageSize { get; }
         public int PageOffSet { get; }
 
-        internal PaginationSettings(int pageSize, int pageOffSet)
+        public PaginationSettings(int pageSize, int pageOffSet)
         {
             PageSize = pageSize;
             PageOffSet = pageOffSet;
