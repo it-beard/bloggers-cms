@@ -8,16 +8,16 @@
                 <button class="btn mr-1
                     @(page.Active ? "btn-info" : "btn-outline-info")
                     @(page.Enabled ? null : "disabled")"
-                        @onclick="@(() => SelectedPage(page))">
+                        @onclick="@(() => OnChangePage(page))">
                     @(page.Text)
                 </button>
             </li>
         }
         <li>
-            <select class="form-control bg-info text-light page-size-selector" @onchange="@OnSelectPageSize" >
+            <select class="form-control bg-info text-light page-size-selector" @onchange="@OnChangePageSize" >
                 @foreach (var pageSize in PageSizeList)
                 {
-                    <option value="@pageSize">@pageSize</option>
+                    <option class="bg-light text-info" value="@pageSize">@pageSize</option>
                 }
             </select>
         </li>
