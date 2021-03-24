@@ -76,15 +76,15 @@ else
         </div>
 
         <div class="form-group">
-            <label for="order_cost" class="form-label">Стоимость USD:</label>
-            <InputNumber class="form-control order-cost" id="order_cost" @bind-Value="content.OrderCost"/>
+            <label for="bill_cost" class="form-label">Стоимость USD:</label>
+            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.BillCost"/>
         </div>
 
         <div class="form-group">
-            <label for="order_contact" class="form-label">Контакт заказчика</label>
-            <InputText class="form-control" id="order_contact" @bind-Value="content.OrderContact"/>
+            <label for="bill_contact" class="form-label">Контакт заказчика</label>
+            <InputText class="form-control" id="bill_contact" @bind-Value="content.BillContact"/>
             <div class="contact-type">
-                <InputRadioGroup Name="contact-type" @bind-Value="content.OrderContactType">
+                <InputRadioGroup Name="contact-type" @bind-Value="content.BillContactType">
                     @foreach (var type in (ContactType[])Enum
                         .GetValues(typeof(ContactType)))
                     {
@@ -97,8 +97,8 @@ else
         </div>
 
         <div class="form-group">
-            <label for="order_comment" class="form-label">Комментарий к заказу</label>
-            <InputTextArea class="form-control" id="order_comment" @bind-Value="content.OrderComment" rows="3"/>
+            <label for="bill_comment" class="form-label">Комментарий к заказу</label>
+            <InputTextArea class="form-control" id="bill_comment" @bind-Value="content.BillComment" rows="3"/>
         </div>
 
         <DataAnnotationsValidator/>

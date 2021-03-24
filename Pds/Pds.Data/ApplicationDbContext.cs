@@ -11,7 +11,7 @@ namespace Pds.Data
         public DbSet<Person> Persons { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Content> Contents { get; set; }
-        public DbSet<Order> Orders { get; set; }
+        public DbSet<Bill> Bills { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Channel> Channels { get; set; }
 
@@ -32,9 +32,9 @@ namespace Pds.Data
                 .HasDefaultValue(SocialMediaType.YouTube);
             
             modelBuilder.Entity<Content>()
-                .HasOne(a => a.Order)
+                .HasOne(a => a.Bill)
                 .WithOne(a => a.Content)
-                .HasForeignKey<Order>(c => c.ContentId);
+                .HasForeignKey<Bill>(c => c.ContentId);
         }
     }
 }

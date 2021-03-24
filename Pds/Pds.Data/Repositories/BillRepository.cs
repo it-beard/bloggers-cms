@@ -7,11 +7,11 @@ using Pds.Data.Repositories.Interfaces;
 
 namespace Pds.Data.Repositories
 {
-    public class OrderRepository : RepositoryBase<Order>, IOrderRepository
+    public class BillRepository : RepositoryBase<Bill>, IBillRepository
     {
         private readonly ApplicationDbContext context;
         
-        public OrderRepository(ApplicationDbContext context) : base(context)
+        public BillRepository(ApplicationDbContext context) : base(context)
         {
             this.context = context;
         }

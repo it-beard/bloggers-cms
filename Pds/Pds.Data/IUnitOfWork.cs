@@ -10,7 +10,7 @@ namespace Pds.Data
         IContentRepository Content { get; }
         IChannelRepository Channels { get; }
         IClientRepository Clients { get; }
-        IOrderRepository Orders { get; }
+        IBillRepository Bills { get; }
 
         void Save();
     }

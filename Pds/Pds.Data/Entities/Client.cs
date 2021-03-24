@@ -13,6 +13,6 @@ namespace Pds.Data.Entities
 
         public string Comment { get; set; }
 
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Bill> Bills { get; set; }
     }
 }

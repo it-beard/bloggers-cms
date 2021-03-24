@@ -76,7 +76,7 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Create content & order
+        /// Create content and bill.
         /// </summary>
         /// <returns></returns>
         [HttpPost]

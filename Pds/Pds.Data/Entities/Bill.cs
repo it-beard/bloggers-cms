@@ -6,14 +6,20 @@ using Pds.Core.Enums;
 
 namespace Pds.Data.Entities
 {
-    public class Order : EntityBase
+    public class Bill : EntityBase
     {
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Cost { get; set; }
         
         [Required]
-        public OrderStatus Status { get; set; }
+        public BillStatus Status { get; set; }
+        
+        [Required]
+        public BillType Type { get; set; }
+        
+        [Required]
+        public PaymentType? PaymentType { get; set; }
 
         public string Comment { get; set; }
 
@@ -24,9 +30,13 @@ namespace Pds.Data.Entities
         [Required]
         public ContactType PrimaryContactType { get; set; }
 
-        public Guid ContentId { get; set; }
+        public Guid ChannelId { get; set; }
+
+        public Guid? ContentId { get; set; }
 
         public Guid? ClientId { get; set; }
+        
+        public virtual Channel Channel { get; set; }
 
         public virtual Content Content { get; set; }
 

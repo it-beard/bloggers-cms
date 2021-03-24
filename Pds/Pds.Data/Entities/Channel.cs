@@ -15,6 +15,8 @@ namespace Pds.Data.Entities
         [Column(TypeName = "varchar(300)")]
         public string Url { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Bill> Bills { get; set; }
+
+        public ICollection<Content> Contents { get; set; }
     }
 }

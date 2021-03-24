@@ -18,7 +18,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Content>> GetAllAsync()
         {
-            return await unitOfWork.Content.GetAllWithOrdersAsync();
+            return await unitOfWork.Content.GetAllWithBillsAsync();
         }
 
         public async Task<Guid> CreateAsync(Content content)

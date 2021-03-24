@@ -12,7 +12,7 @@ namespace Pds.Data
         private IContentRepository contentRepository;
         private IChannelRepository channelRepository;
         private IClientRepository clientRepository;
-        private IOrderRepository orderRepository;
+        private IBillRepository billRepository;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -24,7 +24,7 @@ namespace Pds.Data
         public IContentRepository Content => contentRepository ??= new ContentRepository(context);
         public IChannelRepository Channels => channelRepository ??= new ChannelRepository(context);
         public IClientRepository Clients => clientRepository ??= new ClientRepository(context);
-        public IOrderRepository Orders => orderRepository ??= new OrderRepository(context);
+        public IBillRepository Bills => billRepository ??= new BillRepository(context);
 
         public void Save()
         {

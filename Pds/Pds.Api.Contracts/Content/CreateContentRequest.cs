@@ -27,15 +27,15 @@ namespace Pds.Api.Contracts.Person
         public DateTime? EndDateUtc { get; set; }
 
         [Required]
-        public string OrderContact { get; set; }
+        public string BillContact { get; set; }
 
         [Required, EnumDataType(typeof(ContactType))]
-        public ContactType OrderContactType { get; set; }
+        public ContactType BillContactType { get; set; }
         
         [Required]
         [Range(0.00, Double.MaxValue, ErrorMessage = "The field {0} must be greater than {1}.")]
-        public decimal OrderCost { get; set; }
+        public decimal BillCost { get; set; }
         
-        public string OrderComment { get; set; }
+        public string BillComment { get; set; }
     }
 }

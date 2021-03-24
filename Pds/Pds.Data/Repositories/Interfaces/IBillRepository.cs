@@ -4,7 +4,7 @@ using Pds.Data.Entities;
 
 namespace Pds.Data.Repositories.Interfaces
 {
-    public interface IOrderRepository : IRepositoryBase<Order>
+    public interface IBillRepository : IRepositoryBase<Bill>
     {
     }
 }

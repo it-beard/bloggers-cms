@@ -6,7 +6,7 @@
     margin-bottom: 15px;
 }
 
-::deep input.order-cost{
+::deep input.bill-cost{
     width: 100px;
     display: inline-block;
     margin-left: 10px;

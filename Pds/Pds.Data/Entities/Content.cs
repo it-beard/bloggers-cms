@@ -25,13 +25,13 @@ namespace Pds.Data.Entities
 
         public DateTime? EndDateUtc { get; set; }
 
-        public Guid OrderId { get; set; }
+        public Guid BillId { get; set; }
 
         public Guid ChannelId { get; set; }
 
         public Guid? PersonId { get; set; }
 
-        public virtual Order Order { get; set; }
+        public virtual Bill Bill { get; set; }
 
         public virtual Channel Channel { get; set; }
 

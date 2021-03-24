@@ -6,6 +6,6 @@ namespace Pds.Data.Repositories.Interfaces
 {
     public interface IContentRepository : IRepositoryBase<Content>
     {
-        Task<List<Content>> GetAllWithOrdersAsync();
+        Task<List<Content>> GetAllWithBillsAsync();
     }
 }

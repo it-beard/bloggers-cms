@@ -1,6 +1,6 @@
 ﻿namespace Pds.Core.Enums
 {
-    public enum OrderStatus
+    public enum BillStatus
     {
         Created = 0,
         Paid = 1,

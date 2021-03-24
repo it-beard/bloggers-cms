@@ -16,9 +16,9 @@ namespace Pds.Data.Repositories
             this.context = context;
         }
         
-        public async Task<List<Content>> GetAllWithOrdersAsync()
+        public async Task<List<Content>> GetAllWithBillsAsync()
         {
-            return await context.Contents.Include(p=>p.Order)
+            return await context.Contents.Include(p=>p.Bill)
                 .OrderByDescending(p =>p.ReleaseDateUtc)
                 .ToListAsync();
         }
