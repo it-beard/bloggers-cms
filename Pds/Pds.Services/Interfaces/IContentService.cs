@@ -9,6 +9,5 @@ namespace Pds.Services.Interfaces
     {
         Task<List<Content>> GetAllAsync();
         Task<Guid> CreateAsync(Content content);
-        Task<List<Channel>> GetChannelsAsync();
     }
 }

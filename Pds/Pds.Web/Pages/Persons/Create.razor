@@ -8,83 +8,102 @@
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
-    Добавление персоны
-    <a href="/persons" class="btn btn-primary"> Назад </a>
-</h3>
+@if (person.Channels == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h3 class="card-header d-flex justify-content-between align-items-center">
+        Добавление персоны
+        <a href="/persons" class="btn btn-primary"> Назад </a>
+    </h3>
 
-<EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
-    <div class="form-group">
-        <label for="first_name" class="form-label">Имя</label>
-        <InputText class="form-control" id="first_name" @bind-Value="person.FirstName"/>
-    </div>
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <div class="form-group">
+            @foreach (var channel in person.Channels)
+            {
+                var id = $"channel_{channel.Id.ToString()}";
+                <InputCheckbox name="@channel.Id" class="btn-check" @bind-Value="channel.IsSelected" Id="@id"/>
+                <label class="btn btn-secondary" for="@id">@channel.Name</label>
+            }
+        </div>
 
-    <div class="form-group">
-        <label for="last_name" class="form-label">Фамилия</label>
-        <InputText class="form-control" id="last_name" @bind-Value="person.LastName"/>
-    </div>
+        <div class="form-group">
+            <label for="first_name" class="form-label">Имя</label>
+            <InputText class="form-control" id="first_name" @bind-Value="person.FirstName"/>
+        </div>
 
-    <div class="form-group">
-        <label for="third_name" class="form-label">Отчество</label>
-        <InputText class="form-control" id="third_name" @bind-Value="person.ThirdName"/>
-    </div>
+        <div class="form-group">
+            <label for="last_name" class="form-label">Фамилия</label>
+            <InputText class="form-control" id="last_name" @bind-Value="person.LastName"/>
+        </div>
 
-    <div class="form-group">
-        <label class="form-label">Адрес: </label>
-        <InputText class="form-control person-country" id="country" @bind-Value="person.Country" placeholder="Страна"/>
-        <InputText class="form-control person-city" id="city" @bind-Value="person.City" placeholder="Город"/>
-    </div>
+        <div class="form-group">
+            <label for="third_name" class="form-label">Отчество</label>
+            <InputText class="form-control" id="third_name" @bind-Value="person.ThirdName"/>
+        </div>
 
-    <div class="form-group">
-        <label for="information" class="form-label">Дополнительная информация</label>
-        <InputTextArea class="form-control" id="information" @bind-Value="person.Information" rows="3"/>
-    </div>
+        <div class="form-group">
+            <label class="form-label">Адрес: </label>
+            <InputText class="form-control person-country" id="country" @bind-Value="person.Country" placeholder="Страна"/>
+            <InputText class="form-control person-city" id="city" @bind-Value="person.City" placeholder="Город"/>
+        </div>
 
-    <div class="form-group">
-        <label for="person_rate" class="form-label">Рейтинг: </label>
-        <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
-    </div>
+        <div class="form-group">
+            <label for="information" class="form-label">Дополнительная информация</label>
+            <InputTextArea class="form-control" id="information" @bind-Value="person.Information" rows="3"/>
+        </div>
 
-    <div class="form-group">
-        <label class="form-label person-links">Ссылки:</label>
-        @foreach (var resource in person.Resources)
-        {
-            <div class="form-row align-items-center">
-                <div class="col-auto">
-                    <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название"/>
+        <div class="form-group">
+            <label for="person_rate" class="form-label">Рейтинг: </label>
+            <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label person-links">Ссылки:</label>
+            @foreach (var resource in person.Resources)
+            {
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название"/>
+                    </div>
+                    <div class="col-auto">
+                        <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка"/>
+                    </div>
+                    <div class="col-auto">
+                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка"/>
-                </div>
-                <div class="col-auto">
-                    <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
-                </div>
-            </div>
-        }
+            }
 
-        <div @onclick="AddResource" class="btn btn-primary btn-sm">Добавить ссылку</div>
-    </div>
+            <div @onclick="AddResource" class="btn btn-primary btn-sm">Добавить ссылку</div>
+        </div>
 
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
 
-    <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
-        <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
-    </div>
-</EditForm>
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+        </div>
+    </EditForm>
+}
 
 @code {
     private CreatePersonRequest person = new()
     {
         Rate = 0,
-        Resources = new List<ResourceDto>{}
+        Resources = new List<ResourceDto>(),
     };
     private EditContext editContext;
     private bool isCreateButtonDisabled;
     
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
+        person.Channels = await GetChannels();
         editContext = new EditContext(person);
     }
     
@@ -109,5 +128,10 @@
     private void RemoveResource(ResourceDto resource)
     {
         person.Resources.Remove(resource);
+    }
+
+    private async Task<List<ChannelDto>> GetChannels()
+    {
+        return await ApiClient.Get<List<ChannelDto>>(TokenProvider, "persons/get-channels");
     }
 }

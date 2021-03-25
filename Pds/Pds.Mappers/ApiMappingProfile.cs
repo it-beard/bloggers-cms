@@ -24,6 +24,7 @@ namespace Pds.Mappers
             CreateMap<Resource, ResourceDto>();
             CreateMap<Content, ContentDto>();
             CreateMap<Channel, Pds.Api.Contracts.Content.ChannelDto>();
+            CreateMap<Channel, Pds.Api.Contracts.Person.ChannelDto>();
             
             #endregion
 

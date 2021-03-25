@@ -9,5 +9,8 @@ namespace Pds.Services.Interfaces
     {
         Task<List<Person>> GetAllAsync();
         Task<Guid> CreateAsync(Person person);
+        Task ArchiveAsync(Guid personId);
+        Task UnarchiveAsync(Guid personId);
+        Task DeleteAsync(Guid personId);
     }
 }

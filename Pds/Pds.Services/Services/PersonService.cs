@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Pds.Core.Enums;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -32,6 +33,37 @@ namespace Pds.Services.Services
             var result = await unitOfWork.Persons.InsertAsync(person);
 
             return result.Id;
+        }
+
+        public async Task ArchiveAsync(Guid personId)
+        {
+            var person = await unitOfWork.Persons.GetFirstWhereAsync(p => p.Id == personId);
+            if (person != null)
+            {
+                person.Status = PersonStatus.Archived;
+                person.ArchivedAt = DateTime.UtcNow;
+                await unitOfWork.Persons.UpdateAsync(person);
+            }
+        }
+
+        public async Task UnarchiveAsync(Guid personId)
+        {
+            var person = await unitOfWork.Persons.GetFirstWhereAsync(p => p.Id == personId);
+            if (person != null && person.Status == PersonStatus.Archived)
+            {
+                person.Status = PersonStatus.Active;
+                person.UnarchivedAt = DateTime.UtcNow;
+                await unitOfWork.Persons.UpdateAsync(person);
+            }
+        }
+
+        public async Task DeleteAsync(Guid personId)
+        {
+            var person = await unitOfWork.Persons.GetFirstWhereAsync(p => p.Id == personId);
+            if (person != null && person.Status == PersonStatus.Archived)
+            {
+                await unitOfWork.Persons.Delete(person);
+            }
         }
     }
 }

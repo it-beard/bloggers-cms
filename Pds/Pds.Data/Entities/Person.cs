@@ -41,5 +41,7 @@ namespace Pds.Data.Entities
         public virtual ICollection<Resource> Resources { get; set; }
 
         public virtual ICollection<Content> Contents { get; set; }
+
+        public virtual ICollection<Channel> Channels { get; set; }
     }
 }

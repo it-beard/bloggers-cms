@@ -33,10 +33,5 @@ namespace Pds.Services.Services
 
             return result.Id;
         }
-        
-        public async Task<List<Channel>> GetChannelsAsync()
-        {
-            return await unitOfWork.Channels.GetAllAsync();
-        }
     }
 }

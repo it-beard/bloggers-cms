@@ -28,6 +28,7 @@ else
             <th>Локация</th>
             <th>Информация</th>
             <th>Ссылки</th>
+            <th class="text-center actions">Действия</th>
         </tr>
         </thead>
         <tbody>
@@ -45,6 +46,9 @@ else
                         </div>
                     }
                 </td>
+                <td class="text-center">
+                    <Actions OnPersonUpdate="@PersonsInfoUpdate" CurrentPerson="@person"></Actions>
+                </td>
             </tr>
         }
         </tbody>
@@ -56,6 +60,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        personsInfo = await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
+        personsInfo = await GetPersonsInfo();
+    }
+
+    private async Task PersonsInfoUpdate()
+    {
+        personsInfo = await GetPersonsInfo();
+    }
+
+    private async Task<GetPersonsResponse> GetPersonsInfo()
+    {
+        return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
     }
 }

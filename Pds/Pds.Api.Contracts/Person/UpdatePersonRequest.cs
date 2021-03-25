@@ -5,7 +5,6 @@ namespace Pds.Api.Contracts.Person
 {
     public class UpdatePersonRequest
     {
-        public Guid Id { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]

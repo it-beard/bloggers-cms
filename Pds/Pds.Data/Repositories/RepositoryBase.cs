@@ -21,16 +21,16 @@ namespace Pds.Data.Repositories
             this.dbSet = context.Set<TEntity>();
         }
 
-        public void Delete(TEntity entity)
+        public async Task Delete(TEntity entity)
         {
             context.Set<TEntity>().Remove(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public void DeleteRange(ICollection<TEntity> entities)
+        public async Task DeleteRange(ICollection<TEntity> entities)
         {
             context.Set<TEntity>().RemoveRange(entities);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task<int> Count()
@@ -84,6 +84,7 @@ namespace Pds.Data.Repositories
                 context.Entry(entityToUpdate).State = EntityState.Modified;
                 context.ChangeTracker.AutoDetectChangesEnabled = false;
                 await context.SaveChangesAsync();
+
                 return entityToUpdate;
             }
             catch (Exception e)

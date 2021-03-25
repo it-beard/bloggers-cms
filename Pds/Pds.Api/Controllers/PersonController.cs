@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -18,15 +19,18 @@ namespace Pds.Api.Controllers
         private readonly ILogger<PersonController> logger;
         private readonly IMapper mapper;
         private readonly IPersonService personService;
+        private readonly IChannelService channelService;
 
         public PersonController(
             ILogger<PersonController> logger,
             IMapper mapper,
-            IPersonService personService)
+            IPersonService personService,
+            IChannelService channelService)
         {
             this.logger = logger;
             this.mapper = mapper;
             this.personService = personService;
+            this.channelService = channelService;
         }
 
         /// <summary>
@@ -44,7 +48,7 @@ namespace Pds.Api.Controllers
 
                 var response = new GetPersonsResponse
                 {
-                    Items = mapper.Map<PersonDto[]>(persons),
+                    Items = mapper.Map<List<PersonDto>>(persons),
                     Total = persons.Count
                 };
 
@@ -79,6 +83,28 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
+        /// Update information about specified person
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("personId:guid")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Update(Guid personId, UpdatePersonRequest request)
+        {
+            try
+            {
+                // var person = await personService.Get(personId);
+                // var result = mapper.Map<PersonDetailsContract>(persons);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+
+        /// <summary>
         /// Create a person
         /// </summary>
         /// <returns></returns>
@@ -105,18 +131,17 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Update information about specified person
+        /// Delete specified person
         /// </summary>
+        /// <param name="personId"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpDelete("{personId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update(UpdatePersonRequest request)
+        public async Task<IActionResult> Delete(Guid personId)
         {
             try
             {
-                // var person = await personService.Get(personId);
-                // var result = mapper.Map<PersonDetailsContract>(persons);
-
+                await personService.DeleteAsync(personId);
                 return Ok();
             }
             catch (Exception e)
@@ -126,19 +151,17 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Create archive info about specified person
+        /// Archive specified person
         /// </summary>
         /// <param name="personId"></param>
         /// <returns></returns>
-        [HttpPost("personId:guid/archive")]
+        [HttpPut("{personId}/archive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Archive(Guid personId)
         {
             try
             {
-                // var person = await personService.Get(personId);
-                // var result = mapper.Map<PersonDetailsContract>(persons);
-
+                await personService.ArchiveAsync(personId);
                 return Ok();
             }
             catch (Exception e)
@@ -148,20 +171,38 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Delete archive info about specified person
+        /// Unarchive specified person
         /// </summary>
         /// <param name="personId"></param>
         /// <returns></returns>
-        [HttpDelete("personId:guid/archive")]
+        [HttpPut("{personId}/unarchive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Unarchive(Guid personId)
         {
             try
             {
-                // var person = await personService.Get(personId);
-                // var result = mapper.Map<PersonDetailsContract>(persons);
-
+                await personService.UnarchiveAsync(personId);
                 return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Return list of channels for checkboxes group.
+        /// </summary>
+        [HttpGet]
+        [Route("get-channels")]
+        public async Task<IActionResult> GetListOfChannels()
+        {
+            try
+            {
+                var channels = await channelService.GetChannelsForListsAsync();
+                var response = mapper.Map<List<ChannelDto>>(channels);
+
+                return Ok(response);
             }
             catch (Exception e)
             {

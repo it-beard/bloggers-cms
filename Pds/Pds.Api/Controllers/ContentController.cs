@@ -7,9 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Contracts.Content;
-using Pds.Api.Contracts.Person;
-using Pds.Data.Entities;
-using Pds.Data.Repositories.Interfaces;
 using Pds.Services.Interfaces;
 
 namespace Pds.Api.Controllers
@@ -21,15 +18,18 @@ namespace Pds.Api.Controllers
         private readonly ILogger<PersonController> logger;
         private readonly IMapper mapper;
         private readonly IContentService contentService;
+        private readonly IChannelService channelService;
 
         public ContentController(
             ILogger<PersonController> logger,
             IMapper mapper,
-            IContentService contentService)
+            IContentService contentService,
+            IChannelService channelService)
         {
             this.logger = logger;
             this.mapper = mapper;
             this.contentService = contentService;
+            this.channelService = channelService;
         }
 
         /// <summary>
@@ -38,15 +38,15 @@ namespace Pds.Api.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(GetPersonsResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll([FromQuery] GetPersonsRequest request)
+        [ProducesResponseType(typeof(GetContentResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll()
         {
             try
             {
                 var content = await contentService.GetAllAsync();
                 var response = new GetContentResponse
                 {
-                    Items = mapper.Map<ContentDto[]>(content),
+                    Items = mapper.Map<List<ContentDto>>(content),
                     Total = content.Count
                 };
 
@@ -58,13 +58,16 @@ namespace Pds.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Return list of channels for checkboxes group.
+        /// </summary>
         [HttpGet]
         [Route("get-channels")]
         public async Task<IActionResult> GetListOfChannels()
         {
             try
             {
-                var channels = await contentService.GetChannelsAsync();
+                var channels = await channelService.GetChannelsForListsAsync();
                 var response = mapper.Map<List<ChannelDto>>(channels);
 
                 return Ok(response);

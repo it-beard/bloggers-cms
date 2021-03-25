@@ -1,7 +1,6 @@
 ﻿@page "/content/add"
 @attribute [Authorize] 
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Person
 @using Pds.Api.Contracts.Content
 @using Pds.Core.Enums
 @using Pds.Web.Common
@@ -27,8 +26,9 @@ else
             <InputRadioGroup Name="channel" @bind-Value="content.ChannelId">
                 @foreach (var channel in channels)
                 {
-                    <InputRadio Name="channel" class="btn-check" Value="channel.Id" Id="@channel.Id"/>
-                    <label class="btn btn-secondary" for="@channel.Id">@channel.Name</label>
+                    var id = $"channel_{channel.Id.ToString()}";
+                    <InputRadio Name="channel" class="btn-check" Value="channel.Id" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@channel.Name</label>
                 }
             </InputRadioGroup>
         </div>

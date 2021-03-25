@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Person
 {
     public class PersonDto
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         
         public string FullName { get; set; }
         
@@ -13,6 +15,8 @@ namespace Pds.Api.Contracts.Person
         public string Information { get; set; }
         
         public int Rate { get; set; }
+
+        public PersonStatus Status { get; set; }
         
         public List<ResourceDto> Resources { get; set; }
     }

@@ -6,13 +6,17 @@
 
 <AuthorizeView>
     <Authorized>
-        <span style="color: white">
-            @context.User.Identity.Name
-        </span>
-        <a href="#" @onclick="BeginSignOut">Выйти</a>
+        <div class="loggedin-panel">
+            <span>
+                @context.User.Identity.Name
+            </span>
+            <a href="#" class="btn btn-primary btn-sm" @onclick="BeginSignOut">Выйти</a>
+        </div>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Войти</a>
+        <div class="login-button">
+            <a class="btn btn-primary btn-sm" href="authentication/login">Войти</a>
+        </div>
     </NotAuthorized>
 </AuthorizeView>
 

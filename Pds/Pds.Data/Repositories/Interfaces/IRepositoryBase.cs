@@ -25,9 +25,9 @@ namespace Pds.Data.Repositories.Interfaces
 
         Task<IList<TEntity>> InsertRangeAsync(IList<TEntity> entities, bool saveChanges = true);
 
-        void Delete(TEntity entity);
+        Task Delete(TEntity entity);
 
-        void DeleteRange(ICollection<TEntity> entities);
+        Task DeleteRange(ICollection<TEntity> entities);
 
         Task<int> Count();
 

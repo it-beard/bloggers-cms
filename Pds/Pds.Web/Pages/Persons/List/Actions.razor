@@ -1,0 +1,86 @@
+﻿@using Pds.Api.Contracts.Person
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<div class="panel panel-default actions-panel">
+    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+        </svg>
+    </button>
+
+    @if (CurrentPerson.Status == PersonStatus.Archived)
+    {
+        <button title="Разархивировать" class="btn btn-success btn-sm" @onclick="OnUnarchive">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-patch-plus-fill" viewBox="0 0 16 16">
+                <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zM8.5 6v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 1 0z"/>
+            </svg>
+        </button>
+    }
+
+    @if (CurrentPerson.Status == PersonStatus.Active)
+    {
+        <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchive">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill" viewBox="0 0 16 16">
+                <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15h9.286zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zM.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8H.8z"/>
+            </svg>
+        </button>
+    }
+
+    @if (CurrentPerson.Status == PersonStatus.Archived)
+    {
+        <button title="Удалить" class="btn btn-danger btn-sm delete-button" @onclick="OnDelete">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+            </svg>
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnPersonUpdate { get; set; }
+    [Parameter]
+    public PersonDto CurrentPerson { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task OnEdit()
+    {
+        NavigationManager.NavigateTo($"/persons/{CurrentPerson.Id}");
+    }
+
+    private async Task OnDelete()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите удалить {CurrentPerson.FullName}?");
+        if (confirmed)
+        {
+            await ApiClient.Delete<object>(TokenProvider, $"persons/{CurrentPerson.Id}");
+            await OnPersonUpdate.InvokeAsync(); // Update UI
+        }
+    }
+
+    private async Task OnArchive()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать {CurrentPerson.FullName}?");
+        if (confirmed)
+        {
+            await ApiClient.Put<object, object>(TokenProvider, $"persons/{CurrentPerson.Id}/archive", null);
+            await OnPersonUpdate.InvokeAsync(); // Update UI
+        }
+    }
+
+    private async Task OnUnarchive()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"persons/{CurrentPerson.Id}/unarchive", null);
+        await OnPersonUpdate.InvokeAsync(); // Update UI
+    }
+}
