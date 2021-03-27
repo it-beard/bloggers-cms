@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
 using Pds.Core.Exceptions;
@@ -27,20 +28,20 @@ namespace Pds.Services.Services
             return (result, total);
         }
 
-        public async Task<Guid> CreateAsync(Person person)
+        public async Task<Guid> CreateAsync(Person newPerson)
         {
-            if (person == null)
+            if (newPerson == null)
             {
-                throw new ArgumentNullException(nameof(person));
+                throw new ArgumentNullException(nameof(newPerson));
             }
 
-            if (person.Brands.Count == 0)
+            if (newPerson.Brands.Count == 0)
             {
                 throw new PersonCreationException("Персону нельзя создать без бренда.");
             }
             
             // Restore brands from DB
-            var brandsFromApi = person.Brands;
+            var brandsFromApi = newPerson.Brands;
             var brandsFromBd = new List<Brand>();
             foreach (var brandFromApi in brandsFromApi)
             {
@@ -51,10 +52,7 @@ namespace Pds.Services.Services
                 }
             }
 
-            person.Brands = brandsFromBd;
-            person.CreatedAt = DateTime.UtcNow;
-            var result = await unitOfWork.Persons.InsertAsync(person);
-
+            newPerson.Brands = brandsFromBd;
             newPerson.CreatedAt = DateTime.UtcNow;
             var result = await unitOfWork.Persons.InsertAsync(newPerson);
 

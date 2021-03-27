@@ -46,7 +46,7 @@ namespace Pds.Api.Controllers
 
                 var response = new GetClientsResponse
                 {
-                    Items = mapper.Map<List<ClientDto>>(clients),
+                    Items = mapper.Map<ClientDto[]>(clients),
                     Total = clients.Count
                 };
 

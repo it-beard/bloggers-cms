@@ -54,7 +54,7 @@ namespace Pds.Api.Controllers
                 var content = await contentService.GetAllAsync();
                 var response = new GetContentsResponse
                 {
-                    Items = mapper.Map<List<ContentDto>>(content),
+                    Items = mapper.Map<ContentDto[]>(content),
                     Total = content.Count
                 };
 
