@@ -1,10 +1,9 @@
 ﻿@page "/persons"
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using System.Net.Http.Headers
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
-@using System.Net
+@using Api.Contracts.Paging
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -21,6 +20,8 @@
 }
 else
 {
+    <PagingComponent PageSizeList="pageSizesList" TotalItems="personsInfo.Total" Radius="2" Pagination="Pagination" />
+
     <table class="table">
         <thead>
         <tr>
@@ -57,19 +58,48 @@ else
 
 @code {
     private GetPersonsResponse personsInfo;
+    private readonly int[] pageSizesList = { 5, 10, 25, 50 };
+    private int pageSize;
+    private int pageOffset;
 
     protected override async Task OnInitializedAsync()
     {
-        personsInfo = await GetPersonsInfo();
+      personsInfo = await GetPersonsInfo();
     }
 
     private async Task PersonsInfoUpdate()
     {
-        personsInfo = await GetPersonsInfo();
+      personsInfo = await GetPersonsInfo();
     }
 
     private async Task<GetPersonsResponse> GetPersonsInfo()
     {
-        return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
+      var request = new GetPersonsRequest
+      {
+        PageSettings = new Api.Contracts.Paging.PageSettings
+        {
+          Limit = 10,
+          Offset = 0
+        }
+      };
+
+      return await ApiClient.Post<GetPersonsResponse, GetPersonsRequest>(TokenProvider, "persons/search", request);
+    }
+
+    private async Task Pagination(PaginationSettings paggingSettings)
+    {
+      pageOffset = paggingSettings.PageOffSet;
+      pageSize = paggingSettings.PageSize;
+
+      var requestBody = new GetPersonsRequest()
+      {
+        PageSettings = new PageSettings() { Limit = pageSize, Offset = pageOffset },
+        OrderSettings = new OrderSetting<PersonsFieldName>[] {
+                new OrderSetting<PersonsFieldName>{Ascending = true, FieldName = PersonsFieldName.FullName}
+                },
+        FilterSettings = new FilterSettings() { Search = "" }
+      };
+
+      personsInfo = await ApiClient.Post<GetPersonsResponse, GetPersonsRequest>(TokenProvider, "persons/search", requestBody);
     }
 }

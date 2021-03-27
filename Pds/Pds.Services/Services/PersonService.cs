@@ -25,11 +25,11 @@ namespace Pds.Services.Services
             return (result, total);
         }
 
-        public async Task<Guid> CreateAsync(Person person)
+        public async Task<Guid> CreateAsync(Person newPerson)
         {
-            if (person == null)
+            if (newPerson == null)
             {
-                throw new ArgumentNullException(nameof(person));
+                throw new ArgumentNullException(nameof(newPerson));
             }
 
             newPerson.CreatedAt = DateTime.UtcNow;

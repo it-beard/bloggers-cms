@@ -1,4 +1,9 @@
 ﻿.page-size-selector {
     margin-left: 10px;
     border: 0px solid #ced4da;
+    background-color: #1b6ec2;
+}
+
+.text-paging {
+    color: #1b6ec2;
 }
