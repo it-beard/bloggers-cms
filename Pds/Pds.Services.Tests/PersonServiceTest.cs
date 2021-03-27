@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using Pds.Data;
 using Pds.Data.Entities;
+using Pds.Data.Repositories;
 using Pds.Data.Repositories.Interfaces;
 using Pds.Services.Services;
 
@@ -68,11 +69,18 @@ namespace Pds.Services.Tests
             // arrange
             var fixture = new Fixture();
             var expectedId = fixture.Create<Guid>();
-            var limit = 10;
-            var offest = 10;
+
+            var searchSettings = new SearchSettings<PersonsFieldName>
+            {
+                PageSettings = new PageSettings
+                {
+                    Limit = 10,
+                    Offset = 10
+                }
+            };
 
             personRepositoryMock
-                .Setup(x => x.GetAllWithResourcesAsync(limit, offest))
+                .Setup(x => x.GetAllWithResourcesAsync(searchSettings))
                 .ReturnsAsync(new[]
                 {
                     new Person
@@ -86,7 +94,7 @@ namespace Pds.Services.Tests
                .ReturnsAsync(1);
 
             // act
-            var result = await service.GetAsync(limit, offest);
+            var result = await service.GetAsync(searchSettings);
 
             // assert
             Assert.NotNull(result);
