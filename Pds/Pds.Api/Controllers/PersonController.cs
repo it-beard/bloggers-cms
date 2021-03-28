@@ -61,50 +61,6 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Return details about specified person
-        /// </summary>
-        /// <param name="personId"></param>
-        /// <returns></returns>
-        [HttpGet("personId:guid")]
-        [ProducesResponseType(typeof(GetPersonDetailsResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(Guid personId)
-        {
-            try
-            {
-                // var person = await personService.Get(personId);
-                // var result = mapper.Map<PersonDetailsContract>(persons);
-
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
-        }
-
-        /// <summary>
-        /// Update information about specified person
-        /// </summary>
-        /// <returns></returns>
-        [HttpPut("personId:guid")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update(Guid personId, UpdatePersonRequest request)
-        {
-            try
-            {
-                // var person = await personService.Get(personId);
-                // var result = mapper.Map<PersonDetailsContract>(persons);
-
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
-        }
-
-
-        /// <summary>
         /// Create a person
         /// </summary>
         /// <returns></returns>
@@ -119,7 +75,7 @@ namespace Pds.Api.Controllers
                 {
                     var newPerson = mapper.Map<Person>(request);
                     var personId = await personService.CreateAsync(newPerson);
-                    return Ok(personId);
+                    return Ok(new CreatePersonResponse{Id = personId});
                 }
 
                 return BadRequest();

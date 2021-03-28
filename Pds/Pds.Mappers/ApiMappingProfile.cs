@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
@@ -26,6 +27,7 @@ namespace Pds.Mappers
                         .MapFrom(p => $"{p.Country} {p.City}"));
             CreateMap<Resource, ResourceDto>();
             CreateMap<Content, ContentDto>();
+            CreateMap<Client, ClientDto>();
             CreateMap<Channel, Pds.Api.Contracts.Content.ChannelDto>();
             CreateMap<Channel, Pds.Api.Contracts.Person.ChannelDto>();
             
@@ -33,6 +35,7 @@ namespace Pds.Mappers
 
             #region Contracts to Entities
 
+            CreateMap<CreateClientRequest, Client>();
             CreateMap<ResourceDto, Resource>()
                 .ForMember(
                     dest => dest.CreatedAt,

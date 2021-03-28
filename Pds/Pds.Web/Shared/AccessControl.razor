@@ -6,7 +6,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <div class="loggedin-panel">
+        <div class="login-panel">
             <span>
                 @context.User.Identity.Name
             </span>
@@ -14,7 +14,10 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <div class="login-button">
+        <div class="login-panel">
+            <span>
+                Привет, гость!
+            </span>
             <a class="btn btn-primary btn-sm" href="authentication/login">Войти</a>
         </div>
     </NotAuthorized>

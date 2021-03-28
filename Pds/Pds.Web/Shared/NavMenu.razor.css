@@ -1,3 +1,30 @@
+.access-control{
+    padding: 15px 0;
+    overflow: auto;
+    background-color: lightseagreen;
+}
+
+.app-title {
+    margin: 0 auto;
+    font-size: 1.1rem;
+}
+
+.app-title ::deep a {
+    color: white;
+    text-decoration: none;
+}
+
+.app-title ::deep a:hover {
+     color: white;
+ }
+
+.nav-link span.bi{
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
+}
+
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }

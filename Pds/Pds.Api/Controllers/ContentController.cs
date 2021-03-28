@@ -35,7 +35,6 @@ namespace Pds.Api.Controllers
         /// <summary>
         /// Return all content
         /// </summary>
-        /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(GetContentResponse), StatusCodes.Status200OK)]

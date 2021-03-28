@@ -1,0 +1,62 @@
+﻿@page "/clients"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Web.Common
+@using Pds.Api.Contracts.Client
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Список клиентов
+    <a href="/clients/add" class="btn btn-success" >Добавить</a>
+</h3>
+@if (clientsInfo == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Наименование</th>
+            <th>Коммнетария</th>
+            <th class="text-center actions">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var client in clientsInfo.Items)
+        {
+            <tr>
+                <td>@client.Name</td>
+                <td>@client.Comment</td>
+                <td class="text-center">
+                    <Actions OnClientUpdate="@ClientsInfoUpdate" CurrentClient="@client"></Actions>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GetClientsResponse clientsInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientsInfo = await GetClientsInfo();
+    }
+
+    private async Task ClientsInfoUpdate()
+    {
+        clientsInfo = await GetClientsInfo();
+    }
+
+    private async Task<GetClientsResponse> GetClientsInfo()
+    {
+        return await ApiClient.Get<GetClientsResponse>(TokenProvider, "clients");
+    }
+}

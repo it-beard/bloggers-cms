@@ -1,0 +1,30 @@
+﻿.card-header {
+    margin-bottom: 15px;
+}
+
+.form-group {
+     margin-bottom: 15px;
+ }
+
+::deep input.person-city,
+::deep input.person-country{
+    width: 100px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+::deep input.person-rate {
+    width: 80px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+::deep label.person-links {
+    margin-right: 17px;
+}
+
+.btn-check:checked + .btn-secondary {
+    color: #fff;
+    background-color: #157347;
+    border-color: #146c43;
+}
