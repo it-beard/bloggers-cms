@@ -3,10 +3,13 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Client
 @using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление клиента")</Title>
 
 @if (client == null)
 {
@@ -18,7 +21,7 @@ else
 {
     <h3 class="card-header d-flex justify-content-between align-items-center">
         Добавление клиента
-        <a href="/persons" class="btn btn-primary"> Назад </a>
+        <a href="/clients" class="btn btn-primary"> Назад </a>
     </h3>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">

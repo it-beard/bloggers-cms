@@ -3,9 +3,12 @@
 @using Pds.Api.Contracts.Content
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using static Pds.Web.Common.TitleExtension 
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Контент")</Title>
 
 <h3 class="card-header d-flex justify-content-between align-items-center">
     Лента контента

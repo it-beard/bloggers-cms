@@ -1,13 +1,15 @@
 ﻿@page "/persons"
 @attribute [Authorize]
+
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using System.Net.Http.Headers
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
-@using System.Net
+@using static Pds.Web.Common.TitleExtension 
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Персоны")</Title>
 
 <h3 class="card-header d-flex justify-content-between align-items-center">
     Список персон
@@ -28,7 +30,7 @@ else
             <th>Локация</th>
             <th>Информация</th>
             <th>Ссылки</th>
-            <th class="text-center actions">Действия</th>
+            <th class="text-center actions-header">Действия</th>
         </tr>
         </thead>
         <tbody>

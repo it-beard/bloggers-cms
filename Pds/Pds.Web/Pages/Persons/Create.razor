@@ -3,10 +3,13 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление персоны")</Title>
 
 @if (person.Channels == null)
 {

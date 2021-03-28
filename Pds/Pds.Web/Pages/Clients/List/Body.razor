@@ -3,9 +3,12 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Web.Common
 @using Pds.Api.Contracts.Client
+@using static Pds.Web.Common.TitleExtension 
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Клиенты")</Title>
 
 <h3 class="card-header d-flex justify-content-between align-items-center">
     Список клиентов
@@ -24,7 +27,7 @@ else
         <tr>
             <th>Наименование</th>
             <th>Коммнетария</th>
-            <th class="text-center actions">Действия</th>
+            <th class="text-center actions-header">Действия</th>
         </tr>
         </thead>
         <tbody>

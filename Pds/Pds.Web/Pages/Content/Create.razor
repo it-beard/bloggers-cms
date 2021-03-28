@@ -4,10 +4,13 @@
 @using Pds.Api.Contracts.Content
 @using Pds.Core.Enums
 @using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление контента")</Title>
 
 <h3 class="card-header d-flex justify-content-between align-items-center">
     Добавление контента
