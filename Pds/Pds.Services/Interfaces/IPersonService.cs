@@ -12,5 +12,6 @@ namespace Pds.Services.Interfaces
         Task ArchiveAsync(Guid personId);
         Task UnarchiveAsync(Guid personId);
         Task DeleteAsync(Guid personId);
+        Task<List<Person>> GetPersonsForListsAsync();
     }
 }

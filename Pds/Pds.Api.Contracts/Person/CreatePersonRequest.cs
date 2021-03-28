@@ -30,6 +30,6 @@ namespace Pds.Api.Contracts.Person
         [Required]
         public List<ResourceDto> Resources { get; set; }
 
-        public List<ChannelDto> Channels { get; set; }
+        public List<ChannelForCheckboxesDto> Channels { get; set; }
     }
 }

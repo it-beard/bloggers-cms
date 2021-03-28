@@ -2,7 +2,7 @@
 
 namespace Pds.Api.Contracts.Person
 {
-    public class ChannelDto 
+    public class ChannelForCheckboxesDto
     {
         public Guid Id { get; set; }
 

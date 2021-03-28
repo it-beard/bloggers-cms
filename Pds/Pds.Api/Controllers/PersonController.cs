@@ -156,7 +156,7 @@ namespace Pds.Api.Controllers
             try
             {
                 var channels = await channelService.GetChannelsForListsAsync();
-                var response = mapper.Map<List<ChannelDto>>(channels);
+                var response = mapper.Map<List<ChannelForCheckboxesDto>>(channels);
 
                 return Ok(response);
             }

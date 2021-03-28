@@ -6,5 +6,6 @@ namespace Pds.Data.Repositories.Interfaces
 {
     public interface IClientRepository : IRepositoryBase<Client>
     {
+        Task<List<Client>> GetForListsAsync();
     }
 }

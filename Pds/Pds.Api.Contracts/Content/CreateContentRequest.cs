@@ -18,13 +18,15 @@ namespace Pds.Api.Contracts.Content
         [Required]
         public string Title { get; set; }
 
-        [Required]
         public string Comment { get; set; }
 
         [Required]
         public DateTime ReleaseDate { get; set; }
 
         public DateTime? EndDateUtc { get; set; }
+
+        [Required]
+        public Guid? ClientId { get; set; }
 
         [Required]
         public string BillContact { get; set; }
@@ -35,7 +37,7 @@ namespace Pds.Api.Contracts.Content
         [Required]
         [Range(0.00, Double.MaxValue, ErrorMessage = "The field {0} must be greater than {1}.")]
         public decimal BillCost { get; set; }
-        
-        public string BillComment { get; set; }
+
+        public Guid? PersonId { get; set; }
     }
 }

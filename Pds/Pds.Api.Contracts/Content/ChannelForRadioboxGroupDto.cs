@@ -2,7 +2,7 @@
 
 namespace Pds.Api.Contracts.Content
 {
-    public class ChannelDto 
+    public class ChannelForRadioboxGroupDto
     {
         public Guid Id { get; set; }
 

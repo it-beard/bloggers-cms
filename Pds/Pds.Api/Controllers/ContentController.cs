@@ -19,17 +19,23 @@ namespace Pds.Api.Controllers
         private readonly IMapper mapper;
         private readonly IContentService contentService;
         private readonly IChannelService channelService;
+        private readonly IPersonService personService;
+        private readonly IClientService clientService;
 
         public ContentController(
             ILogger<PersonController> logger,
             IMapper mapper,
             IContentService contentService,
-            IChannelService channelService)
+            IChannelService channelService,
+            IPersonService personService,
+            IClientService clientService)
         {
             this.logger = logger;
             this.mapper = mapper;
             this.contentService = contentService;
             this.channelService = channelService;
+            this.personService = personService;
+            this.clientService = clientService;
         }
 
         /// <summary>
@@ -58,7 +64,7 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Return list of channels for checkboxes group.
+        /// Return list of channels for checkboxes group
         /// </summary>
         [HttpGet]
         [Route("get-channels")]
@@ -67,7 +73,47 @@ namespace Pds.Api.Controllers
             try
             {
                 var channels = await channelService.GetChannelsForListsAsync();
-                var response = mapper.Map<List<ChannelDto>>(channels);
+                var response = mapper.Map<List<ChannelForRadioboxGroupDto>>(channels);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+        
+        /// <summary>
+        /// Return list of persons for lookup box
+        /// </summary>
+        [HttpGet]
+        [Route("get-persons")]
+        public async Task<IActionResult> GetListOfPersons()
+        {
+            try
+            {
+                var persons = await personService.GetPersonsForListsAsync();
+                var response = mapper.Map<List<PersonForLookupDto>>(persons);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+        
+        /// <summary>
+        /// Return list of clients for lookup box
+        /// </summary>
+        [HttpGet]
+        [Route("get-clients")]
+        public async Task<IActionResult> GetListOfClients()
+        {
+            try
+            {
+                var clients = await clientService.GetClientsForListsAsync();
+                var response = mapper.Map<List<ClientForLookupDto>>(clients);
 
                 return Ok(response);
             }
@@ -78,7 +124,7 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Create content and bill.
+        /// Create content and bill
         /// </summary>
         /// <returns></returns>
         [HttpPost]

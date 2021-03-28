@@ -43,5 +43,13 @@ namespace Pds.Services.Services
                 await unitOfWork.Clients.Delete(client);
             }
         }
+
+        public async Task<List<Client>> GetClientsForListsAsync()
+        {
+            var clients = new List<Client> {new() {Id = Guid.Empty}};
+            clients.AddRange(await unitOfWork.Clients.GetForListsAsync());
+
+            return clients;
+        }
     }
 }

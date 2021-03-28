@@ -10,5 +10,6 @@ namespace Pds.Services.Interfaces
         Task<List<Client>> GetAllAsync();
         Task<Guid> CreateAsync(Client client);
         Task DeleteAsync(Guid ClientId);
+        Task<List<Client>> GetClientsForListsAsync();
     }
 }

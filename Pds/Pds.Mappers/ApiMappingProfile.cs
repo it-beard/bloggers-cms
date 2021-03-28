@@ -28,8 +28,34 @@ namespace Pds.Mappers
             CreateMap<Resource, ResourceDto>();
             CreateMap<Content, ContentDto>();
             CreateMap<Client, ClientDto>();
-            CreateMap<Channel, Pds.Api.Contracts.Content.ChannelDto>();
-            CreateMap<Channel, Pds.Api.Contracts.Person.ChannelDto>();
+            CreateMap<Channel, ChannelForRadioboxGroupDto>();
+            CreateMap<Channel, ChannelForCheckboxesDto>();
+            CreateMap<Client, ClientForLookupDto>()
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt
+                        .MapFrom((p, s) =>
+                            s.Id = p.Id == Guid.Empty ? null : p.Id))
+                .ForMember(
+                    dest => dest.Name,
+                    opt => opt
+                        .MapFrom((p, s) =>
+                            s.Name = p.Name ?? "Не выбрано"));
+            CreateMap<Person, PersonForLookupDto>()
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt
+                        .MapFrom((p, s) => 
+                            s.Id = p.Id == Guid.Empty ? 
+                                null : 
+                                p.Id)) // Transform first person with id =  Guid.Empty element to id = null
+                .ForMember(
+                    dest => dest.FullName,
+                    opt => opt
+                        .MapFrom((p,s) => 
+                            s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
+                                "Не выбрано" : 
+                                $"{p.FirstName} {p.ThirdName} {p.LastName}"));
             
             #endregion
 
@@ -50,7 +76,7 @@ namespace Pds.Mappers
             #endregion
         }
 
-        private ICollection<Channel> ChannelsDtoToChannelsCollection(List<Pds.Api.Contracts.Person.ChannelDto> channels)
+        private ICollection<Channel> ChannelsDtoToChannelsCollection(List<ChannelForCheckboxesDto> channels)
         {
             return channels.Select(channel => new Channel {Id = channel.Id}).ToList();
         }

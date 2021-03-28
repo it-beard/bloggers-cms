@@ -28,3 +28,9 @@
 .contact-type {
     margin-top: 5px;
 }
+
+.label-required::after{
+    content: "*";
+    color: red;
+    margin-left: 3px;
+}

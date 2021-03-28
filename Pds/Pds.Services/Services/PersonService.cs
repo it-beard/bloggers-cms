@@ -78,5 +78,15 @@ namespace Pds.Services.Services
                 await unitOfWork.Persons.Delete(person);
             }
         }
+
+        public async Task<List<Person>> GetPersonsForListsAsync()
+        {
+            
+            var persons = new List<Person> {new() {Id = Guid.Empty}};
+            var personsFromDb = await unitOfWork.Persons.GetForListsAsync();
+            persons.AddRange(personsFromDb);
+
+            return persons;
+        }
     }
 }

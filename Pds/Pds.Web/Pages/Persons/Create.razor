@@ -133,8 +133,8 @@ else
         person.Resources.Remove(resource);
     }
 
-    private async Task<List<ChannelDto>> GetChannels()
+    private async Task<List<ChannelForCheckboxesDto>> GetChannels()
     {
-        return await ApiClient.Get<List<ChannelDto>>(TokenProvider, "persons/get-channels");
+        return await ApiClient.Get<List<ChannelForCheckboxesDto>>(TokenProvider, "persons/get-channels");
     }
 }

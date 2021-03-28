@@ -16,7 +16,7 @@
     Добавление контента
     <a href="/content" class="btn btn-primary" >Назад</a>
 </h3>
-@if (channels == null)
+@if (channels == null || clients == null || persons == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -61,12 +61,12 @@ else
         </div>
 
         <div class="form-group">
-            <label for="title" class="form-label">Заголовок</label>
+            <label for="title" class="form-label label-required">Заголовок</label>
             <InputText class="form-control" id="title" @bind-Value="content.Title"/>
         </div>
 
         <div class="form-group">
-            <label for="release_date" class="form-label">Дата релиза:</label>
+            <label for="release_date" class="form-label label-required">Дата релиза:</label>
             <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
             
             <label for="release_date" class="form-label">Дата окончания:</label>
@@ -74,17 +74,17 @@ else
         </div>
 
         <div class="form-group">
-            <label for="comment" class="form-label">Комментарий к контенту</label>
-            <InputTextArea class="form-control" id="comment" @bind-Value="content.Comment" rows="3"/>
+            <label for="clients" class="form-label label-required">Клиент</label>
+            <InputSelect class="form-control" id="clients" @bind-Value="content.ClientId">
+                @foreach (var client in clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }
+            </InputSelect>
         </div>
 
         <div class="form-group">
-            <label for="bill_cost" class="form-label">Стоимость USD:</label>
-            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.BillCost"/>
-        </div>
-
-        <div class="form-group">
-            <label for="bill_contact" class="form-label">Контакт заказчика</label>
+            <label for="bill_contact" class="form-label label-required">Контакт клиента</label>
             <InputText class="form-control" id="bill_contact" @bind-Value="content.BillContact"/>
             <div class="contact-type">
                 <InputRadioGroup Name="contact-type" @bind-Value="content.BillContactType">
@@ -100,8 +100,23 @@ else
         </div>
 
         <div class="form-group">
-            <label for="bill_comment" class="form-label">Комментарий к заказу</label>
-            <InputTextArea class="form-control" id="bill_comment" @bind-Value="content.BillComment" rows="3"/>
+            <label for="bill_cost" class="form-label">Стоимость USD:</label>
+            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.BillCost"/>
+        </div>
+
+        <div class="form-group">
+            <label for="comment" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="content.Comment" rows="3"/>
+        </div>
+
+        <div class="form-group">
+            <label for="persons" class="form-label">Персона</label>
+            <InputSelect class="form-control" id="persons" @bind-Value="content.PersonId">
+                @foreach (var person in persons)
+                {
+                    <option value="@person.Id">@person.FullName</option>
+                }
+            </InputSelect>
         </div>
 
         <DataAnnotationsValidator/>
@@ -121,7 +136,9 @@ else
         ChannelId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f") //Default АйТиБорода
     };
     private EditContext editContext;
-    private List<ChannelDto> channels;
+    private List<ChannelForRadioboxGroupDto> channels;
+    private List<ClientForLookupDto> clients;
+    private List<PersonForLookupDto> persons;
     private bool isCreateButtonDisabled;
     
     protected override async Task OnInitializedAsync()
@@ -129,6 +146,8 @@ else
         isCreateButtonDisabled = false;
         editContext = new EditContext(content);
         channels = await GetChannels();
+        clients = await GetClients();
+        persons = await GetPersons();
     }
     
     private async Task HandleSubmit()
@@ -143,8 +162,18 @@ else
         }
     }
 
-    private async Task<List<ChannelDto>> GetChannels()
+    private async Task<List<ChannelForRadioboxGroupDto>> GetChannels()
     {
-        return await ApiClient.Get<List<ChannelDto>>(TokenProvider, "content/get-channels");
+        return await ApiClient.Get<List<ChannelForRadioboxGroupDto>>(TokenProvider, "content/get-channels");
+    }
+
+    private async Task<List<ClientForLookupDto>> GetClients()
+    {
+        return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "content/get-clients");
+    }
+
+    private async Task<List<PersonForLookupDto>> GetPersons()
+    {
+        return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, "content/get-persons");
     }
 }
