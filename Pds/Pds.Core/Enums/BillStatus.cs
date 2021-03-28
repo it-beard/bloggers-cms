@@ -2,9 +2,8 @@
 {
     public enum BillStatus
     {
-        Created = 0,
+        Active = 0,
         Paid = 1,
-        Closed = 2,
-        Problem = 3,
+        Problem = 2,
     }
 }

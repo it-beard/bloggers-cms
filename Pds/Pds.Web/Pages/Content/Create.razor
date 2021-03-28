@@ -41,7 +41,7 @@ else
                 @foreach (var type in (ContentType[])Enum
                     .GetValues(typeof(ContentType)))
                 {
-                    var id = $"type_{socialMediaType.ToString()}";
+                    var id = $"type_{type.ToString()}";
                     <InputRadio Name="type" class="btn-check" Value="type" Id="@id"/>
                     <label class="btn btn-secondary" for="@id">@type</label>
                 }

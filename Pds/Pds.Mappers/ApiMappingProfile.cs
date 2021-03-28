@@ -7,6 +7,7 @@ using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
+using Pds.Services.Models;
 
 namespace Pds.Mappers
 {
@@ -72,6 +73,20 @@ namespace Pds.Mappers
                     dest => dest.Channels,
                     opt => opt
                         .MapFrom(p => ChannelsDtoToChannelsCollection(p.Channels.Where( c => c.IsSelected).ToList())));
+            
+            #endregion
+            
+            #region Contracts to Models
+
+            CreateMap<CreateContentRequest, CreateContentModel>()
+                .ForMember(
+                    dest => dest.ChannelId,
+                    opt => opt
+                        .MapFrom(p => p.ChannelId.Value))
+                .ForMember(
+                    dest => dest.ClientId,
+                    opt => opt
+                        .MapFrom(p => p.ClientId.Value));
             
             #endregion
         }

@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Api.Tests", "Pds.Api.Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApps", "WebApps", "{B452C78D-1671-442B-AC8E-7EFEA7483F58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Services.Models", "Pds.Services.Models\Pds.Services.Models.csproj", "{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6CD3D49C-679E-4F07-8344-866926857373} = {B452C78D-1671-442B-AC8E-7EFEA7483F58}

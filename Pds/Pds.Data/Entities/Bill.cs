@@ -17,8 +17,7 @@ namespace Pds.Data.Entities
         
         [Required]
         public BillType Type { get; set; }
-        
-        [Required]
+
         public PaymentType? PaymentType { get; set; }
 
         public string Comment { get; set; }

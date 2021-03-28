@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Contracts.Content;
 using Pds.Services.Interfaces;
+using Pds.Services.Models;
 
 namespace Pds.Api.Controllers
 {
@@ -128,13 +129,17 @@ namespace Pds.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [ProducesResponseType(typeof(CreateContentResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CreateContentRequest request)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    return Ok();
+                    var createContentModel = mapper.Map<CreateContentModel>(request);
+                    var clientId = await contentService.CreateAsync(createContentModel);
+                    return Ok(new CreateContentResponse{Id = clientId});
                 }
 
                 return BadRequest();
