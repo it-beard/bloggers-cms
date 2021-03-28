@@ -1,7 +1,9 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@using static Pds.Web.Common.Constants
+
+<div class="top-row pl-4 navbar navbar-dark">
     <div class="app-title">
         <NavLink href="" Match="NavLinkMatch.All">
-            Blogger CMS
+            @AppName
         </NavLink>
     </div>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">

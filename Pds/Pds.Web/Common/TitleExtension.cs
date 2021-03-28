@@ -1,10 +1,10 @@
 ﻿namespace Pds.Web.Common
 {
-    public class TitleExtension
+    public static class TitleExtension
     {
         public static string WithSuffix(string title, bool nosuffix = false)
         {
-            return nosuffix ? title : title + " / Bloggers CMS";
+            return nosuffix ? title : title + $" / {Constants.AppName}";
         }
     }
 }
