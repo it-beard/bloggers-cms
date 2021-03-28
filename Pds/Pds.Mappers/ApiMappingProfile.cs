@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
@@ -29,14 +32,24 @@ namespace Pds.Mappers
             #endregion
 
             #region Contracts to Entities
-            
-            CreateMap<CreatePersonRequest, Person>();
+
             CreateMap<ResourceDto, Resource>()
                 .ForMember(
-                    dest => dest.CreatedAt,opt => opt
+                    dest => dest.CreatedAt,
+                    opt => opt
                         .MapFrom(p => DateTime.UtcNow));
+            CreateMap<CreatePersonRequest, Person>()
+                .ForMember(
+                    dest => dest.Channels,
+                    opt => opt
+                        .MapFrom(p => ChannelsDtoToChannelsCollection(p.Channels.Where( c => c.IsSelected).ToList())));
             
             #endregion
+        }
+
+        private ICollection<Channel> ChannelsDtoToChannelsCollection(List<Pds.Api.Contracts.Person.ChannelDto> channels)
+        {
+            return channels.Select(channel => new Channel {Id = channel.Id}).ToList();
         }
     }
 }

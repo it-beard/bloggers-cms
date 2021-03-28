@@ -29,6 +29,19 @@ namespace Pds.Services.Services
                 throw new ArgumentNullException(nameof(person));
             }
             
+            // Restore channels from DB
+            var channelsFromApi = person.Channels;
+            var channelsFromBd = new List<Channel>();
+            foreach (var channelFromApi in channelsFromApi)
+            {
+                var channelFromDb = await unitOfWork.Channels.GetFirstWhereAsync(c => c.Id == channelFromApi.Id);
+                if (channelFromDb != null)
+                {
+                    channelsFromBd.Add(channelFromDb);
+                }
+            }
+
+            person.Channels = channelsFromBd;
             person.CreatedAt = DateTime.UtcNow;
             var result = await unitOfWork.Persons.InsertAsync(person);
 
