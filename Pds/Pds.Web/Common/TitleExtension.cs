@@ -4,7 +4,7 @@
     {
         public static string WithSuffix(string title, bool nosuffix = false)
         {
-            return nosuffix ? title : title + " / Blogger CMS";
+            return nosuffix ? title : title + " / Bloggers CMS";
         }
     }
 }
