@@ -29,8 +29,8 @@ jobs:
       
     - name: Publish Pds.Web
       run: |  
-        rm appsettings.Production.json
-        mv appsettings.Development.json appsettings.Production.json
+        rm wwwroot/appsettings.Production.json
+        mv wwwroot/appsettings.Development.json wwwroot/appsettings.Production.json
         dotnet publish -c Debug -o pds_web
       working-directory: Pds/Pds.Web
       
