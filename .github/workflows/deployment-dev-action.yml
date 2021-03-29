@@ -27,7 +27,7 @@ jobs:
       working-directory: Pds/Pds.Web
       
     - name: Publish Pds.Web
-      run: dotnet publish /p:Configuration=Debug /p:EnvironmentName=Development -o pds_web
+      run: dotnet publish -c Debug -o pds_web /p:EnvironmentName=Development
       working-directory: Pds/Pds.Web
       
     - name: 'Deploy Pds.Web to Azure WebApp'
