@@ -11,6 +11,7 @@ namespace Pds.Api.AppStart
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(connectionString));
+            services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate(); // DB automigration on start enable
         }
     }
 }
