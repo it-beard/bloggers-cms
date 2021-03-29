@@ -25,8 +25,8 @@ jobs:
     - name: Build Pds.Web
       run: |
         dotnet build --no-restore --configuration Debug 
-        rm appsettings.Production.json
-        mv appsettings.Development.json appsettings.Production.json
+        rm /home/runner/work/bloggers-cms/bloggers-cms/Pds/Pds.Web/bin/Debug/net5.0/wwwroot/appsettings.Production.json
+        mv /home/runner/work/bloggers-cms/bloggers-cms/Pds/Pds.Web/bin/Debug/net5.0/wwwroot/appsettings.Development.json /home/runner/work/bloggers-cms/bloggers-cms/Pds/Pds.Web/bin/Debug/net5.0/wwwroot/appsettings.Production.json
       working-directory: Pds/Pds.Web
       
     - name: Publish Pds.Web
