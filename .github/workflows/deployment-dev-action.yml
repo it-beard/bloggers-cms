@@ -23,11 +23,14 @@ jobs:
       working-directory: Pds/Pds.Web
       
     - name: Build Pds.Web
-      run: dotnet build --no-restore --configuration Debug
+      run: |
+        dotnet build --no-restore --configuration Debug 
+        rm appsettings.Production.json
+        mv appsettings.Development.json appsettings.Production.json
       working-directory: Pds/Pds.Web
       
     - name: Publish Pds.Web
-      run: dotnet publish -c Debug -o pds_web /p:EnvironmentName=Development
+      run: dotnet publish -c Debug -o pds_web
       working-directory: Pds/Pds.Web
       
     - name: 'Deploy Pds.Web to Azure WebApp'
