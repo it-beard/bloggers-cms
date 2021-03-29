@@ -1,3 +1,6 @@
+[![Deploy apps to Production](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml/badge.svg?branch=main)](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml)  
+[![Deploy apps to Test](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-dev-action.yml/badge.svg?branch=develop)](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-dev-action.yml)
+
 **Bloggers CMS** (старое название "People Discovery System") - это система управления контентом, разрабатываемая специально под задачи блогеров. Платформа разрабатывается как часть экосистемы вокруг проекта ["АйТиБорода"](https://itbeard.com).
 
 # Ссылки
