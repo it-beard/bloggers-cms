@@ -1,5 +1,4 @@
-**Bloggers CMS** ( old name is "People Discovery System") - platform that allows save and use of specific information about people like BIO, location, social links, etc for blogging reasons. The platform is creating as a part of the ecosystem of "АйТиБорода" youtube-show and help store information about the new guests of the show.
+**Bloggers CMS** (старое название "People Discovery System") - это система управления контентом, разработанная специально под задачи блогеров. Платформа разрабатывается как часть экосистемы вокруг проекта ["АйТиБорода"](https://itbeard.com).
 
-Project board: https://github.com/itbeard/people-discovery-system/projects/1
-
-Wiki: https://github.com/itbeard/people-discovery-system/wiki
+Wiki проекта: https://github.com/itbeard/people-discovery-system/wiki  
+Kandan-доска: https://github.com/itbeard/people-discovery-system/projects/1
