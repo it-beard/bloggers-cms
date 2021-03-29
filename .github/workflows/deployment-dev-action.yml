@@ -65,6 +65,6 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.PDS_API_AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ env.PDS_API_AZURE_PUBLISH_PROFILE }}
+        publish-profile: ${{ secrets.DEV_PDS_API_AZURE_PUBLISH_PROFILE }}
         package: Pds/Pds.Api/pds_api/  
 
