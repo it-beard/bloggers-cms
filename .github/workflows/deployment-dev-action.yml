@@ -1,4 +1,4 @@
-name: Deploy apps to Develop
+name: Deploy apps to Test
 
 on:
   push:
