@@ -12,7 +12,7 @@ namespace Pds.Api.Contracts.Person
         
         public string Location { get; set; }
         
-        public string Information { get; set; }
+        public string Info { get; set; }
         
         public int Rate { get; set; }
 

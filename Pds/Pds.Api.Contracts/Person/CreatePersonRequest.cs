@@ -20,7 +20,7 @@ namespace Pds.Api.Contracts.Person
         /// <summary>
         /// General information about person
         /// </summary>
-        public string Information { get; set; }
+        public string Info { get; set; }
         
         /// <summary>
         /// Rate (int) - can be from 0 to 100 and used to understanding how attractable/hot user for the show
