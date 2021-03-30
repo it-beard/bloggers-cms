@@ -39,8 +39,8 @@ else
         @foreach (var item in content.Items)
         {
             <tr class="@GetRowClass(item.Status, item.BillStatus)">
-                <td>
-                    <span class="release-date">
+                <td class="release-date-row">
+                    <span>
                         @item.ReleaseDateUtc.Date.ToString("dd.MM")
                     </span>
                 </td>
@@ -69,21 +69,21 @@ else
 }
 
 @code {
-    private GetContentResponse content;
+    private GetContentsResponse content;
 
     protected override async Task OnInitializedAsync()
     {
-        content = await GetContentResponse();
+        content = await GetContentsResponse();
     }
 
     private async Task ContentInfoUpdate()
     {
-        content = await GetContentResponse();
+        content = await GetContentsResponse();
     }
 
-    private async Task<GetContentResponse> GetContentResponse()
+    private async Task<GetContentsResponse> GetContentsResponse()
     {
-        return await ApiClient.Get<GetContentResponse>(TokenProvider, "content");
+        return await ApiClient.Get<GetContentsResponse>(TokenProvider, "content");
     }
 
     private string GetRowClass(ContentStatus contentStatus, BillStatus billStatus)

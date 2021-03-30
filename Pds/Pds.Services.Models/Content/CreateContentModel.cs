@@ -1,7 +1,7 @@
 ﻿using System;
 using Pds.Core.Enums;
 
-namespace Pds.Services.Models
+namespace Pds.Services.Models.Content
 {
     public class CreateContentModel
     {

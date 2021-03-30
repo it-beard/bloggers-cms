@@ -10,6 +10,7 @@ using Pds.Api.Authentication;
 using Pds.Api.Contracts.Content;
 using Pds.Services.Interfaces;
 using Pds.Services.Models;
+using Pds.Services.Models.Content;
 
 namespace Pds.Api.Controllers
 {
@@ -45,13 +46,13 @@ namespace Pds.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(GetContentResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetContentsResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             try
             {
                 var content = await contentService.GetAllAsync();
-                var response = new GetContentResponse
+                var response = new GetContentsResponse
                 {
                     Items = mapper.Map<List<ContentDto>>(content),
                     Total = content.Count
@@ -150,11 +151,33 @@ namespace Pds.Api.Controllers
                 return ExceptionResult(e);
             }
         }
-        
+
+        /// <summary>
+        /// Get content by id
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpGet("{contentId}")]
+        [ProducesResponseType(typeof(GetContentResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetContent(Guid contentId)
+        {
+            try
+            {
+                var content = await contentService.GetAsync(contentId);
+                var response = mapper.Map<GetContentResponse>(content);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
         /// <summary>
         /// Delete specified content
         /// </summary>
-        /// <param name="clientId"></param>
+        /// <param name="contentId"></param>
         /// <returns></returns>
         [HttpDelete("{contentId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]

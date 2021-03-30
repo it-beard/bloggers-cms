@@ -35,7 +35,7 @@ namespace Pds.Api.Contracts.Content
         public ContactType BillContactType { get; set; }
         
         [Required]
-        [Range(0.00, Double.MaxValue, ErrorMessage = "The field {0} must be greater than {1}.")]
+        [Range(0.00, Double.MaxValue, ErrorMessage = "Значение поля {0} должно быть больше чем {1}.")]
         public decimal BillCost { get; set; }
 
         public Guid? PersonId { get; set; }

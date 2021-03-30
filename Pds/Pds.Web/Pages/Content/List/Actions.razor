@@ -12,11 +12,18 @@
     <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
         <i class="bi bi-pencil-fill"></i>
     </button>
-
-    @if (CurrentContent.Status == ContentStatus.Active && CurrentContent.BillStatus == BillStatus.Active)
+    
+    @if (CurrentContent.Status == ContentStatus.Active && (CurrentContent.BillStatus == BillStatus.Active || CurrentContent.BillCost == 0))
     {
         <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
             <i class="bi bi-trash-fill"></i>
+        </button>
+    }
+
+    @if (CurrentContent.Status == ContentStatus.Active && CurrentContent.BillStatus == BillStatus.Active)
+    {
+        <button title="Оплатить" class="btn btn btn-dark btn-sm" @onclick="OnPay">
+            <i class="bi bi-credit-card-2-back"></i>
         </button>
     }
 </div>
@@ -40,5 +47,10 @@
             await ApiClient.Delete<object>(TokenProvider, $"content/{CurrentContent.Id}");
             await OnContentUpdate.InvokeAsync(); // Update UI
         }
+    }
+
+    private void OnPay()
+    {
+        NavigationManager.NavigateTo($"/content/{CurrentContent.Id}/pay");
     }
 }

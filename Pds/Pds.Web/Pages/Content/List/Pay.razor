@@ -1,0 +1,98 @@
+﻿@page "/content/{contentId}/pay"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Bill
+@using Pds.Api.Contracts.Content
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Оплата контента")</Title>
+
+@if (content == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h3 class="card-header d-flex justify-content-between align-items-center">
+        Оплата контента "@content.Title"
+        <a href="/content" class="btn btn-primary"> Назад </a>
+    </h3>
+
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
+        <div class="form-group">
+            <InputRadioGroup Name="payment-type" @bind-Value="paymentPayload.PaymentType">
+                @foreach (var paymentType in (PaymentType[])Enum
+                    .GetValues(typeof(PaymentType)))
+                {
+                    var id = $"payment_type_{paymentType.ToString()}";
+                    <InputRadio Name="payment-type" class="btn-check" Value="paymentType" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@paymentType</label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <label for="bill_cost" class="form-label  label-required">Финальная стоимость USD:</label>
+            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="paymentPayload.Cost"/>
+        </div>
+
+        <div class="form-group">
+            <label for="comment" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="paymentPayload.Comment" rows="3"/>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Оплатить</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string ContentId { get; set; }
+    private PayBillPayload paymentPayload = new()
+    {
+        PaymentType = PaymentType.BankAccount //default
+    };
+    private EditContext editContext;
+    private GetContentResponse content;
+    private bool isCreateButtonDisabled;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        isCreateButtonDisabled = false;
+        content = await GetContentAsync(Guid.Parse(ContentId));
+        paymentPayload.Cost = content.BillCost;
+        paymentPayload.Comment = content.BillComment;
+        paymentPayload.PaymentType = content.BillPaymentType ?? PaymentType.BankAccount;
+        editContext = new EditContext(paymentPayload);
+    }
+    
+    private async Task HandleSubmitAsync()
+    {
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isCreateButtonDisabled = true;
+            await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bill/{content.BillId}/pay", paymentPayload);
+            NavigationManager.NavigateTo("/content");
+        }
+    }
+
+    private async Task<GetContentResponse> GetContentAsync(Guid contentId)
+    {
+        return await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{contentId}");
+    }
+}

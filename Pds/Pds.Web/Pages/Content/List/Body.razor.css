@@ -23,7 +23,7 @@
     text-align: center;
 }
 
-.release-date {
+.release-date-row span {
     font-size: 0.89rem;
     background-color: white;
     padding: 2px 4px;
