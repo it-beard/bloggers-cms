@@ -20,7 +20,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Content>> GetAllAsync()
         {
-            return await unitOfWork.Content.GetAllWithBillsAsync();
+            return await unitOfWork.Content.GetAllWithBillsWithClientsAsync();
         }
 
         public async Task<Guid> CreateAsync(CreateContentModel model)
@@ -35,6 +35,7 @@ namespace Pds.Services.Services
                 Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow,
                 Title = model.Title,
+                Status = ContentStatus.Active,
                 Type = model.Type,
                 ChannelId = model.ChannelId,
                 SocialMediaType = model.SocialMediaType,
@@ -64,6 +65,15 @@ namespace Pds.Services.Services
             var result = await unitOfWork.Content.InsertAsync(content);
 
             return result.Id;
+        }
+
+        public async Task DeleteAsync(Guid clientId)
+        {
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(clientId);
+            if (content != null && content.Status == ContentStatus.Active && content.Bill.Status == BillStatus.Active)
+            {
+                await unitOfWork.Content.Delete(content);
+            }
         }
     }
 }

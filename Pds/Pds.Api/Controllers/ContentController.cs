@@ -150,5 +150,25 @@ namespace Pds.Api.Controllers
                 return ExceptionResult(e);
             }
         }
+        
+        /// <summary>
+        /// Delete specified content
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
+        [HttpDelete("{contentId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Delete(Guid contentId)
+        {
+            try
+            {
+                await contentService.DeleteAsync(contentId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
     }
 }

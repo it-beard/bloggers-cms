@@ -5,7 +5,7 @@
         Other = 0,      // Прочий тип оплаты
         Cash = 1,       // Наличные
         Barter = 2,     // Бартер
-        Contract = 3,   // По контракту
+        BankAccount = 3,// На счёт ИП
         Yoomoney = 4,   // Юмани
         Tinkoff = 5,    // Тинькофф
     }

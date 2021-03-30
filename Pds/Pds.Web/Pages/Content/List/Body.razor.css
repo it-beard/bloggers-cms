@@ -1,0 +1,53 @@
+﻿.table {
+    font-size: 0.9rem;
+}
+
+.table td{
+    vertical-align: middle;
+}
+
+.card-header {
+    margin-bottom: 15px;
+}
+
+.actions-header {
+    width: 100px;
+}
+
+.release-date-header {
+    width: 70px;
+    text-align: center;
+}
+
+.release-date-row {
+    text-align: center;
+}
+
+.release-date {
+    font-size: 0.89rem;
+    background-color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.active-not-paid {
+    background-color: lightpink;
+}
+
+.active-paid {
+    background-color: lightgreen;
+}
+
+.archived-paid {
+    background-color: gainsboro;
+    color: #bbb;
+}
+
+.archived-paid:hover {
+    color: black;
+}
+
+.archived-not-paid {
+    background-color: orangered;
+}
+

@@ -1,0 +1,113 @@
+﻿@page "/content"
+@attribute [Authorize]
+@using Pds.Api.Contracts.Content
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Core.Enums
+@using static Pds.Web.Common.TitleExtension 
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Контент")</Title>
+
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Лента контента
+    <a href="/content/add" class="btn btn-success" >Добавить</a>
+</h3>
+@if (content == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="release-date-header">Когда</th>
+            <th>Название</th>
+            <th>Клиент</th>
+            <th>Соцсеть</th>
+            <th>Тип</th>
+            <th>Сколько</th>
+            <th class="text-center actions-header">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in content.Items)
+        {
+            <tr class="@GetRowClass(item.Status, item.BillStatus)">
+                <td>
+                    <span class="release-date">
+                        @item.ReleaseDateUtc.Date.ToString("dd.MM")
+                    </span>
+                </td>
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    @item.ClientName
+                </td>
+                <td>
+                    @item.SocialMediaType.ToString()
+                </td>
+                <td>
+                    @item.Type.ToString()
+                </td>
+                <td>
+                    @item.BillCost.ToString("N0")
+                </td>
+                <td class="text-center">
+                    <Actions OnContentUpdate="@ContentInfoUpdate" CurrentContent="@item"></Actions>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GetContentResponse content;
+
+    protected override async Task OnInitializedAsync()
+    {
+        content = await GetContentResponse();
+    }
+
+    private async Task ContentInfoUpdate()
+    {
+        content = await GetContentResponse();
+    }
+
+    private async Task<GetContentResponse> GetContentResponse()
+    {
+        return await ApiClient.Get<GetContentResponse>(TokenProvider, "content");
+    }
+
+    private string GetRowClass(ContentStatus contentStatus, BillStatus billStatus)
+    {
+        if (contentStatus == ContentStatus.Active && billStatus == BillStatus.Active)
+        {
+            return "active-not-paid";
+        }
+
+        if (contentStatus == ContentStatus.Active && billStatus == BillStatus.Paid)
+        {
+            return "active-paid";
+        }
+
+        if (contentStatus == ContentStatus.Archived && billStatus == BillStatus.Paid)
+        {
+            return "archived-paid";
+        }
+
+        if (contentStatus == ContentStatus.Archived && billStatus == BillStatus.Active)
+        {
+            return "archived-not-paid";
+        }
+
+        return "new";
+    }
+}
