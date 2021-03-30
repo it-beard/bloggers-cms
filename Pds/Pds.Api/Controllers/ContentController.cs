@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Pds.Api.Authentication;
 using Pds.Api.Contracts.Content;
 using Pds.Services.Interfaces;
 using Pds.Services.Models;
@@ -13,7 +14,7 @@ using Pds.Services.Models;
 namespace Pds.Api.Controllers
 {
     [Route("api/content")]
-    [Authorize]
+    [CustomAuthorize]
     public class ContentController : ApiControllerBase
     {
         private readonly ILogger<PersonController> logger;

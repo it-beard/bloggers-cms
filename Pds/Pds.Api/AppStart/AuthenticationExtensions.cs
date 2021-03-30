@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pds.Api.Authentication;
 
 namespace Pds.Api.AppStart
 {
@@ -12,15 +13,21 @@ namespace Pds.Api.AppStart
 
         public static void AddCustomAuth0Authentication(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = configuration["Auth0:Authority"];
-                options.Audience = configuration["Auth0:ApiIdentifier"];
-            });
+            services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = configuration["Auth0:Authority"];
+                    options.Audience = configuration["Auth0:ApiIdentifier"];
+                });
+
+            var auth0Settings = new Auth0Settings();
+            configuration.GetSection("Auth0").Bind(auth0Settings);
+            services.AddSingleton(auth0Settings);
         }
 
         public static void AddCustomPdsCorsPolicy(this IServiceCollection services, IConfiguration configuration)
