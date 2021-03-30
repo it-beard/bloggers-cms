@@ -10,6 +10,7 @@
     width: 100px;
     display: inline-block;
     margin-left: 10px;
+    margin-right: 10px;
 }
 
 ::deep input.release-date{

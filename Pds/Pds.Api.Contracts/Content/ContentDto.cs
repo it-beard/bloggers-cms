@@ -24,5 +24,7 @@ namespace Pds.Api.Contracts.Content
         public BillStatus BillStatus { get; set; }
         
         public decimal BillCost { get; set; }
+
+        public PaymentType? PaymentType { get; set; }
     }
 }

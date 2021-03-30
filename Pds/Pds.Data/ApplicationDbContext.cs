@@ -28,8 +28,7 @@ namespace Pds.Data
                 .HasDefaultValue(PersonStatus.Active);
 
             modelBuilder.Entity<Content>()
-                .Property(b => b.SocialMediaType)
-                .HasDefaultValue(SocialMediaType.YouTube);
+                .Property(b => b.SocialMediaType);
             
             modelBuilder.Entity<Content>()
                 .HasOne(a => a.Bill)

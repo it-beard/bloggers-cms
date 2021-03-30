@@ -34,7 +34,9 @@ else
                 {
                     var id = $"payment_type_{paymentType.ToString()}";
                     <InputRadio Name="payment-type" class="btn-check" Value="paymentType" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">@paymentType</label>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.PaymentTypeToRu(paymentType)
+                    </label>
                 }
             </InputRadioGroup>
         </div>

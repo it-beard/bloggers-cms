@@ -12,13 +12,6 @@
     <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
         <i class="bi bi-pencil-fill"></i>
     </button>
-    
-    @if (CurrentContent.Status == ContentStatus.Active && (CurrentContent.BillStatus == BillStatus.Active || CurrentContent.BillCost == 0))
-    {
-        <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDeleteAsync">
-            <i class="bi bi-trash-fill"></i>
-        </button>
-    }
 
     @if (CurrentContent.Status == ContentStatus.Active && CurrentContent.BillStatus == BillStatus.Active)
     {
@@ -26,12 +19,18 @@
             <i class="bi bi-credit-card-2-back"></i>
         </button>
     }
-    
 
     @if (CurrentContent.Status == ContentStatus.Active && CurrentContent.BillStatus == BillStatus.Paid)
     {
         <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchiveAsync">
             <i class="bi bi-archive-fill"></i>
+        </button>
+    }
+
+    @if (CurrentContent.Status == ContentStatus.Active && (CurrentContent.BillStatus == BillStatus.Active || CurrentContent.BillCost == 0))
+    {
+        <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDeleteAsync">
+            <i class="bi bi-trash-fill"></i>
         </button>
     }
 </div>

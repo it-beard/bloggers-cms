@@ -31,7 +31,7 @@ else
             <th>Клиент</th>
             <th>Соцсеть</th>
             <th>Тип</th>
-            <th>Сколько</th>
+            <th class="bill-cost-header">Сколько</th>
             <th class="text-center actions-header">Действия</th>
         </tr>
         </thead>
@@ -51,15 +51,20 @@ else
                     @item.ClientName
                 </td>
                 <td>
-                    @item.SocialMediaType.ToString()
+                    @EnumsTranslator.SocialMediaTypeToRu(item.SocialMediaType)
                 </td>
                 <td>
-                    @item.Type.ToString()
+                    @EnumsTranslator.ContentTypeToRu(item.Type)
                 </td>
-                <td>
-                    @item.BillCost.ToString("N0")
+                <td class="bill-cost-row">
+                    @if (item.PaymentType != null)
+                    {
+                        <i class="@GetPaymentTypeClass(item.PaymentType)">@EnumsTranslator.PaymentTypeToShortRu(item.PaymentType)</i>
+                    }
+
+                    <span>@item.BillCost.ToString("N0")</span> 
                 </td>
-                <td class="text-center">
+                <td class="text-center actions-row">
                     <Actions OnContentUpdate="@ContentInfoUpdate" CurrentContent="@item"></Actions>
                 </td>
             </tr>
@@ -109,5 +114,10 @@ else
         }
 
         return "new";
+    }
+    
+    private string GetPaymentTypeClass(PaymentType? type)
+    {
+        return type == PaymentType.BankAccount ? "white" : "red";
     }
 }

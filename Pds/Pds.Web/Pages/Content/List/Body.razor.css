@@ -6,6 +6,11 @@
     vertical-align: middle;
 }
 
+.table > :not(:last-child) > :last-child > *{
+    border-bottom: none;
+    color: darkgray;
+}
+
 .card-header {
     margin-bottom: 15px;
 }
@@ -28,6 +33,44 @@
     background-color: white;
     padding: 2px 4px;
     border-radius: 4px;
+}
+
+.bill-cost-header {
+    width: 200px;
+    text-align: right;
+    padding-right: 15px;
+}
+
+.bill-cost-row {
+    text-align: right;
+    padding-right: 15px;
+}
+
+.bill-cost-row span {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-left: 5px;
+}
+
+.bill-cost-row i {
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-style: normal;
+}
+
+.bill-cost-row i.white{
+    background-color: white;
+    color: black;
+}
+
+.bill-cost-row i.red{
+    background-color: lightcoral;
+    color: white;
+}
+
+.actions-row {
+    border-left: 2px dotted white;
 }
 
 .active-not-paid {
