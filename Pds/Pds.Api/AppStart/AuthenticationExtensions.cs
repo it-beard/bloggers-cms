@@ -12,15 +12,17 @@ namespace Pds.Api.AppStart
 
         public static void AddCustomAuth0Authentication(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = configuration["Auth0:Authority"];
-                options.Audience = configuration["Auth0:ApiIdentifier"];
-            });
+            services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = configuration["Auth0:Authority"];
+                    options.Audience = configuration["Auth0:ApiIdentifier"];
+                });
         }
 
         public static void AddCustomPdsCorsPolicy(this IServiceCollection services, IConfiguration configuration)
