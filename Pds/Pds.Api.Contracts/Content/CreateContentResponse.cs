@@ -23,7 +23,7 @@ namespace Pds.Api.Contracts.Content
         [Required]
         public DateTime ReleaseDate { get; set; }
 
-        public DateTime? EndDateUtc { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [Required]
         public Guid? ClientId { get; set; }

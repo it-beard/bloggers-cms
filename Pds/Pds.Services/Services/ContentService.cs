@@ -39,8 +39,8 @@ namespace Pds.Services.Services
                 ChannelId = model.ChannelId,
                 SocialMediaType = model.SocialMediaType,
                 Comment = model.Comment,
-                ReleaseDateUtc = model.ReleaseDate,
-                EndDateUtc = model.EndDateUtc,
+                ReleaseDateUtc = model.ReleaseDate.Date,
+                EndDateUtc = model.EndDate?.Date,
                 PersonId = model.PersonId
             };
 
