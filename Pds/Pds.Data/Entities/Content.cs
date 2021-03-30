@@ -16,6 +16,9 @@ namespace Pds.Data.Entities
         public ContentType Type { get; set; }
 
         [Required]
+        public ContentStatus Status { get; set; }
+
+        [Required]
         public SocialMediaType SocialMediaType { get; set; }
 
         public string Comment { get; set; }

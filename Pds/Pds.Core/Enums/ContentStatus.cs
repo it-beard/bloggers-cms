@@ -1,8 +1,8 @@
 ﻿namespace Pds.Core.Enums
 {
-    public enum BillStatus
+    public enum ContentStatus
     {
         Active = 0,
-        Paid = 1
+        Archived = 1
     }
 }

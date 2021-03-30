@@ -1,7 +1,7 @@
 ﻿using System;
 using Pds.Core.Enums;
 
-namespace Pds.Services.Models
+namespace Pds.Services.Models.Content
 {
     public class CreateContentModel
     {
@@ -21,7 +21,7 @@ namespace Pds.Services.Models
         
         public DateTime ReleaseDate { get; set; }
 
-        public DateTime? EndDateUtc { get; set; }
+        public DateTime? EndDate { get; set; }
         
         public string BillContact { get; set; }
         

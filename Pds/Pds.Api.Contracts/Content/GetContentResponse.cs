@@ -1,9 +1,22 @@
-﻿using Pds.Api.Contracts.Paging;
-using Pds.Api.Contracts.Person;
+﻿using System;
+using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Content
 {
-    public class GetContentResponse : PageResult<ContentDto>
+    public class GetContentResponse
     {
+        public string Id { get; set; }
+
+        public string Title { get; set; }
+
+        public Guid BillId { get; set; }
+
+        public decimal BillCost { get; set; }
+
+        public string BillComment { get; set; }
+
+        public BillStatus BillStatus { get; set; }
+
+        public PaymentType? BillPaymentType { get; set; }
     }
 }

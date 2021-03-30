@@ -6,6 +6,7 @@ using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models;
+using Pds.Services.Models.Content;
 
 namespace Pds.Services.Services
 {
@@ -20,7 +21,12 @@ namespace Pds.Services.Services
 
         public async Task<List<Content>> GetAllAsync()
         {
-            return await unitOfWork.Content.GetAllWithBillsAsync();
+            return await unitOfWork.Content.GetAllWithBillsWithClientsAsync();
+        }
+
+        public async Task<Content> GetAsync(Guid contentId)
+        {
+            return await unitOfWork.Content.GetByIdWithBillAsync(contentId);
         }
 
         public async Task<Guid> CreateAsync(CreateContentModel model)
@@ -35,12 +41,13 @@ namespace Pds.Services.Services
                 Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow,
                 Title = model.Title,
+                Status = ContentStatus.Active,
                 Type = model.Type,
                 ChannelId = model.ChannelId,
                 SocialMediaType = model.SocialMediaType,
                 Comment = model.Comment,
-                ReleaseDateUtc = model.ReleaseDate,
-                EndDateUtc = model.EndDateUtc,
+                ReleaseDateUtc = model.ReleaseDate.Date,
+                EndDateUtc = model.EndDate?.Date,
                 PersonId = model.PersonId
             };
 
@@ -64,6 +71,28 @@ namespace Pds.Services.Services
             var result = await unitOfWork.Content.InsertAsync(content);
 
             return result.Id;
+        }
+
+        public async Task DeleteAsync(Guid clientId)
+        {
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(clientId);
+            if (content != null && 
+                content.Status == ContentStatus.Active && 
+                (content.Bill.Status == BillStatus.Active || content.Bill.Cost == 0))
+            {
+                await unitOfWork.Content.Delete(content);
+            }
+        }
+
+        public async Task ArchiveAsync(Guid contentId)
+        {
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            if (content != null && content.Status == ContentStatus.Active && content.Bill.Status == BillStatus.Paid)
+            {
+                content.Status = ContentStatus.Archived;
+                content.UpdatedAt = DateTime.UtcNow;
+                await unitOfWork.Content.UpdateAsync(content);
+            }
         }
     }
 }

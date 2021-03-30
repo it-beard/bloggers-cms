@@ -8,6 +8,7 @@ using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Models;
+using Pds.Services.Models.Content;
 
 namespace Pds.Mappers
 {
@@ -27,7 +28,40 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => $"{p.Country} {p.City}"));
             CreateMap<Resource, ResourceDto>();
-            CreateMap<Content, ContentDto>();
+            CreateMap<Content, ContentDto>()
+                .ForMember(
+                    dest => dest.BillCost,
+                    opt => opt
+                        .MapFrom(p => p.Bill.Cost))
+                .ForMember(
+                    dest => dest.BillStatus,
+                    opt => opt
+                        .MapFrom(p => p.Bill.Status))
+                .ForMember(
+                    dest => dest.ClientName,
+                    opt => opt
+                        .MapFrom(p => p.Bill.Client.Name))
+                .ForMember(
+                    dest => dest.PaymentType,
+                    opt => opt
+                        .MapFrom(p => p.Bill.PaymentType));
+            CreateMap<Content, GetContentResponse>()
+                .ForMember(
+                    dest => dest.BillCost,
+                    opt => opt
+                        .MapFrom(p => p.Bill.Cost))
+                .ForMember(
+                    dest => dest.BillComment,
+                    opt => opt
+                        .MapFrom(p => p.Bill.Comment))
+                .ForMember(
+                    dest => dest.BillStatus,
+                    opt => opt
+                        .MapFrom(p => p.Bill.Status))
+                .ForMember(
+                    dest => dest.BillPaymentType,
+                    opt => opt
+                        .MapFrom(p => p.Bill.PaymentType));
             CreateMap<Client, ClientDto>();
             CreateMap<Channel, ChannelForRadioboxGroupDto>();
             CreateMap<Channel, ChannelForCheckboxesDto>();

@@ -9,6 +9,10 @@ namespace Pds.Api.Contracts.Content
         
         public string Title { get; set; }
         
+        public ContentStatus Status { get; set; }
+        
+        public string ClientName { get; set; }
+        
         public DateTime ReleaseDateUtc { get; set; }
 
         public DateTime? EndDateUtc { get; set; }
@@ -16,5 +20,11 @@ namespace Pds.Api.Contracts.Content
         public SocialMediaType SocialMediaType { get; set; }
         
         public ContentType Type { get; set; }
+        
+        public BillStatus BillStatus { get; set; }
+        
+        public decimal BillCost { get; set; }
+
+        public PaymentType? PaymentType { get; set; }
     }
 }

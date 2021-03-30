@@ -37,25 +37,29 @@ else
         </div>
 
         <div class="form-group">
-            <InputRadioGroup Name="type" @bind-Value="content.Type">
-                @foreach (var type in (ContentType[])Enum
-                    .GetValues(typeof(ContentType)))
-                {
-                    var id = $"type_{type.ToString()}";
-                    <InputRadio Name="type" class="btn-check" Value="type" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">@type</label>
-                }
-            </InputRadioGroup>
-        </div>
-
-        <div class="form-group">
             <InputRadioGroup Name="social-media-type" @bind-Value="content.SocialMediaType">
                 @foreach (var socialMediaType in (SocialMediaType[])Enum
                     .GetValues(typeof(SocialMediaType)))
                 {
                     var id = $"sm_type_{socialMediaType.ToString()}";
                     <InputRadio Name="social-media-type" class="btn-check" Value="socialMediaType" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">@socialMediaType</label>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.SocialMediaTypeToRu(socialMediaType)
+                    </label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <InputRadioGroup Name="type" @bind-Value="content.Type">
+                @foreach (var type in (ContentType[])Enum
+                    .GetValues(typeof(ContentType)))
+                {
+                    var id = $"type_{type.ToString()}";
+                    <InputRadio Name="type" class="btn-check" Value="type" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.ContentTypeToRu(type)
+                    </label>
                 }
             </InputRadioGroup>
         </div>
@@ -66,11 +70,14 @@ else
         </div>
 
         <div class="form-group">
+            <label for="bill_cost" class="form-label label-required">Стоимость USD:</label>
+            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.BillCost"/>
+
             <label for="release_date" class="form-label label-required">Когда:</label>
             <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
             
             <label for="release_date" class="form-label">Продлится до:</label>
-            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDateUtc"/>
+            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDate"/>
         </div>
 
         <div class="form-group">
@@ -93,15 +100,12 @@ else
                     {
                         var id = $"contact-type{type.ToString()}";
                         <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
-                        <label class="btn btn-secondary btn-sm" for="@id">@type</label>
+                        <label class="btn btn-secondary btn-sm" for="@id">
+                            @EnumsTranslator.ContactTypeToRu(type)
+                        </label>
                     }
                 </InputRadioGroup>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label for="bill_cost" class="form-label">Стоимость USD:</label>
-            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.BillCost"/>
         </div>
 
         <div class="form-group">
@@ -132,7 +136,10 @@ else
     private CreateContentRequest content = new ()
     {
         ReleaseDate = DateTime.Today.Date,
-        ChannelId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f") //Default АйТиБорода
+        ChannelId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), //Default АйТиБорода
+        Type = ContentType.Integration, //Default
+        SocialMediaType = SocialMediaType.YouTube, //Default
+        BillContactType = ContactType.Telegram //Default
     };
     private EditContext editContext;
     private List<ChannelForRadioboxGroupDto> channels;
