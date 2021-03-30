@@ -81,6 +81,7 @@ namespace Pds.Services.Services
                 (content.Bill.Status == BillStatus.Active || content.Bill.Cost == 0))
             {
                 await unitOfWork.Content.Delete(content);
+                await unitOfWork.Bills.Delete(content.Bill);
             }
         }
 
