@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Pds.Api.Authentication;
 using Pds.Api.Contracts.Client;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -13,7 +14,7 @@ using Pds.Services.Interfaces;
 namespace Pds.Api.Controllers
 {
     [Route("api/clients")]
-    [Authorize]
+    [CustomAuthorize]
     public class ClientController : ApiControllerBase
     {
         private readonly ILogger<ClientController> logger;

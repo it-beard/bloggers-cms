@@ -2,6 +2,7 @@
 using System.Net;
 using Pds.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Pds.Api.Authentication;
 
 namespace Pds.Api.Controllers
 {
