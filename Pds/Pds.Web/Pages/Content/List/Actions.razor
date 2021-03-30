@@ -15,7 +15,7 @@
     
     @if (CurrentContent.Status == ContentStatus.Active && (CurrentContent.BillStatus == BillStatus.Active || CurrentContent.BillCost == 0))
     {
-        <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
+        <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDeleteAsync">
             <i class="bi bi-trash-fill"></i>
         </button>
     }
@@ -24,6 +24,14 @@
     {
         <button title="Оплатить" class="btn btn btn-dark btn-sm" @onclick="OnPay">
             <i class="bi bi-credit-card-2-back"></i>
+        </button>
+    }
+    
+
+    @if (CurrentContent.Status == ContentStatus.Active && CurrentContent.BillStatus == BillStatus.Paid)
+    {
+        <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchiveAsync">
+            <i class="bi bi-archive-fill"></i>
         </button>
     }
 </div>
@@ -39,9 +47,9 @@
         NavigationManager.NavigateTo($"/content/{CurrentContent.Id}");
     }
 
-    private async Task OnDelete()
+    private async Task OnDeleteAsync()
     {
-        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите удалить {CurrentContent.Title}?");
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите удалить \"{CurrentContent.Title}\"?");
         if (confirmed)
         {
             await ApiClient.Delete<object>(TokenProvider, $"content/{CurrentContent.Id}");
@@ -52,5 +60,15 @@
     private void OnPay()
     {
         NavigationManager.NavigateTo($"/content/{CurrentContent.Id}/pay");
+    }
+
+    private async Task OnArchiveAsync()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать \"{CurrentContent.Title}\"?");
+        if (confirmed)
+        {
+            await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentContent.Id}/archive", null);
+            await OnContentUpdate.InvokeAsync(); // Update UI
+        }
     }
 }

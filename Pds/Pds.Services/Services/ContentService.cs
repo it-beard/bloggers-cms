@@ -84,9 +84,15 @@ namespace Pds.Services.Services
             }
         }
 
-        public async Task<Content> PayAsync(Guid contentId)
+        public async Task ArchiveAsync(Guid contentId)
         {
-            return await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            if (content != null && content.Status == ContentStatus.Active && content.Bill.Status == BillStatus.Paid)
+            {
+                content.Status = ContentStatus.Archived;
+                content.UpdatedAt = DateTime.UtcNow;
+                await unitOfWork.Content.UpdateAsync(content);
+            }
         }
     }
 }

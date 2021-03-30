@@ -193,5 +193,25 @@ namespace Pds.Api.Controllers
                 return ExceptionResult(e);
             }
         }
+
+        /// <summary>
+        /// Archive specified content
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpPut("{contentId}/archive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Archive(Guid contentId)
+        {
+            try
+            {
+                await contentService.ArchiveAsync(contentId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
     }
 }
