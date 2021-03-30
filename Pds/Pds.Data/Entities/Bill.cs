@@ -29,6 +29,8 @@ namespace Pds.Data.Entities
         [Required]
         public ContactType PrimaryContactType { get; set; }
 
+        public DateTime? PaidAt { get; set; }
+
         public Guid ChannelId { get; set; }
 
         public Guid? ContentId { get; set; }

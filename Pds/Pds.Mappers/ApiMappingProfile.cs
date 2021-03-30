@@ -61,7 +61,11 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.BillPaymentType,
                     opt => opt
-                        .MapFrom(p => p.Bill.PaymentType));
+                        .MapFrom(p => p.Bill.PaymentType))
+                .ForMember(
+                    dest => dest.BillPaidAt,
+                    opt => opt
+                        .MapFrom(p => p.Bill.PaidAt));
             CreateMap<Client, ClientDto>();
             CreateMap<Channel, ChannelForRadioboxGroupDto>();
             CreateMap<Channel, ChannelForCheckboxesDto>();

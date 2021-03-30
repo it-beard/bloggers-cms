@@ -26,6 +26,7 @@ namespace Pds.Services.Services
                 bill.Comment = model.Comment;
                 bill.Status = BillStatus.Paid;
                 bill.UpdatedAt = DateTime.UtcNow;
+                bill.PaidAt = model.PaidAt;
 
                 await unitOfWork.Bills.UpdateAsync(bill);
             }

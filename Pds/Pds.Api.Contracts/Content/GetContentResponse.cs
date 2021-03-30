@@ -18,5 +18,7 @@ namespace Pds.Api.Contracts.Content
         public BillStatus BillStatus { get; set; }
 
         public PaymentType? BillPaymentType { get; set; }
+
+        public DateTime? BillPaidAt { get; set; }
     }
 }
