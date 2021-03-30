@@ -23,8 +23,7 @@ jobs:
       working-directory: Pds/Pds.Web
       
     - name: Build Pds.Web
-      run: |
-        dotnet build --no-restore --configuration Debug 
+      run: dotnet build --no-restore --configuration Debug 
       working-directory: Pds/Pds.Web
       
     - name: Publish Pds.Web
