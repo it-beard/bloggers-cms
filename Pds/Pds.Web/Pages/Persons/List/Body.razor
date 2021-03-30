@@ -1,0 +1,77 @@
+﻿@page "/persons"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Person
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Персоны")</Title>
+
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Список персон
+    <a href="/persons/add" class="btn btn-success" >Добавить</a>
+</h3>
+@if (personsInfo == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Полное имя</th>
+            <th>Локация</th>
+            <th>Информация</th>
+            <th>Ссылки</th>
+            <th class="text-center actions-header">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var person in personsInfo.Items)
+        {
+            <tr>
+                <td>@person.FullName (@person.Rate)</td>
+                <td>@person.Location</td>
+                <td>@person.Info</td>
+                <td>
+                    @foreach (var resource in person.Resources)
+                    {
+                        <div>
+                            <a href="@resource.Url" target="_blank">@resource.Name</a>
+                        </div>
+                    }
+                </td>
+                <td class="text-center">
+                    <Actions OnPersonUpdate="@PersonsInfoUpdate" CurrentPerson="@person"></Actions>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GetPersonsResponse personsInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        personsInfo = await GetPersonsInfo();
+    }
+
+    private async Task PersonsInfoUpdate()
+    {
+        personsInfo = await GetPersonsInfo();
+    }
+
+    private async Task<GetPersonsResponse> GetPersonsInfo()
+    {
+        return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
+    }
+}

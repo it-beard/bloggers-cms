@@ -1,7 +1,13 @@
 ﻿@page "/"
+@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.Constants
 
-<h1>Hello, world!</h1>
+<Title>@WithSuffix("Главная")</Title>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?"/>
+<h1>Привет!</h1>
+<div>
+    @AppName - система управления контентом, разработанная специально под задачи блогеров.
+</div>
+<div>
+    Скоро тут будет функциональный дашборд 😊
+</div>

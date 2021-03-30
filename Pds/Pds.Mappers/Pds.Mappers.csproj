@@ -7,6 +7,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj" />
       <ProjectReference Include="..\Pds.Data\Pds.Data.csproj" />
+      <ProjectReference Include="..\Pds.Services.Models\Pds.Services.Models.csproj" />
     </ItemGroup>
 
     <ItemGroup>

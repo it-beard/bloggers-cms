@@ -1,12 +1,11 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Pds.Web.Common;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Pds.Web
 {
@@ -18,6 +17,8 @@ namespace Pds.Web
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddTransient<IApiClient, ApiClient>();
+            builder.Services.AddHeadElementHelper();
 
             builder.Services.AddOidcAuthentication(options =>
             {

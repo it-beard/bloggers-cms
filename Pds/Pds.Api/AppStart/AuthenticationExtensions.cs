@@ -10,7 +10,7 @@ namespace Pds.Api.AppStart
     {
         private const string CorsPolicy = "PdsCorsPolicy";
 
-        public static void AddAuth0Authentication(this IServiceCollection services, IConfiguration configuration)
+        public static void AddCustomAuth0Authentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(options =>
             {
@@ -23,7 +23,7 @@ namespace Pds.Api.AppStart
             });
         }
 
-        public static void AddPdsCorsPolicy(this IServiceCollection services, IConfiguration configuration)
+        public static void AddCustomPdsCorsPolicy(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddCors(options =>
             {
@@ -34,7 +34,7 @@ namespace Pds.Api.AppStart
             });
         }
 
-        public static void UsePdsCorsPolicy(this IApplicationBuilder app)
+        public static void UseCustomPdsCorsPolicy(this IApplicationBuilder app)
         {
             app.UseCors(CorsPolicy);
         }

@@ -1,5 +1,16 @@
-**People Discovery System (PDS)** - platform that allows save and use of specific information about people like BIO, location, social links, etc for blogging reasons. The platform is creating as a part of the ecosystem of "АйТиБорода" youtube-show and help store information about the new guests of the show.
+[![Deploy apps to Production](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml/badge.svg?branch=main)](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml) 
+[![Deploy apps to Test](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-test-action.yml/badge.svg)](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-test-action.yml)
 
-Project board: https://github.com/itbeard/people-discovery-system/projects/1
+**Bloggers CMS** (старое название "People Discovery System") - это система управления контентом, разрабатываемая специально под задачи блогеров. Платформа разрабатывается как часть экосистемы вокруг проекта ["АйТиБорода"](https://itbeard.com).
 
-Wiki: https://github.com/itbeard/people-discovery-system/wiki
+# Ссылки
+Bloggers CMS (тестовое окружение): https://pds-web-dev.azurewebsites.net  
+Wiki проекта: https://github.com/itbeard/people-discovery-system/wiki  
+Kandan-доска: https://github.com/itbeard/people-discovery-system/projects/1
+
+# Общение
+Всё общение с контрибьюторами проекту ведется на discord-сервере "[Родная Айтишка](https://discord.gg/it)", канал `#bloggers-cms`
+
+# Лицензия
+
+Apache License 2.0, подробнее тут [LICENSE](LICENSE).

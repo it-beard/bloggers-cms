@@ -9,7 +9,9 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="5.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.2" PrivateAssets="all" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
         <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+        <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="5.4.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -18,6 +20,22 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\FONT-LICENSE" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
     </ItemGroup>
 
 </Project>

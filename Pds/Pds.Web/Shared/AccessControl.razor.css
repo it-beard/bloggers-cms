@@ -1,0 +1,21 @@
+﻿.login-panel{
+    padding: 0 15px;
+    color: white;
+    width: 100%;
+    position: relative;
+    overflow: auto;
+    display: flex;
+    font-size: 0.9rem;
+}
+
+.login-panel a {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    margin: auto 0 auto auto;
+}
+
+.login-panel span {
+    display: inline-block;
+    margin: auto;
+ }

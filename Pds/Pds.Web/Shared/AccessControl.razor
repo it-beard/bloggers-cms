@@ -6,11 +6,20 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name!
-        <a href="#" @onclick="BeginSignOut">Log out</a>
+        <div class="login-panel">
+            <span>
+                @context.User.Identity.Name
+            </span>
+            <a href="#" class="btn btn-primary btn-sm" @onclick="BeginSignOut">Выйти</a>
+        </div>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+        <div class="login-panel">
+            <span>
+                Привет, гость!
+            </span>
+            <a class="btn btn-primary btn-sm" href="authentication/login">Войти</a>
+        </div>
     </NotAuthorized>
 </AuthorizeView>
 

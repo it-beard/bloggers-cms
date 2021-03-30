@@ -1,26 +1,56 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Pds.Web</a>
+﻿@using static Pds.Web.Common.Constants
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <div class="app-title">
+        <NavLink href="" Match="NavLinkMatch.All">
+            @AppName
+        </NavLink>
+    </div>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <div class="access-control">
+        <AccessControl/>
+    </div>
+
     <ul class="nav flex-column">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door" aria-hidden="true"></span> Главная
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link" href="content">
+                <span class="bi bi-camera-video" aria-hidden="true"></span> Контент
             </NavLink>
         </li>
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="persons">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Люди
+                <span class="bi bi-people" aria-hidden="true"></span> Персоны
             </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="clients">
+                <span class="bi bi-building" aria-hidden="true"></span> Клиенты
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="map">
+                <span class="bi bi-map" aria-hidden="true"></span> Карта
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <a class="nav-link" href="https://s.itbeard.com/" target="_blank">
+                <span class="bi bi-link-45deg" aria-hidden="true"></span> Сокращатель ссылок
+            </a>
+        </li>
+        <li class="nav-item px-3">
+            <a class="nav-link" href="https://github.com/itbeard/people-discovery-system" target="_blank">
+                <span class="bi bi-link-45deg" aria-hidden="true"></span> GitHub
+            </a>
         </li>
     </ul>
 </div>

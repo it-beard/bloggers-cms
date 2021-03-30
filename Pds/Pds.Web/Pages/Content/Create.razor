@@ -1,0 +1,178 @@
+﻿@page "/content/add"
+@attribute [Authorize] 
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Content
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление контента")</Title>
+
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Добавление контента
+    <a href="/content" class="btn btn-primary" >Назад</a>
+</h3>
+@if (channels == null || clients == null || persons == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <div class="form-group">
+            <InputRadioGroup Name="channel" @bind-Value="content.ChannelId">
+                @foreach (var channel in channels)
+                {
+                    var id = $"channel_{channel.Id.ToString()}";
+                    <InputRadio Name="channel" class="btn-check" Value="channel.Id" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@channel.Name</label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <InputRadioGroup Name="type" @bind-Value="content.Type">
+                @foreach (var type in (ContentType[])Enum
+                    .GetValues(typeof(ContentType)))
+                {
+                    var id = $"type_{type.ToString()}";
+                    <InputRadio Name="type" class="btn-check" Value="type" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@type</label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <InputRadioGroup Name="social-media-type" @bind-Value="content.SocialMediaType">
+                @foreach (var socialMediaType in (SocialMediaType[])Enum
+                    .GetValues(typeof(SocialMediaType)))
+                {
+                    var id = $"sm_type_{socialMediaType.ToString()}";
+                    <InputRadio Name="social-media-type" class="btn-check" Value="socialMediaType" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@socialMediaType</label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <label for="title" class="form-label label-required">Заголовок</label>
+            <InputText class="form-control" id="title" @bind-Value="content.Title"/>
+        </div>
+
+        <div class="form-group">
+            <label for="release_date" class="form-label label-required">Когда:</label>
+            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
+            
+            <label for="release_date" class="form-label">Продлится до:</label>
+            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDateUtc"/>
+        </div>
+
+        <div class="form-group">
+            <label for="clients" class="form-label label-required">Клиент</label>
+            <InputSelect class="form-control" id="clients" @bind-Value="content.ClientId">
+                @foreach (var client in clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="form-group">
+            <label for="bill_contact" class="form-label label-required">Контакт клиента</label>
+            <InputText class="form-control" id="bill_contact" @bind-Value="content.BillContact"/>
+            <div class="contact-type">
+                <InputRadioGroup Name="contact-type" @bind-Value="content.BillContactType">
+                    @foreach (var type in (ContactType[])Enum
+                        .GetValues(typeof(ContactType)))
+                    {
+                        var id = $"contact-type{type.ToString()}";
+                        <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
+                        <label class="btn btn-secondary btn-sm" for="@id">@type</label>
+                    }
+                </InputRadioGroup>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="bill_cost" class="form-label">Стоимость USD:</label>
+            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.BillCost"/>
+        </div>
+
+        <div class="form-group">
+            <label for="comment" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="content.Comment" rows="3"/>
+        </div>
+
+        <div class="form-group">
+            <label for="persons" class="form-label">Персона</label>
+            <InputSelect class="form-control" id="persons" @bind-Value="content.PersonId">
+                @foreach (var person in persons)
+                {
+                    <option value="@person.Id">@person.FullName</option>
+                }
+            </InputSelect>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private CreateContentRequest content = new ()
+    {
+        ReleaseDate = DateTime.Today.Date,
+        ChannelId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f") //Default АйТиБорода
+    };
+    private EditContext editContext;
+    private List<ChannelForRadioboxGroupDto> channels;
+    private List<ClientForLookupDto> clients;
+    private List<PersonForLookupDto> persons;
+    private bool isCreateButtonDisabled;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        isCreateButtonDisabled = false;
+        editContext = new EditContext(content);
+        channels = await GetChannels();
+        clients = await GetClients();
+        persons = await GetPersons();
+    }
+    
+    private async Task HandleSubmit()
+    {
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isCreateButtonDisabled = true;
+            await ApiClient.Post<object, CreateContentRequest>(TokenProvider, "content", content);
+            NavigationManager.NavigateTo("/content");
+        }
+    }
+
+    private async Task<List<ChannelForRadioboxGroupDto>> GetChannels()
+    {
+        return await ApiClient.Get<List<ChannelForRadioboxGroupDto>>(TokenProvider, "content/get-channels");
+    }
+
+    private async Task<List<ClientForLookupDto>> GetClients()
+    {
+        return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "content/get-clients");
+    }
+
+    private async Task<List<PersonForLookupDto>> GetPersons()
+    {
+        return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, "content/get-persons");
+    }
+}

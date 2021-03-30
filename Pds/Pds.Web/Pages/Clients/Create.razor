@@ -1,0 +1,69 @@
+﻿@page "/clients/add"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Client
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление клиента")</Title>
+
+@if (client == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h3 class="card-header d-flex justify-content-between align-items-center">
+        Добавление клиента
+        <a href="/clients" class="btn btn-primary"> Назад </a>
+    </h3>
+
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <div class="form-group">
+            <label for="first_name" class="form-label">Наименование</label>
+            <InputText class="form-control" id="first_name" @bind-Value="client.Name"/>
+        </div>
+
+        <div class="form-group">
+            <label for="information" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="information" @bind-Value="client.Comment" rows="3"/>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private CreateClientRequest client = new();
+    private EditContext editContext;
+    private bool isCreateButtonDisabled;
+    
+    protected override void OnInitialized()
+    {
+        isCreateButtonDisabled = false;
+        editContext = new EditContext(client);
+    }
+    
+    private async Task HandleSubmit()
+    {
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isCreateButtonDisabled = true;
+            await ApiClient.Post<object, CreateClientRequest>(TokenProvider, "clients", client);
+            NavigationManager.NavigateTo("/clients");
+        }
+    }
+}

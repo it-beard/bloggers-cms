@@ -28,7 +28,7 @@ namespace Pds.Di
 
         private void ServicesRegister(ref ContainerBuilder builder, Assembly[] assemblies)
         {
-            var servicesAssembly = assemblies.FirstOrDefault(t => t.FullName.ToLower().Contains("pds.services"));
+            var servicesAssembly = assemblies.FirstOrDefault(t => t.FullName.ToLower().Contains("pds.services,"));
             builder.RegisterAssemblyTypes(servicesAssembly)
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces();
@@ -39,7 +39,7 @@ namespace Pds.Di
             builder.RegisterGeneric(typeof(RepositoryBase<>))
                 .As(typeof(IRepositoryBase<>));
 
-            var dataAssembly = assemblies.FirstOrDefault(t => t.FullName.ToLower().Contains("pds.data"));
+            var dataAssembly = assemblies.FirstOrDefault(t => t.FullName.ToLower().Contains("pds.data,"));
             builder.RegisterAssemblyTypes(dataAssembly)
                 .Where(t => t.Name.EndsWith("Repository"))
                 .AsImplementedInterfaces();
