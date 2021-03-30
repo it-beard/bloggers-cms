@@ -69,7 +69,6 @@ else
     private PayBillPayload paymentPayload = new()
     {
         PaymentType = PaymentType.BankAccount, //default
-        PaidAt = DateTime.Now.Date
     };
     private EditContext editContext;
     private GetContentResponse content;
@@ -82,7 +81,7 @@ else
         paymentPayload.Cost = content.BillCost;
         paymentPayload.Comment = content.BillComment;
         paymentPayload.PaymentType = content.BillPaymentType ?? PaymentType.BankAccount;
-        paymentPayload.PaidAt = content.BillPaidAt ?? DateTime.Now.Date;
+        paymentPayload.PaidAt = content.BillPaidAt ?? GetCurrentDateWithoutOffset();
         editContext = new EditContext(paymentPayload);
     }
     
@@ -93,7 +92,6 @@ else
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            paymentPayload.PaidAt = paymentPayload.PaidAt.ToLocalTime().Date;
             await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bill/{content.BillId}/pay", paymentPayload);
             NavigationManager.NavigateTo("/content");
         }
@@ -102,5 +100,11 @@ else
     private async Task<GetContentResponse> GetContentAsync(Guid contentId)
     {
         return await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{contentId}");
+    }
+
+    private DateTime GetCurrentDateWithoutOffset()
+    {
+        var date = DateTime.Now.Date;
+        return new DateTime(date.Ticks);
     }
 }
