@@ -135,7 +135,6 @@ else
 @code {
     private CreateContentRequest content = new ()
     {
-        ReleaseDate = DateTime.Today.Date,
         ChannelId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), //Default АйТиБорода
         Type = ContentType.Integration, //Default
         SocialMediaType = SocialMediaType.YouTube, //Default
@@ -150,6 +149,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
+        content.ReleaseDate = GetCurrentDateWithoutOffset();
         editContext = new EditContext(content);
         channels = await GetChannels();
         clients = await GetClients();
@@ -181,5 +181,11 @@ else
     private async Task<List<PersonForLookupDto>> GetPersons()
     {
         return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, "content/get-persons");
+    }
+
+    private DateTime GetCurrentDateWithoutOffset()
+    {
+        var date = DateTime.Now.Date;
+        return new DateTime(date.Ticks);
     }
 }
