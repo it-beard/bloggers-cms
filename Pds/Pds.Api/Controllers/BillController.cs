@@ -44,7 +44,8 @@ namespace Pds.Api.Controllers
                     BillId = billId,
                     Cost = payload.Cost,
                     Comment = payload.Comment,
-                    PaymentType = payload.PaymentType
+                    PaymentType = payload.PaymentType,
+                    PaidAt = payload.PaidAt
                 };
                 await billService.PayBillAsync(model);
                 

@@ -44,6 +44,9 @@ else
         <div class="form-group">
             <label for="bill_cost" class="form-label  label-required">Финальная стоимость USD:</label>
             <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="paymentPayload.Cost"/>
+
+            <label for="bill_cost" class="form-label  label-required">Дата оплаты:</label>
+            <InputDate class="form-control pay-date" id="bill_cost" @bind-Value="paymentPayload.PaidAt"/>
         </div>
 
         <div class="form-group">
@@ -65,7 +68,8 @@ else
     public string ContentId { get; set; }
     private PayBillPayload paymentPayload = new()
     {
-        PaymentType = PaymentType.BankAccount //default
+        PaymentType = PaymentType.BankAccount, //default
+        PaidAt = DateTime.Now.Date
     };
     private EditContext editContext;
     private GetContentResponse content;
@@ -78,6 +82,7 @@ else
         paymentPayload.Cost = content.BillCost;
         paymentPayload.Comment = content.BillComment;
         paymentPayload.PaymentType = content.BillPaymentType ?? PaymentType.BankAccount;
+        paymentPayload.PaidAt = content.BillPaidAt ?? DateTime.Now.Date;
         editContext = new EditContext(paymentPayload);
     }
     
@@ -88,6 +93,7 @@ else
         if (isValid)
         {
             isCreateButtonDisabled = true;
+            paymentPayload.PaidAt = paymentPayload.PaidAt.ToLocalTime().Date;
             await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bill/{content.BillId}/pay", paymentPayload);
             NavigationManager.NavigateTo("/content");
         }

@@ -12,5 +12,7 @@ namespace Pds.Services.Models.Bill
         public decimal Cost { get; set; }
 
         public string Comment { get; set; }
+
+        public DateTime PaidAt { get; set; }
     }
 }

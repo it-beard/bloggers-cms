@@ -10,7 +10,15 @@
     width: 120px;
     display: inline-block;
     margin-left: 10px;
+    margin-right: 10px;
 }
+
+::deep input.pay-date{
+    width: 150px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+ }
 
 .btn-check:checked + .btn-secondary {
     color: #fff;
