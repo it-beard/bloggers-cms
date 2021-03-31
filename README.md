@@ -9,7 +9,7 @@ Wiki проекта: https://github.com/itbeard/people-discovery-system/wiki
 Kandan-доска: https://github.com/itbeard/people-discovery-system/projects/1
 
 # Общение
-Всё общение с контрибьюторами проекту ведется на discord-сервере "[Родная Айтишка](https://discord.gg/it)", канал `#bloggers-cms`
+111Всё общение с контрибьюторами проекту ведется на discord-сервере "[Родная Айтишка](https://discord.gg/it)", канал `#bloggers-cms`
 
 # Лицензия
 
