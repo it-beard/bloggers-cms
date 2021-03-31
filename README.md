@@ -6,8 +6,8 @@
 
 # Ссылки
 Bloggers CMS (тестовое окружение): https://pds-web-dev.azurewebsites.net  
-Wiki проекта: https://github.com/itbeard/people-discovery-system/wiki  
-Kandan-доска: https://github.com/itbeard/people-discovery-system/projects/1
+Wiki проекта: https://github.com/it-beard/bloggers-cms/wiki  
+Kandan-доска: https://github.com/it-beard/bloggers-cms/projects/1
 
 # Общение
 Всё общение с контрибьюторами проекту ведется на discord-сервере "[Родная Айтишка](https://discord.gg/it)", канал `#bloggers-cms`
