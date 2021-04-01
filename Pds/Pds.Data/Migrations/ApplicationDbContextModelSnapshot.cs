@@ -116,6 +116,22 @@ namespace Pds.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Channels");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "АйТиБорода",
+                            Url = "https://youtube.com/itbeard"
+                        },
+                        new
+                        {
+                            Id = new Guid("6bb23fa2-4b73-4a3f-c3d4-08d8d2705c5f"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Тёмный Лес",
+                            Url = "https://youtube.com/thedarkless"
+                        });
                 });
 
             modelBuilder.Entity("Pds.Data.Entities.Client", b =>
