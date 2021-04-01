@@ -10,7 +10,7 @@ namespace Pds.Data
         private IPersonRepository personRepository;
         private IResourceRepository resourceRepository;
         private IContentRepository contentRepository;
-        private IChannelRepository channelRepository;
+        private IBrandRepository brandRepository;
         private IClientRepository clientRepository;
         private IBillRepository billRepository;
 
@@ -22,7 +22,7 @@ namespace Pds.Data
         public IPersonRepository Persons => personRepository ??= new PersonRepository(context);
         public IResourceRepository Resources => resourceRepository ??= new ResourceRepository(context);
         public IContentRepository Content => contentRepository ??= new ContentRepository(context);
-        public IChannelRepository Channels => channelRepository ??= new ChannelRepository(context);
+        public IBrandRepository Brands => brandRepository ??= new BrandRepository(context);
         public IClientRepository Clients => clientRepository ??= new ClientRepository(context);
         public IBillRepository Bills => billRepository ??= new BillRepository(context);
 

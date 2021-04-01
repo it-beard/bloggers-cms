@@ -11,7 +11,7 @@
 
 <Title>@WithSuffix("Добавление персоны")</Title>
 
-@if (person.Channels == null)
+@if (person.Brands == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -26,11 +26,11 @@ else
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
         <div class="form-group">
-            @foreach (var channel in person.Channels)
+            @foreach (var brand in person.Brands)
             {
-                var id = $"channel_{channel.Id.ToString()}";
-                <InputCheckbox name="@channel.Id" class="btn-check" @bind-Value="channel.IsSelected" Id="@id"/>
-                <label class="btn btn-secondary" for="@id">@channel.Name</label>
+                var id = $"brand_{brand.Id.ToString()}";
+                <InputCheckbox name="@brand.Id" class="btn-check" @bind-Value="brand.IsSelected" Id="@id"/>
+                <label class="btn btn-secondary" for="@id">@brand.Name</label>
             }
         </div>
 
@@ -106,7 +106,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
-        person.Channels = await GetChannels();
+        person.Brands = await GetBrands();
         editContext = new EditContext(person);
     }
     
@@ -133,8 +133,8 @@ else
         person.Resources.Remove(resource);
     }
 
-    private async Task<List<ChannelForCheckboxesDto>> GetChannels()
+    private async Task<List<BrandForCheckboxesDto>> GetBrands()
     {
-        return await ApiClient.Get<List<ChannelForCheckboxesDto>>(TokenProvider, "persons/get-channels");
+        return await ApiClient.Get<List<BrandForCheckboxesDto>>(TokenProvider, "persons/get-brands");
     }
 }

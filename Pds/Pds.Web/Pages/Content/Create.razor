@@ -16,7 +16,7 @@
     Добавление контента
     <a href="/content" class="btn btn-primary" >Назад</a>
 </h3>
-@if (channels == null || clients == null || persons == null)
+@if (brands == null || clients == null || persons == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -26,12 +26,12 @@ else
 {
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
         <div class="form-group">
-            <InputRadioGroup Name="channel" @bind-Value="content.ChannelId">
-                @foreach (var channel in channels)
+            <InputRadioGroup Name="brand" @bind-Value="content.BrandId">
+                @foreach (var brand in brands)
                 {
-                    var id = $"channel_{channel.Id.ToString()}";
-                    <InputRadio Name="channel" class="btn-check" Value="channel.Id" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">@channel.Name</label>
+                    var id = $"brand_{brand.Id.ToString()}";
+                    <InputRadio Name="brand" class="btn-check" Value="brand.Id" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@brand.Name</label>
                 }
             </InputRadioGroup>
         </div>
@@ -135,13 +135,13 @@ else
 @code {
     private CreateContentRequest content = new ()
     {
-        ChannelId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), //Default АйТиБорода
+        BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), //Default АйТиБорода
         Type = ContentType.Integration, //Default
         SocialMediaType = SocialMediaType.YouTube, //Default
         BillContactType = ContactType.Telegram //Default
     };
     private EditContext editContext;
-    private List<ChannelForRadioboxGroupDto> channels;
+    private List<BrandForRadioboxGroupDto> brands;
     private List<ClientForLookupDto> clients;
     private List<PersonForLookupDto> persons;
     private bool isCreateButtonDisabled;
@@ -151,7 +151,7 @@ else
         isCreateButtonDisabled = false;
         content.ReleaseDate = GetCurrentDateWithoutOffset();
         editContext = new EditContext(content);
-        channels = await GetChannels();
+        brands = await GetBrands();
         clients = await GetClients();
         persons = await GetPersons();
     }
@@ -168,9 +168,9 @@ else
         }
     }
 
-    private async Task<List<ChannelForRadioboxGroupDto>> GetChannels()
+    private async Task<List<BrandForRadioboxGroupDto>> GetBrands()
     {
-        return await ApiClient.Get<List<ChannelForRadioboxGroupDto>>(TokenProvider, "content/get-channels");
+        return await ApiClient.Get<List<BrandForRadioboxGroupDto>>(TokenProvider, "content/get-brands");
     }
 
     private async Task<List<ClientForLookupDto>> GetClients()

@@ -43,7 +43,7 @@ namespace Pds.Services.Services
                 Title = model.Title,
                 Status = ContentStatus.Active,
                 Type = model.Type,
-                ChannelId = model.ChannelId,
+                BrandId = model.BrandId,
                 SocialMediaType = model.SocialMediaType,
                 Comment = model.Comment,
                 ReleaseDateUtc = model.ReleaseDate.Date,
@@ -62,7 +62,7 @@ namespace Pds.Services.Services
                 PrimaryContactType = model.BillContactType,
                 Status = model.BillCost == 0 ? BillStatus.Paid : BillStatus.Active,
                 Type = BillType.Content,
-                ChannelId = model.ChannelId,
+                BrandId = model.BrandId,
                 ClientId = model.ClientId
             };
 

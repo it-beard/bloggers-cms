@@ -15,7 +15,7 @@ namespace Pds.Data
         public DbSet<Content> Contents { get; set; }
         public DbSet<Bill> Bills { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Channel> Channels { get; set; }
+        public DbSet<Brand> Brands { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -41,7 +41,7 @@ namespace Pds.Data
 
         private void SeedDate(ModelBuilder builder)
         {
-            var channels = new List<Channel>
+            var brands = new List<Brand>
             {
                 new()
                 {
@@ -57,7 +57,7 @@ namespace Pds.Data
                 }
             };
 
-            builder.Entity<Channel>().HasData(channels.ToArray());
+            builder.Entity<Brand>().HasData(brands.ToArray());
         }
     }
 }

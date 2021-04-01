@@ -5,7 +5,7 @@ namespace Pds.Services.Models.Content
 {
     public class CreateContentModel
     {
-        public Guid ChannelId { get; set; }
+        public Guid BrandId { get; set; }
         
         public Guid ClientId { get; set; }
 

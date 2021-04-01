@@ -4,8 +4,8 @@ using Pds.Data.Entities;
 
 namespace Pds.Services.Interfaces
 {
-    public interface IChannelService
+    public interface IBrandService
     {
-        Task<List<Channel>> GetChannelsForListsAsync();
+        Task<List<Brand>> GetBrandsForListsAsync();
     }
 }

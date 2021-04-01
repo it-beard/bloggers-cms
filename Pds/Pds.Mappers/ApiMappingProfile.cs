@@ -67,8 +67,8 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => p.Bill.PaidAt));
             CreateMap<Client, ClientDto>();
-            CreateMap<Channel, ChannelForRadioboxGroupDto>();
-            CreateMap<Channel, ChannelForCheckboxesDto>();
+            CreateMap<Brand, BrandForRadioboxGroupDto>();
+            CreateMap<Brand, BrandForCheckboxesDto>();
             CreateMap<Client, ClientForLookupDto>()
                 .ForMember(
                     dest => dest.Id,
@@ -108,9 +108,9 @@ namespace Pds.Mappers
                         .MapFrom(p => DateTime.UtcNow));
             CreateMap<CreatePersonRequest, Person>()
                 .ForMember(
-                    dest => dest.Channels,
+                    dest => dest.Brands,
                     opt => opt
-                        .MapFrom(p => ChannelsDtoToChannelsCollection(p.Channels.Where( c => c.IsSelected).ToList())));
+                        .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
             
             #endregion
             
@@ -118,9 +118,9 @@ namespace Pds.Mappers
 
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
-                    dest => dest.ChannelId,
+                    dest => dest.BrandId,
                     opt => opt
-                        .MapFrom(p => p.ChannelId.Value))
+                        .MapFrom(p => p.BrandId.Value))
                 .ForMember(
                     dest => dest.ClientId,
                     opt => opt
@@ -129,9 +129,9 @@ namespace Pds.Mappers
             #endregion
         }
 
-        private ICollection<Channel> ChannelsDtoToChannelsCollection(List<ChannelForCheckboxesDto> channels)
+        private ICollection<Brand> BrandsDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
         {
-            return channels.Select(channel => new Channel {Id = channel.Id}).ToList();
+            return brands.Select(b => new Brand {Id = b.Id}).ToList();
         }
     }
 }

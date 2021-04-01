@@ -7,7 +7,7 @@ namespace Pds.Api.Contracts.Content
     public class CreateContentRequest
     {
         [Required]
-        public Guid? ChannelId { get; set; }
+        public Guid? BrandId { get; set; }
 
         [Required, EnumDataType(typeof(ContentType))]
         public ContentType Type { get; set; }
