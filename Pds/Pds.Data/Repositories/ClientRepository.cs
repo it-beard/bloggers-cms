@@ -16,7 +16,7 @@ namespace Pds.Data.Repositories
             this.context = context;
         }
         
-        public async Task<List<Client>> GetForListsAsync()
+        public async Task<List<Client>> GetAllOrderByNameAsync()
         {
             return await context.Clients
                 .OrderBy(p =>p.Name)
