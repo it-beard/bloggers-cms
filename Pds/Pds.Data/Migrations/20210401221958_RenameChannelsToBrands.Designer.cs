@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pds.Data;
 
 namespace Pds.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210401221958_RenameChannelsToBrands")]
+    partial class RenameChannelsToBrands
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,16 +51,6 @@ namespace Pds.Data.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Contact")
-                        .IsRequired()
-                        .HasColumnType("varchar(300)");
-
-                    b.Property<string>("ContactName")
-                        .HasColumnType("varchar(300)");
-
-                    b.Property<int>("ContactType")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("ContentId")
                         .HasColumnType("uniqueidentifier");
 
@@ -72,6 +64,13 @@ namespace Pds.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PrimaryContact")
+                        .IsRequired()
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<int>("PrimaryContactType")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -167,7 +166,7 @@ namespace Pds.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BillId")
+                    b.Property<Guid>("BillId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BrandId")

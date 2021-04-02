@@ -7,11 +7,11 @@ using Pds.Data.Repositories.Interfaces;
 
 namespace Pds.Data.Repositories
 {
-    public class ChannelRepository : RepositoryBase<Channel>, IChannelRepository
+    public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
     {
         private readonly ApplicationDbContext context;
         
-        public ChannelRepository(ApplicationDbContext context) : base(context)
+        public BrandRepository(ApplicationDbContext context) : base(context)
         {
             this.context = context;
         }

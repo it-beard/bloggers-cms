@@ -43,7 +43,7 @@ namespace Pds.Services.Services
                 Title = model.Title,
                 Status = ContentStatus.Active,
                 Type = model.Type,
-                ChannelId = model.ChannelId,
+                BrandId = model.BrandId,
                 SocialMediaType = model.SocialMediaType,
                 Comment = model.Comment,
                 ReleaseDateUtc = model.ReleaseDate.Date,
@@ -51,23 +51,28 @@ namespace Pds.Services.Services
                 PersonId = model.PersonId
             };
 
-            var bill = new Bill
+            if (!model.IsFree)
             {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow,
-                Comment = $"Created automatically  for content with id {content.Id}",
-                Cost = model.BillCost,
-                ContentId = content.Id,
-                PrimaryContact = model.BillContact,
-                PrimaryContactType = model.BillContactType,
-                Status = model.BillCost == 0 ? BillStatus.Paid : BillStatus.Active,
-                Type = BillType.Content,
-                ChannelId = model.ChannelId,
-                ClientId = model.ClientId
-            };
+                var bill = new Bill
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.UtcNow,
+                    Comment = $"Created automatically for content with id {content.Id}",
+                    Cost = model.Bill.Cost,
+                    ContentId = content.Id,
+                    Contact = model.Bill.Contact,
+                    ContactName = model.Bill.ContactName,
+                    ContactType = model.Bill.ContactType,
+                    Status = model.Bill.Cost == 0 ? BillStatus.Paid : BillStatus.Active,
+                    Type = BillType.Content,
+                    BrandId = model.BrandId,
+                    ClientId = model.Bill.ClientId
+                };
 
-            content.Bill = bill;
-            content.BillId = bill.Id;
+                content.Bill = bill;
+                content.BillId = bill.Id;
+            }
+
             var result = await unitOfWork.Content.InsertAsync(content);
 
             return result.Id;
@@ -76,9 +81,22 @@ namespace Pds.Services.Services
         public async Task DeleteAsync(Guid clientId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillAsync(clientId);
-            if (content != null && 
-                content.Status == ContentStatus.Active && 
-                (content.Bill.Status == BillStatus.Active || content.Bill.Cost == 0))
+            var bill = content?.BillId != null ? 
+                await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == content.BillId) : 
+                null;
+
+            if (content == null)
+            {
+                return;
+            }
+            
+            if (bill == null)
+            {
+                await unitOfWork.Content.Delete(content);
+                return;
+            }
+            
+            if (content.Status == ContentStatus.Active && content.Bill.Status == BillStatus.Active)
             {
                 await unitOfWork.Content.Delete(content);
                 await unitOfWork.Bills.Delete(content.Bill);
@@ -88,7 +106,8 @@ namespace Pds.Services.Services
         public async Task ArchiveAsync(Guid contentId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
-            if (content != null && content.Status == ContentStatus.Active && content.Bill.Status == BillStatus.Paid)
+            if (content != null && content.Status == ContentStatus.Active && 
+                (content.Bill == null || content.Bill.Status == BillStatus.Paid))
             {
                 content.Status = ContentStatus.Archived;
                 content.UpdatedAt = DateTime.UtcNow;

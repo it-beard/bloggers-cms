@@ -24,20 +24,23 @@ namespace Pds.Data.Entities
 
         [Required]
         [Column(TypeName = "varchar(300)")]
-        public string PrimaryContact { get; set; }
+        public string Contact { get; set; }
+
+        [Column(TypeName = "varchar(300)")]
+        public string ContactName { get; set; }
 
         [Required]
-        public ContactType PrimaryContactType { get; set; }
+        public ContactType ContactType { get; set; }
 
         public DateTime? PaidAt { get; set; }
 
-        public Guid ChannelId { get; set; }
+        public Guid BrandId { get; set; }
 
         public Guid? ContentId { get; set; }
 
         public Guid? ClientId { get; set; }
         
-        public virtual Channel Channel { get; set; }
+        public virtual Brand Brand { get; set; }
 
         public virtual Content Content { get; set; }
 

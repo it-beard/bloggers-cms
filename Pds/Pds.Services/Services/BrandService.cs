@@ -6,18 +6,18 @@ using Pds.Services.Interfaces;
 
 namespace Pds.Services.Services
 {
-    public class ChannelService : IChannelService
+    public class BrandService : IBrandService
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public ChannelService(IUnitOfWork unitOfWork)
+        public BrandService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<List<Channel>> GetChannelsForListsAsync()
+        public async Task<List<Brand>> GetBrandsForListsAsync()
         {
-            return await unitOfWork.Channels.GetAllAsync();
+            return await unitOfWork.Brands.GetAllAsync();
         }
     }
 }

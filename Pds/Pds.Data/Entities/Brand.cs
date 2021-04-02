@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Pds.Data.Entities
 {
-    public class Channel : EntityBase
+    public class Brand : EntityBase
     {
         [Required]
         [Column(TypeName = "varchar(300)")]

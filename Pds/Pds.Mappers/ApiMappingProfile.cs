@@ -28,23 +28,13 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => $"{p.Country} {p.City}"));
             CreateMap<Resource, ResourceDto>();
+            
+            CreateMap<Bill, ContentListBillDto>();
             CreateMap<Content, ContentDto>()
-                .ForMember(
-                    dest => dest.BillCost,
-                    opt => opt
-                        .MapFrom(p => p.Bill.Cost))
-                .ForMember(
-                    dest => dest.BillStatus,
-                    opt => opt
-                        .MapFrom(p => p.Bill.Status))
                 .ForMember(
                     dest => dest.ClientName,
                     opt => opt
-                        .MapFrom(p => p.Bill.Client.Name))
-                .ForMember(
-                    dest => dest.PaymentType,
-                    opt => opt
-                        .MapFrom(p => p.Bill.PaymentType));
+                        .MapFrom(p => p.Bill.Client.Name));
             CreateMap<Content, GetContentResponse>()
                 .ForMember(
                     dest => dest.BillCost,
@@ -67,14 +57,9 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => p.Bill.PaidAt));
             CreateMap<Client, ClientDto>();
-            CreateMap<Channel, ChannelForRadioboxGroupDto>();
-            CreateMap<Channel, ChannelForCheckboxesDto>();
+            CreateMap<Brand, BrandForRadioboxGroupDto>();
+            CreateMap<Brand, BrandForCheckboxesDto>();
             CreateMap<Client, ClientForLookupDto>()
-                .ForMember(
-                    dest => dest.Id,
-                    opt => opt
-                        .MapFrom((p, s) =>
-                            s.Id = p.Id == Guid.Empty ? null : p.Id))
                 .ForMember(
                     dest => dest.Name,
                     opt => opt
@@ -108,30 +93,27 @@ namespace Pds.Mappers
                         .MapFrom(p => DateTime.UtcNow));
             CreateMap<CreatePersonRequest, Person>()
                 .ForMember(
-                    dest => dest.Channels,
+                    dest => dest.Brands,
                     opt => opt
-                        .MapFrom(p => ChannelsDtoToChannelsCollection(p.Channels.Where( c => c.IsSelected).ToList())));
+                        .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
             
             #endregion
             
             #region Contracts to Models
 
+            CreateMap<ContentBillDto, ContentBillModel>();
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
-                    dest => dest.ChannelId,
+                    dest => dest.BrandId,
                     opt => opt
-                        .MapFrom(p => p.ChannelId.Value))
-                .ForMember(
-                    dest => dest.ClientId,
-                    opt => opt
-                        .MapFrom(p => p.ClientId.Value));
+                        .MapFrom(p => p.BrandId.Value));
             
             #endregion
         }
 
-        private ICollection<Channel> ChannelsDtoToChannelsCollection(List<ChannelForCheckboxesDto> channels)
+        private ICollection<Brand> BrandsDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
         {
-            return channels.Select(channel => new Channel {Id = channel.Id}).ToList();
+            return brands.Select(b => new Brand {Id = b.Id}).ToList();
         }
     }
 }

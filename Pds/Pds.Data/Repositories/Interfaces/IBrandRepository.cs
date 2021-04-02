@@ -4,7 +4,7 @@ using Pds.Data.Entities;
 
 namespace Pds.Data.Repositories.Interfaces
 {
-    public interface IChannelRepository : IRepositoryBase<Channel>
+    public interface IBrandRepository : IRepositoryBase<Brand>
     {
     }
 }

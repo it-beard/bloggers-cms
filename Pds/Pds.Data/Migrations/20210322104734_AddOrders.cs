@@ -157,6 +157,16 @@ namespace Pds.Data.Migrations
                 principalTable: "Persons",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+            
+            migrationBuilder.InsertData(
+                table: "Channels",
+                columns: new[] { "Id", "CreatedAt", "Name", "UpdatedAt", "Url" },
+                values: new object[] { new Guid("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "АйТиБорода", null, "https://youtube.com/itbeard" });
+
+            migrationBuilder.InsertData(
+                table: "Channels",
+                columns: new[] { "Id", "CreatedAt", "Name", "UpdatedAt", "Url" },
+                values: new object[] { new Guid("6bb23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Тёмный Лес", null, "https://youtube.com/thedarkless" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -192,6 +202,16 @@ namespace Pds.Data.Migrations
                 principalTable: "Persons",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.DeleteData(
+                table: "Channels",
+                keyColumn: "Id",
+                keyValue: new Guid("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"));
+
+            migrationBuilder.DeleteData(
+                table: "Channels",
+                keyColumn: "Id",
+                keyValue: new Guid("6bb23fa2-4b73-4a3f-c3d4-08d8d2705c5f"));
         }
     }
 }

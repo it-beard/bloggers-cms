@@ -29,19 +29,19 @@ namespace Pds.Services.Services
                 throw new ArgumentNullException(nameof(person));
             }
             
-            // Restore channels from DB
-            var channelsFromApi = person.Channels;
-            var channelsFromBd = new List<Channel>();
-            foreach (var channelFromApi in channelsFromApi)
+            // Restore brands from DB
+            var brandsFromApi = person.Brands;
+            var brandsFromBd = new List<Brand>();
+            foreach (var brandFromApi in brandsFromApi)
             {
-                var channelFromDb = await unitOfWork.Channels.GetFirstWhereAsync(c => c.Id == channelFromApi.Id);
-                if (channelFromDb != null)
+                var brandFromDb = await unitOfWork.Brands.GetFirstWhereAsync(c => c.Id == brandFromApi.Id);
+                if (brandFromDb != null)
                 {
-                    channelsFromBd.Add(channelFromDb);
+                    brandsFromBd.Add(brandFromDb);
                 }
             }
 
-            person.Channels = channelsFromBd;
+            person.Brands = brandsFromBd;
             person.CreatedAt = DateTime.UtcNow;
             var result = await unitOfWork.Persons.InsertAsync(person);
 

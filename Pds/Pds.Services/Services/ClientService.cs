@@ -19,7 +19,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Client>> GetAllAsync()
         {
-            return await unitOfWork.Clients.GetAllAsync();
+            return await unitOfWork.Clients.GetAllOrderByNameAsync();
         }
 
         public async Task<Guid> CreateAsync(Client client)
@@ -46,8 +46,8 @@ namespace Pds.Services.Services
 
         public async Task<List<Client>> GetClientsForListsAsync()
         {
-            var clients = new List<Client> {new() {Id = Guid.Empty}};
-            clients.AddRange(await unitOfWork.Clients.GetForListsAsync());
+            var clients = new List<Client> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
+            clients.AddRange(await unitOfWork.Clients.GetAllOrderByNameAsync());
 
             return clients;
         }

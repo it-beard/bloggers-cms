@@ -21,7 +21,7 @@ namespace Pds.Api.Controllers
         private readonly ILogger<PersonController> logger;
         private readonly IMapper mapper;
         private readonly IContentService contentService;
-        private readonly IChannelService channelService;
+        private readonly IBrandService brandService;
         private readonly IPersonService personService;
         private readonly IClientService clientService;
 
@@ -29,14 +29,14 @@ namespace Pds.Api.Controllers
             ILogger<PersonController> logger,
             IMapper mapper,
             IContentService contentService,
-            IChannelService channelService,
+            IBrandService brandService,
             IPersonService personService,
             IClientService clientService)
         {
             this.logger = logger;
             this.mapper = mapper;
             this.contentService = contentService;
-            this.channelService = channelService;
+            this.brandService = brandService;
             this.personService = personService;
             this.clientService = clientService;
         }
@@ -67,16 +67,16 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Return list of channels for checkboxes group
+        /// Return list of brands for checkboxes group
         /// </summary>
         [HttpGet]
-        [Route("get-channels")]
-        public async Task<IActionResult> GetListOfChannels()
+        [Route("get-brands")]
+        public async Task<IActionResult> GetListOfBrands()
         {
             try
             {
-                var channels = await channelService.GetChannelsForListsAsync();
-                var response = mapper.Map<List<ChannelForRadioboxGroupDto>>(channels);
+                var brands = await brandService.GetBrandsForListsAsync();
+                var response = mapper.Map<List<BrandForRadioboxGroupDto>>(brands);
 
                 return Ok(response);
             }

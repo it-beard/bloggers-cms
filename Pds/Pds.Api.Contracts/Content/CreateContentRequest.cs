@@ -4,8 +4,32 @@ using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Content
 {
-    public class CreateContentResponse
+    public class CreateContentRequest
     {
-        public Guid Id { get; set; }
+        [Required]
+        public Guid? BrandId { get; set; }
+
+        [Required, EnumDataType(typeof(ContentType))]
+        public ContentType Type { get; set; }
+
+        [Required, EnumDataType(typeof(SocialMediaType))]
+        public SocialMediaType SocialMediaType { get; set; }
+
+        [Required]
+        public string Title { get; set; }
+
+        public string Comment { get; set; }
+
+        [Required]
+        public DateTime ReleaseDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        public bool IsFree { get; set; }
+
+        [ValidateComplexType]
+        public ContentBillDto Bill { get; set; }
+
+        public Guid? PersonId { get; set; }
     }
 }

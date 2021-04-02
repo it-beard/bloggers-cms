@@ -8,7 +8,7 @@ namespace Pds.Data
         IPersonRepository Persons { get; }
         IResourceRepository Resources { get; }
         IContentRepository Content { get; }
-        IChannelRepository Channels { get; }
+        IBrandRepository Brands { get; }
         IClientRepository Clients { get; }
         IBillRepository Bills { get; }
 
