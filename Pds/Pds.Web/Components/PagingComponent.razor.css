@@ -1,9 +1,27 @@
-﻿.page-size-selector {
-    margin-left: 10px;
-    border: 0px solid #ced4da;
-    background-color: #1b6ec2;
+﻿.btn-paging {
+    margin-right: 4px;
 }
 
-.text-paging {
+.page-size-selector {
+    margin-left: 10px;
+    color: #fff;
+    background-color: #1b6ec2;
+    border: 1px solid #1b6ec2;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 60px;
+    height: 38px;
+    padding-left: 10px;
+}
+
+.paging-item {
     color: #1b6ec2;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1b6ec2;
 }

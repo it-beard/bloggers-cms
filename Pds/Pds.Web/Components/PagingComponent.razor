@@ -5,7 +5,7 @@
         @foreach (var page in pages)
         {
             <li class="page-item">
-                <button class="btn mr-1
+                <button class="btn-check btn-paging
                     @(page.Active ? "btn-primary" : "btn-outline-primary")
                     @(page.Enabled ? null : "disabled")"
                         @onclick="@(() => OnChangePage(page))">
@@ -14,12 +14,13 @@
             </li>
         }
         <li>
-            <select class="form-control text-light page-size-selector" @onchange="@OnChangePageSize" >
+            <select class="page-size-selector" @onchange="@OnChangePageSize">
                 @foreach (var pageSize in PageSizeList)
                 {
-                    <option class="bg-light text-paging" value="@pageSize">@pageSize</option>
+                    <option class="paging-item" value="@pageSize">@pageSize</option>
                 }
             </select>
         </li>
     </ul>
 </nav>
+

@@ -1,19 +1,56 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pds.Web.Components
 {
     public class PagingComponentBase : ComponentBase
     {
+        private int[] _pageSizeList;
+        private int _totalItems;
+        private int _radius;
+
         [Parameter]
         public EventCallback<PaginationSettings> Pagination { get; set; }
         [Parameter]
-        public int[] PageSizeList { get; set; }
+        public int[] PageSizeList
+        {
+            get => _pageSizeList;
+            set
+            {
+                var array = value.Where(item => item >= 1).ToArray();
+
+                if (array.Length == 0)
+                    _pageSizeList = new int[] { 10 };
+                else
+                    _pageSizeList = array;
+            }
+        }
         [Parameter]
-        public int TotalItems { get; set; }
+        public int? TotalItems
+        {
+            get => _totalItems;
+            set
+            {
+                if (value < 0)
+                    _totalItems = 0;
+                else
+                    _totalItems = value ?? 0;
+            }
+        }
         [Parameter]
-        public int Radius { get; set; }
+        public int? Radius
+        {
+            get => _radius;
+            set
+            {
+                if (value < 1)
+                    _radius = 2;
+                else
+                    _radius = value ?? 2;
+            }
+        }
 
         private int pageOffset;
         private int currentPage;
@@ -30,7 +67,7 @@ namespace Pds.Web.Components
 
         protected override void OnParametersSet()
         {
-            totalPages = (int)Math.Ceiling(TotalItems / (double)currentPageSize);
+            totalPages = (int)Math.Ceiling((double)TotalItems / (double)currentPageSize);
             if (totalPages <= 1)
                 currentPage = 1;
             LoadPages();
@@ -128,4 +165,3 @@ namespace Pds.Web.Components
         }
     }
 }
-
