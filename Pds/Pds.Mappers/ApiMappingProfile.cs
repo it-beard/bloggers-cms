@@ -6,6 +6,7 @@ using AutoMapper;
 using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
+using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
 using Pds.Services.Models;
 using Pds.Services.Models.Content;
@@ -80,7 +81,6 @@ namespace Pds.Mappers
                             s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
                                 "Не выбрано" : 
                                 $"{p.FirstName} {p.ThirdName} {p.LastName}"));
-            
             #endregion
 
             #region Contracts to Entities
@@ -96,7 +96,10 @@ namespace Pds.Mappers
                     dest => dest.Brands,
                     opt => opt
                         .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
-            
+            CreateMap<CreateTopicRequest, Topic>()
+                .ForMember(dest => dest.PersonTopics,
+                    opt =>
+                        opt.MapFrom(ctr => PersonDtoToPersonTopic(ctr, default)));
             #endregion
             
             #region Contracts to Models
@@ -110,6 +113,9 @@ namespace Pds.Mappers
             
             #endregion
         }
+
+        private ICollection<PersonTopic> PersonDtoToPersonTopic(CreateTopicRequest ctr, Guid topicId = default) =>
+            ctr.People.Select(dto => new PersonTopic(topicId, dto.Id)).ToList();
 
         private ICollection<Brand> BrandsDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
         {
