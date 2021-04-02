@@ -13,6 +13,8 @@ namespace Pds.Data
         private IBrandRepository brandRepository;
         private IClientRepository clientRepository;
         private IBillRepository billRepository;
+        private ITopicRepository topicRepository;
+        private IPersonTopicRepository personTopicRepository;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -25,6 +27,9 @@ namespace Pds.Data
         public IBrandRepository Brands => brandRepository ??= new BrandRepository(context);
         public IClientRepository Clients => clientRepository ??= new ClientRepository(context);
         public IBillRepository Bills => billRepository ??= new BillRepository(context);
+        public ITopicRepository Topics => topicRepository ??= new TopicRepository(context);
+        public IPersonTopicRepository PersonTopics => personTopicRepository ??= new PersonTopicRepository(context);
+
 
         public void Save()
         {
