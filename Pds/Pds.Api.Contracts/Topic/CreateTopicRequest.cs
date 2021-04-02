@@ -9,6 +9,6 @@ namespace Pds.Api.Contracts.Topic
         [Required, StringLength(300, MinimumLength = 3)]
         public string Name { get; set; }
 
-        public ICollection<PersonDto> People { get; set; }
+        public ICollection<CreateTopicPersonDto> People { get; set; }
     }
 }

@@ -81,6 +81,8 @@ namespace Pds.Mappers
                             s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
                                 "Не выбрано" : 
                                 $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+            CreateMap<Topic, GetTopicDto>()
+                .ForMember(dest => dest.People, opt => opt.MapFrom(t => t.PersonTopics.Select(pt => pt.Person)));
             #endregion
 
             #region Contracts to Entities
@@ -99,7 +101,7 @@ namespace Pds.Mappers
             CreateMap<CreateTopicRequest, Topic>()
                 .ForMember(dest => dest.PersonTopics,
                     opt =>
-                        opt.MapFrom(ctr => PersonDtoToPersonTopic(ctr, default)));
+                        opt.MapFrom(ctr => ctr.People.Select(dto => new PersonTopic(default, dto.PersonId)).ToList()));
             #endregion
             
             #region Contracts to Models
@@ -113,9 +115,6 @@ namespace Pds.Mappers
             
             #endregion
         }
-
-        private ICollection<PersonTopic> PersonDtoToPersonTopic(CreateTopicRequest ctr, Guid topicId = default) =>
-            ctr.People.Select(dto => new PersonTopic(topicId, dto.Id)).ToList();
 
         private ICollection<Brand> BrandsDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
         {
