@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +32,22 @@ namespace Pds.Api.Controllers
                 var mappedTopic = mapper.Map<Topic>(request);
                 var result = await topicService.CreateAsync(mappedTopic);
                 return Ok(new CreateTopicResponse(result));
+            }
+            catch (Exception exception)
+            {
+                return ExceptionResult(exception);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(GetTopicsResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetTopics()
+        {
+            try
+            {
+                var result = await topicService.GetAllAsync();
+                var topicDtos = mapper.Map<IReadOnlyList<GetTopicDto>>(result);
+                return Ok(new GetTopicsResponse(topicDtos, topicDtos.Count));
             }
             catch (Exception exception)
             {

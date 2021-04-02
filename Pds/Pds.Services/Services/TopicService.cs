@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Pds.Data;
 using Pds.Data.Entities;
@@ -17,8 +19,15 @@ namespace Pds.Services.Services
 
         public async Task<Guid> CreateAsync(Topic topic)
         {
-           var createdTopic = await unitOfWork.Topics.InsertAsync(topic);
-           return createdTopic.Id;
+            topic.CreatedAt = DateTime.UtcNow;
+            var createdTopic = await unitOfWork.Topics.InsertAsync(topic);
+            Debug.Assert(ReferenceEquals(createdTopic, topic), "ReferenceEquals(createdTopic, topic)" );
+            return createdTopic.Id;
+        }
+
+        public Task<List<Topic>> GetAllAsync()
+        {
+            return unitOfWork.Topics.GetAllAsync();
         }
     }
 }
