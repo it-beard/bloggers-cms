@@ -6,8 +6,6 @@ namespace Pds.Services.Models.Content
     public class CreateContentModel
     {
         public Guid BrandId { get; set; }
-        
-        public Guid ClientId { get; set; }
 
         public Guid? PersonId { get; set; }
 
@@ -22,11 +20,9 @@ namespace Pds.Services.Models.Content
         public DateTime ReleaseDate { get; set; }
 
         public DateTime? EndDate { get; set; }
-        
-        public string BillContact { get; set; }
-        
-        public ContactType BillContactType { get; set; }
 
-        public decimal BillCost { get; set; }
+        public bool IsFree { get; set; }
+        
+        public ContentBillModel Bill { get; set; }
     }
 }

@@ -18,13 +18,9 @@ namespace Pds.Api.Contracts.Content
         public DateTime? EndDateUtc { get; set; }
         
         public SocialMediaType SocialMediaType { get; set; }
-        
-        public ContentType Type { get; set; }
-        
-        public BillStatus BillStatus { get; set; }
-        
-        public decimal BillCost { get; set; }
 
-        public PaymentType? PaymentType { get; set; }
+        public ContentType Type { get; set; }
+
+        public ContentListBillDto Bill { get; set; }
     }
 }

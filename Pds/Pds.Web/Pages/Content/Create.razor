@@ -70,8 +70,14 @@ else
         </div>
 
         <div class="form-group">
-            <label for="bill_cost" class="form-label label-required">Стоимость USD:</label>
-            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.BillCost"/>
+            @if (!content.IsFree)
+            {
+                <label for="bill_cost" class="form-label label-required">Стоимость USD:</label>
+                <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.Bill.Cost"/>
+            }
+
+            <InputCheckbox name="isFree" class="btn-check" @bind-Value="content.IsFree" Id="content_is_free"/>
+            <label class="btn btn-secondary btn-free btn-sm" for="content_is_free">Бесплатно</label>
 
             <label for="release_date" class="form-label label-required">Когда:</label>
             <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
@@ -80,33 +86,41 @@ else
             <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDate"/>
         </div>
 
-        <div class="form-group">
-            <label for="clients" class="form-label label-required">Клиент</label>
-            <InputSelect class="form-control" id="clients" @bind-Value="content.ClientId">
-                @foreach (var client in clients)
-                {
-                    <option value="@client.Id">@client.Name</option>
-                }
-            </InputSelect>
-        </div>
-
-        <div class="form-group">
-            <label for="bill_contact" class="form-label label-required">Контакт клиента</label>
-            <InputText class="form-control" id="bill_contact" @bind-Value="content.BillContact"/>
-            <div class="contact-type">
-                <InputRadioGroup Name="contact-type" @bind-Value="content.BillContactType">
-                    @foreach (var type in (ContactType[])Enum
-                        .GetValues(typeof(ContactType)))
+        @if (!content.IsFree)
+        {
+            <div class="form-group">
+                <label for="clients" class="form-label label-required">Клиент</label>
+                <InputSelect class="form-control" id="clients" @bind-Value="content.Bill.ClientId">
+                    @foreach (var client in clients)
                     {
-                        var id = $"contact-type{type.ToString()}";
-                        <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
-                        <label class="btn btn-secondary btn-sm" for="@id">
-                            @EnumsTranslator.ContactTypeToRu(type)
-                        </label>
+                        <option value="@client.Id">@client.Name</option>
                     }
-                </InputRadioGroup>
+                </InputSelect>
             </div>
-        </div>
+
+            <div class="form-group">
+                <label for="bill_contact_name" class="form-label">ФИО клиента</label>
+                <InputText class="form-control" id="bill_contact_name" @bind-Value="content.Bill.ContactName"/>
+            </div>
+
+            <div class="form-group">
+                <label for="bill_contact" class="form-label label-required">Контакт клиента</label>
+                <InputText class="form-control" id="bill_contact" @bind-Value="content.Bill.Contact"/>
+                <div class="contact-type">
+                    <InputRadioGroup Name="contact-type" @bind-Value="content.Bill.ContactType">
+                        @foreach (var type in (ContactType[])Enum
+                            .GetValues(typeof(ContactType)))
+                        {
+                            var id = $"contact-type{type.ToString()}";
+                            <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
+                            <label class="btn btn-secondary btn-sm" for="@id">
+                                @EnumsTranslator.ContactTypeToRu(type)
+                            </label>
+                        }
+                    </InputRadioGroup>
+                </div>
+            </div>
+        }
 
         <div class="form-group">
             <label for="comment" class="form-label">Комментарий</label>
@@ -123,7 +137,7 @@ else
             </InputSelect>
         </div>
 
-        <DataAnnotationsValidator/>
+        <ObjectGraphDataAnnotationsValidator />
         <ValidationSummary/>
 
         <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
@@ -137,14 +151,25 @@ else
     {
         BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), //Default АйТиБорода
         Type = ContentType.Integration, //Default
-        SocialMediaType = SocialMediaType.YouTube, //Default
-        BillContactType = ContactType.Telegram //Default
+        SocialMediaType = SocialMediaType.YouTube,  //Default
+        Bill = new ContentBillDto()
+        {
+            ContactType = ContactType.Telegram //Default
+        }
     };
+
     private EditContext editContext;
     private List<BrandForRadioboxGroupDto> brands;
     private List<ClientForLookupDto> clients;
     private List<PersonForLookupDto> persons;
     private bool isCreateButtonDisabled;
+    private ContentBillDto fakeBill = new()
+    {
+        ContactType = ContactType.Telegram,
+        ClientId = Guid.NewGuid(),
+        Cost = 0,
+        Contact = "iamitbeard"
+    };
     
     protected override async Task OnInitializedAsync()
     {
@@ -155,14 +180,20 @@ else
         clients = await GetClients();
         persons = await GetPersons();
     }
-    
+
     private async Task HandleSubmit()
     {
+        if (content.IsFree)
+        {
+            content.Bill = fakeBill;
+        }
+
         var isValid = editContext.Validate();
 
         if (isValid)
         {
             isCreateButtonDisabled = true;
+            content.Bill = content.IsFree ? null : content.Bill;
             await ApiClient.Post<object, CreateContentRequest>(TokenProvider, "content", content);
             NavigationManager.NavigateTo("/content");
         }

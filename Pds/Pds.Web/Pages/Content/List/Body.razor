@@ -38,7 +38,7 @@ else
         <tbody>
         @foreach (var item in content.Items)
         {
-            <tr class="@GetRowClass(item.Status, item.BillStatus)">
+            <tr class="@GetRowClass(item.Status, item.Bill)">
                 <td class="release-date-row">
                     <span>
                         @item.ReleaseDateUtc.Date.ToString("dd.MM")
@@ -57,12 +57,18 @@ else
                     @EnumsTranslator.ContentTypeToRu(item.Type)
                 </td>
                 <td class="bill-cost-row">
-                    @if (item.PaymentType != null)
+                    @if (item.Bill != null)
                     {
-                        <i class="@GetPaymentTypeClass(item.PaymentType)">@EnumsTranslator.PaymentTypeToShortRu(item.PaymentType)</i>
+                        if (item.Bill.PaymentType != null)
+                        {
+                            <i class="@GetPaymentTypeClass(item.Bill.PaymentType)">@EnumsTranslator.PaymentTypeToShortRu(item.Bill.PaymentType)</i>
+                        }
+                        <span>@item.Bill.Cost.ToString("N0")</span> 
                     }
-
-                    <span>@item.BillCost.ToString("N0")</span> 
+                    else
+                    {
+                        <span class="free-cost">бесплатно</span> 
+                    }
                 </td>
                 <td class="text-center actions-row">
                     <Actions OnContentUpdate="@ContentInfoUpdate" CurrentContent="@item"></Actions>
@@ -91,29 +97,27 @@ else
         return await ApiClient.Get<GetContentsResponse>(TokenProvider, "content");
     }
 
-    private string GetRowClass(ContentStatus contentStatus, BillStatus billStatus)
+    private string GetRowClass(ContentStatus contentStatus, ContentListBillDto bill)
     {
-        if (contentStatus == ContentStatus.Active && billStatus == BillStatus.Active)
+        if (bill == null)
         {
-            return "active-not-paid";
+            switch (contentStatus)
+            {
+                case ContentStatus.Active:
+                    return "free";
+                case ContentStatus.Archived:
+                    return "archived-free";
+            }
         }
 
-        if (contentStatus == ContentStatus.Active && billStatus == BillStatus.Paid)
+        return contentStatus switch
         {
-            return "active-paid";
-        }
-
-        if (contentStatus == ContentStatus.Archived && billStatus == BillStatus.Paid)
-        {
-            return "archived-paid";
-        }
-
-        if (contentStatus == ContentStatus.Archived && billStatus == BillStatus.Active)
-        {
-            return "archived-not-paid";
-        }
-
-        return "new";
+            ContentStatus.Active when bill.Status == BillStatus.Active => "active-not-paid",
+            ContentStatus.Active when bill.Status == BillStatus.Paid => "active-paid",
+            ContentStatus.Archived when bill.Status == BillStatus.Paid => "archived-paid",
+            ContentStatus.Archived when bill.Status == BillStatus.Active => "archived-not-paid",
+            _ => string.Empty
+        };
     }
     
     private string GetPaymentTypeClass(PaymentType? type)

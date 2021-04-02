@@ -52,6 +52,12 @@
     margin-left: 5px;
 }
 
+.bill-cost-row span.free-cost{
+    font-weight: bold;
+    font-style: italic;
+    font-size: 0.7rem;
+}
+
 .bill-cost-row i {
     font-size: 0.8rem;
     padding: 2px 4px;
@@ -77,15 +83,21 @@
     background-color: lightpink;
 }
 
+.free{
+    background-color: lightblue;
+}
+
 .active-paid {
     background-color: lightgreen;
 }
 
+.archived-free,
 .archived-paid {
     background-color: gainsboro;
     color: #bbb;
 }
 
+.archived-free:hover,
 .archived-paid:hover {
     color: black;
 }

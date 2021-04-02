@@ -28,7 +28,7 @@ namespace Pds.Data.Entities
 
         public DateTime? EndDateUtc { get; set; }
 
-        public Guid BillId { get; set; }
+        public Guid? BillId { get; set; }
 
         public Guid BrandId { get; set; }
 
