@@ -11,7 +11,7 @@ namespace Pds.Web.ComponentsTests
         [TestCase(new int[] { 0, 5, -10, 25, 0, 50 }, 5, 80)] //with 0 and negative value value, expected value = 5, expected sum = 80
         [TestCase(new int[] { }, 10, 10)] //is empty, expected value = 10, expected sum = 10
         [TestCase(new int[] { 5, 10, 25, 50 }, 5, 90)] //normal, expected value = 5,
-        public void ÑheckInputParameterPageSizeList_ShouldReturnNonNegativValuesOrDefault(int[] parameter, int expectedValue, int expectedSum)
+        public void CheckInputParameterPageSizeList_ShouldReturnNonNegativValuesOrDefault(int[] parameter, int expectedValue, int expectedSum)
         {
 
             var pagination = new PagingComponentBase
@@ -29,7 +29,7 @@ namespace Pds.Web.ComponentsTests
         [TestCase(0, 2)] //with 0, expected value = 2
         [TestCase(-1, 2)] //with negative value, expected value = 2
         [TestCase(3, 3)] //normal, expected value = 3
-        public void ÑheckInputParameterRadius_ShouldSetValueOrSetDefaultParameters(int? value, int expectedValue)
+        public void CheckInputParameterRadius_ShouldSetValueOrSetDefaultParameters(int? value, int expectedValue)
         {
 
             var pagination = new PagingComponentBase();
@@ -45,7 +45,7 @@ namespace Pds.Web.ComponentsTests
         [TestCase(0, 0)] //with 0, expected value = 0
         [TestCase(-10, 0)] //with negative value, expected value = 0
         [TestCase(100, 100)] //normal, expected value = 100
-        public void ÑheckInputParameterTotalItems_ShouldSetValueOrSetDefaultValue(int? value, int expectedValue)
+        public void CheckInputParameterTotalItems_ShouldSetValueOrSetDefaultValue(int? value, int expectedValue)
         {
             var pagination = new PagingComponentBase();
             pagination.TotalItems = value;
