@@ -5,7 +5,7 @@
         @foreach (var page in pages)
         {
             <li class="page-item">
-                <button class="btn-check btn-paging
+                <button class="btn btn-paging
                     @(page.Active ? "btn-primary" : "btn-outline-primary")
                     @(page.Enabled ? null : "disabled")"
                         @onclick="@(() => OnChangePage(page))">
@@ -14,7 +14,7 @@
             </li>
         }
         <li>
-            <select class="page-size-selector" @onchange="@OnChangePageSize">
+            <select class="btn page-size-selector" @onchange="@OnChangePageSize">
                 @foreach (var pageSize in PageSizeList)
                 {
                     <option class="paging-item" value="@pageSize">@pageSize</option>
