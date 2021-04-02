@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Pds.Core.Exceptions;
 
 namespace Pds.Web.Common
 {
@@ -31,12 +32,12 @@ namespace Pds.Web.Common
             return await CallGetOrDeleteRequest<T>(tokenProvider, methodName, HttpMethod.Delete);
         }
 
-        public async Task<T> Post<T, U>(IAccessTokenProvider tokenProvider, string methodName, U payload) where T : class, new()
+        public async Task<ApiResponse<T>> Post<T, U>(IAccessTokenProvider tokenProvider, string methodName, U payload) where T : class, new()
         {
             return await CallPostOrPutRequest<T, U>(tokenProvider, methodName, payload, HttpMethod.Post);
         }
         
-        public async Task<T> Put<T, U>(IAccessTokenProvider tokenProvider, string methodName, U payload) where T : class, new()
+        public async Task<ApiResponse<T>> Put<T, U>(IAccessTokenProvider tokenProvider, string methodName, U payload) where T : class, new()
         {
             return await CallPostOrPutRequest<T, U>(tokenProvider, methodName, payload, HttpMethod.Put);
         }
@@ -60,7 +61,7 @@ namespace Pds.Web.Common
             throw new TokenException();
         }
 
-        private async Task<T> CallPostOrPutRequest<T, U>(IAccessTokenProvider tokenProvider, string methodName, U payload, HttpMethod method) where T : class, new()
+        private async Task<ApiResponse<T>> CallPostOrPutRequest<T, U>(IAccessTokenProvider tokenProvider, string methodName, U payload, HttpMethod method) where T : class, new()
         {
             
             var backendApiUrl = configuration["BackendApi:Url"];
@@ -77,10 +78,13 @@ namespace Pds.Web.Common
                 requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
                 var response = await httpClient.SendAsync(requestMessage);
-                return 
-                    await response.Content.ReadAsStringAsync() == string.Empty ? 
-                        new T() : 
-                        await response.Content.ReadFromJsonAsync<T>();
+                var rawResponse = await response.Content.ReadAsStringAsync();
+                return new ApiResponse<T>(response, rawResponse)
+                {
+                    Payload = rawResponse == string.Empty
+                        ? new T()
+                        : await response.Content.ReadFromJsonAsync<T>()
+                };
             }
 
             throw new TokenException();

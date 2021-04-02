@@ -4,6 +4,8 @@
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
+@using System.Net
+@using Newtonsoft.Json
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
@@ -35,12 +37,12 @@ else
         </div>
 
         <div class="form-group">
-            <label for="first_name" class="form-label">Имя</label>
+            <label for="first_name" class="form-label label-required">Имя</label>
             <InputText class="form-control" id="first_name" @bind-Value="person.FirstName" />
         </div>
 
         <div class="form-group">
-            <label for="last_name" class="form-label">Фамилия</label>
+            <label for="last_name" class="form-label label-required">Фамилия</label>
             <InputText class="form-control" id="last_name" @bind-Value="person.LastName" />
         </div>
 
@@ -102,23 +104,34 @@ else
     };
     private EditContext editContext;
     private bool isCreateButtonDisabled;
+    private ValidationMessageStore msgStore;
 
     protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
         person.Brands = await GetBrands();
         editContext = new EditContext(person);
+        msgStore = new ValidationMessageStore(editContext);
     }
 
     private async Task HandleSubmit()
     {
+        msgStore.Clear();
         var isValid = editContext.Validate();
 
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            await ApiClient.Post<object, CreatePersonRequest>(TokenProvider, "persons", person);
-            NavigationManager.NavigateTo("/persons");
+            var result = await ApiClient.Post<object, CreatePersonRequest>(TokenProvider, "persons", person);
+            isCreateButtonDisabled = false;
+            if (result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/persons");
+            }
+            else
+            {
+                result.AddErrors(msgStore, editContext);
+            }
         }
     }
 
