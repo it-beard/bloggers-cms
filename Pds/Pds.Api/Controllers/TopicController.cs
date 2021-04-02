@@ -22,6 +22,7 @@ namespace Pds.Api.Controllers
             this.mapper = mapper;
         }
 
+        [HttpPost]
         [ProducesResponseType(typeof(CreateTopicResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateTopic(CreateTopicRequest request)
         {
