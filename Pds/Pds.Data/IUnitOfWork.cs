@@ -11,6 +11,8 @@ namespace Pds.Data
         IBrandRepository Brands { get; }
         IClientRepository Clients { get; }
         IBillRepository Bills { get; }
+        ITopicRepository Topics { get; }
+        IPersonTopicRepository PersonTopics { get; }
 
         void Save();
     }
