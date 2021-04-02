@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
-@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.TitleExtension
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
@@ -29,40 +29,40 @@ else
             @foreach (var brand in person.Brands)
             {
                 var id = $"brand_{brand.Id.ToString()}";
-                <InputCheckbox name="@brand.Id" class="btn-check" @bind-Value="brand.IsSelected" Id="@id"/>
+                <InputCheckbox name="@brand.Id" class="btn-check" @bind-Value="brand.IsSelected" Id="@id" />
                 <label class="btn btn-secondary" for="@id">@brand.Name</label>
             }
         </div>
 
         <div class="form-group">
             <label for="first_name" class="form-label">Имя</label>
-            <InputText class="form-control" id="first_name" @bind-Value="person.FirstName"/>
+            <InputText class="form-control" id="first_name" @bind-Value="person.FirstName" />
         </div>
 
         <div class="form-group">
             <label for="last_name" class="form-label">Фамилия</label>
-            <InputText class="form-control" id="last_name" @bind-Value="person.LastName"/>
+            <InputText class="form-control" id="last_name" @bind-Value="person.LastName" />
         </div>
 
         <div class="form-group">
             <label for="third_name" class="form-label">Отчество</label>
-            <InputText class="form-control" id="third_name" @bind-Value="person.ThirdName"/>
+            <InputText class="form-control" id="third_name" @bind-Value="person.ThirdName" />
         </div>
 
         <div class="form-group">
             <label class="form-label">Адрес: </label>
-            <InputText class="form-control person-country" id="country" @bind-Value="person.Country" placeholder="Страна"/>
-            <InputText class="form-control person-city" id="city" @bind-Value="person.City" placeholder="Город"/>
+            <InputText class="form-control person-country" id="country" @bind-Value="person.Country" placeholder="Страна" />
+            <InputText class="form-control person-city" id="city" @bind-Value="person.City" placeholder="Город" />
         </div>
 
         <div class="form-group">
             <label for="information" class="form-label">Дополнительная информация</label>
-            <InputTextArea class="form-control" id="information" @bind-Value="person.Info" rows="3"/>
+            <InputTextArea class="form-control" id="information" @bind-Value="person.Info" rows="3" />
         </div>
 
         <div class="form-group">
             <label for="person_rate" class="form-label">Рейтинг: </label>
-            <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
+            <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг" />
         </div>
 
         <div class="form-group">
@@ -71,10 +71,10 @@ else
             {
                 <div class="form-row align-items-center">
                     <div class="col-auto">
-                        <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название"/>
+                        <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название" />
                     </div>
                     <div class="col-auto">
-                        <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка"/>
+                        <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка" />
                     </div>
                     <div class="col-auto">
                         <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
@@ -82,11 +82,11 @@ else
                 </div>
             }
 
-            <div @onclick="AddResource" class="btn btn-primary btn-sm">Добавить ссылку</div>
+            <div @onclick="AddResource" class="btn btn-primary btn-sm">Добавить ещё</div>
         </div>
 
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
         <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
             <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
@@ -102,14 +102,14 @@ else
     };
     private EditContext editContext;
     private bool isCreateButtonDisabled;
-    
+
     protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
         person.Brands = await GetBrands();
         editContext = new EditContext(person);
     }
-    
+
     private async Task HandleSubmit()
     {
         var isValid = editContext.Validate();
