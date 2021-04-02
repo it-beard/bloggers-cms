@@ -66,7 +66,7 @@ namespace Pds.Web.Common
             return type switch
             {
                 PaymentType.Other => "дрг",
-                PaymentType.BankAccount => "ипэ",
+                PaymentType.BankAccount => "ип",
                 PaymentType.Tinkoff => "тин",
                 PaymentType.Yoomoney => "юмн",
                 PaymentType.Barter => "брт",
