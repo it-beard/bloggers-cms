@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
+using Pds.Core.Exceptions;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -27,6 +28,11 @@ namespace Pds.Services.Services
             if (person == null)
             {
                 throw new ArgumentNullException(nameof(person));
+            }
+
+            if (person.Brands.Count == 0)
+            {
+                throw new PersonCreationException("Персону нельзя создать без бренда.");
             }
             
             // Restore brands from DB
