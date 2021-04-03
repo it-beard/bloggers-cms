@@ -1,16 +1,17 @@
-﻿@page "/topics/add"
+﻿@page "/topics/update/{Id}"
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
 @using Pds.Api.Contracts.Topic
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
+@using System.Text.Json
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
-<Title>@WithSuffix("Добавление темы")</Title>
+<Title>@WithSuffix("Редактирование темы")</Title>
 
 @if (request is null)
 {
@@ -21,7 +22,7 @@
 else
 {
     <h3 class="card-header d-flex justify-content-between align-items-center">
-        Добавление темы
+        Редактирование темы
         <a href="/topics" class="btn btn-primary"> Назад </a>
     </h3>
 
@@ -31,7 +32,7 @@ else
             <InputText class="form-control" id="name" @bind-Value="request.Name" />
         </div>
 
-        <div class="form-group"  id="people">
+        <div class="form-group" id="people">
             <label class="form-label topic-links">Персоны:</label>
             <div class="form-row align-items-center">
                 @foreach (var checkBoxPersonDto in checkBoxPeople)
@@ -49,24 +50,40 @@ else
         <ValidationSummary />
 
         <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Сохранить изменения</button>
         </div>
     </EditForm>
 }
 
-@code 
-{
+@code {
     List<CheckBoxPersonDto> checkBoxPeople;
-    private CreateTopicRequest request;
+    private UpdateTopicRequest request;
     private EditContext editContext;
     private bool isCreateButtonDisabled;
+    private object response;
+
+    [Parameter]
+    public string Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
+        var topicResponse = await GetTopicResponse();
+        if (topicResponse is null)
+            NavigationManager.NavigateTo("/topics");
         var getPersonsResponse = await GetPersonResponse();
-        checkBoxPeople = getPersonsResponse.Items.Select(p => new CheckBoxPersonDto {Person = p, IsSelected = false}).ToList();
-        request = new CreateTopicRequest();
+        checkBoxPeople = getPersonsResponse
+            .Items
+            .Select(p =>
+                new CheckBoxPersonDto
+                {
+                    Person = p,
+                    IsSelected = topicResponse.People
+                        .Any(personDto => p.Id == personDto.Id)
+                })
+            .ToList();
+        request = new UpdateTopicRequest();
+        request.Name = topicResponse.Name;
         editContext = new EditContext(request);
     }
 
@@ -77,10 +94,20 @@ else
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            request.People = checkBoxPeople.Where(p => p.IsSelected).Select(cbp => cbp.Person.Id).ToList();
-            await ApiClient.Post<object, CreateTopicRequest>(TokenProvider, "topics/", request);
+
+            request.People = checkBoxPeople
+                .Where(p => p.IsSelected)
+                .Select(cbp => cbp.Person.Id)
+                .ToList();
+            response = await ApiClient.Put<object, UpdateTopicRequest>(TokenProvider, $"topics/{{{Id}}}", request);
+
             NavigationManager.NavigateTo("/topics");
         }
+    }
+
+    private async Task<GetTopicResponse> GetTopicResponse()
+    {
+        return await ApiClient.Get<GetTopicResponse>(TokenProvider, $"topics/{{{Id}}}");
     }
 
     private async Task<GetPersonsResponse> GetPersonResponse()

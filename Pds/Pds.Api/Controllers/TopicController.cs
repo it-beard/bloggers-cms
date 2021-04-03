@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Pds.Api.Authentication;
 using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -12,10 +13,11 @@ namespace Pds.Api.Controllers
 {
     [ApiController]
     [Route("api/topics")]
+    [CustomAuthorize]
     public class TopicController : ApiControllerBase
     {
-        private readonly ITopicService topicService;
         private readonly IMapper mapper;
+        private readonly ITopicService topicService;
 
         public TopicController(ITopicService topicService, IMapper mapper)
         {
@@ -39,15 +41,48 @@ namespace Pds.Api.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(UpdateTopicResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateTopic([FromRoute] Guid id, UpdateTopicRequest request)
+        {
+            try
+            {
+                var topic = await topicService.FindById(id);
+                var mappedTopic = mapper.Map(request, topic);
+                var result = await topicService.UpdateAsync(mappedTopic);
+                return Ok(new UpdateTopicResponse(result));
+            }
+            catch (Exception exception)
+            {
+                return ExceptionResult(exception);
+            }
+        }
+
         [HttpGet]
-        [ProducesResponseType(typeof(GetTopicsResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetTopicCollectionResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTopics()
         {
             try
             {
                 var result = await topicService.GetAllAsync();
-                var topicDtos = mapper.Map<IReadOnlyList<GetTopicDto>>(result);
-                return Ok(new GetTopicsResponse(topicDtos, topicDtos.Count));
+                var topics = mapper.Map<IReadOnlyList<GetTopicDto>>(result);
+                return Ok(new GetTopicCollectionResponse(topics, topics.Count));
+            }
+            catch (Exception exception)
+            {
+                return ExceptionResult(exception);
+            }
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(GetTopicDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> FindById([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await topicService.FindById(id);
+                var response = mapper.Map<GetTopicDto>(result);
+                return Ok(response);
             }
             catch (Exception exception)
             {

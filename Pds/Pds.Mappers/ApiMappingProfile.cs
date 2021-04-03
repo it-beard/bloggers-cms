@@ -82,7 +82,9 @@ namespace Pds.Mappers
                                 "Не выбрано" : 
                                 $"{p.FirstName} {p.ThirdName} {p.LastName}"));
             CreateMap<Topic, GetTopicDto>()
-                .ForMember(dest => dest.People, opt => opt.MapFrom(t => t.PersonTopics.Select(pt => pt.Person)));
+                .ForMember(dest => dest.People, opt => opt.MapFrom(t => t.PersonTopics));
+            CreateMap<PersonTopic, PersonDto>().IncludeMembers(pt => pt.Person);
+                
             #endregion
 
             #region Contracts to Entities
@@ -101,9 +103,13 @@ namespace Pds.Mappers
             CreateMap<CreateTopicRequest, Topic>()
                 .ForMember(dest => dest.PersonTopics,
                     opt =>
-                        opt.MapFrom(ctr => ctr.People.Where(dto => dto.IsSelected).Select(dto => new PersonTopic(default, dto.Person.Id)).ToList()));
+                        opt.MapFrom(ctr => ctr.People.Select(guid => new PersonTopic(default, guid)).ToList()));
+            CreateMap<UpdateTopicRequest, Topic>()
+                .ForMember(dest => dest.PersonTopics,
+                    opt =>
+                        opt.MapFrom((ctr, t) => ctr.People.Select(guid => new PersonTopic(t.Id, guid)).ToList()));
             #endregion
-            
+
             #region Contracts to Models
 
             CreateMap<ContentBillDto, ContentBillModel>();
