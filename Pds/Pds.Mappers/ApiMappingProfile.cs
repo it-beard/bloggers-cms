@@ -101,7 +101,7 @@ namespace Pds.Mappers
             CreateMap<CreateTopicRequest, Topic>()
                 .ForMember(dest => dest.PersonTopics,
                     opt =>
-                        opt.MapFrom(ctr => ctr.People.Select(dto => new PersonTopic(default, dto.PersonId)).ToList()));
+                        opt.MapFrom(ctr => ctr.People.Where(dto => dto.IsSelected).Select(dto => new PersonTopic(default, dto.Person.Id)).ToList()));
             #endregion
             
             #region Contracts to Models
