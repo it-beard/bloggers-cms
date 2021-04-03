@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Pds.Api.Contracts.Person;
 
 namespace Pds.Api.Contracts.Topic

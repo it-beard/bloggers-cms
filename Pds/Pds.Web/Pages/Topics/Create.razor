@@ -1,0 +1,90 @@
+﻿@page "/topics/add"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Person
+@using Pds.Api.Contracts.Topic
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление темы")</Title>
+
+@if (request is null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h3 class="card-header d-flex justify-content-between align-items-center">
+        Добавление темы
+        <a href="/topics" class="btn btn-primary"> Назад </a>
+    </h3>
+
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <div class="form-group">
+            <label for="name" class="form-label">Имя</label>
+            <InputText class="form-control" id="name" @bind-Value="request.Name" />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label topic-links">Персоны:</label>
+            <div class="form-row align-items-center">
+                @foreach (var personDto in request.People)
+                {
+                    var elementId = $"person_{personDto.Person.Id}";
+                    <InputCheckbox id="@elementId" class="btn-check" name="@elementId" @bind-Value="@personDto.IsSelected"/>
+                    <label for="@elementId" class="btn btn-secondary ml-2">
+                        @personDto.Person.FullName (@personDto.Person.Rate)
+                    </label>
+                }
+            </div>
+        </div>
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private CreateTopicRequest request;
+    private EditContext editContext;
+    private bool isCreateButtonDisabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isCreateButtonDisabled = false;
+        var getPersonsResponse = await GetPersonResponse();
+        request = new CreateTopicRequest
+        {
+            People = getPersonsResponse.Items.Select(p => new CreateTopicPersonDto {Person = p}).ToList()
+        };
+        editContext = new EditContext(request);
+    }
+
+    private async Task HandleSubmit()
+    {
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isCreateButtonDisabled = true;
+            request.People = request.People.Where(p => p.IsSelected).ToList();
+            await ApiClient.Post<object, CreateTopicRequest>(TokenProvider, "topics", request);
+            NavigationManager.NavigateTo("/topics");
+        }
+    }
+
+    private async Task<GetPersonsResponse> GetPersonResponse()
+    {
+        return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons/");
+    }
+}
