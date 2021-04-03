@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 
 namespace Pds.Web.Components
 {
-    public class PagingComponentBase : ComponentBase
+    public partial class PagingComponent
     {
         [Parameter]
         public EventCallback<PaginationSettings> Pagination { get; set; }

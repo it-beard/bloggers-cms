@@ -1,6 +1,4 @@
-﻿@inherits PagingComponentBase
-
-<nav class="col">
+﻿<nav class="col">
     <ul class="pagination">
         @foreach (var page in pages)
         {
@@ -14,7 +12,7 @@
             </li>
         }
         <li>
-            <select class="form-control text-light page-size-selector" @onchange="@OnChangePageSize" >
+            <select class="form-control text-light page-size-selector" @onchange="@OnChangePageSize">
                 @foreach (var pageSize in PageSizeList)
                 {
                     <option class="bg-light text-paging" value="@pageSize">@pageSize</option>
