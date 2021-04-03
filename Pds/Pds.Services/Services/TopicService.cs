@@ -21,13 +21,24 @@ namespace Pds.Services.Services
         {
             topic.CreatedAt = DateTime.UtcNow;
             var createdTopic = await unitOfWork.Topics.InsertAsync(topic);
-            Debug.Assert(ReferenceEquals(createdTopic, topic), "ReferenceEquals(createdTopic, topic)" );
             return createdTopic.Id;
         }
 
         public Task<List<Topic>> GetAllAsync()
         {
             return unitOfWork.Topics.GetAllAsync();
+        }
+
+        public Task<Topic> FindById(Guid id)
+        {
+            return unitOfWork.Topics.GetFirstWhereAsync(t => t.Id == id);
+        }
+
+        public async Task<Guid> UpdateAsync(Topic topic)
+        {
+            topic.UpdatedAt = DateTime.UtcNow;
+            var updatedTopic = await unitOfWork.Topics.UpdateAsync(topic);
+            return updatedTopic.Id;
         }
     }
 }

@@ -4,7 +4,7 @@ using Pds.Api.Contracts.Person;
 
 namespace Pds.Api.Contracts.Topic
 {
-    public class GetTopicDto
+    public class GetTopicResponse
     {
         public Guid Id { get; set; }
 
@@ -13,7 +13,7 @@ namespace Pds.Api.Contracts.Topic
         public DateTime? UpdatedAt { get; set; }
 
         public string Name { get; set; }
-        
+
         public IReadOnlyList<PersonDto> People { get; set; }
     }
 }

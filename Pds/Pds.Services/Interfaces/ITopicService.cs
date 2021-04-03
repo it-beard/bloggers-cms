@@ -10,5 +10,7 @@ namespace Pds.Services.Interfaces
     {
         Task<Guid> CreateAsync(Topic topic);
         Task<List<Topic>> GetAllAsync();
+        Task<Topic> FindById(Guid id);
+        Task<Guid> UpdateAsync(Topic topic);
     }
 }

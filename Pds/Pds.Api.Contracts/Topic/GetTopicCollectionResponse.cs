@@ -3,13 +3,13 @@ using System.Linq;
 
 namespace Pds.Api.Contracts.Topic
 {
-    public class GetTopicsResponse
+    public class GetTopicCollectionResponse
     {
-        public GetTopicsResponse()
+        public GetTopicCollectionResponse()
         {
         }
 
-        public GetTopicsResponse(IEnumerable<GetTopicDto> items, int total)
+        public GetTopicCollectionResponse(IEnumerable<GetTopicDto> items, int total)
         {
             Items = items as IReadOnlyList<GetTopicDto> ?? items.ToList();
             Total = total;
