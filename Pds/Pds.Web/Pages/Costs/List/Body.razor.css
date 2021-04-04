@@ -37,18 +37,23 @@
     color: white;
 }
 
-.bill-cost-header {
+.cost-type-header {
+    width: 130px;
+    text-align: left;
+ }
+
+.cost-value-header {
     width: 120px;
-    text-align: left;
+    text-align: center;
     padding-right: 15px;
 }
 
-.bill-cost-row {
-    text-align: left;
+.cost-value-row {
+    text-align: center;
     padding-right: 15px;
 }
 
-.bill-cost-row span {
+.cost-value-row span {
     font-weight: bold;
     font-size: 1rem;
     margin-right: 5px;

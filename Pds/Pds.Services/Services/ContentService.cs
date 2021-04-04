@@ -114,5 +114,13 @@ namespace Pds.Services.Services
                 await unitOfWork.Content.UpdateAsync(content);
             }
         }
+
+        public async Task<List<Content>> GetContentsForListsAsync()
+        {
+            var contents = new List<Content> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
+            contents.AddRange(await unitOfWork.Content.GetAllOrderByCreatedAtDescAsync());
+
+            return contents;
+        }
     }
 }

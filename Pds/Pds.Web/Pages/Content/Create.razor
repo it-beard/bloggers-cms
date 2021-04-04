@@ -24,7 +24,7 @@
 }
 else
 {
-    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
             <InputRadioGroup Name="brand" @bind-Value="content.BrandId">
                 @foreach (var brand in brands)
@@ -181,7 +181,7 @@ else
         persons = await GetPersons();
     }
 
-    private async Task HandleSubmit()
+    private async Task HandleSubmitAsync()
     {
         if (content.IsFree)
         {

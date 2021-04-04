@@ -1,17 +1,4 @@
-﻿.table {
-    font-size: 0.9rem;
-}
-
-.table td{
-    vertical-align: middle;
-}
-
-.table > :not(:last-child) > :last-child > *{
-    border-bottom: none;
-    color: darkgray;
-}
-
-.card-header {
+﻿.card-header {
     margin-bottom: 15px;
 }
 

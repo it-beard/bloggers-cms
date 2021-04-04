@@ -1,0 +1,27 @@
+﻿.card-header {
+    margin-bottom: 15px;
+}
+
+.form-group {
+     margin-bottom: 15px;
+ }
+
+::deep input.cost-value{
+    width: 100px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+::deep input.cost-date{
+    width: 150px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.btn-check:checked + .btn-secondary {
+    color: #fff;
+    background-color: #157347;
+    border-color: #146c43;
+}

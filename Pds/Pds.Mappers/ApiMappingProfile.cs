@@ -29,9 +29,27 @@ namespace Pds.Mappers
                     dest => dest.Location,
                     opt => opt
                         .MapFrom(p => $"{p.Country} {p.City}"));
+            CreateMap<Person, PersonForLookupDto>()
+                .ForMember(
+                    dest => dest.FullName,
+                    opt => opt
+                        .MapFrom((p,s) => 
+                            s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
+                                "Не выбрано" : 
+                                $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+
             CreateMap<Resource, ResourceDto>();
             
-            CreateMap<Bill, ContentListBillDto>();
+            CreateMap<Content, BillContentDto>();
+            CreateMap<Content, CostContentDto>();
+            CreateMap<Content, ContentForLookupDto>()
+                .ForMember(
+                    dest => dest.Title,
+                    opt => opt
+                        .MapFrom((p, s) =>
+                            s.Title = string.IsNullOrEmpty(p.Title) ? 
+                                "Не выбрано" : 
+                                $"{p.CreatedAt:dd.MM} / {p.Title}"));
             CreateMap<Content, ContentDto>()
                 .ForMember(
                     dest => dest.ClientName,
@@ -58,40 +76,30 @@ namespace Pds.Mappers
                     dest => dest.BillPaidAt,
                     opt => opt
                         .MapFrom(p => p.Bill.PaidAt));
-            CreateMap<Client, ClientDto>();
-            CreateMap<Brand, BrandForRadioboxGroupDto>();
+
+            CreateMap<Brand, Pds.Api.Contracts.Content.BrandForRadioboxGroupDto>();
+            CreateMap<Brand, Pds.Api.Contracts.Cost.BrandForRadioboxGroupDto>();
             CreateMap<Brand, BrandForCheckboxesDto>();
+
+            CreateMap<Client, ClientDto>();
             CreateMap<Client, ClientForLookupDto>()
                 .ForMember(
                     dest => dest.Name,
                     opt => opt
                         .MapFrom((p, s) =>
                             s.Name = p.Name ?? "Не выбрано"));
-            CreateMap<Person, PersonForLookupDto>()
-                .ForMember(
-                    dest => dest.Id,
-                    opt => opt
-                        .MapFrom((p, s) => 
-                            s.Id = p.Id == Guid.Empty ? 
-                                null : 
-                                p.Id)) // Transform first person with id =  Guid.Empty element to id = null
-                .ForMember(
-                    dest => dest.FullName,
-                    opt => opt
-                        .MapFrom((p,s) => 
-                            s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
-                                "Не выбрано" : 
-                                $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+
             CreateMap<Bill, BillDto>();
-            CreateMap<Content, BillContentDto>();
+            CreateMap<Bill, ContentListBillDto>();
+
             CreateMap<Cost, CostDto>();
-            CreateMap<Content, CostContentDto>();
 
             #endregion
 
             #region Contracts to Entities
 
             CreateMap<CreateClientRequest, Client>();
+            CreateMap<CreateCostRequest, Cost>();
             CreateMap<ResourceDto, Resource>()
                 .ForMember(
                     dest => dest.CreatedAt,

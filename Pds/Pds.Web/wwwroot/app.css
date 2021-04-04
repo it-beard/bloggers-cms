@@ -34,6 +34,19 @@ a, .btn-link {
     margin-left: 3px;
 }
 
+.table {
+    font-size: 0.9rem;
+}
+
+.table td{
+    vertical-align: middle;
+}
+
+.table > :not(:last-child) > :last-child > *{
+    border-bottom: 2px solid darkgray;
+    color: darkgray;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
