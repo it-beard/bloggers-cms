@@ -48,7 +48,7 @@ namespace Pds.Api.Controllers
 
                 var response = new GetCostsResponse
                 {
-                    Items = mapper.Map<List<CostDto>>(costs),
+                    Items = mapper.Map<CostDto[]>(costs),
                     Total = costs.Count
                 };
 

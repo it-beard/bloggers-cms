@@ -73,7 +73,7 @@ namespace Pds.Api.Controllers
 
                 var response = new GetBillsResponse
                 {
-                    Items = mapper.Map<List<BillDto>>(paidBills),
+                    Items = mapper.Map<BillDto[]>(paidBills),
                     Total = paidBills.Count
                 };
 
