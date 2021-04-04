@@ -118,7 +118,7 @@ namespace Pds.Services.Services
         public async Task<List<Content>> GetContentsForListsAsync()
         {
             var contents = new List<Content> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
-            contents.AddRange(await unitOfWork.Content.GetAllOrderByCreatedAtDescAsync());
+            contents.AddRange(await unitOfWork.Content.GetAllOrderByReleaseDateDescAsync());
 
             return contents;
         }

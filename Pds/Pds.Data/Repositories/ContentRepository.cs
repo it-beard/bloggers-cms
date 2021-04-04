@@ -42,10 +42,10 @@ namespace Pds.Data.Repositories
                 .FirstOrDefaultAsync(p => p.Id == contentId);
         }
         
-        public async Task<List<Content>> GetAllOrderByCreatedAtDescAsync()
+        public async Task<List<Content>> GetAllOrderByReleaseDateDescAsync()
         {
             return await context.Contents
-                .OrderByDescending(p =>p.CreatedAt)
+                .OrderByDescending(p =>p.ReleaseDateUtc)
                 .ToListAsync();
         }
     }

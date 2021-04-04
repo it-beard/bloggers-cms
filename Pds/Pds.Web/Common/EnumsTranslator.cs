@@ -85,6 +85,7 @@ namespace Pds.Web.Common
                 CostType.Accommodation => "Жильё",
                 CostType.Service => "Услуги",
                 CostType.Subscription => "Подписка",
+                CostType.Rent => "Аренда",
                 _ => string.Empty
             };
         }
