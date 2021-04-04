@@ -9,14 +9,11 @@ namespace Pds.Api.Contracts.Topic
         {
         }
 
-        public GetTopicCollectionResponse(IEnumerable<GetTopicDto> items, int total)
+        public GetTopicCollectionResponse(IEnumerable<GetTopicDto> items)
         {
             Items = items as IReadOnlyList<GetTopicDto> ?? items.ToList();
-            Total = total;
         }
         
         public IReadOnlyList<GetTopicDto> Items { get; set; }
-
-        public long Total { get; set; }
     }
 }

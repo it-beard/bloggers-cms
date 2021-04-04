@@ -66,7 +66,7 @@ namespace Pds.Api.Controllers
             {
                 var result = await topicService.GetAllAsync();
                 var topics = mapper.Map<IReadOnlyList<GetTopicDto>>(result);
-                return Ok(new GetTopicCollectionResponse(topics, topics.Count));
+                return Ok(new GetTopicCollectionResponse(topics));
             }
             catch (Exception exception)
             {
