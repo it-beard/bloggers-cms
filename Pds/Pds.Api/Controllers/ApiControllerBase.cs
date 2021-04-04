@@ -3,6 +3,7 @@ using System.Net;
 using Pds.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
+using Pds.Core.Exceptions.Person;
 
 namespace Pds.Api.Controllers
 {
@@ -16,8 +17,8 @@ namespace Pds.Api.Controllers
             {
                 _ when exception is RepositoryException => 
                     StatusCode((int) HttpStatusCode.BadRequest, "DB error"),
-                _ when exception is PersonCreationException personCreationException => 
-                    StatusCode((int) HttpStatusCode.BadRequest, personCreationException.Errors),
+                _ when exception is IApiException apiException => 
+                    StatusCode((int) HttpStatusCode.BadRequest, apiException.Errors),
 
                 _ => 
                     StatusCode((int) HttpStatusCode.BadRequest, "Smtg went wrong")

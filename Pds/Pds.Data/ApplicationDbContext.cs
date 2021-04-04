@@ -14,6 +14,7 @@ namespace Pds.Data
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Content> Contents { get; set; }
         public DbSet<Bill> Bills { get; set; }
+        public DbSet<Cost> Costs { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Brand> Brands { get; set; }
 

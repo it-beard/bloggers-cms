@@ -11,7 +11,7 @@ namespace Pds.Api.Contracts.Content
 
         public Guid BillId { get; set; }
 
-        public decimal BillCost { get; set; }
+        public decimal BillValue { get; set; }
 
         public string BillComment { get; set; }
 

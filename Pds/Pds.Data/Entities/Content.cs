@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -39,5 +40,7 @@ namespace Pds.Data.Entities
         public virtual Brand Brand { get; set; }
 
         public virtual Person Person { get; set; }
+
+        public ICollection<Cost> Costs { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Pds.Services.Models.Bill
 
         public PaymentType PaymentType { get; set; }
 
-        public decimal Cost { get; set; }
+        public decimal Value { get; set; }
 
         public string Comment { get; set; }
 

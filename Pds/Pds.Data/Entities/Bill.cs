@@ -10,7 +10,7 @@ namespace Pds.Data.Entities
     {
         [Required]
         [Column(TypeName = "decimal(18,2)")]
-        public decimal Cost { get; set; }
+        public decimal Value { get; set; }
         
         [Required]
         public BillStatus Status { get; set; }

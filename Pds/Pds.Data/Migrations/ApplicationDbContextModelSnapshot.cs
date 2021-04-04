@@ -62,9 +62,6 @@ namespace Pds.Data.Migrations
                     b.Property<Guid?>("ContentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -82,6 +79,9 @@ namespace Pds.Data.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -211,6 +211,45 @@ namespace Pds.Data.Migrations
                     b.HasIndex("PersonId");
 
                     b.ToTable("Contents");
+                });
+
+            modelBuilder.Entity("Pds.Data.Entities.Cost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BrandId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ContentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("ContentId");
+
+                    b.ToTable("Costs");
                 });
 
             modelBuilder.Entity("Pds.Data.Entities.Person", b =>
@@ -355,6 +394,23 @@ namespace Pds.Data.Migrations
                     b.Navigation("Person");
                 });
 
+            modelBuilder.Entity("Pds.Data.Entities.Cost", b =>
+                {
+                    b.HasOne("Pds.Data.Entities.Brand", "Brand")
+                        .WithMany("Costs")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pds.Data.Entities.Content", "Content")
+                        .WithMany("Costs")
+                        .HasForeignKey("ContentId");
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Content");
+                });
+
             modelBuilder.Entity("Pds.Data.Entities.Resource", b =>
                 {
                     b.HasOne("Pds.Data.Entities.Person", "Person")
@@ -371,6 +427,8 @@ namespace Pds.Data.Migrations
                     b.Navigation("Bills");
 
                     b.Navigation("Contents");
+
+                    b.Navigation("Costs");
                 });
 
             modelBuilder.Entity("Pds.Data.Entities.Client", b =>
@@ -381,6 +439,8 @@ namespace Pds.Data.Migrations
             modelBuilder.Entity("Pds.Data.Entities.Content", b =>
                 {
                     b.Navigation("Bill");
+
+                    b.Navigation("Costs");
                 });
 
             modelBuilder.Entity("Pds.Data.Entities.Person", b =>

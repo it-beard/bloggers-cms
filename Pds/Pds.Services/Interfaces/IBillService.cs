@@ -8,5 +8,6 @@ namespace Pds.Services.Interfaces
     public interface IBillService
     {
         Task PayBillAsync(PayBillModel model);
+        Task<List<Bill>> GetAllPaidAsync();
     }
 }

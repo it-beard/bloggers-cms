@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
 using Pds.Data;
+using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Bill;
 
@@ -21,7 +23,7 @@ namespace Pds.Services.Services
             var bill = await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == model.BillId);
             if (bill != null)
             {
-                bill.Cost = model.Cost;
+                bill.Value = model.Value;
                 bill.PaymentType = model.PaymentType;
                 bill.Comment = model.Comment;
                 bill.Status = BillStatus.Paid;
@@ -30,6 +32,11 @@ namespace Pds.Services.Services
 
                 await unitOfWork.Bills.UpdateAsync(bill);
             }
+        }
+
+        public async Task<List<Bill>> GetAllPaidAsync()
+        {
+            return await unitOfWork.Bills.GetAllPaidOrderByDateDescAsync();
         }
     }
 }

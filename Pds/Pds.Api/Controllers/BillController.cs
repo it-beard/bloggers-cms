@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,7 @@ using Pds.Services.Models.Bill;
 
 namespace Pds.Api.Controllers
 {
-    [Route("api/bill")]
+    [Route("api/bills")]
     [CustomAuthorize]
     public class BillController : ApiControllerBase
     {
@@ -42,7 +43,7 @@ namespace Pds.Api.Controllers
                 var model = new PayBillModel
                 {
                     BillId = billId,
-                    Cost = payload.Cost,
+                    Value = payload.Value,
                     Comment = payload.Comment,
                     PaymentType = payload.PaymentType,
                     PaidAt = payload.PaidAt
@@ -50,6 +51,33 @@ namespace Pds.Api.Controllers
                 await billService.PayBillAsync(model);
                 
                 return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Return list of bills
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet("paid")]
+        [ProducesResponseType(typeof(GetBillsResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllPaid([FromQuery] GetBillsRequest request)
+        {
+            try
+            {
+                var paidBills = await billService.GetAllPaidAsync();
+
+                var response = new GetBillsResponse
+                {
+                    Items = mapper.Map<List<BillDto>>(paidBills),
+                    Total = paidBills.Count
+                };
+
+                return Ok(response);
             }
             catch (Exception e)
             {

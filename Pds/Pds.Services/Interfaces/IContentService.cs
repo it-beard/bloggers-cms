@@ -13,5 +13,6 @@ namespace Pds.Services.Interfaces
         Task<Guid> CreateAsync(CreateContentModel model);
         Task DeleteAsync(Guid clientId);
         Task ArchiveAsync(Guid contentId);
+        Task<List<Content>> GetContentsForListsAsync();
     }
 }

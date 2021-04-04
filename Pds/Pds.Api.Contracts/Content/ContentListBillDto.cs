@@ -6,7 +6,7 @@ namespace Pds.Api.Contracts.Content
 {
     public class ContentListBillDto
     {
-        public decimal Cost { get; set; }
+        public decimal Value { get; set; }
         
         public BillStatus Status { get; set; }
 

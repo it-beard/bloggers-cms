@@ -74,5 +74,32 @@ namespace Pds.Web.Common
                 _ => string.Empty
             };
         }
+
+        public static string CostTypeToRu(CostType? type)
+        {
+            return type switch
+            {
+                CostType.Other => "Прочее",
+                CostType.Equipment => "Оборудование",
+                CostType.Movement => "Транспорт",
+                CostType.Accommodation => "Жильё",
+                CostType.Service => "Услуги",
+                CostType.Subscription => "Подписка",
+                _ => string.Empty
+            };
+        }
+
+        public static string BillTypeToRu(BillType? type)
+        {
+            return type switch
+            {
+                BillType.Other => "Прочее",
+                BillType.Content => "Конетнт",
+                BillType.Donation => "Донаты",
+                BillType.Resale => "Перепродажа",
+                BillType.Adsense => "AdSense",
+                _ => string.Empty
+            };
+        }
     }
 }

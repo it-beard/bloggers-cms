@@ -41,5 +41,12 @@ namespace Pds.Data.Repositories
                 .Include(p => p.Bill)
                 .FirstOrDefaultAsync(p => p.Id == contentId);
         }
+        
+        public async Task<List<Content>> GetAllOrderByCreatedAtDescAsync()
+        {
+            return await context.Contents
+                .OrderByDescending(p =>p.CreatedAt)
+                .ToListAsync();
+        }
     }
 }
