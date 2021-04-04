@@ -17,6 +17,8 @@ namespace Pds.Data.Entities
 
         public ICollection<Bill> Bills { get; set; }
 
+        public ICollection<Cost> Costs { get; set; }
+
         public ICollection<Content> Contents { get; set; }
 
         public ICollection<Person> Persons { get; set; }
