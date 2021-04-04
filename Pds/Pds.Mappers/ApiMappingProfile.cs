@@ -6,6 +6,7 @@ using AutoMapper;
 using Pds.Api.Contracts.Bill;
 using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
+using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Models;
@@ -83,7 +84,9 @@ namespace Pds.Mappers
                                 $"{p.FirstName} {p.ThirdName} {p.LastName}"));
             CreateMap<Bill, BillDto>();
             CreateMap<Content, BillContentDto>();
-            
+            CreateMap<Cost, CostDto>();
+            CreateMap<Content, CostContentDto>();
+
             #endregion
 
             #region Contracts to Entities

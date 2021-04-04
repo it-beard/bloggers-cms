@@ -1,22 +1,20 @@
 ﻿using System;
 using Pds.Core.Enums;
 
-namespace Pds.Api.Contracts.Bill
+namespace Pds.Api.Contracts.Cost
 {
-    public class BillDto
+    public class CostDto
     {
         public Guid Id { get; set; }
-        
+
         public decimal Value { get; set; }
 
         public DateTime PaidAt { get; set; }
 
-        public BillType Type { get; set; }
-
-        public PaymentType PaymentType { get; set; }
+        public CostType Type { get; set; }
 
         public string Comment { get; set; }
 
-        public BillContentDto Content { get; set; }
+        public CostContentDto Content { get; set; }
     }
 }

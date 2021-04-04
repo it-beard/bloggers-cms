@@ -1,7 +1,7 @@
-﻿@page "/bills"
+﻿@page "/costs"
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Bill
+@using Pds.Api.Contracts.Cost
 @using Pds.Core.Enums
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
@@ -9,12 +9,12 @@
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
-<Title>@WithSuffix("Доходы")</Title>
+<Title>@WithSuffix("Расходы")</Title>
 
 <h3 class="card-header d-flex justify-content-between align-items-center">
-    Список доходов
+    Список расходов
 </h3>
-@if (billsInfo == null)
+@if (costsInfo == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -34,36 +34,33 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var bill in billsInfo.Items)
+        @foreach (var cost in costsInfo.Items)
         {
             <tr>
                 <td class="paid-date-row">
                     <span>
-                        @bill.PaidAt.Date.ToString("dd.MM.yyyy")
+                        @cost.PaidAt.Date.ToString("dd.MM.yyyy")
                     </span>
                 </td>
                 <td>
                     @{
                         var title = string.Empty;
-                        if (bill.Content != null)
+                        if (cost.Content != null)
                         {
-                            title = bill.Content.Title;
+                            title = cost.Content.Title;
                         }
                     }
                     <span class="id-row" title="@title">
-                        @bill.Id.ToShortString()
+                        @cost.Id.ToShortString()
                     </span>
                 </td>
                 <td class="bill-cost-row">
-                    <span>@bill.Value.ToString("N0")</span>
-                    <i class="@GetPaymentTypeClass(bill.PaymentType)">
-                        @EnumsTranslator.PaymentTypeToShortRu(bill.PaymentType)
-                    </i>
+                    <span>@cost.Value.ToString("N0")</span>
                 </td>
-                <td>@bill.Type</td>
-                <td>@bill.Comment</td>
+                <td>@cost.Type</td>
+                <td>@cost.Comment</td>
                 <td class="text-center">
-                    <Actions OnClientUpdate="@BillsInfoUpdate" CurrentBill="@bill"></Actions>
+                    <Actions OnClientUpdate="@CostsInfoUpdate" CurrentBill="@cost"></Actions>
                 </td>
             </tr>
         }
@@ -72,25 +69,20 @@ else
 }
 
 @code {
-    private GetBillsResponse billsInfo;
+    private GetCostsResponse costsInfo;
 
     protected override async Task OnInitializedAsync()
     {
-        billsInfo = await GetBillsInfo();
+        costsInfo = await GetCostsInfo();
     }
 
-    private async Task BillsInfoUpdate()
+    private async Task CostsInfoUpdate()
     {
-        billsInfo = await GetBillsInfo();
+        costsInfo = await GetCostsInfo();
     }
 
-    private async Task<GetBillsResponse> GetBillsInfo()
+    private async Task<GetCostsResponse> GetCostsInfo()
     {
-        return await ApiClient.Get<GetBillsResponse>(TokenProvider, "bills/paid");
-    }
-    
-    private string GetPaymentTypeClass(PaymentType? type)
-    {
-        return type == PaymentType.BankAccount ? "yellow" : "red";
+        return await ApiClient.Get<GetCostsResponse>(TokenProvider, "costs");
     }
 }

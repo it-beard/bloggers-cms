@@ -1,0 +1,58 @@
+﻿.table {
+    font-size: 0.9rem;
+}
+
+.table td{
+    vertical-align: middle;
+}
+
+.table > :not(:last-child) > :last-child > *{
+    border-bottom: 2px solid darkgray;
+    color: darkgray;
+}
+
+.card-header {
+    margin-bottom: 15px;
+}
+
+.actions-header {
+    width: 100px;
+}
+
+.id-header,
+.paid-date-header {
+    width: 70px;
+    text-align: center;
+}
+
+.paid-date-row {
+    text-align: center;
+}
+
+.paid-date-row span {
+    font-size: 0.77rem;
+    background-color: darkgray;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
+}
+
+.bill-cost-header {
+    width: 120px;
+    text-align: left;
+    padding-right: 15px;
+}
+
+.bill-cost-row {
+    text-align: left;
+    padding-right: 15px;
+}
+
+.bill-cost-row span {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-right: 5px;
+}
+.id-row {
+    color: #777;
+}

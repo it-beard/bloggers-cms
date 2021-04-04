@@ -14,6 +14,8 @@ namespace Pds.Data.Entities
 
         public string Comment { get; set; }
         
+        public DateTime PaidAt { get; set; }
+        
         public CostType Type { get; set; }
 
         public Guid BrandId { get; set; }
