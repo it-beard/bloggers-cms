@@ -43,29 +43,5 @@ namespace Pds.Data.Repositories
             return await IncludeQueryable
                 .FirstOrDefaultAsync(match);
         }
-
-        public override async Task<Topic> UpdateAsync(Topic entityToUpdate)
-        {
-            var topicFromDb = await context.Topics.Include(p => p.PersonTopics)
-                .FirstOrDefaultAsync(t => entityToUpdate.Id == t.Id);
-            if (topicFromDb is null)
-                throw new InvalidOperationException("Topic not found.");
-            var personTopicsFromService = entityToUpdate.PersonTopics;
-            var personTopicsFromDb = new List<PersonTopic>();
-            foreach (var personTopic in personTopicsFromService)
-            {
-                var person = await context.Persons.FirstOrDefaultAsync(p => personTopic.PersonId == p.Id);
-                if (person is not null)
-                    personTopicsFromDb.Add(new PersonTopic(entityToUpdate.Id, person.Id));
-            }
-
-            topicFromDb.Name = entityToUpdate.Name;
-            topicFromDb.UpdatedAt = DateTime.Now;
-            topicFromDb.PersonTopics = personTopicsFromDb;
-
-            context.Update(topicFromDb);
-            await context.SaveChangesAsync();
-            return topicFromDb;
-        }
     }
 }
