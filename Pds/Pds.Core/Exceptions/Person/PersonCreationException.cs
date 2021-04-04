@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pds.Core.Exceptions
+namespace Pds.Core.Exceptions.Person
 {
-    public class PersonCreationException : Exception
+    public class PersonCreationException : Exception, IApiException
     {
-        public List<string> Errors;
+        public List<string> Errors { get; }
 
         public PersonCreationException(List<string> errors)
         {

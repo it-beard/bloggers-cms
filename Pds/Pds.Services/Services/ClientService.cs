@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
+using Pds.Core.Exceptions.Client;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -19,7 +20,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Client>> GetAllAsync()
         {
-            return await unitOfWork.Clients.GetAllOrderByNameAsync();
+            return await unitOfWork.Clients.GetAllWithBillsOrderByNameAsync();
         }
 
         public async Task<Guid> CreateAsync(Client client)
@@ -37,7 +38,12 @@ namespace Pds.Services.Services
 
         public async Task DeleteAsync(Guid clientId)
         {
-            var client = await unitOfWork.Clients.GetFirstWhereAsync(p => p.Id == clientId);
+            var client = await unitOfWork.Clients.GetWithBillsByIdAsync(clientId);
+            if (client.Bills != null && client.Bills.Count > 0)
+            {
+                throw new ClientDeleteException("Нельзя удалить клиента с привязанным контентом.");
+            }
+
             if (client != null)
             {
                 await unitOfWork.Clients.Delete(client);

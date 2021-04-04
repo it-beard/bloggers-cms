@@ -25,8 +25,8 @@ else
     <table class="table">
         <thead>
         <tr>
-            <th>Наименование</th>
-            <th>Коммнетария</th>
+            <th class="client-name-header">Наименование</th>
+            <th>Комментарий</th>
             <th class="text-center actions-header">Действия</th>
         </tr>
         </thead>
@@ -34,7 +34,13 @@ else
         @foreach (var client in clientsInfo.Items)
         {
             <tr>
-                <td>@client.Name</td>
+                <td class="client-name-row">
+                    @client.Name
+                    @if (client.Bills != null && client.Bills.Count > 0)
+                    {
+                        <span class="contents">(@client.Bills.Count)</span>
+                    }
+                </td>
                 <td>@client.Comment</td>
                 <td class="text-center">
                     <Actions OnClientUpdate="@ClientsInfoUpdate" CurrentClient="@client"></Actions>

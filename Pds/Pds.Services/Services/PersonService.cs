@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
 using Pds.Core.Exceptions;
+using Pds.Core.Exceptions.Person;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;

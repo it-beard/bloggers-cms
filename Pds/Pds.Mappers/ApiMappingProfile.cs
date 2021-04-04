@@ -91,6 +91,7 @@ namespace Pds.Mappers
 
             CreateMap<Bill, BillDto>();
             CreateMap<Bill, ContentListBillDto>();
+            CreateMap<Bill, ClientBillDto>();
 
             CreateMap<Cost, CostDto>();
 

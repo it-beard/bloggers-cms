@@ -13,9 +13,12 @@
         <i class="bi bi-pencil-fill"></i>
     </button>
 
-    <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
-        <i class="bi bi-trash-fill"></i>
-    </button>
+    @if (CurrentClient.Bills == null || CurrentClient.Bills.Count == 0)
+    {
+        <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
+            <i class="bi bi-trash-fill"></i>
+        </button>
+    }
 </div>
 
 @code {
