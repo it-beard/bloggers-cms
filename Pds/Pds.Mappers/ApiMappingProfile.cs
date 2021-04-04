@@ -49,7 +49,7 @@ namespace Pds.Mappers
                         .MapFrom((p, s) =>
                             s.Title = string.IsNullOrEmpty(p.Title) ? 
                                 "Не выбрано" : 
-                                $"{p.CreatedAt:dd.MM} / {p.Title}"));
+                                $"{p.ReleaseDateUtc:dd.MM} / {p.Title}"));
             CreateMap<Content, ContentDto>()
                 .ForMember(
                     dest => dest.ClientName,
