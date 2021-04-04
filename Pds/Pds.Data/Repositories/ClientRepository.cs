@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Pds.Core.Extensions;
 using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
 
@@ -37,6 +38,13 @@ namespace Pds.Data.Repositories
             return await context.Clients
                 .Include(c => c.Bills)
                 .FirstOrDefaultAsync(c => c.Id == clientId);
+        }
+        
+        public async Task<bool> IsExistsByNameAsync(string clientName)
+        {
+            var client = await context.Clients
+                .FirstOrDefaultAsync(c => c.Name.ToLower().Trim() == clientName.ToLower().Trim());
+            return client != null;
         }
     }
 }

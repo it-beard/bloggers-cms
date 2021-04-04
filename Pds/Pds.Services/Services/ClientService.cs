@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
 using Pds.Core.Exceptions.Client;
+using Pds.Core.Extensions;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -30,7 +31,13 @@ namespace Pds.Services.Services
                 throw new ArgumentNullException(nameof(client));
             }
 
+            if (await unitOfWork.Clients.IsExistsByNameAsync(client.Name))
+            {
+                throw new ClientCreateException("Клиент с таким именем существует в системе.");
+            }
+
             client.CreatedAt = DateTime.UtcNow;
+            client.Name = client.Name.Trim();
             var result = await unitOfWork.Clients.InsertAsync(client);
 
             return result.Id;

@@ -26,7 +26,7 @@ else
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
         <div class="form-group">
-            <label for="first_name" class="form-label">Наименование</label>
+            <label for="first_name" class="form-label label-required">Наименование</label>
             <InputText class="form-control" id="first_name" @bind-Value="client.Name"/>
         </div>
 
@@ -47,23 +47,34 @@ else
 @code {
     private CreateClientRequest client = new();
     private EditContext editContext;
+    private ValidationMessageStore msgStore;
     private bool isCreateButtonDisabled;
     
     protected override void OnInitialized()
     {
         isCreateButtonDisabled = false;
         editContext = new EditContext(client);
+        msgStore = new ValidationMessageStore(editContext);
     }
     
     private async Task HandleSubmit()
     {
+        msgStore.Clear();
         var isValid = editContext.Validate();
 
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            await ApiClient.Post<object, CreateClientRequest>(TokenProvider, "clients", client);
-            NavigationManager.NavigateTo("/clients");
+            var result = await ApiClient.Post<object, CreateClientRequest>(TokenProvider, "clients", client);
+            isCreateButtonDisabled = false;
+            if (result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/clients");
+            }
+            else
+            {
+                result.AddErrors(msgStore, editContext);
+            }
         }
     }
 }

@@ -10,5 +10,6 @@ namespace Pds.Data.Repositories.Interfaces
         Task<List<Client>> GetAllOrderByNameAsync();
         Task<List<Client>> GetAllWithBillsOrderByNameAsync();
         Task<Client> GetWithBillsByIdAsync(Guid clientId);
+        Task<bool> IsExistsByNameAsync(string clientName);
     }
 }

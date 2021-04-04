@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pds.Web.Common
+namespace Pds.Core.Extensions
 {
     public static class GuidExtensions
     {

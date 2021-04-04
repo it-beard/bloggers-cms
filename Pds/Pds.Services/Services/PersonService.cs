@@ -33,7 +33,7 @@ namespace Pds.Services.Services
 
             if (person.Brands.Count == 0)
             {
-                throw new PersonCreationException("Персону нельзя создать без бренда.");
+                throw new PersonCreateException("Персону нельзя создать без бренда.");
             }
             
             // Restore brands from DB
