@@ -43,7 +43,7 @@ else
 
         <div class="form-group">
             <label for="bill_cost" class="form-label  label-required">Финальная стоимость USD:</label>
-            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="paymentPayload.Cost"/>
+            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="paymentPayload.Value"/>
 
             <label for="bill_cost" class="form-label  label-required">Дата оплаты:</label>
             <InputDate class="form-control pay-date" id="bill_cost" @bind-Value="paymentPayload.PaidAt"/>
@@ -78,7 +78,7 @@ else
     {
         isCreateButtonDisabled = false;
         content = await GetContentAsync(Guid.Parse(ContentId));
-        paymentPayload.Cost = content.BillCost;
+        paymentPayload.Value = content.BillValue;
         paymentPayload.Comment = content.BillComment;
         paymentPayload.PaymentType = content.BillPaymentType ?? PaymentType.BankAccount;
         paymentPayload.PaidAt = content.BillPaidAt ?? GetCurrentDateWithoutOffset();

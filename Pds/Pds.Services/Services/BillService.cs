@@ -21,7 +21,7 @@ namespace Pds.Services.Services
             var bill = await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == model.BillId);
             if (bill != null)
             {
-                bill.Cost = model.Cost;
+                bill.Value = model.Value;
                 bill.PaymentType = model.PaymentType;
                 bill.Comment = model.Comment;
                 bill.Status = BillStatus.Paid;

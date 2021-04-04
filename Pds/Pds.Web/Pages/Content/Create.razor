@@ -73,7 +73,7 @@ else
             @if (!content.IsFree)
             {
                 <label for="bill_cost" class="form-label label-required">Стоимость USD:</label>
-                <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.Bill.Cost"/>
+                <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.Bill.Value"/>
             }
 
             <InputCheckbox name="isFree" class="btn-check" @bind-Value="content.IsFree" Id="content_is_free"/>
@@ -167,7 +167,7 @@ else
     {
         ContactType = ContactType.Telegram,
         ClientId = Guid.NewGuid(),
-        Cost = 11,
+        Value = 11,
         Contact = "iamitbeard"
     };
     

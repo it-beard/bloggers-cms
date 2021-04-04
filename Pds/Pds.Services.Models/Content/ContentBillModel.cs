@@ -13,7 +13,7 @@ namespace Pds.Services.Models.Content
         
         public ContactType ContactType { get; set; }
 
-        public decimal Cost { get; set; }
+        public decimal Value { get; set; }
         
     }
 }

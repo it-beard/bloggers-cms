@@ -42,7 +42,7 @@ namespace Pds.Api.Controllers
                 var model = new PayBillModel
                 {
                     BillId = billId,
-                    Cost = payload.Cost,
+                    Value = payload.Value,
                     Comment = payload.Comment,
                     PaymentType = payload.PaymentType,
                     PaidAt = payload.PaidAt

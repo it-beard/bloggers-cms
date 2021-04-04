@@ -37,9 +37,9 @@ namespace Pds.Mappers
                         .MapFrom(p => p.Bill.Client.Name));
             CreateMap<Content, GetContentResponse>()
                 .ForMember(
-                    dest => dest.BillCost,
+                    dest => dest.BillValue,
                     opt => opt
-                        .MapFrom(p => p.Bill.Cost))
+                        .MapFrom(p => p.Bill.Value))
                 .ForMember(
                     dest => dest.BillComment,
                     opt => opt
