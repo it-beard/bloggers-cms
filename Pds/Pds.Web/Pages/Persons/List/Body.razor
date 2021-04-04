@@ -19,59 +19,67 @@
 </h3>
 @if (personsInfo == null)
 {
-<p>
-    <em>Загрузка...</em>
-</p> }
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
 else
 {
-<PagingComponent PageSizeList="pageSizesList" TotalItems="personsInfo.Total" Radius="2" Pagination="Pagination" />
+    <PagingComponent 
+                     CurrentPage="currentPage" 
+                     PageSizeList="pageSizesList"
+                     TotalItems="personsInfo.Total" 
+                     Radius="2" 
+                     Pagination="Pagination" />
 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                <SortingComponent OnSortPersons="SortPersons"
-                                                  FieldName="PersonsFieldName.FullName">Полное имя</SortingComponent>
-                            </th>
-                            <th>
-                                <SortingComponent OnSortPersons="SortPersons"
-                                                  FieldName="PersonsFieldName.Location">Локация</SortingComponent>
-                            </th>
-                            <th>Информация</th>
-                            <th>Ссылки</th>
-                            <th class="text-center actions">Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var person in personsInfo.Items)
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <SortingComponent OnSortPersons="SortPersons"
+                                      FieldName="PersonsFieldName.FullName">Полное имя</SortingComponent>
+                </th>
+                <th>
+                    <SortingComponent OnSortPersons="SortPersons"
+                                      FieldName="PersonsFieldName.Location">Локация</SortingComponent>
+                </th>
+                <th>Информация</th>
+                <th>Ссылки</th>
+                <th class="text-center actions">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in personsInfo.Items)
+            {
+                <tr>
+                    <td>@person.FullName (@person.Rate)</td>
+                    <td>@person.Location</td>
+                    <td>@person.Info</td>
+                    <td>
+                        @foreach (var resource in person.Resources)
                         {
-        <tr>
-            <td>@person.FullName (@person.Rate)</td>
-            <td>@person.Location</td>
-            <td>@person.Info</td>
-            <td>
-                @foreach (var resource in person.Resources)
-                {
-<div>
-    <a href="@resource.Url" target="_blank">@resource.Name</a>
-</div>}
-            </td>
-            <td class="text-center">
-                <Actions OnPersonUpdate="@PersonsInfoUpdate" CurrentPerson="@person"></Actions>
-            </td>
-        </tr>
-}
-                    </tbody>
-                </table>
+                            <div>
+                                <a href="@resource.Url" target="_blank">@resource.Name</a>
+                            </div>}
+                    </td>
+                    <td class="text-center">
+                        <Actions OnPersonUpdate="@PersonsInfoUpdate" CurrentPerson="@person"></Actions>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
-@code { 
+@code {
     private GetPersonsResponse personsInfo;
     private readonly int[] pageSizesList = { 5, 10, 25, 50 };
     private int pageSize;
+    private int currentPage;
 
     protected override async Task OnInitializedAsync()
     {
+        currentPage = 1;
         personsInfo = await GetPersonsInfo();
     }
 
@@ -87,7 +95,7 @@ else
         {
             PageSettings = pageSettings ?? new PageSettings
             {
-                Limit = 5,
+                Limit = pageSizesList[0],
                 Offset = 0
             },
             OrderSettings = orderSettings ?? new[]
@@ -103,6 +111,7 @@ else
 
     private async Task Pagination(PaginationSettings paggingSettings)
     {
+        currentPage = paggingSettings.CurrentPage;
         pageSize = paggingSettings.PageSize;
         var pageSettings = new PageSettings() { Limit = pageSize, Offset = paggingSettings.PageOffSet };
 
@@ -111,6 +120,7 @@ else
 
     private async Task SortPersons(SortingEventArgs eventArgs)
     {
+        currentPage = 1;
         var orderSettings = new List<OrderSetting<PersonsFieldName>>();
 
         orderSettings.Add(new OrderSetting<PersonsFieldName>
