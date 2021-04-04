@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Pds.Api.Contracts.Bill;
 using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
@@ -80,6 +81,8 @@ namespace Pds.Mappers
                             s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
                                 "Не выбрано" : 
                                 $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+            CreateMap<Bill, BillDto>();
+            CreateMap<Content, BillContentDto>();
             
             #endregion
 

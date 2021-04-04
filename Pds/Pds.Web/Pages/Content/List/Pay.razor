@@ -92,7 +92,7 @@ else
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bill/{content.BillId}/pay", paymentPayload);
+            await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bills/{content.BillId}/pay", paymentPayload);
             NavigationManager.NavigateTo("/content");
         }
     }

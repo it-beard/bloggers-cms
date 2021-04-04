@@ -1,0 +1,96 @@
+﻿@page "/bills"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Bill
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Клиенты")</Title>
+
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Список доходов
+</h3>
+@if (billsInfo == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="paid-date-header">Когда</th>
+            <th class="id-header">ID</th>
+            <th class="bill-cost-header">Сколько</th>
+            <th>Тип</th>
+            <th>Комментарий</th>
+            <th class="text-center actions-header">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var bill in billsInfo.Items)
+        {
+            <tr>
+                <td class="paid-date-row">
+                    <span>
+                        @bill.PaidAt.Date.ToString("dd.MM.yyyy")
+                    </span>
+                </td>
+                <td>
+                    @{
+                        var title = string.Empty;
+                        if (bill.Content != null)
+                        {
+                            title = bill.Content.Title;
+                        }
+                    }
+                    <span class="id-row" title="@title">
+                        @bill.Id.ToShortString()
+                    </span>
+                </td>
+                <td class="bill-cost-row">
+                    <span>@bill.Value.ToString("N0")</span>
+                    <i class="@GetPaymentTypeClass(bill.PaymentType)">
+                        @EnumsTranslator.PaymentTypeToShortRu(bill.PaymentType)
+                    </i>
+                </td>
+                <td>@bill.Type</td>
+                <td>@bill.Comment</td>
+                <td class="text-center">
+                    <Actions OnClientUpdate="@ClientsInfoUpdate" CurrentBill="@bill"></Actions>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GetBillsResponse billsInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        billsInfo = await GetBillsInfo();
+    }
+
+    private async Task ClientsInfoUpdate()
+    {
+        billsInfo = await GetBillsInfo();
+    }
+
+    private async Task<GetBillsResponse> GetBillsInfo()
+    {
+        return await ApiClient.Get<GetBillsResponse>(TokenProvider, "bills/paid");
+    }
+    
+    private string GetPaymentTypeClass(PaymentType? type)
+    {
+        return type == PaymentType.BankAccount ? "yellow" : "red";
+    }
+}
