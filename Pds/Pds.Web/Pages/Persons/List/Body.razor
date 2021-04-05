@@ -25,12 +25,12 @@
 }
 else
 {
-    <PagingComponent 
-                     CurrentPage="currentPage" 
-                     PageSizeList="pageSizesList"
-                     TotalItems="personsInfo.Total" 
-                     Radius="2" 
-                     Pagination="Pagination" />
+    <CascadingValue Value="isPagingStateHasChanged">
+        <PagingComponent PageSizeList="pageSizesList"
+                         TotalItems="personsInfo.Total"
+                         Radius="2"
+                         Pagination="Pagination" />
+    </CascadingValue>
 
     <table class="table">
         <thead>
@@ -75,11 +75,10 @@ else
     private GetPersonsResponse personsInfo;
     private readonly int[] pageSizesList = { 5, 10, 25, 50 };
     private int pageSize;
-    private int currentPage;
+    private bool isPagingStateHasChanged;
 
     protected override async Task OnInitializedAsync()
     {
-        currentPage = 1;
         personsInfo = await GetPersonsInfo();
     }
 
@@ -90,7 +89,6 @@ else
 
     private async Task<GetPersonsResponse> GetPersonsInfo(OrderSetting<PersonsFieldName>[] orderSettings = null, PageSettings pageSettings = null)
     {
-
         var request = new GetPersonsRequest
         {
             PageSettings = pageSettings ?? new PageSettings
@@ -99,7 +97,7 @@ else
                 Offset = 0
             },
             OrderSettings = orderSettings ?? new[]
-            {
+        {
                 new OrderSetting<PersonsFieldName>()
             }
         };
@@ -111,7 +109,6 @@ else
 
     private async Task Pagination(PaginationSettings paggingSettings)
     {
-        currentPage = paggingSettings.CurrentPage;
         pageSize = paggingSettings.PageSize;
         var pageSettings = new PageSettings() { Limit = pageSize, Offset = paggingSettings.PageOffSet };
 
@@ -120,7 +117,7 @@ else
 
     private async Task SortPersons(SortingEventArgs eventArgs)
     {
-        currentPage = 1;
+        isPagingStateHasChanged = true;
         var orderSettings = new List<OrderSetting<PersonsFieldName>>();
 
         orderSettings.Add(new OrderSetting<PersonsFieldName>
@@ -130,6 +127,7 @@ else
         });
 
         var pageSettings = new PageSettings() { Limit = pageSize, Offset = 0 };
-        personsInfo = await GetPersonsInfo(orderSettings.ToArray());
+        personsInfo = await GetPersonsInfo(orderSettings.ToArray(), pageSettings);
+        isPagingStateHasChanged = default;
     }
 }
