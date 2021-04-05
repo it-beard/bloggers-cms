@@ -66,7 +66,6 @@ namespace Pds.Web.Components
         {
             currentPageSize = PageSizeList[0];
             SetDefaultPagination();
-            Console.WriteLine("Init");
         }
 
         protected override void OnParametersSet()
@@ -74,7 +73,6 @@ namespace Pds.Web.Components
             totalPages = (int)Math.Ceiling((double)TotalItems / currentPageSize);
             if (totalPages <= 1 || IsPagingStateHasChanged)
                 currentPage = 1;
-            Console.WriteLine("HIHI param");
             LoadPages();
         }
 
@@ -115,7 +113,6 @@ namespace Pds.Web.Components
             pageOffset = default;
             currentPage = 1;
             LoadPages();
-            Console.WriteLine("default");
         }
 
         private void LoadPages()
