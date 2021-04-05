@@ -7,6 +7,7 @@ using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Topic;
+using Pds.Core.Enums;
 using Pds.Data.Entities;
 using Pds.Services.Models;
 using Pds.Services.Models.Content;
@@ -107,7 +108,7 @@ namespace Pds.Mappers
             CreateMap<UpdateTopicRequest, Topic>()
                 .ForMember(dest => dest.PersonTopics,
                     opt =>
-                        opt.MapFrom((ctr, t) => ctr.People.Select(guid => new PersonTopic(t.Id, guid)).ToList()));
+                        opt.MapFrom((ctr, t) => ctr.People.Select(guid => new PersonTopic(t.Id, guid)).ToList()));                
             #endregion
 
             #region Contracts to Models

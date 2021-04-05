@@ -12,5 +12,7 @@ namespace Pds.Services.Interfaces
         Task<List<Topic>> GetAllAsync();
         Task<Topic> FindById(Guid id);
         Task<Guid> UpdateAsync(Topic topic);
+        Task<Guid> ArchiveAsync(Guid topicId);
+        Task<Guid> UnarchiveAsync(Guid topicId);
     }
 }
