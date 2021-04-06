@@ -54,7 +54,11 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.ClientName,
                     opt => opt
-                        .MapFrom(p => p.Bill.Client.Name));
+                        .MapFrom(p => p.Bill.Client.Name))
+                .ForMember(
+                    dest => dest.IsVisible,
+                    opt => opt
+                        .MapFrom(p => true));
             CreateMap<Content, GetContentResponse>()
                 .ForMember(
                     dest => dest.BillValue,
