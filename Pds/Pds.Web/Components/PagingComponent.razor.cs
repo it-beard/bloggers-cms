@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace Pds.Web.Components
 {
-    public partial class PagingComponent
+    public class PagingComponentModel : ComponentBase
     {
         private int[] _pageSizeList;
         private int _totalItems;
         private int _radius;
 
         [Parameter]
-        public EventCallback<PaginationSettings> Pagination { get; set; }
+        public EventCallback<PagingEventArgs> Pagination { get; set; }
         [Parameter]
         public int[] PageSizeList
         {
@@ -104,7 +104,7 @@ namespace Pds.Web.Components
 
         private void PaginationInvoke()
         {
-            var settings = new PaginationSettings(currentPageSize, pageOffset, currentPage);
+            var settings = new PagingEventArgs(currentPageSize, pageOffset, currentPage);
             Pagination.InvokeAsync(settings);
         }
 
@@ -156,13 +156,13 @@ namespace Pds.Web.Components
         }
     }
 
-    public struct PaginationSettings
+    public struct PagingEventArgs
     {
         public int CurrentPage { get; }
         public int PageSize { get; }
         public int PageOffSet { get; }
 
-        public PaginationSettings(int pageSize, int pageOffSet, int currentPage)
+        public PagingEventArgs(int pageSize, int pageOffSet, int currentPage)
         {
             CurrentPage = currentPage;
             PageSize = pageSize;

@@ -3,7 +3,7 @@ using Pds.Api.Contracts.Person;
 
 namespace Pds.Web.Components
 {
-    public partial class SortingComponent
+    public class SortingComponentModel : ComponentBase
     {
         [Parameter]
         public EventCallback<SortingEventArgs> OnSortPersons { get; set; }
@@ -14,9 +14,9 @@ namespace Pds.Web.Components
         [Parameter]
         public PersonsFieldName FieldName { get; set; }
 
-        private bool ascending;
+        protected bool ascending;
 
-        private void OnSortColumn()
+        protected void OnSortColumn()
         {
             ascending = !ascending;
 
@@ -32,7 +32,7 @@ namespace Pds.Web.Components
             Ascending = ascending;
         }
 
-        public PersonsFieldName FieldName { get; set; }
-        public bool Ascending { get; set; }
+        public PersonsFieldName FieldName { get; }
+        public bool Ascending { get; }
     }
 }
