@@ -4,7 +4,10 @@
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Core.Enums
+@using Pds.Web.Common.Models.Content
 @using static Pds.Web.Common.TitleExtension 
+@using System.Linq
+@using System.Diagnostics
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -23,6 +26,7 @@
 }
 else
 {
+    <Filter OnFilterUpdate="@FilterUpdatedAsync"></Filter>
     <table class="table">
         <thead>
         <tr>
@@ -36,7 +40,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var item in content.Items)
+        @foreach (var item in content.Items.Where(i => i.IsVisible))
         {
             <tr class="@GetRowClass(item.Status, item.Bill)">
                 <td class="release-date-row">
@@ -90,6 +94,29 @@ else
     private async Task ContentInfoUpdate()
     {
         content = await GetContentsResponse();
+    }
+
+    private void FilterUpdatedAsync(FilterSettings filterSettings)
+    {
+        var isAnySmSelected = filterSettings.SocialMediaFilterItems.Any(sm => sm.IsSelected);
+        foreach (var item in content.Items)
+        {
+            foreach (var smType in (SocialMediaType[])Enum.GetValues(typeof(SocialMediaType)))
+            {
+                if (item.SocialMediaType == smType)
+                {
+                    if (!isAnySmSelected)
+                    {
+                        item.IsVisible = true;
+                    }
+                    else
+                    {
+                        item.IsVisible = filterSettings.SocialMediaFilterItems
+                            .First(sm => sm.SocialMediaType == smType).IsSelected;
+                    }
+                }
+            }
+        }
     }
 
     private async Task<GetContentsResponse> GetContentsResponse()

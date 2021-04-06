@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using Pds.Web.Common.Models.Content
+
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject IAccessTokenProvider TokenProvider
+
+<div class="">
+    <EditForm EditContext="@editContext" >
+        <div class="form-group">
+            @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
+            {
+                var id = $"sm_type_{smFilterItem.SocialMediaType.ToString()}";
+                <InputCheckbox name="@id" class="btn-check" @bind-Value="smFilterItem.IsSelected" Id="@id"/>
+                <label class="btn btn-secondary" for="@id">
+                    @EnumsTranslator.SocialMediaTypeToRu(smFilterItem.SocialMediaType)
+                </label>
+            }
+        </div>    
+    </EditForm>
+
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+    private EditContext editContext;
+    private FilterSettings filterSettings { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        filterSettings = GetFilterSettings();
+        editContext = new EditContext(filterSettings);
+        editContext.OnFieldChanged += EditContext_OnFieldChanged;
+    }
+
+    private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        OnFilterUpdate.InvokeAsync(filterSettings);
+    }
+
+    private FilterSettings GetFilterSettings()
+    {
+        return new()
+        {
+            SocialMediaFilterItems = ((SocialMediaType[]) Enum.GetValues(typeof(SocialMediaType)))
+                .Select(smType =>
+                    new SocialMediaFilterItem()
+                    {
+                        SocialMediaType = smType,
+                        IsSelected = false
+                    })
+                .ToList()
+        };
+    }
+}

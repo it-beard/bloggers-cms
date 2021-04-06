@@ -47,6 +47,12 @@ a, .btn-link {
     color: darkgray;
 }
 
+.form-group .btn-check:checked + .btn-secondary {
+    color: #fff;
+    background-color: #157347;
+    border-color: #146c43;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

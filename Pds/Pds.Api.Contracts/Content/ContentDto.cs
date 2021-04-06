@@ -7,6 +7,8 @@ namespace Pds.Api.Contracts.Content
     {
         public string Id { get; set; }
         
+        public bool IsVisible { get; set; }
+        
         public string Title { get; set; }
         
         public ContentStatus Status { get; set; }
