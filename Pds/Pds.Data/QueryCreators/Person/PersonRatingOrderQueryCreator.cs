@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Pds.Data.Entities;
 
-namespace Pds.Data.Repositories
+namespace Pds.Data.QueryCreators
 {
     public class PersonRatingOrderQueryCreator : IOrderQuery<Person>
     {

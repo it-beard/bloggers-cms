@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Pds.Core.Enums;
 using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
 

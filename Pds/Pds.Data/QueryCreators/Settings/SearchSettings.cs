@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pds.Data.Repositories
+namespace Pds.Data.QueryCreators.Settings
 {
     public class SearchSettings<T> where T : Enum
     {

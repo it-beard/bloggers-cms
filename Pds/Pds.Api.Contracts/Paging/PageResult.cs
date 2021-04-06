@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Pds.Api.Contracts.Paging
+﻿namespace Pds.Api.Contracts.Paging
 {
     public class PageResult<T>
     {

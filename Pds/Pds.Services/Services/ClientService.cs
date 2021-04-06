@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pds.Core.Enums;
 using Pds.Core.Exceptions.Client;
-using Pds.Core.Extensions;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;

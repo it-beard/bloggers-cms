@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Reflection;
 using Autofac;
 using Pds.Di;
 using Microsoft.AspNetCore.Builder;

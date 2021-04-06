@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
-using Pds.Core.Exceptions;
 using Pds.Core.Exceptions.Person;
 using Pds.Data;
 using Pds.Data.Entities;
-using Pds.Data.Repositories;
+using Pds.Data.QueryCreators.Settings;
 using Pds.Services.Interfaces;
 
 namespace Pds.Services.Services
@@ -20,7 +19,7 @@ namespace Pds.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<(Person[] people, int total)> GetAsync(SearchSettings<PersonsFieldName> searchSettings)
+        public async Task<(Person[] people, int total)> GetPagedAsync(SearchSettings<PersonsFieldName> searchSettings)
         {
             var result = await unitOfWork.Persons.GetAllWithResourcesAsync(searchSettings);
             var total = await unitOfWork.Persons.Count();

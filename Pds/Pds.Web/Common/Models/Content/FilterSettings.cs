@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Pds.Core.Enums;
 
 namespace Pds.Web.Common.Models.Content
 {

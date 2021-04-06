@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Pds.Core.Enums;
 using Pds.Data.Entities;
+using Pds.Data.QueryCreators;
+using Pds.Data.QueryCreators.Settings;
 using Pds.Data.Repositories.Interfaces;
 
 namespace Pds.Data.Repositories

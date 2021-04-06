@@ -7,23 +7,21 @@
 
 <RemoteAuthenticatorView Action="@Action">
     <LogOut>
-        @{
-            var authority = Configuration["Auth0:Authority"];
-            var clientId = Configuration["Auth0:ClientId"];
-
-            Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
-        }
+        @{ Navigate(); }
     </LogOut>
     <LogInFailed>
-        @{
-            var authority = Configuration["Auth0:Authority"];
-            var clientId = Configuration["Auth0:ClientId"];
-
-            Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
-        }
+        @{ Navigate(); }
     </LogInFailed>
 </RemoteAuthenticatorView>
 
 @code{
     [Parameter] public string Action { get; set; }
+
+    private void Navigate()
+    {
+        var authority = Configuration["Auth0:Authority"];
+        var clientId = Configuration["Auth0:ClientId"];
+
+        Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
+    }
 }

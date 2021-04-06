@@ -1,19 +1,19 @@
 ﻿using System.Linq;
 using Pds.Data.Entities;
 
-namespace Pds.Data.Repositories
+namespace Pds.Data.QueryCreators
 {
-    public class PersonLocationOrderQueryCreator : IOrderQuery<Person>
+    public class PersonFullNameOrderQueryCreator : IOrderQuery<Person>
     {
         public IOrderedQueryable<Person> CreateOrderBy(IQueryable<Person> query, bool ascending)
         {
             if (ascending)
             {
-                return query.OrderBy(x => x.City + x.Country);
+                return query.OrderBy(p => p.LastName + p.FirstName + p.ThirdName);
             }
             else
             {
-                return query.OrderByDescending(x => x.City + x.Country);
+                return query.OrderByDescending(p => p.LastName + p.FirstName + p.ThirdName);
             }
         }
 
@@ -21,11 +21,11 @@ namespace Pds.Data.Repositories
         {
             if (ascending)
             {
-                return query.ThenBy(x => x.City + x.Country);
+                return query.ThenBy(p => p.LastName + p.FirstName + p.ThirdName);
             }
             else
             {
-                return query.ThenByDescending(x => x.City + x.Country);
+                return query.ThenByDescending(p => p.LastName + p.FirstName + p.ThirdName);
             }
         }
     }

@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
-using Pds.Data.Repositories;
+using Pds.Data.QueryCreators.Settings;
 using Pds.Services.Interfaces;
-using PersonsFieldName = Pds.Data.Repositories.PersonsFieldName;
+using PersonsFieldName = Pds.Data.QueryCreators.Settings.PersonsFieldName;
 
 namespace Pds.Api.Controllers
 {
@@ -48,7 +48,7 @@ namespace Pds.Api.Controllers
             {
                 var searchSettings = mapper.Map<GetPersonsRequest, SearchSettings<PersonsFieldName>>(request);
 
-                var result = await personService.GetAsync(searchSettings);
+                var result = await personService.GetPagedAsync(searchSettings);
 
                 var response = new GetPersonsResponse
                 {

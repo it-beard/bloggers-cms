@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -9,9 +8,7 @@ using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
-using Pds.Data.Repositories;
-using PersonsFieldName = Pds.Api.Contracts.Person.PersonsFieldName;
-using Pds.Services.Models;
+using Pds.Data.QueryCreators.Settings;
 using Pds.Services.Models.Content;
 
 namespace Pds.Mappers
@@ -108,9 +105,9 @@ namespace Pds.Mappers
             CreateMap<CreateClientRequest, Client>();
             CreateMap<CreateCostRequest, Cost>();
 
-            CreateMap<GetPersonsRequest, SearchSettings<Data.Repositories.PersonsFieldName>>();
+            CreateMap<GetPersonsRequest, SearchSettings<Data.QueryCreators.Settings.PersonsFieldName>>();
             
-            CreateMap<Api.Contracts.Paging.OrderSetting<PersonsFieldName>, OrderSetting<Data.Repositories.PersonsFieldName>>();
+            CreateMap<Api.Contracts.Paging.OrderSetting<Pds.Api.Contracts.Person.PersonsFieldName>, OrderSetting<Data.QueryCreators.Settings.PersonsFieldName>>();
             CreateMap<Api.Contracts.Paging.PageSettings, PageSettings>();
             CreateMap<Api.Contracts.Paging.FilterSettings, FilterSettings>();
 

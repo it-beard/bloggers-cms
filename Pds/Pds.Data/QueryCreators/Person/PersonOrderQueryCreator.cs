@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Pds.Data.Entities;
+using Pds.Data.QueryCreators.Settings;
 
-namespace Pds.Data.Repositories
+namespace Pds.Data.QueryCreators
 {
     public class PersonOrderQueryCreator
     {

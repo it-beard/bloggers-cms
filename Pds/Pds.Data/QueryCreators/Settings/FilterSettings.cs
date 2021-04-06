@@ -1,4 +1,4 @@
-﻿namespace Pds.Data.Repositories
+﻿namespace Pds.Data.QueryCreators.Settings
 {
     public class FilterSettings
     {

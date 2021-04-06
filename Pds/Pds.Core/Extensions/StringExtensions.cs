@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Pds.Core.Extensions
+﻿namespace Pds.Core.Extensions
 {
     public static class StringExtensions
     {

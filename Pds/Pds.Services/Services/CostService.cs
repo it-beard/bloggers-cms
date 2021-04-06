@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pds.Core.Enums;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
-using Pds.Services.Models.Bill;
 
 namespace Pds.Services.Services
 {

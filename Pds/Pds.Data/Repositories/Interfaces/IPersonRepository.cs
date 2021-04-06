@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Data.Entities;
+using Pds.Data.QueryCreators.Settings;
 
 namespace Pds.Data.Repositories.Interfaces
 {

@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using Pds.Data;
 using Pds.Data.Entities;
-using Pds.Data.Repositories;
+using Pds.Data.QueryCreators.Settings;
 using Pds.Data.Repositories.Interfaces;
 using Pds.Services.Services;
 
@@ -94,7 +94,7 @@ namespace Pds.Services.Tests
                .ReturnsAsync(1);
 
             // act
-            var result = await service.GetAsync(searchSettings);
+            var result = await service.GetPagedAsync(searchSettings);
 
             // assert
             Assert.NotNull(result);
