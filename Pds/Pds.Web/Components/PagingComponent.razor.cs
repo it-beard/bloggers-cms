@@ -1,25 +1,62 @@
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pds.Web.Components
 {
-    public partial class PagingComponent
+    public class PagingComponentModel : ComponentBase
     {
-        [Parameter]
-        public EventCallback<PaginationSettings> Pagination { get; set; }
-        [Parameter]
-        public int[] PageSizeList { get; set; }
-        [Parameter]
-        public int TotalItems { get; set; }
-        [Parameter]
-        public int Radius { get; set; }
+        private int[] _pageSizeList;
+        private int _totalItems;
+        private int _radius;
 
         [Parameter]
-        public int CurrentPage { get; set; }
+        public EventCallback<PagingEventArgs> Pagination { get; set; }
+        [Parameter]
+        public int[] PageSizeList
+        {
+            get => _pageSizeList;
+            set
+            {
+                var array = value.Where(item => item >= 1).ToArray();
+
+                if (array.Length == 0)
+                    _pageSizeList = new int[] { 10 };
+                else
+                    _pageSizeList = array;
+            }
+        }
+        [Parameter]
+        public int? TotalItems
+        {
+            get => _totalItems;
+            set
+            {
+                if (value < 0)
+                    _totalItems = 0;
+                else
+                    _totalItems = value ?? 0;
+            }
+        }
+        [Parameter]
+        public int? Radius
+        {
+            get => _radius;
+            set
+            {
+                if (value < 1)
+                    _radius = 2;
+                else
+                    _radius = value ?? 2;
+            }
+        }
+
+        [CascadingParameter]
+        public bool IsPagingStateHasChanged { get; set; }
 
         private int pageOffset;
-        //private int currentPage;
+        private int currentPage;
         private int totalPages;
         private int currentPageSize;
 
@@ -33,9 +70,9 @@ namespace Pds.Web.Components
 
         protected override void OnParametersSet()
         {
-            totalPages = (int)Math.Ceiling(TotalItems / (double)currentPageSize);
-            if (totalPages <= 1)
-                CurrentPage = 1;
+            totalPages = (int)Math.Ceiling((double)TotalItems / currentPageSize);
+            if (totalPages <= 1 || IsPagingStateHasChanged)
+                currentPage = 1;
             LoadPages();
         }
 
@@ -51,7 +88,7 @@ namespace Pds.Web.Components
 
         protected void OnChangePage(PageModel page)
         {
-            if (page.Page == CurrentPage)
+            if (page.Page == currentPage)
             {
                 return;
             }
@@ -60,42 +97,42 @@ namespace Pds.Web.Components
             {
                 return;
             }
-            CurrentPage = page.Page;
-            pageOffset = (CurrentPage - 1) * currentPageSize;
+            currentPage = page.Page;
+            pageOffset = (currentPage - 1) * currentPageSize;
             PaginationInvoke();
         }
 
         private void PaginationInvoke()
         {
-            var settings = new PaginationSettings(currentPageSize, pageOffset, CurrentPage);
+            var settings = new PagingEventArgs(currentPageSize, pageOffset, currentPage);
             Pagination.InvokeAsync(settings);
         }
 
         private void SetDefaultPagination()
         {
             pageOffset = default;
-            CurrentPage = 1;
+            currentPage = 1;
             LoadPages();
         }
 
         private void LoadPages()
         {
             pages = new List<PageModel>();
-            var isPreviousPageLinkEnabled = CurrentPage > 1 && totalPages > 0;
+            var isPreviousPageLinkEnabled = currentPage > 1 && totalPages > 0;
 
-            var previousPage = CurrentPage - 1;
+            var previousPage = currentPage - 1;
             pages.Add(new PageModel(previousPage, isPreviousPageLinkEnabled, "Previous"));
 
             for (int i = 1; i <= totalPages; i++)
             {
-                if (i > CurrentPage - Radius && i < CurrentPage + Radius)
+                if (i > currentPage - Radius && i < currentPage + Radius)
                 {
-                    pages.Add(new PageModel(i) { Active = CurrentPage == i });
+                    pages.Add(new PageModel(i) { Active = currentPage == i });
                 }
             }
 
-            var isNextPageLinkEnabled = CurrentPage < totalPages && totalPages > 0;
-            var nextPage = CurrentPage + 1;
+            var isNextPageLinkEnabled = currentPage < totalPages && totalPages > 0;
+            var nextPage = currentPage + 1;
             pages.Add(new PageModel(nextPage, isNextPageLinkEnabled, "Next"));
         }
 
@@ -119,13 +156,13 @@ namespace Pds.Web.Components
         }
     }
 
-    public struct PaginationSettings
+    public struct PagingEventArgs
     {
         public int CurrentPage { get; }
         public int PageSize { get; }
         public int PageOffSet { get; }
 
-        public PaginationSettings(int pageSize, int pageOffSet, int currentPage)
+        public PagingEventArgs(int pageSize, int pageOffSet, int currentPage)
         {
             CurrentPage = currentPage;
             PageSize = pageSize;
@@ -133,4 +170,3 @@ namespace Pds.Web.Components
         }
     }
 }
-
