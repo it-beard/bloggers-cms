@@ -1,0 +1,76 @@
+﻿.page-container {
+    padding-top: 15px;
+}
+.info-item {
+    margin-bottom: 15px;
+}
+
+.info-item .info-title {
+    background-color: lightgray;
+    padding: 5px 15px;
+    border-radius: 5px 5px 0 0;
+    font-size: 0.8rem;
+    font-style: italic;
+    border-bottom: 6px double white;
+}
+
+.info-item .info-body {
+    background-color: orchid;
+    padding: 10px 15px 10px 15px;
+    border-radius: 0 0 5px 5px;
+    margin-bottom: 10px;
+}
+
+.info-body ul {
+    margin-bottom: 0rem;
+}
+
+.active-not-paid .info-item .info-body {
+    background-color: lightpink;
+}
+
+.free .info-item .info-body {
+    background-color: lightblue;
+}
+
+.active-paid .info-item .info-body {
+    background-color: lightgreen;
+}
+
+.archived-not-paid .info-item .info-body {
+    background-color: orangered;
+}
+
+.archived-free .info-item .info-body ,
+.archived-paid .info-item .info-body {
+    background-color: gainsboro;
+}
+
+.bill-cost i.payment-type {
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-style: normal;
+    margin-left: 5px;
+    margin-right: 5px
+}
+
+.bill-cost i.white {
+    background-color: white;
+    color: black;
+}
+
+.bill-cost i.red {
+    background-color: lightcoral;
+    color: white;
+}
+
+.bill-comment {
+    padding-left: 15px;
+    font-size: 0.8rem;
+    margin-top: 10px;
+}
+
+.info-item.costs .info-body {
+    background-color: lightpink !important;
+}

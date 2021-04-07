@@ -1,5 +1,5 @@
 ﻿@page "/persons"
-@attribute [Authorize]
+@inherits BasePageComponent
 
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
@@ -11,10 +11,10 @@
 
 <Title>@WithSuffix("Персоны")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
+<h4 class="card-header d-flex justify-content-between align-items-center">
     Список персон
     <a href="/persons/add" class="btn btn-success" >Добавить</a>
-</h3>
+</h4>
 @if (personsInfo == null)
 {
     <p>

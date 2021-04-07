@@ -13,6 +13,7 @@ namespace Pds.Api.Contracts.Content
         [Required]
         public string Contact { get; set; }
 
+        [Required]
         public string ContactName { get; set; }
 
         [Required, EnumDataType(typeof(ContactType))]

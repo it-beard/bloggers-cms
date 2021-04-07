@@ -18,6 +18,7 @@ namespace Pds.Web
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddTransient<IApiClient, ApiClient>();
+            builder.Services.AddSingleton<PageHistoryState>();
             builder.Services.AddHeadElementHelper();
 
             builder.Services.AddOidcAuthentication(options =>

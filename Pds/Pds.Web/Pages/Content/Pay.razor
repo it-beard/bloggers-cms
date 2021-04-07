@@ -1,11 +1,11 @@
 ﻿@page "/content/{contentId}/pay"
-@attribute [Authorize]
+@inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Bill
 @using Pds.Api.Contracts.Content
 @using Pds.Core.Enums
 @using Pds.Web.Common
-@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.TitleExtension
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
@@ -21,10 +21,10 @@
 }
 else
 {
-    <h3 class="card-header d-flex justify-content-between align-items-center">
+    <h4 class="card-header d-flex justify-content-between align-items-center">
         Оплата контента "@content.Title"
-        <a href="/content" class="btn btn-primary"> Назад </a>
-    </h3>
+        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+    </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
@@ -71,7 +71,7 @@ else
         PaymentType = PaymentType.BankAccount, //default
     };
     private EditContext editContext;
-    private GetContentResponse content;
+    private GetContentForPayResponse content;
     private bool isCreateButtonDisabled;
     
     protected override async Task OnInitializedAsync()
@@ -97,9 +97,9 @@ else
         }
     }
 
-    private async Task<GetContentResponse> GetContentAsync(Guid contentId)
+    private async Task<GetContentForPayResponse> GetContentAsync(Guid contentId)
     {
-        return await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{contentId}");
+        return await ApiClient.Get<GetContentForPayResponse>(TokenProvider, $"content/{contentId}/pay");
     }
 
     private DateTime GetCurrentDateWithoutOffset()

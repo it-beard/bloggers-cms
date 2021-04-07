@@ -1,5 +1,5 @@
 ﻿@page "/content"
-@attribute [Authorize]
+@inherits BasePageComponent
 @using Pds.Api.Contracts.Content
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -8,16 +8,17 @@
 @using static Pds.Web.Common.TitleExtension 
 @using System.Linq
 @using System.Diagnostics
+@using Pds.Core.Extensions
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
 <Title>@WithSuffix("Контент")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
+<h4 class="card-header d-flex justify-content-between align-items-center">
     Лента контента
     <a href="/content/add" class="btn btn-success" >Добавить</a>
-</h3>
+</h4>
 @if (content == null)
 {
     <p>
@@ -42,14 +43,14 @@ else
         <tbody>
         @foreach (var item in content.Items.Where(i => i.IsVisible))
         {
-            <tr class="@GetRowClass(item.Status, item.Bill)">
+            <tr class="@ContentHelper.GetContentBgColorClass(item.Status, item.Bill)">
                 <td class="release-date-row">
                     <span>
-                        @item.ReleaseDateUtc.Date.ToString("dd.MM")
+                        @item.ReleaseDateUtc.Date.ToShortStringDateWithDay()
                     </span>
                 </td>
-                <td>
-                    @item.Title
+                <td class="title-row">
+                    <a href="content/@item.Id">@item.Title</a>
                 </td>
                 <td>
                     @item.ClientName
@@ -65,7 +66,9 @@ else
                     {
                         if (item.Bill.PaymentType != null)
                         {
-                            <i class="@GetPaymentTypeClass(item.Bill.PaymentType)">@EnumsTranslator.PaymentTypeToShortRu(item.Bill.PaymentType)</i>
+                            <i class="@ContentHelper.GetPaymentTypeBgColorClass(item.Bill.PaymentType)">
+                                @EnumsTranslator.PaymentTypeToShortRu(item.Bill.PaymentType)
+                            </i>
                         }
                         <span>@item.Bill.Value.ToString("N0")</span> 
                     }
@@ -122,33 +125,5 @@ else
     private async Task<GetContentsResponse> GetContentsResponse()
     {
         return await ApiClient.Get<GetContentsResponse>(TokenProvider, "content");
-    }
-
-    private string GetRowClass(ContentStatus contentStatus, ContentListBillDto bill)
-    {
-        if (bill == null)
-        {
-            switch (contentStatus)
-            {
-                case ContentStatus.Active:
-                    return "free";
-                case ContentStatus.Archived:
-                    return "archived-free";
-            }
-        }
-
-        return contentStatus switch
-        {
-            ContentStatus.Active when bill.Status == BillStatus.Active => "active-not-paid",
-            ContentStatus.Active when bill.Status == BillStatus.Paid => "active-paid",
-            ContentStatus.Archived when bill.Status == BillStatus.Paid => "archived-paid",
-            ContentStatus.Archived when bill.Status == BillStatus.Active => "archived-not-paid",
-            _ => string.Empty
-        };
-    }
-    
-    private string GetPaymentTypeClass(PaymentType? type)
-    {
-        return type == PaymentType.BankAccount ? "white" : "red";
     }
 }

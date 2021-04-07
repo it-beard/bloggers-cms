@@ -1,5 +1,5 @@
 ﻿@page "/clients"
-@attribute [Authorize]
+@inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Web.Common
 @using Pds.Api.Contracts.Client
@@ -10,10 +10,10 @@
 
 <Title>@WithSuffix("Клиенты")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
+<h4 class="card-header d-flex justify-content-between align-items-center">
     Список клиентов
     <a href="/clients/add" class="btn btn-success" >Добавить</a>
-</h3>
+</h4>
 @if (clientsInfo == null)
 {
     <p>
