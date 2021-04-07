@@ -45,6 +45,7 @@ namespace Pds.Mappers
             
             CreateMap<Content, BillContentDto>();
             CreateMap<Content, CostContentDto>();
+            CreateMap<Content, PersonContentDto>();
             CreateMap<Content, ContentForLookupDto>()
                 .ForMember(
                     dest => dest.Title,
