@@ -101,7 +101,7 @@ else
         paymentPayload.PaidAt = content.Bill.PaidAt ?? GetCurrentDateWithoutOffset();
         paymentPayload.IsNeedPayNds = content.Bill.IsNeedPayNds;
         paymentPayload.Comment = content.Bill.Comment;
-        paymentPayload.ContractDate = content.Bill.ContractDate;
+        paymentPayload.ContractDate = content.Bill.ContractDate ?? GetCurrentDateWithoutOffset();
         editContext = new EditContext(paymentPayload);
     }
     
