@@ -40,6 +40,17 @@ else
                 }
             </InputRadioGroup>
         </div>
+        
+        @if (paymentPayload.PaymentType == PaymentType.BankAccount)
+        {
+            <div class="form-group">
+                <label for="contract_number" class="form-label">Номер договора:</label>
+                <InputText class="form-control pay-date" id="contract_number" @bind-Value="paymentPayload.ContractNumber"/>
+
+                <label for="contract_date" class="form-label">Дата договора:</label>
+                <InputDate class="form-control pay-date" id="contract_date" @bind-Value="paymentPayload.ContractDate"/>
+            </div>
+        }
 
         <div class="form-group">
             <label for="bill_cost" class="form-label  label-required">Финальная стоимость USD:</label>
@@ -47,6 +58,12 @@ else
 
             <label for="bill_cost" class="form-label  label-required">Дата оплаты:</label>
             <InputDate class="form-control pay-date" id="bill_cost" @bind-Value="paymentPayload.PaidAt"/>
+
+            @if (paymentPayload.PaymentType == PaymentType.BankAccount)
+            {
+                <InputCheckbox name="is_nds" class="btn-check" @bind-Value="paymentPayload.IsNeedPayNds" Id="is_nds"/>
+                <label for="is_nds" class="btn btn-secondary">Включая НДС</label>
+            }
         </div>
 
         <div class="form-group">
@@ -78,10 +95,13 @@ else
     {
         isCreateButtonDisabled = false;
         content = await GetContentAsync(Guid.Parse(ContentId));
-        paymentPayload.Value = content.BillValue;
-        paymentPayload.Comment = content.BillComment;
-        paymentPayload.PaymentType = content.BillPaymentType ?? PaymentType.BankAccount;
-        paymentPayload.PaidAt = content.BillPaidAt ?? GetCurrentDateWithoutOffset();
+        paymentPayload.Value = content.Bill.Value;
+        paymentPayload.Comment = content.Bill.Comment;
+        paymentPayload.PaymentType = content.Bill.PaymentType ?? PaymentType.BankAccount;
+        paymentPayload.PaidAt = content.Bill.PaidAt ?? GetCurrentDateWithoutOffset();
+        paymentPayload.IsNeedPayNds = content.Bill.IsNeedPayNds;
+        paymentPayload.Comment = content.Bill.Comment;
+        paymentPayload.ContractDate = content.Bill.ContractDate;
         editContext = new EditContext(paymentPayload);
     }
     
@@ -92,7 +112,7 @@ else
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bills/{content.BillId}/pay", paymentPayload);
+            await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bills/{content.Bill.Id}/pay", paymentPayload);
             NavigationManager.NavigateTo("/content");
         }
     }

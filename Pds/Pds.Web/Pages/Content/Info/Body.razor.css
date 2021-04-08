@@ -74,3 +74,13 @@
 .info-item.costs .info-body {
     background-color: lightpink !important;
 }
+
+.nds {
+    background-color: lightcoral;
+    color: white;
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-style: normal;
+    margin-left: 10px;
+}

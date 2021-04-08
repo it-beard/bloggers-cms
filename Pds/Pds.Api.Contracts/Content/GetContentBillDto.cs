@@ -22,6 +22,12 @@ namespace Pds.Api.Contracts.Content
         public PaymentType? PaymentType { get; set; }
 
         public DateTime? PaidAt { get; set; }
+
+        public string ContractNumber { get; set; }
+
+        public DateTime? ContractDate { get; set; }
+
+        public bool IsNeedPayNds { get; set; }
         
         public GetContentBillClientDto Client { get; set; }
     }

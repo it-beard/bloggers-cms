@@ -78,13 +78,32 @@ else
                         {
                             <span> / @content.Bill.PaidAt.Value.ToLongStringDate()</span>
                         }
+                    }
 
+                    if (content.Bill.IsNeedPayNds != null)
+                    {
+                        <span class="nds">с НДС</span>
+                    }
+                    
+                    if (content.Bill.PaymentType != null)
+                    {
                         if (!string.IsNullOrWhiteSpace(content.Bill.Comment))
                         {
                             <div class="bill-comment">
                                 <i>Комментарий:</i> @content.Bill.Comment
                             </div>
                         }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(content.Bill.ContractNumber))
+                    {
+                        <div class="bill-comment">
+                            <i>Контракт:</i> <b>@content.Bill.ContractNumber</b>
+                            @if (content.Bill.ContractDate != null)
+                            {
+                                <span> / @content.Bill.ContractDate.Value.ToLongStringDate()</span>
+                            }
+                        </div>
                     }
                 }
                 else

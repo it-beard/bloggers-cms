@@ -64,27 +64,7 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => true));
             CreateMap<Content, GetContentResponse>();
-            CreateMap<Content, GetContentForPayResponse>()
-                .ForMember(
-                    dest => dest.BillValue,
-                    opt => opt
-                        .MapFrom(p => p.Bill.Value))
-                .ForMember(
-                    dest => dest.BillComment,
-                    opt => opt
-                        .MapFrom(p => p.Bill.Comment))
-                .ForMember(
-                    dest => dest.BillStatus,
-                    opt => opt
-                        .MapFrom(p => p.Bill.Status))
-                .ForMember(
-                    dest => dest.BillPaymentType,
-                    opt => opt
-                        .MapFrom(p => p.Bill.PaymentType))
-                .ForMember(
-                    dest => dest.BillPaidAt,
-                    opt => opt
-                        .MapFrom(p => p.Bill.PaidAt));
+            CreateMap<Content, GetContentForPayResponse>();
 
             CreateMap<Brand, Pds.Api.Contracts.Content.BrandForRadioboxGroupDto>();
             CreateMap<Brand, Pds.Api.Contracts.Cost.BrandForRadioboxGroupDto>();
@@ -103,6 +83,7 @@ namespace Pds.Mappers
             CreateMap<Bill, ContentListBillDto>();
             CreateMap<Bill, ClientBillDto>();
             CreateMap<Bill, GetContentBillDto>();
+            CreateMap<Bill, GetContentBillForPayResponse>();
 
             CreateMap<Cost, CostDto>();
             CreateMap<Cost, GetContentCostDto>();

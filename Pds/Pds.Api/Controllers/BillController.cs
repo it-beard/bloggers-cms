@@ -46,7 +46,10 @@ namespace Pds.Api.Controllers
                     Value = payload.Value,
                     Comment = payload.Comment,
                     PaymentType = payload.PaymentType,
-                    PaidAt = payload.PaidAt
+                    PaidAt = payload.PaidAt,
+                    IsNeedPayNds = payload.IsNeedPayNds,
+                    ContractDate = payload.ContractDate,
+                    ContractNumber = payload.ContractNumber
                 };
                 await billService.PayBillAsync(model);
                 
