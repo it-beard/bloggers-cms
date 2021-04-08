@@ -29,6 +29,9 @@ namespace Pds.Services.Services
                 bill.Status = BillStatus.Paid;
                 bill.UpdatedAt = DateTime.UtcNow;
                 bill.PaidAt = model.PaidAt;
+                bill.IsNeedPayNds = model.IsNeedPayNds;
+                bill.ContractNumber = model.ContractNumber;
+                bill.ContractDate = model.ContractDate;
 
                 await unitOfWork.Bills.UpdateAsync(bill);
             }

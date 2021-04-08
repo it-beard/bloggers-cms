@@ -1,19 +1,21 @@
 ﻿using System;
 using Pds.Core.Enums;
 
-namespace Pds.Services.Models.Bill
+namespace Pds.Api.Contracts.Content
 {
-    public class PayBillModel
+    public class GetContentBillForPayResponse
     {
-        public Guid BillId { get; set; }
-
-        public PaymentType PaymentType { get; set; }
+        public string Id { get; set; }
 
         public decimal Value { get; set; }
 
         public string Comment { get; set; }
 
-        public DateTime PaidAt { get; set; }
+        public BillStatus Status { get; set; }
+
+        public PaymentType? PaymentType { get; set; }
+
+        public DateTime? PaidAt { get; set; }
 
         public string ContractNumber { get; set; }
 

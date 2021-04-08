@@ -1,5 +1,5 @@
 ﻿@page "/persons"
-@attribute [Authorize]
+@inherits BasePageComponent
 
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
@@ -11,10 +11,10 @@
 
 <Title>@WithSuffix("Персоны")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
+<h4 class="card-header d-flex justify-content-between align-items-center">
     Список персон
     <a href="/persons/add" class="btn btn-success" >Добавить</a>
-</h3>
+</h4>
 @if (personsInfo == null)
 {
     <p>
@@ -26,8 +26,8 @@ else
     <table class="table">
         <thead>
         <tr>
-            <th>Полное имя</th>
-            <th>Локация</th>
+            <th>Кто</th>
+            <th>Где</th>
             <th>Информация</th>
             <th>Ссылки</th>
             <th class="text-center actions-header">Действия</th>
@@ -37,7 +37,11 @@ else
         @foreach (var person in personsInfo.Items)
         {
             <tr>
-                <td>@person.FullName (@person.Rate)</td>
+                <td class="person">
+                    @person.FullName / 
+                    <span class="rate">@person.Rate</span> / 
+                    <span class="content-count">@person.Contents.Count</span>
+                </td>
                 <td>@person.Location</td>
                 <td>@person.Info</td>
                 <td>

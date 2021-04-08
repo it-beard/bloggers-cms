@@ -27,7 +27,7 @@
         </button>
     }
 
-    @if (CurrentPerson.Status == PersonStatus.Archived)
+    @if (CurrentPerson.Status == PersonStatus.Archived && CurrentPerson.Contents.Count == 0)
     {
         <button title="Удалить" class="btn btn-danger btn-sm delete-button" @onclick="OnDelete">
             <i class="bi bi-trash-fill"></i>

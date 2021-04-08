@@ -1,5 +1,5 @@
 ﻿@page "/bills"
-@attribute [Authorize]
+@inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Bill
 @using Pds.Core.Enums
@@ -12,9 +12,9 @@
 
 <Title>@WithSuffix("Доходы")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
+<h4 class="card-header d-flex justify-content-between align-items-center">
     Список доходов
-</h3>
+</h4>
 @if (billsInfo == null)
 {
     <p>

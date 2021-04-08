@@ -4,7 +4,7 @@ using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Content
 {
-    public class ContentListBillDto
+    public class ContentListBillDto : IBillStatus
     {
         public decimal Value { get; set; }
         

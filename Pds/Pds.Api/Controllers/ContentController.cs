@@ -153,6 +153,28 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
+        /// Get content for pay by id
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpGet("{contentId}/pay")]
+        [ProducesResponseType(typeof(GetContentForPayResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetContentForPay(Guid contentId)
+        {
+            try
+            {
+                var content = await contentService.GetAsync(contentId);
+                var response = mapper.Map<GetContentForPayResponse>(content);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
         /// Get content by id
         /// </summary>
         /// <param name="contentId"></param>

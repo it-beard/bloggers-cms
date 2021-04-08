@@ -34,7 +34,12 @@ a, .btn-link {
     margin-left: 3px;
 }
 
-.table {
+.table,
+.page-container,
+.page-container .btn,
+.form-group,
+.form-group .btn,
+.form-group .form-control{
     font-size: 0.9rem;
 }
 

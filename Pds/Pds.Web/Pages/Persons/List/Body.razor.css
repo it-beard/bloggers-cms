@@ -5,3 +5,13 @@
 .actions-header {
     width: 100px;
 }
+
+.person .rate {
+    color: green;
+    font-weight: bold;
+}
+
+.person .content-count {
+    color: cornflowerblue;
+    font-weight: bold;
+}

@@ -26,7 +26,7 @@ namespace Pds.Services.Services
 
         public async Task<Content> GetAsync(Guid contentId)
         {
-            return await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            return await unitOfWork.Content.GetByIdFullAsync(contentId);
         }
 
         public async Task<Guid> CreateAsync(CreateContentModel model)
@@ -57,7 +57,6 @@ namespace Pds.Services.Services
                 {
                     Id = Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow,
-                    Comment = $"Created automatically for content with id {content.Id}",
                     Value = model.Bill.Value,
                     ContentId = content.Id,
                     Contact = model.Bill.Contact,

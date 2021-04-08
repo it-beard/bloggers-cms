@@ -9,6 +9,7 @@ namespace Pds.Data.Repositories.Interfaces
     {
         Task<List<Content>> GetAllWithBillsAsync();
         Task<List<Content>> GetAllWithBillsWithClientsAsync();
+        Task<Content> GetByIdFullAsync(Guid contentId);
         Task<Content> GetByIdWithBillAsync(Guid contentId);
         Task<List<Content>> GetAllOrderByReleaseDateDescAsync();
     }
