@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -7,9 +6,7 @@ using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Topic;
-using Pds.Core.Enums;
 using Pds.Data.Entities;
-using Pds.Services.Models;
 using Pds.Services.Models.Content;
 
 namespace Pds.Mappers
@@ -19,7 +16,7 @@ namespace Pds.Mappers
         public ApiMappingProfile()
         {
             #region Entities to Contracts
-            
+
             CreateMap<Person, PersonDto>()
                 .ForMember(
                     dest => dest.FullName,
@@ -30,7 +27,7 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => $"{p.Country} {p.City}"));
             CreateMap<Resource, ResourceDto>();
-            
+
             CreateMap<Bill, ContentListBillDto>();
             CreateMap<Content, ContentDto>()
                 .ForMember(
@@ -71,21 +68,19 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.Id,
                     opt => opt
-                        .MapFrom((p, s) => 
-                            s.Id = p.Id == Guid.Empty ? 
-                                null : 
-                                p.Id)) // Transform first person with id =  Guid.Empty element to id = null
+                        .MapFrom((p, s) =>
+                            s.Id = p.Id == Guid.Empty
+                                ? null
+                                : p.Id)) // Transform first person with id =  Guid.Empty element to id = null
                 .ForMember(
                     dest => dest.FullName,
                     opt => opt
-                        .MapFrom((p,s) => 
-                            s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
-                                "Не выбрано" : 
-                                $"{p.FirstName} {p.ThirdName} {p.LastName}"));
-            CreateMap<Topic, GetTopicDto>()
-                .ForMember(dest => dest.People, opt => opt.MapFrom(t => t.PersonTopics));
+                        .MapFrom((p, s) =>
+                            s.FullName = string.IsNullOrEmpty(p.FirstName)
+                                ? "Не выбрано"
+                                : $"{p.FirstName} {p.ThirdName} {p.LastName}"));
             CreateMap<PersonTopic, PersonDto>().IncludeMembers(pt => pt.Person);
-                
+
             #endregion
 
             #region Contracts to Entities
@@ -100,7 +95,7 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.Brands,
                     opt => opt
-                        .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
+                        .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where(c => c.IsSelected).ToList())));
             CreateMap<CreateTopicRequest, Topic>()
                 .ForMember(dest => dest.PersonTopics,
                     opt =>
@@ -108,7 +103,8 @@ namespace Pds.Mappers
             CreateMap<UpdateTopicRequest, Topic>()
                 .ForMember(dest => dest.PersonTopics,
                     opt =>
-                        opt.MapFrom((ctr, t) => ctr.People.Select(guid => new PersonTopic(t.Id, guid)).ToList()));                
+                        opt.MapFrom((ctr, t) => ctr.People.Select(guid => new PersonTopic(t.Id, guid)).ToList()));
+
             #endregion
 
             #region Contracts to Models
@@ -119,7 +115,7 @@ namespace Pds.Mappers
                     dest => dest.BrandId,
                     opt => opt
                         .MapFrom(p => p.BrandId.Value));
-            
+
             #endregion
         }
 

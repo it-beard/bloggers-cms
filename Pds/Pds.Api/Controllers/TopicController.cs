@@ -89,5 +89,35 @@ namespace Pds.Api.Controllers
                 return ExceptionResult(exception);
             }
         }
+
+        [HttpPost("archive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Archive([FromBody] Guid id)
+        {
+            try
+            {
+                _ = await topicService.ArchiveAsync(id);
+                return Ok();
+            }
+            catch (Exception exception)
+            {
+                return ExceptionResult(exception);
+            }
+        }
+
+        [HttpPost("unarchive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Unarchive([FromBody] Guid id)
+        {
+            try
+            {
+                _ = await topicService.UnarchiveAsync(id);
+                return Ok();
+            }
+            catch (Exception exception)
+            {
+                return ExceptionResult(exception);
+            }
+        }
     }
 }

@@ -1,15 +1,15 @@
-﻿@page "/topics/update/{Id}"
+﻿@page "/topics/edit/{Id}"
 @attribute [Authorize]
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Person
-@using Pds.Api.Contracts.Topic
-@using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
-@using System.Text.Json
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Topic
+@using Pds.Api.Contracts.Person
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+@inject CustomJSRuntimeCaller JsRuntimeCaller
 
 <Title>@WithSuffix("Редактирование темы")</Title>
 
@@ -23,13 +23,13 @@ else
 {
     <h3 class="card-header d-flex justify-content-between align-items-center">
         Редактирование темы
-        <a href="/topics" class="btn btn-primary"> Назад </a>
+        <a class="btn btn-primary" @onclick="() => JsRuntimeCaller.InvokeHistoryBack()"> Назад </a>
     </h3>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
         <div class="form-group">
             <label for="name" class="form-label">Имя</label>
-            <InputText class="form-control" id="name" @bind-Value="request.Name" />
+            <InputText class="form-control" id="name" @bind-Value="request.Name"/>
         </div>
 
         <div class="form-group" id="people">
@@ -38,7 +38,7 @@ else
                 @foreach (var checkBoxPersonDto in checkBoxPeople)
                 {
                     var elementId = $"person_{checkBoxPersonDto.Person.Id}";
-                    <InputCheckbox id="@elementId" class="btn-check" name="@elementId" @bind-Value="@checkBoxPersonDto.IsSelected" />
+                    <InputCheckbox id="@elementId" class="btn-check" name="@elementId" @bind-Value="@checkBoxPersonDto.IsSelected"/>
                     <label for="@elementId" class="btn btn-outline-primary ml-2">
                         @checkBoxPersonDto.Person.FullName (@checkBoxPersonDto.Person.Rate)
                     </label>
@@ -46,8 +46,8 @@ else
             </div>
         </div>
 
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
 
         <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
             <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Сохранить изменения</button>
@@ -114,4 +114,5 @@ else
     {
         return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons/");
     }
+
 }

@@ -1,0 +1,60 @@
+﻿@page "/topics"
+@attribute [Authorize]
+@using static Pds.Web.Common.TitleExtension
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Topic
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Темы")</Title>
+
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Список тем
+    <a href="/topics/add" class="btn btn-success">Добавить</a>
+</h3>
+@if (response is null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var topic in response.Items)
+        {
+            var elementId = $"topic{topic.Id:N}";
+            <tr>
+                <td>@topic.Name</td>
+                <td>
+                    <Actions CurrentTopic="topic"/>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GetTopicCollectionResponse response;
+
+    protected override async Task OnInitializedAsync()
+    {
+        response = await GetTopicsInfo();
+    }
+
+    private async Task<GetTopicCollectionResponse> GetTopicsInfo()
+    {
+        return await ApiClient.Get<GetTopicCollectionResponse>(TokenProvider, "topics");
+    }
+
+}
