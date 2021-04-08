@@ -26,7 +26,7 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.FullName,
                     opt => opt
-                        .MapFrom(p => $"{p.FirstName} {p.ThirdName} {p.LastName}"))
+                        .MapFrom(p => $"{p.LastName} {p.FirstName} {p.ThirdName}"))
                 .ForMember(
                     dest => dest.Location,
                     opt => opt
