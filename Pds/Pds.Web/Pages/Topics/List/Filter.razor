@@ -1,0 +1,94 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Topic
+@using Pds.Core.Enums
+@using Pds.Web.Common.Models.Topic
+@using Pds.Web.Common
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject IAccessTokenProvider TokenProvider
+
+<div class="d-flex flex-wrap">
+    <EditForm EditContext="@editContext">
+        <div class="form-group">
+            @foreach (var filterItem in FilterSettings.TopicStatusFilter)
+            {
+                var id = $"topics_status_{filterItem.Status.ToString()}";
+                <InputCheckbox name="@id" class="btn-check" @bind-Value="filterItem.IsSelected" Id="@id"/>
+                <label class="btn btn-secondary" for="@id">
+                    @EnumsTranslator.TopicStatusToRu(filterItem.Status)
+                </label>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="nameFilter" class="form-label">Фильтраци по названию</label>
+            <input class="form-control" list="nameFilterList" id="nameFilter" placeholder="Введите название темы..." @bind-Value="FilterSettings.NameFilter">
+            <datalist id="nameFilterList">
+                @foreach (var topicName in Topics.Select(t => t.Name))
+                {
+                    <option value="@topicName"/>
+                }
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="minRateSum" class="form-label">Минимальная сумма рейтинга</label>
+            <input type="number" class="form-range" min="0" max="@FilterSettings.MaxRateSum" id="minRateSum" name="minRateSum">
+            <label for="maxRateSum" class="form-label">Максимальная сумма рейтинга</label>
+            <input type="number" class="form-range" min="@(FilterSettings.MaxRateSum + 1)" id="maxRateSum" name="maxRateSum">
+        </div>
+
+        <div class="form-group">
+            <label for="minRateAverage" class="form-label">Минимальное среднее рейтинга</label>
+            <input type="range" class="form-range" min="0" max="@FilterSettings.MaxRateSum" id="minRateAverage" name="minRateAverage">
+            <label for="maxRateAverage" class="form-label">Максимальное среднее рейтинга</label>
+            <input type="range" class="form-range" min="@(FilterSettings.MaxRateSum + 1)" max="100" id="maxRateAverage" name="maxRateAverage">
+        </div>
+
+        <div class="form-group">
+            <label for="minPeopleCount" class="form-label">Минимальное количество персон</label>
+            <input type="number" class="form-range" min="0" max="@FilterSettings.MaxPeopleCount" id="minPeopleCount" name="minPeopleCount">
+            <label for="maxPeopleCount" class="form-label">Максимальное количество персон</label>
+            <input type="number" class="form-range" min="@(FilterSettings.MaxPeopleCount + 1)" id="maxPeopleCount" name="maxPeopleCount">
+        </div>
+    </EditForm>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public IReadOnlyCollection<GetTopicDto> Topics { get; set; }
+
+    [Parameter]
+    public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+
+    private EditContext editContext;
+    public FilterSettings FilterSettings { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        FilterSettings = GetFilterSettings();
+        editContext = new EditContext(FilterSettings);
+        editContext.OnFieldChanged += EditContext_OnFieldChanged;
+    }
+
+    private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        if (editContext.Validate())
+            OnFilterUpdate.InvokeAsync(FilterSettings);
+    }
+
+    private FilterSettings GetFilterSettings()
+    {
+        return new()
+        {
+            TopicStatusFilter = new TopicStatusFilterItem[]
+            {
+                new (TopicStatus.Archived, false),
+                new (TopicStatus.Active, true)
+            }
+        };
+    }
+
+}
