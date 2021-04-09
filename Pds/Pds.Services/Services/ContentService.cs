@@ -46,8 +46,8 @@ namespace Pds.Services.Services
                 BrandId = model.BrandId,
                 SocialMediaType = model.SocialMediaType,
                 Comment = model.Comment,
-                ReleaseDateUtc = model.ReleaseDate.Date,
-                EndDateUtc = model.EndDate?.Date,
+                ReleaseDate = model.ReleaseDate.Date,
+                EndDate = model.EndDate?.Date,
                 PersonId = model.PersonId
             };
 
@@ -73,6 +73,27 @@ namespace Pds.Services.Services
             }
 
             var result = await unitOfWork.Content.InsertAsync(content);
+
+            return result.Id;
+        }
+
+        public async Task<Guid> EditAsync(EditContentModel model)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(model.Id);
+            content.UpdatedAt = DateTime.UtcNow;
+            content.Title = model.Title;
+            content.Type = model.Type;
+            content.SocialMediaType = model.SocialMediaType;
+            content.Comment = model.Comment;
+            content.ReleaseDate = model.ReleaseDate.Date;
+            content.EndDate = model.EndDate?.Date;
+
+            var result = await unitOfWork.Content.UpdateAsync(content);
 
             return result.Id;
         }

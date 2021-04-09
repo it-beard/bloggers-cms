@@ -15,9 +15,9 @@ namespace Pds.Api.Contracts.Content
         
         public string ClientName { get; set; }
         
-        public DateTime ReleaseDateUtc { get; set; }
+        public DateTime ReleaseDate { get; set; }
 
-        public DateTime? EndDateUtc { get; set; }
+        public DateTime? EndDate { get; set; }
         
         public SocialMediaType SocialMediaType { get; set; }
 

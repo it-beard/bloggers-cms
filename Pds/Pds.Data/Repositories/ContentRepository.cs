@@ -20,7 +20,7 @@ namespace Pds.Data.Repositories
         public async Task<List<Content>> GetAllWithBillsAsync()
         {
             return await context.Contents.Include(p=>p.Bill)
-                .OrderByDescending(p =>p.ReleaseDateUtc)
+                .OrderByDescending(p =>p.ReleaseDate)
                 .ThenBy(p=>p.Title)
                 .ToListAsync();
         }
@@ -30,7 +30,7 @@ namespace Pds.Data.Repositories
             return await context.Contents
                 .Include(p=>p.Bill)
                 .ThenInclude(p=>p.Client)
-                .OrderByDescending(p =>p.ReleaseDateUtc)
+                .OrderByDescending(p =>p.ReleaseDate)
                 .ThenBy(p=>p.Title)
                 .ToListAsync();
         }
@@ -57,7 +57,7 @@ namespace Pds.Data.Repositories
         public async Task<List<Content>> GetAllOrderByReleaseDateDescAsync()
         {
             return await context.Contents
-                .OrderByDescending(p =>p.ReleaseDateUtc)
+                .OrderByDescending(p =>p.ReleaseDate)
                 .ToListAsync();
         }
     }

@@ -153,6 +153,32 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
+        /// Edit content
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(EditContentResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(EditContentRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var editContentModel = mapper.Map<EditContentModel>(request);
+                    var clientId = await contentService.EditAsync(editContentModel);
+                    return Ok(new EditContentResponse{Id = clientId});
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
         /// Get content for pay by id
         /// </summary>
         /// <param name="contentId"></param>

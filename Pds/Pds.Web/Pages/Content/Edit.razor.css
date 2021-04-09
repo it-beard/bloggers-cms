@@ -1,0 +1,29 @@
+﻿.form-group {
+    margin-bottom: 15px;
+}
+
+.card-header {
+    margin-bottom: 15px;
+}
+
+::deep input.bill-cost{
+    width: 100px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+::deep input.release-date{
+    width: 150px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.contact-type {
+    margin-top: 5px;
+}
+
+.btn-free {
+    margin-right: 10px;
+}
