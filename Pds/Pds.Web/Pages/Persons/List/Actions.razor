@@ -9,27 +9,30 @@
 @inject IAccessTokenProvider TokenProvider
 
 <div class="panel panel-default actions-panel">
-    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
-        <i class="bi bi-pencil-fill"></i>
-    </button>
+    @if (CurrentPerson.Status == PersonStatus.Active)
+    {
+        <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+            <i class="bi bi-pencil-fill"></i>
+        </button>
+    }
 
     @if (CurrentPerson.Status == PersonStatus.Archived)
     {
-        <button title="Разархивировать" class="btn btn-success btn-sm" @onclick="OnUnarchive">
+        <button title="Разархивировать" class="btn btn-success btn-sm" @onclick="OnUnarchiveAsync">
             <i class="bi bi-patch-plus-fill"></i>
         </button>
     }
 
     @if (CurrentPerson.Status == PersonStatus.Active)
     {
-        <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchive">
+        <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchiveAsync">
             <i class="bi bi-archive-fill"></i>
         </button>
     }
 
-    @if (CurrentPerson.Status == PersonStatus.Archived && CurrentPerson.Contents.Count == 0)
+    @if (CurrentPerson.Status == PersonStatus.Active && CurrentPerson.Contents.Count == 0)
     {
-        <button title="Удалить" class="btn btn-danger btn-sm delete-button" @onclick="OnDelete">
+        <button title="Удалить" class="btn btn-danger btn-sm delete-button" @onclick="OnDeleteAsync">
             <i class="bi bi-trash-fill"></i>
         </button>
     }
@@ -46,7 +49,7 @@
         NavigationManager.NavigateTo($"/persons/{CurrentPerson.Id}");
     }
 
-    private async Task OnDelete()
+    private async Task OnDeleteAsync()
     {
         var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите удалить {CurrentPerson.FullName}?");
         if (confirmed)
@@ -56,7 +59,7 @@
         }
     }
 
-    private async Task OnArchive()
+    private async Task OnArchiveAsync()
     {
         var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать {CurrentPerson.FullName}?");
         if (confirmed)
@@ -66,7 +69,7 @@
         }
     }
 
-    private async Task OnUnarchive()
+    private async Task OnUnarchiveAsync()
     {
         await ApiClient.Put<object, object>(TokenProvider, $"persons/{CurrentPerson.Id}/unarchive", null);
         await OnPersonUpdate.InvokeAsync(); // Update UI

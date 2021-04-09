@@ -38,10 +38,10 @@ else
         <div class="info-item">
             <div class="info-title">Когда</div>
             <div class="info-body">
-                @content.ReleaseDateUtc.Date.ToLongStringDate()
-                @if (content.EndDateUtc != null)
+                @content.ReleaseDate.Date.ToLongStringDate()
+                @if (content.EndDate != null)
                 {
-                    <span> / @content.EndDateUtc.Value.Date.ToShortStringDateWithDay()</span>
+                    <span> / @content.EndDate.Value.Date.ToShortStringDateWithDay()</span>
                 }
             </div>
         </div>

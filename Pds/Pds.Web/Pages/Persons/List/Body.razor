@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
+@using Pds.Web.Pages.Content
 @using static Pds.Web.Common.TitleExtension 
 
 @inject IApiClient ApiClient
@@ -26,7 +27,8 @@ else
     <table class="table">
         <thead>
         <tr>
-            <th>Кто</th>
+            <th class="person-header">Кто</th>
+            <th class="rate-header">Рейтинг</th>
             <th>Где</th>
             <th>Информация</th>
             <th>Ссылки</th>
@@ -36,12 +38,14 @@ else
         <tbody>
         @foreach (var person in personsInfo.Items)
         {
-            <tr>
-                <td class="person">
-                    <span>@person.FullName 
-                    [ <span class="rate">@person.Rate</span> / <span class="content-count">@person.Contents.Count</span> ]
+            <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
+                <td class="person-row">
+                    @person.FullName
+                    <span class="contents">
+                        (@person.Contents.Count)
                     </span>
                 </td>
+                <td class="rate-row">@person.Rate</td>
                 <td>@person.Location</td>
                 <td>@person.Info</td>
                 <td>

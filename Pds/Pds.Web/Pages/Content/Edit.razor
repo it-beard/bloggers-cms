@@ -1,0 +1,117 @@
+﻿@page "/content/{contentId}/edit"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Content
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+@using AutoMapper
+@using Microsoft.AspNetCore.Components
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IMapper Mapper
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление контента")</Title>
+
+<h4 class="card-header d-flex justify-content-between align-items-center">
+    Добавление контента
+    <button @onclick="GoBack" class="btn btn-primary" >Назад</button>
+</h4>
+@if (content == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
+        <div class="form-group">
+            <InputRadioGroup Name="social-media-type" @bind-Value="content.SocialMediaType">
+                @foreach (var socialMediaType in (SocialMediaType[])Enum
+                    .GetValues(typeof(SocialMediaType)))
+                {
+                    var id = $"sm_type_{socialMediaType.ToString()}";
+                    <InputRadio Name="social-media-type" class="btn-check" Value="socialMediaType" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.SocialMediaTypeToRu(socialMediaType)
+                    </label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <InputRadioGroup Name="type" @bind-Value="content.Type">
+                @foreach (var type in (ContentType[])Enum
+                    .GetValues(typeof(ContentType)))
+                {
+                    var id = $"type_{type.ToString()}";
+                    <InputRadio Name="type" class="btn-check" Value="type" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.ContentTypeToRu(type)
+                    </label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <label for="title" class="form-label label-required">Заголовок</label>
+            <InputText class="form-control" id="title" @bind-Value="content.Title"/>
+        </div>
+
+        <div class="form-group">
+            <label for="release_date" class="form-label label-required">Когда:</label>
+            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
+            
+            <label for="release_date" class="form-label">Продлится до:</label>
+            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDate"/>
+        </div>
+
+        <div class="form-group">
+            <label for="comment" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="content.Comment" rows="3"/>
+        </div>
+
+        <ObjectGraphDataAnnotationsValidator />
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isEditButtonDisabled">Сохранить</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string ContentId { get; set; }
+    private EditContentRequest content;
+    private EditContext editContext;
+    private bool isEditButtonDisabled;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        isEditButtonDisabled = false;
+        content = await GetContent();
+        editContext = new EditContext(content);
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isEditButtonDisabled = true;
+            await ApiClient.Put<object, EditContentRequest>(TokenProvider, "content", content);
+            NavigationManager.NavigateTo("/content");
+        }
+    }
+
+    private async Task<EditContentRequest> GetContent()
+    {
+        var contentResponse = await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{ContentId}");
+        return Mapper.Map<EditContentRequest>(contentResponse);
+    }
+}

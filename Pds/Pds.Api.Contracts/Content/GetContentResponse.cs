@@ -6,7 +6,7 @@ namespace Pds.Api.Contracts.Content
 {
     public class GetContentResponse
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
         
         public ContentType Type { get; set; }
@@ -17,9 +17,9 @@ namespace Pds.Api.Contracts.Content
 
         public string Comment { get; set; }
         
-        public DateTime ReleaseDateUtc { get; set; }
+        public DateTime ReleaseDate { get; set; }
 
-        public DateTime? EndDateUtc { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public GetContentBillDto Bill { get; set; }
 

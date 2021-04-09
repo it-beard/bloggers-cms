@@ -63,7 +63,6 @@ namespace Pds.Web.Common
 
         private async Task<ApiResponse<T>> CallPostOrPutRequest<T, U>(IAccessTokenProvider tokenProvider, string methodName, U payload, HttpMethod method) where T : class, new()
         {
-            
             var backendApiUrl = configuration["BackendApi:Url"];
             using var requestMessage = new HttpRequestMessage(method, $"{backendApiUrl}/api/{methodName}")
             {

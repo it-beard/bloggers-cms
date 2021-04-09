@@ -20,6 +20,7 @@ namespace Pds.Web
             builder.Services.AddTransient<IApiClient, ApiClient>();
             builder.Services.AddSingleton<PageHistoryState>();
             builder.Services.AddHeadElementHelper();
+            builder.Services.AddCustomAutoMapper();
 
             builder.Services.AddOidcAuthentication(options =>
             {

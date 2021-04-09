@@ -53,7 +53,7 @@ namespace Pds.Mappers
                         .MapFrom((p, s) =>
                             s.Title = string.IsNullOrEmpty(p.Title) ? 
                                 "Не выбрано" : 
-                                $"{p.ReleaseDateUtc:dd.MM} / {p.Title}"));
+                                $"{p.ReleaseDate:dd.MM} / {p.Title}"));
             CreateMap<Content, ContentDto>()
                 .ForMember(
                     dest => dest.ClientName,
@@ -112,12 +112,19 @@ namespace Pds.Mappers
             #region Contracts to Models
 
             CreateMap<ContentBillDto, ContentBillModel>();
+            CreateMap<EditContentRequest, EditContentModel>();
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
                     dest => dest.BrandId,
                     opt => opt
                         .MapFrom(p => p.BrandId.Value));
             
+            #endregion
+
+            #region Blazor WebAssembly
+
+            CreateMap<GetContentResponse, EditContentRequest>();
+
             #endregion
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
+using Pds.Core.Exceptions.Content;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -46,8 +47,8 @@ namespace Pds.Services.Services
                 BrandId = model.BrandId,
                 SocialMediaType = model.SocialMediaType,
                 Comment = model.Comment,
-                ReleaseDateUtc = model.ReleaseDate.Date,
-                EndDateUtc = model.EndDate?.Date,
+                ReleaseDate = model.ReleaseDate.Date,
+                EndDate = model.EndDate?.Date,
                 PersonId = model.PersonId
             };
 
@@ -77,6 +78,38 @@ namespace Pds.Services.Services
             return result.Id;
         }
 
+        public async Task<Guid> EditAsync(EditContentModel model)
+        {
+            if (model == null)
+            {
+                throw new ContentEditException($"Модель запроса пуста.");
+            }
+
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(model.Id);
+            
+            if (content == null)
+            {
+                throw new ContentEditException($"Контент с id {model.Id} не найден.");
+            }
+
+            if (content.Status == ContentStatus.Archived)
+            {
+                throw new ContentEditException($"Нельзя редактировать архивный контент.");
+            }
+
+            content.UpdatedAt = DateTime.UtcNow;
+            content.Title = model.Title;
+            content.Type = model.Type;
+            content.SocialMediaType = model.SocialMediaType;
+            content.Comment = model.Comment;
+            content.ReleaseDate = model.ReleaseDate.Date;
+            content.EndDate = model.EndDate?.Date;
+
+            var result = await unitOfWork.Content.UpdateAsync(content);
+
+            return result.Id;
+        }
+
         public async Task DeleteAsync(Guid clientId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillAsync(clientId);
@@ -86,7 +119,12 @@ namespace Pds.Services.Services
 
             if (content == null)
             {
-                return;
+                throw new ContentDeleteException("Контент не найден.");
+            }
+
+            if (content.Status == ContentStatus.Archived)
+            {
+                throw new ContentDeleteException("Нельзя удалить заархивированый контент.");
             }
             
             if (bill == null)
@@ -105,10 +143,20 @@ namespace Pds.Services.Services
         public async Task ArchiveAsync(Guid contentId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
-            if (content != null && content.Status == ContentStatus.Active && 
-                (content.Bill == null || content.Bill.Status == BillStatus.Paid))
+            if (content is {Status: ContentStatus.Active} && (content.Bill == null || content.Bill.Status == BillStatus.Paid))
             {
                 content.Status = ContentStatus.Archived;
+                content.UpdatedAt = DateTime.UtcNow;
+                await unitOfWork.Content.UpdateAsync(content);
+            }
+        }
+
+        public async Task UnarchiveAsync(Guid contentId)
+        {
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            if (content is {Status: ContentStatus.Archived})
+            {
+                content.Status = ContentStatus.Active;
                 content.UpdatedAt = DateTime.UtcNow;
                 await unitOfWork.Content.UpdateAsync(content);
             }
