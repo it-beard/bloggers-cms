@@ -1,0 +1,210 @@
+﻿@page "/content/{contentId}"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Content
+@using Pds.Core.Enums
+@using Pds.Core.Extensions
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+@if (content == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <Title>@WithSuffix($"Контент \"{content.Title}\"")</Title>
+    
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Контент "@content.Title"
+        <button @onclick="GoBack" class="btn btn-primary" >Назад</button>
+    </h4>
+    <div class="page-container @ContentHelper.GetContentBgColorClass(content.Status, content.Bill)">
+        <div class="info-item">
+            <div class="info-title">Тип</div>
+            <div class="info-body">
+                @content.Brand.Name / 
+                @EnumsTranslator.SocialMediaTypeToRu(content.SocialMediaType) / 
+                @EnumsTranslator.ContentTypeToRu(content.Type)
+            </div>
+        </div>
+        
+        <div class="info-item">
+            <div class="info-title">Когда</div>
+            <div class="info-body">
+                @content.ReleaseDate.Date.ToLongStringDate()
+                @if (content.EndDate != null)
+                {
+                    <span> / @content.EndDate.Value.Date.ToShortStringDateWithDay()</span>
+                }
+            </div>
+        </div>
+        
+        <div class="info-item">
+            <div class="info-title">Оплата</div>
+            <div class="info-body bill-cost">
+                @if (content.Bill != null)
+                {
+                    if (content.Bill.PaymentType != null)
+                    {
+                        <i class="payment-type @ContentHelper.GetPaymentTypeBgColorClass(content.Bill.PaymentType)">
+                            @EnumsTranslator.PaymentTypeToShortRu(content.Bill.PaymentType)
+                        </i>
+                    }
+
+                    <b>
+                        $@content.Bill.Value.ToString("N0")
+                    </b>
+                    if (content.Costs != null && content.Costs.Count > 0)
+                    {
+                        {
+                            var costsSum = content.Costs.Sum(c => c.Value);
+                            var overallBillValue = content.Bill.Value - costsSum;
+                            <span class="overall-bill">
+                                ($@overallBillValue.ToString("N0"))
+                            </span>
+                        }
+                    }
+
+                    if (content.Bill.PaymentType != null)
+                    {
+                        if (content.Bill.PaidAt != null)
+                        {
+                            <span> / @content.Bill.PaidAt.Value.ToLongStringDate()</span>
+                        }
+                    }
+
+                    if (content.Bill.IsNeedPayNds)
+                    {
+                        <span class="nds">с НДС</span>
+                    }
+                    
+                    if (content.Bill.PaymentType != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(content.Bill.Comment))
+                        {
+                            <div class="bill-comment">
+                                <i>Комментарий:</i> @content.Bill.Comment
+                            </div>
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(content.Bill.ContractNumber))
+                    {
+                        <div class="bill-comment">
+                            <i>Контракт:</i> <b>@content.Bill.ContractNumber</b>
+                            @if (content.Bill.ContractDate != null)
+                            {
+                                <span> / @content.Bill.ContractDate.Value.ToLongStringDate()</span>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <span>бесплатно</span>
+                }
+            </div>
+        </div>
+
+        @if (content.Bill?.Client != null)
+        {
+            <div class="info-item">
+                <div class="info-title">Клиент</div>
+                <div class="info-body">
+                    <div>
+                        <b>@content.Bill.Client.Name</b> / 
+                        <span>
+                            @content.Bill.ContactName / 
+                            @EnumsTranslator.ContactTypeToRu(content.Bill.ContactType).ToLower(): 
+                            @((MarkupString)ContactBuilder.ToLink(content.Bill.ContactType, content.Bill.Contact))
+                        </span>
+                    </div>
+                </div>
+            </div>
+        }
+        
+        @if (content.Person != null)
+        {
+            <div class="info-item">
+                <div class="info-title">Персона</div>
+                <div class="info-body">
+                    <div>
+                        <b>@content.Person.FirstName @content.Person.ThirdName @content.Person.LastName</b> /
+                        <span>@content.Person.City, @content.Person.Country</span>
+                        @if (content.Person.Resources.Count > 0)
+                        {
+                            <ul>
+                            @foreach (var resource in content.Person.Resources)
+                            {
+                                <li>
+                                    <a href="@resource.Url" target="_blank">@resource.Name</a>
+                                </li>
+                            }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(content.Comment))
+        {
+            <div class="info-item">
+                <div class="info-title">Комментарий</div>
+                <div class="info-body">
+                    @content.Comment
+                </div>
+            </div>
+        }
+
+        @if (content.Costs != null && content.Costs.Count > 0)
+        {
+            <div class="info-item costs">
+                <div class="info-title">Затраты</div>
+                <div class="info-body">
+                    <div>
+                        <ul>
+                        @foreach (var cost in content.Costs)
+                        {
+                            <li>
+                                <b>$@cost.Value.ToString("N0")</b> / @cost.PaidAt.ToShortStringDate() / <i>@cost.Comment</i>
+                            </li>
+                        }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="info-item">
+            <Actions OnContentUpdate="@ContentInfoUpdate" CurrentContent="@content"></Actions>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string ContentId { get; set; }
+    private GetContentResponse content { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        content = await GetContent();
+    }
+
+    private async Task<GetContentResponse> GetContent()
+    {
+        return await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{ContentId}");
+    }
+
+    private async Task ContentInfoUpdate()
+    {
+        content = await GetContent();
+    }
+}

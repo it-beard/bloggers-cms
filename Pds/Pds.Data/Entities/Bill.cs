@@ -10,7 +10,7 @@ namespace Pds.Data.Entities
     {
         [Required]
         [Column(TypeName = "decimal(18,2)")]
-        public decimal Cost { get; set; }
+        public decimal Value { get; set; }
         
         [Required]
         public BillStatus Status { get; set; }
@@ -28,6 +28,13 @@ namespace Pds.Data.Entities
 
         [Column(TypeName = "varchar(300)")]
         public string ContactName { get; set; }
+        
+        [Column(TypeName = "varchar(50)")]
+        public string ContractNumber { get; set; }
+
+        public DateTime? ContractDate { get; set; }
+
+        public bool IsNeedPayNds { get; set; }
 
         [Required]
         public ContactType ContactType { get; set; }

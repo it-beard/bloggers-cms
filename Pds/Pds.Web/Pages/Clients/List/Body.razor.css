@@ -5,3 +5,14 @@
 .actions-header {
     width: 100px;
 }
+
+.client-name-header{
+    width: 200px;
+}
+
+.client-name-row .contents{
+    font-size: 0.75rem;
+    margin-left: 5px;
+    color: #888;
+    font-weight: bold;
+}

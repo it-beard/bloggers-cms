@@ -19,5 +19,7 @@ namespace Pds.Api.Contracts.Person
         public PersonStatus Status { get; set; }
         
         public List<ResourceDto> Resources { get; set; }
+        
+        public List<PersonContentDto> Contents { get; set; }
     }
 }

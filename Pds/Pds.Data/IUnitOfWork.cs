@@ -13,6 +13,7 @@ namespace Pds.Data
         IBillRepository Bills { get; }
         ITopicRepository Topics { get; }
         IPersonTopicRepository PersonTopics { get; }
+        ICostRepository Costs { get; }
 
         void Save();
     }

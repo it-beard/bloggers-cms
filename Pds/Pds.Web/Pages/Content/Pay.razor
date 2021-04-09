@@ -1,11 +1,11 @@
 ﻿@page "/content/{contentId}/pay"
-@attribute [Authorize]
+@inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Bill
 @using Pds.Api.Contracts.Content
 @using Pds.Core.Enums
 @using Pds.Web.Common
-@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.TitleExtension
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
@@ -21,10 +21,10 @@
 }
 else
 {
-    <h3 class="card-header d-flex justify-content-between align-items-center">
+    <h4 class="card-header d-flex justify-content-between align-items-center">
         Оплата контента "@content.Title"
-        <a href="/content" class="btn btn-primary"> Назад </a>
-    </h3>
+        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+    </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
@@ -40,13 +40,30 @@ else
                 }
             </InputRadioGroup>
         </div>
+        
+        @if (paymentPayload.PaymentType == PaymentType.BankAccount)
+        {
+            <div class="form-group">
+                <label for="contract_number" class="form-label">Номер договора:</label>
+                <InputText class="form-control pay-date" id="contract_number" @bind-Value="paymentPayload.ContractNumber"/>
+
+                <label for="contract_date" class="form-label">Дата договора:</label>
+                <InputDate class="form-control pay-date" id="contract_date" @bind-Value="paymentPayload.ContractDate"/>
+            </div>
+        }
 
         <div class="form-group">
             <label for="bill_cost" class="form-label  label-required">Финальная стоимость USD:</label>
-            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="paymentPayload.Cost"/>
+            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="paymentPayload.Value"/>
 
             <label for="bill_cost" class="form-label  label-required">Дата оплаты:</label>
             <InputDate class="form-control pay-date" id="bill_cost" @bind-Value="paymentPayload.PaidAt"/>
+
+            @if (paymentPayload.PaymentType == PaymentType.BankAccount)
+            {
+                <InputCheckbox name="is_nds" class="btn-check" @bind-Value="paymentPayload.IsNeedPayNds" Id="is_nds"/>
+                <label for="is_nds" class="btn btn-secondary">Включая НДС</label>
+            }
         </div>
 
         <div class="form-group">
@@ -71,17 +88,20 @@ else
         PaymentType = PaymentType.BankAccount, //default
     };
     private EditContext editContext;
-    private GetContentResponse content;
+    private GetContentForPayResponse content;
     private bool isCreateButtonDisabled;
     
     protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
         content = await GetContentAsync(Guid.Parse(ContentId));
-        paymentPayload.Cost = content.BillCost;
-        paymentPayload.Comment = content.BillComment;
-        paymentPayload.PaymentType = content.BillPaymentType ?? PaymentType.BankAccount;
-        paymentPayload.PaidAt = content.BillPaidAt ?? GetCurrentDateWithoutOffset();
+        paymentPayload.Value = content.Bill.Value;
+        paymentPayload.Comment = content.Bill.Comment;
+        paymentPayload.PaymentType = content.Bill.PaymentType ?? PaymentType.BankAccount;
+        paymentPayload.PaidAt = content.Bill.PaidAt ?? GetCurrentDateWithoutOffset();
+        paymentPayload.IsNeedPayNds = content.Bill.IsNeedPayNds;
+        paymentPayload.Comment = content.Bill.Comment;
+        paymentPayload.ContractDate = content.Bill.ContractDate ?? GetCurrentDateWithoutOffset();
         editContext = new EditContext(paymentPayload);
     }
     
@@ -92,14 +112,14 @@ else
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bill/{content.BillId}/pay", paymentPayload);
+            await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bills/{content.Bill.Id}/pay", paymentPayload);
             NavigationManager.NavigateTo("/content");
         }
     }
 
-    private async Task<GetContentResponse> GetContentAsync(Guid contentId)
+    private async Task<GetContentForPayResponse> GetContentAsync(Guid contentId)
     {
-        return await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{contentId}");
+        return await ApiClient.Get<GetContentForPayResponse>(TokenProvider, $"content/{contentId}/pay");
     }
 
     private DateTime GetCurrentDateWithoutOffset()

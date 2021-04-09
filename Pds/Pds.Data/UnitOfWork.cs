@@ -15,6 +15,7 @@ namespace Pds.Data
         private IBillRepository billRepository;
         private ITopicRepository topicRepository;
         private IPersonTopicRepository personTopicRepository;
+        private ICostRepository costRepository;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -29,7 +30,7 @@ namespace Pds.Data
         public IBillRepository Bills => billRepository ??= new BillRepository(context);
         public ITopicRepository Topics => topicRepository ??= new TopicRepository(context);
         public IPersonTopicRepository PersonTopics => personTopicRepository ??= new PersonTopicRepository(context);
-
+        public ICostRepository Costs => costRepository ??= new CostRepository(context);
 
         public void Save()
         {

@@ -20,7 +20,7 @@ namespace Pds.Data.Repositories
         public async Task<List<Content>> GetAllWithBillsAsync()
         {
             return await context.Contents.Include(p=>p.Bill)
-                .OrderByDescending(p =>p.ReleaseDateUtc)
+                .OrderByDescending(p =>p.ReleaseDate)
                 .ThenBy(p=>p.Title)
                 .ToListAsync();
         }
@@ -30,7 +30,7 @@ namespace Pds.Data.Repositories
             return await context.Contents
                 .Include(p=>p.Bill)
                 .ThenInclude(p=>p.Client)
-                .OrderByDescending(p =>p.ReleaseDateUtc)
+                .OrderByDescending(p =>p.ReleaseDate)
                 .ThenBy(p=>p.Title)
                 .ToListAsync();
         }
@@ -40,6 +40,25 @@ namespace Pds.Data.Repositories
             return await context.Contents
                 .Include(p => p.Bill)
                 .FirstOrDefaultAsync(p => p.Id == contentId);
+        }
+        
+        public async Task<Content> GetByIdFullAsync(Guid contentId)
+        {
+            return await context.Contents
+                .Include(p => p.Bill)
+                .ThenInclude(p => p.Client)
+                .Include(p => p.Brand)
+                .Include(p => p.Person)
+                .ThenInclude(p => p.Resources)
+                .Include(p => p.Costs)
+                .FirstOrDefaultAsync(p => p.Id == contentId);
+        }
+        
+        public async Task<List<Content>> GetAllOrderByReleaseDateDescAsync()
+        {
+            return await context.Contents
+                .OrderByDescending(p =>p.ReleaseDate)
+                .ToListAsync();
         }
     }
 }

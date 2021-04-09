@@ -1,5 +1,4 @@
-﻿
-html, body {
+﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -29,6 +28,36 @@ a, .btn-link {
     color: red;
 }
 
+.label-required::after{
+    content: "*";
+    color: red;
+    margin-left: 3px;
+}
+
+.table,
+.page-container,
+.page-container .btn,
+.form-group,
+.form-group .btn,
+.form-group .form-control{
+    font-size: 0.9rem;
+}
+
+.table td{
+    vertical-align: middle;
+}
+
+.table > :not(:last-child) > :last-child > *{
+    border-bottom: 2px solid darkgray;
+    color: darkgray;
+}
+
+.form-group .btn-check:checked + .btn-secondary {
+    color: #fff;
+    background-color: #157347;
+    border-color: #146c43;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -41,9 +70,9 @@ a, .btn-link {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}

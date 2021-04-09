@@ -1,17 +1,4 @@
-﻿.table {
-    font-size: 0.9rem;
-}
-
-.table td{
-    vertical-align: middle;
-}
-
-.table > :not(:last-child) > :last-child > *{
-    border-bottom: none;
-    color: darkgray;
-}
-
-.card-header {
+﻿.card-header {
     margin-bottom: 15px;
 }
 
@@ -20,7 +7,7 @@
 }
 
 .release-date-header {
-    width: 70px;
+    width: 95px;
     text-align: center;
 }
 
@@ -65,14 +52,21 @@
     font-style: normal;
 }
 
-.bill-cost-row i.white{
+.bill-cost-row i.white {
     background-color: white;
     color: black;
 }
 
-.bill-cost-row i.red{
+.bill-cost-row i.red {
     background-color: lightcoral;
     color: white;
+}
+.title-row a {
+    color: #212529;
+    text-decoration: none;
+}
+.title-row a:hover {
+    border-bottom: 2px dotted black;
 }
 
 .actions-row {
@@ -91,18 +85,22 @@
     background-color: lightgreen;
 }
 
+.archived-not-paid {
+    background-color: orangered;
+}
+
 .archived-free,
-.archived-paid {
+.archived-paid,
+.archived-free a,
+.archived-paid a {
     background-color: gainsboro;
-    color: #bbb;
+    color: #bbb !important;
 }
 
 .archived-free:hover,
-.archived-paid:hover {
-    color: black;
-}
-
-.archived-not-paid {
-    background-color: orangered;
+.archived-paid:hover,
+.archived-free:hover a,
+.archived-paid:hover a {
+    color: black  !important;
 }
 

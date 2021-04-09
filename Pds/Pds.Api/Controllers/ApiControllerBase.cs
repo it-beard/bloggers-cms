@@ -3,6 +3,7 @@ using System.Net;
 using Pds.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
+using Pds.Core.Exceptions.Person;
 
 namespace Pds.Api.Controllers
 {
@@ -10,27 +11,18 @@ namespace Pds.Api.Controllers
     [Produces("application/json")]
     public abstract class ApiControllerBase : ControllerBase
     {
-        private string exceptionMessage = "Something went wrong";
-        private HttpStatusCode statusCode = HttpStatusCode.BadRequest;
-
         protected IActionResult ExceptionResult(Exception exception)
         {
-            switch (exception)
+            return exception switch
             {
-                case var _ when exception is RepositoryException repositoryException:
-                    // logger.Log( 
-                    // $"Error in DB, entityName: {repositoryException.EntityName}, " +
-                    // $"message: {repositoryException.Message}" +
-                    // $"stackTrace: {repositoryException.StackTrace},")
-                    exceptionMessage = "DB error";
-                    statusCode = HttpStatusCode.Conflict;
-                    break;
-                default:
-                    // logger.Log(exception.Message)
-                    break;
-            }
+                _ when exception is RepositoryException => 
+                    StatusCode((int) HttpStatusCode.BadRequest, "DB error"),
+                _ when exception is IApiException apiException => 
+                    StatusCode((int) HttpStatusCode.BadRequest, apiException.Errors),
 
-            return StatusCode((int) statusCode, exceptionMessage);
+                _ => 
+                    StatusCode((int) HttpStatusCode.BadRequest, "Smtg went wrong")
+            };
         }
     }
 }

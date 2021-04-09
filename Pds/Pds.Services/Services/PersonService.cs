@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
+using Pds.Core.Exceptions;
+using Pds.Core.Exceptions.Person;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -19,7 +21,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Person>> GetAllAsync()
         {
-            return await unitOfWork.Persons.GetAllWithResourcesAsync();
+            return await unitOfWork.Persons.GetAllFullAsync();
         }
 
         public async Task<Guid> CreateAsync(Person person)
@@ -27,6 +29,11 @@ namespace Pds.Services.Services
             if (person == null)
             {
                 throw new ArgumentNullException(nameof(person));
+            }
+
+            if (person.Brands.Count == 0)
+            {
+                throw new PersonCreateException("Персону нельзя создать без бренда.");
             }
             
             // Restore brands from DB
@@ -72,11 +79,23 @@ namespace Pds.Services.Services
 
         public async Task DeleteAsync(Guid personId)
         {
-            var person = await unitOfWork.Persons.GetFirstWhereAsync(p => p.Id == personId);
-            if (person != null && person.Status == PersonStatus.Archived)
+            var person = await unitOfWork.Persons.GetFullByIdAsync(personId);
+            if (person == null)
             {
-                await unitOfWork.Persons.Delete(person);
+                throw new PersonDeleteException("Персона не найдена");
             }
+
+            if (person.Status == PersonStatus.Archived)
+            {
+                throw new PersonDeleteException("Нельзя заархивированную персону.");
+            }
+
+            if (person.Contents is {Count: > 0})
+            {
+                throw new PersonDeleteException("Нельзя удалить персону с привязанным контентом.");
+            }
+
+            await unitOfWork.Persons.Delete(person);
         }
 
         public async Task<List<Person>> GetPersonsForListsAsync()

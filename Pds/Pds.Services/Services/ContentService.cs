@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
+using Pds.Core.Exceptions.Content;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -26,7 +27,7 @@ namespace Pds.Services.Services
 
         public async Task<Content> GetAsync(Guid contentId)
         {
-            return await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            return await unitOfWork.Content.GetByIdFullAsync(contentId);
         }
 
         public async Task<Guid> CreateAsync(CreateContentModel model)
@@ -46,8 +47,8 @@ namespace Pds.Services.Services
                 BrandId = model.BrandId,
                 SocialMediaType = model.SocialMediaType,
                 Comment = model.Comment,
-                ReleaseDateUtc = model.ReleaseDate.Date,
-                EndDateUtc = model.EndDate?.Date,
+                ReleaseDate = model.ReleaseDate.Date,
+                EndDate = model.EndDate?.Date,
                 PersonId = model.PersonId
             };
 
@@ -57,13 +58,12 @@ namespace Pds.Services.Services
                 {
                     Id = Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow,
-                    Comment = $"Created automatically for content with id {content.Id}",
-                    Cost = model.Bill.Cost,
+                    Value = model.Bill.Value,
                     ContentId = content.Id,
                     Contact = model.Bill.Contact,
                     ContactName = model.Bill.ContactName,
                     ContactType = model.Bill.ContactType,
-                    Status = model.Bill.Cost == 0 ? BillStatus.Paid : BillStatus.Active,
+                    Status = model.Bill.Value == 0 ? BillStatus.Paid : BillStatus.Active,
                     Type = BillType.Content,
                     BrandId = model.BrandId,
                     ClientId = model.Bill.ClientId
@@ -78,6 +78,38 @@ namespace Pds.Services.Services
             return result.Id;
         }
 
+        public async Task<Guid> EditAsync(EditContentModel model)
+        {
+            if (model == null)
+            {
+                throw new ContentEditException($"Модель запроса пуста.");
+            }
+
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(model.Id);
+            
+            if (content == null)
+            {
+                throw new ContentEditException($"Контент с id {model.Id} не найден.");
+            }
+
+            if (content.Status == ContentStatus.Archived)
+            {
+                throw new ContentEditException($"Нельзя редактировать архивный контент.");
+            }
+
+            content.UpdatedAt = DateTime.UtcNow;
+            content.Title = model.Title;
+            content.Type = model.Type;
+            content.SocialMediaType = model.SocialMediaType;
+            content.Comment = model.Comment;
+            content.ReleaseDate = model.ReleaseDate.Date;
+            content.EndDate = model.EndDate?.Date;
+
+            var result = await unitOfWork.Content.UpdateAsync(content);
+
+            return result.Id;
+        }
+
         public async Task DeleteAsync(Guid clientId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillAsync(clientId);
@@ -87,7 +119,12 @@ namespace Pds.Services.Services
 
             if (content == null)
             {
-                return;
+                throw new ContentDeleteException("Контент не найден.");
+            }
+
+            if (content.Status == ContentStatus.Archived)
+            {
+                throw new ContentDeleteException("Нельзя удалить заархивированый контент.");
             }
             
             if (bill == null)
@@ -106,13 +143,31 @@ namespace Pds.Services.Services
         public async Task ArchiveAsync(Guid contentId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
-            if (content != null && content.Status == ContentStatus.Active && 
-                (content.Bill == null || content.Bill.Status == BillStatus.Paid))
+            if (content is {Status: ContentStatus.Active} && (content.Bill == null || content.Bill.Status == BillStatus.Paid))
             {
                 content.Status = ContentStatus.Archived;
                 content.UpdatedAt = DateTime.UtcNow;
                 await unitOfWork.Content.UpdateAsync(content);
             }
+        }
+
+        public async Task UnarchiveAsync(Guid contentId)
+        {
+            var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            if (content is {Status: ContentStatus.Archived})
+            {
+                content.Status = ContentStatus.Active;
+                content.UpdatedAt = DateTime.UtcNow;
+                await unitOfWork.Content.UpdateAsync(content);
+            }
+        }
+
+        public async Task<List<Content>> GetContentsForListsAsync()
+        {
+            var contents = new List<Content> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
+            contents.AddRange(await unitOfWork.Content.GetAllOrderByReleaseDateDescAsync());
+
+            return contents;
         }
     }
 }

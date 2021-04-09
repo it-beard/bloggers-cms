@@ -1,5 +1,5 @@
 ﻿@page "/content/add"
-@attribute [Authorize] 
+@inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Content
 @using Pds.Core.Enums
@@ -12,10 +12,10 @@
 
 <Title>@WithSuffix("Добавление контента")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
+<h4 class="card-header d-flex justify-content-between align-items-center">
     Добавление контента
-    <a href="/content" class="btn btn-primary" >Назад</a>
-</h3>
+    <button @onclick="GoBack" class="btn btn-primary" >Назад</button>
+</h4>
 @if (brands == null || clients == null || persons == null)
 {
     <p>
@@ -24,7 +24,7 @@
 }
 else
 {
-    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
             <InputRadioGroup Name="brand" @bind-Value="content.BrandId">
                 @foreach (var brand in brands)
@@ -73,7 +73,7 @@ else
             @if (!content.IsFree)
             {
                 <label for="bill_cost" class="form-label label-required">Стоимость USD:</label>
-                <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.Bill.Cost"/>
+                <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.Bill.Value"/>
             }
 
             <InputCheckbox name="isFree" class="btn-check" @bind-Value="content.IsFree" Id="content_is_free"/>
@@ -99,12 +99,12 @@ else
             </div>
 
             <div class="form-group">
-                <label for="bill_contact_name" class="form-label">ФИО клиента</label>
+                <label for="bill_contact_name" class="form-label label-required">ФИО представителя</label>
                 <InputText class="form-control" id="bill_contact_name" @bind-Value="content.Bill.ContactName"/>
             </div>
 
             <div class="form-group">
-                <label for="bill_contact" class="form-label label-required">Контакт клиента</label>
+                <label for="bill_contact" class="form-label label-required">Контакт представителя</label>
                 <InputText class="form-control" id="bill_contact" @bind-Value="content.Bill.Contact"/>
                 <div class="contact-type">
                     <InputRadioGroup Name="contact-type" @bind-Value="content.Bill.ContactType">
@@ -167,8 +167,9 @@ else
     {
         ContactType = ContactType.Telegram,
         ClientId = Guid.NewGuid(),
-        Cost = 11,
-        Contact = "iamitbeard"
+        Value = 11,
+        Contact = "iamitbeard",
+        ContactName = "Иван Иванович"
     };
     
     protected override async Task OnInitializedAsync()
@@ -181,7 +182,7 @@ else
         persons = await GetPersons();
     }
 
-    private async Task HandleSubmit()
+    private async Task HandleSubmitAsync()
     {
         if (content.IsFree)
         {
