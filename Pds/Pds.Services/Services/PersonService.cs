@@ -85,9 +85,9 @@ namespace Pds.Services.Services
                 throw new PersonDeleteException("Персона не найдена");
             }
 
-            if (person.Status != PersonStatus.Archived)
+            if (person.Status == PersonStatus.Archived)
             {
-                throw new PersonDeleteException("Удалить можно только заархивированную персону.");
+                throw new PersonDeleteException("Нельзя заархивированную персону.");
             }
 
             if (person.Contents is {Count: > 0})

@@ -92,13 +92,15 @@
 .archived-free,
 .archived-paid,
 .archived-free a,
-.archived-paid a{
+.archived-paid a {
     background-color: gainsboro;
     color: #bbb !important;
 }
 
 .archived-free:hover,
-.archived-paid:hover {
-    color: black;
+.archived-paid:hover,
+.archived-free:hover a,
+.archived-paid:hover a {
+    color: black  !important;
 }
 

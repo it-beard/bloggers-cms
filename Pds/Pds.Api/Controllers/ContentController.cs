@@ -159,7 +159,7 @@ namespace Pds.Api.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(EditContentResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(EditContentRequest request)
+        public async Task<IActionResult> Edit(EditContentRequest request)
         {
             try
             {
@@ -246,7 +246,6 @@ namespace Pds.Api.Controllers
         /// Archive specified content
         /// </summary>
         /// <param name="contentId"></param>
-        /// <returns></returns>
         [HttpPut("{contentId}/archive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Archive(Guid contentId)
@@ -254,6 +253,25 @@ namespace Pds.Api.Controllers
             try
             {
                 await contentService.ArchiveAsync(contentId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Unarchive specified content
+        /// </summary>
+        /// <param name="contentId"></param>
+        [HttpPut("{contentId}/unarchive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Unarchive(Guid contentId)
+        {
+            try
+            {
+                await contentService.UnarchiveAsync(contentId);
                 return Ok();
             }
             catch (Exception e)

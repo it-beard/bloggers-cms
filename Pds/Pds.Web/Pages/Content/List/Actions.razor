@@ -9,14 +9,24 @@
 @inject IAccessTokenProvider TokenProvider
 
 <div class="panel panel-default actions-panel">
-    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
-        <i class="bi bi-pencil-fill"></i>
-    </button>
+    @if (CurrentContent.Status == ContentStatus.Active)
+    {
+        <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+            <i class="bi bi-pencil-fill"></i>
+        </button>
+    }
 
     @if (CurrentContent.Bill != null && CurrentContent.Status == ContentStatus.Active && CurrentContent.Bill.Status == BillStatus.Active)
     {
         <button title="Оплатить" class="btn btn btn-dark btn-sm" @onclick="OnPay">
             <i class="bi bi-credit-card-2-back"></i>
+        </button>
+    }
+
+    @if (CurrentContent.Status == ContentStatus.Archived)
+    {
+        <button title="Разархивировать" class="btn btn-success btn-sm" @onclick="OnUnarchiveAsync">
+            <i class="bi bi-patch-plus-fill"></i>
         </button>
     }
 
@@ -69,5 +79,11 @@
             await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentContent.Id}/archive", null);
             await OnContentUpdate.InvokeAsync(); // Update UI
         }
+    }
+
+    private async Task OnUnarchiveAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentContent.Id}/unarchive", null);
+        await OnContentUpdate.InvokeAsync(); // Update UI
     }
 }

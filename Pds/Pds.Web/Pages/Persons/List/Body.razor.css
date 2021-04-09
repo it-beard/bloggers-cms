@@ -1,17 +1,49 @@
-﻿.card-header {
+﻿.person-header {
+    width: 200px;
+}
+
+.card-header {
     margin-bottom: 15px;
+}
+
+.rate-header {
+    width: 60px;
+    text-align: center;
 }
 
 .actions-header {
     width: 100px;
 }
 
-.person .rate {
-    color: green;
+.rate-row {
+    text-align: center;
+    color: #555;
+    font-size: 0.8rem;
     font-weight: bold;
 }
 
-.person .content-count {
-    color: cornflowerblue;
+.person-row .contents {
+    font-size: 0.75rem;
+    margin-left: 5px;
+    color: #888;
     font-weight: bold;
+}
+
+.active {
+    background-color: lightgreen;
+}
+
+.archived,
+.archived a,
+.archived span,
+.archived .rate-row {
+    background-color: gainsboro;
+    color: #bbb !important;
+}
+
+.archived:hover,
+.archived:hover a,
+.archived:hover span,
+.archived:hover .rate-row {
+    color: black !important;
 }

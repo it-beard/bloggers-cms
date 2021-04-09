@@ -36,9 +36,11 @@ else
             <tr>
                 <td class="client-name-row">
                     @client.Name
-                    @if (client.Bills != null && client.Bills.Count > 0)
+                    @if (client.Bills is {Count: > 0 })
                     {
-                        <span class="contents">(@client.Bills.Count)</span>
+                        <span class="contents">
+                            (@client.Bills.Count)
+                        </span>
                     }
                 </td>
                 <td>@client.Comment</td>
