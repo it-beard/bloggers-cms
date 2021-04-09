@@ -6,6 +6,7 @@
 @using Api.Contracts.Paging
 @using static Pds.Web.Common.TitleExtension
 
+
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
@@ -23,12 +24,12 @@
 }
 else
 {
-    <PagingComponent 
-                     CurrentPage="currentPage" 
-                     PageSizeList="pageSizesList"
-                     TotalItems="personsInfo.Total" 
-                     Radius="2" 
-                     Pagination="Pagination" />
+    <CascadingValue Value="isPagingStateHasChanged">
+        <PagingComponent PageSizeList="pageSizesList"
+                         TotalItems="personsInfo.Total"
+                         Radius="2"
+                         Pagination="Pagination" />
+    </CascadingValue>
 
     <table class="table">
         <thead>
@@ -72,12 +73,23 @@ else
 @code {
     private GetPersonsResponse personsInfo;
     private readonly int[] pageSizesList = { 5, 10, 25, 50 };
-    private int pageSize;
-    private int currentPage;
+    private bool isPagingStateHasChanged;
+    private PageSettings pageSettings;
+    private OrderSetting<PersonsFieldName>[] orderSettings;
 
     protected override async Task OnInitializedAsync()
     {
-        currentPage = 1;
+        pageSettings = new PageSettings
+        {
+            Limit = pageSizesList[0],
+            Offset = 0
+        };
+
+        orderSettings = new[]
+        {
+            new OrderSetting<PersonsFieldName>()
+        };
+
         personsInfo = await GetPersonsInfo();
     }
 
@@ -86,20 +98,12 @@ else
         personsInfo = await GetPersonsInfo();
     }
 
-    private async Task<GetPersonsResponse> GetPersonsInfo(OrderSetting<PersonsFieldName>[] orderSettings = null, PageSettings pageSettings = null)
+    private async Task<GetPersonsResponse> GetPersonsInfo()
     {
-
         var request = new GetPersonsRequest
         {
-            PageSettings = pageSettings ?? new PageSettings
-            {
-                Limit = pageSizesList[0],
-                Offset = 0
-            },
-            OrderSettings = orderSettings ?? new[]
-            {
-                new OrderSetting<PersonsFieldName>()
-            }
+            PageSettings = pageSettings,
+            OrderSettings = orderSettings
         };
 
         var response = await ApiClient.Post<GetPersonsResponse, GetPersonsRequest>(TokenProvider, "persons/search", request);
@@ -107,27 +111,32 @@ else
         return response.Payload;
     }
 
-    private async Task Pagination(PaginationSettings paggingSettings)
+    private async Task Pagination(PagingEventArgs eventArgs)
     {
-        currentPage = paggingSettings.CurrentPage;
-        pageSize = paggingSettings.PageSize;
-        var pageSettings = new PageSettings() { Limit = pageSize, Offset = paggingSettings.PageOffSet };
+        pageSettings = new PageSettings
+        {
+            Limit = eventArgs.PageSize,
+            Offset = eventArgs.PageOffSet
+        };
 
-        personsInfo = await GetPersonsInfo(pageSettings: pageSettings);
+        personsInfo = await GetPersonsInfo();
     }
 
     private async Task SortPersons(SortingEventArgs eventArgs)
     {
-        currentPage = 1;
-        var orderSettings = new List<OrderSetting<PersonsFieldName>>();
+        isPagingStateHasChanged = true;
+        pageSettings.Offset = 0;
 
-        orderSettings.Add(new OrderSetting<PersonsFieldName>
+        var newOrderSettings = new List<OrderSetting<PersonsFieldName>>();
+
+        newOrderSettings.Add(new OrderSetting<PersonsFieldName>
         {
             Ascending = eventArgs.Ascending,
             FieldName = eventArgs.FieldName
         });
+        orderSettings = newOrderSettings.ToArray();
 
-        var pageSettings = new PageSettings() { Limit = pageSize, Offset = 0 };
-        personsInfo = await GetPersonsInfo(orderSettings.ToArray());
+        personsInfo = await GetPersonsInfo();
+        isPagingStateHasChanged = default;
     }
 }
