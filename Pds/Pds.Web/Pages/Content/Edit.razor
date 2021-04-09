@@ -13,11 +13,11 @@
 @inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
 
-<Title>@WithSuffix("Добавление контента")</Title>
+<Title>@WithSuffix("Редактирование контента")</Title>
 
 <h4 class="card-header d-flex justify-content-between align-items-center">
-    Добавление контента
-    <button @onclick="GoBack" class="btn btn-primary" >Назад</button>
+    Редактирование контента
+    <button @onclick="GoBack" class="btn btn-primary">Назад</button>
 </h4>
 @if (content == null)
 {
