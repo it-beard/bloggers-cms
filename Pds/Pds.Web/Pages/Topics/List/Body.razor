@@ -1,10 +1,11 @@
 ﻿@page "/topics"
 @attribute [Authorize]
-@using static Pds.Web.Common.TitleExtension
+@using static Common.TitleExtension
 @using Pds.Web.Common
+@using Pds.Web.Common.Models.Topic
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Topic
-@using Pds.Web.Common.Models.Topic
+@inherits BasePageComponent
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -23,7 +24,7 @@
 }
 else
 {
-    <Filter OnFilterUpdate="FilterUpdatedAsync" Topics="response.Items"/>
+    <Filter OnFilterUpdate="FilterUpdated" Topics="response.Items"/>
     <table class="table">
         <thead>
         <tr>
@@ -54,6 +55,7 @@ else
     {
         response = await GetTopicsInfo();
         FiltratedTopics = response.Items;
+        FilterUpdated(Filter.GetDefaultFilterSettings());
     }
 
     private async Task<GetTopicCollectionResponse> GetTopicsInfo()
@@ -71,41 +73,47 @@ else
         tempEnumerable = tempEnumerable
             .Where(t => filterSettings.TopicStatusFilter
                 .Any(status => status.Status == t.Status && status.IsSelected));
-        
+
         if (filterSettings.MinRateSum != null || filterSettings.MaxRateSum != null)
         {
             tempEnumerable = tempEnumerable
-                .Select(t => new {Topic = t, RateSum = t.People
-                    .Sum(p => p.Rate)})
+                .Select(t => new
+                {
+                    Topic = t, RateSum = t.People
+                        .Sum(p => p.Rate)
+                })
                 .Where(topicRateSum =>
-                (filterSettings.MinRateSum == null 
-                    || topicRateSum.RateSum >= filterSettings.MinRateSum)
-                && (filterSettings.MaxRateSum == null
-                    || topicRateSum.RateSum <= filterSettings.MaxRateSum))
+                    (filterSettings.MinRateSum == null
+                     || topicRateSum.RateSum >= filterSettings.MinRateSum)
+                    && (filterSettings.MaxRateSum == null
+                        || topicRateSum.RateSum <= filterSettings.MaxRateSum))
                 .Select(topicRateSum => topicRateSum.Topic);
         }
-        
+
         if (filterSettings.MinRateAverage != null || filterSettings.MaxRateAverage != null)
         {
             tempEnumerable = tempEnumerable
-                .Select(t => new {Topic = t, RateAverage = 
-                    t.People.Count == 0 
-                        ? 0 
-                        : t.People.Average(person => person.Rate )})
+                .Select(t => new
+                {
+                    Topic = t, RateAverage =
+                        t.People.Count == 0
+                            ? 0
+                            : t.People.Average(person => person.Rate)
+                })
                 .Where(topicRateAverage =>
-                    (filterSettings.MinRateAverage == null 
+                    (filterSettings.MinRateAverage == null
                      || topicRateAverage.RateAverage >= filterSettings.MinRateAverage)
                     && (filterSettings.MaxRateAverage == null
                         || topicRateAverage.RateAverage <= filterSettings.MaxRateAverage))
                 .Select(topicRateAverage => topicRateAverage.Topic);
         }
-        
+
         if (filterSettings.MinPeopleCount != null || filterSettings.MaxPeopleCount != null)
         {
             tempEnumerable = tempEnumerable
                 .Select(t => new {Topic = t, PeopleCount = t.People.Count})
                 .Where(topicPeopleCount =>
-                    (filterSettings.MinPeopleCount == null 
+                    (filterSettings.MinPeopleCount == null
                      || topicPeopleCount.PeopleCount >= filterSettings.MinPeopleCount)
                     && (filterSettings.MaxPeopleCount == null
                         || topicPeopleCount.PeopleCount <= filterSettings.MaxPeopleCount))
@@ -114,4 +122,5 @@ else
 
         FiltratedTopics = tempEnumerable;
     }
+
 }

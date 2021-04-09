@@ -3,55 +3,62 @@
 @using Pds.Core.Enums
 @using Pds.Web.Common.Models.Topic
 @using Pds.Web.Common
-@inject IJSRuntime JsRuntime
+@using System.Text.Json
 @inject NavigationManager NavigationManager
 @inject IAccessTokenProvider TokenProvider
 
 <div class="d-flex flex-wrap">
-    <EditForm EditContext="@editContext">
-        <div class="form-group">
-            @foreach (var filterItem in FilterSettings.TopicStatusFilter)
-            {
-                var id = $"topics_status_{filterItem.Status.ToString()}";
-                <InputCheckbox name="@id" class="btn-check" @bind-Value="filterItem.IsSelected" Id="@id"/>
-                <label class="btn btn-secondary" for="@id">
-                    @EnumsTranslator.TopicStatusToRu(filterItem.Status)
-                </label>
-            }
-        </div>
+    <button class="btn btn-secondary dropdown-toggle btn-lg btn-block" type="button" id="filter_menu_toggle_button" data-toggle="dropdown" aria-expanded="false">
+        Меню фильтрации
+    </button>
 
-        <div class="form-group">
-            <label for="nameFilter" class="form-label">Фильтраци по названию</label>
-            <input class="form-control" list="nameFilterList" id="nameFilter" placeholder="Введите название темы..." @bind-Value="FilterSettings.NameFilter">
-            <datalist id="nameFilterList">
-                @foreach (var topicName in Topics.Select(t => t.Name))
+    <div class="dropdown-menu" aria-labelledby="filter_menu_toggle_button">
+        <EditForm EditContext="@editContext">
+            <ValidationSummary Model="editContext.Model"/>
+            <div class="form-group">
+                @foreach (var filterItem in FilterSettings.TopicStatusFilter)
                 {
-                    <option value="@topicName"/>
+                    var id = $"topics_status_{filterItem.Status.ToString()}";
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="filterItem.IsSelected" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.TopicStatusToRu(filterItem.Status)
+                    </label>
                 }
-            </datalist>
-        </div>
+            </div>
 
-        <div class="form-group">
-            <label for="minRateSum" class="form-label">Минимальная сумма рейтинга</label>
-            <input type="number" class="form-range" min="0" max="@FilterSettings.MaxRateSum" id="minRateSum" name="minRateSum">
-            <label for="maxRateSum" class="form-label">Максимальная сумма рейтинга</label>
-            <input type="number" class="form-range" min="@(FilterSettings.MaxRateSum + 1)" id="maxRateSum" name="maxRateSum">
-        </div>
+            <div class="form-group">
+                <label for="nameFilter" class="form-label">Фильтраци по названию</label>
+                <InputText class="form-control" list="nameFilterList" id="nameFilter" placeholder="Введите название темы..." @bind-Value="FilterSettings.NameFilter"/>
+                <datalist id="nameFilterList">
+                    @foreach (var topicName in Topics.Select(t => t.Name))
+                    {
+                        <option value="@topicName"/>
+                    }
+                </datalist>
+            </div>
 
-        <div class="form-group">
-            <label for="minRateAverage" class="form-label">Минимальное среднее рейтинга</label>
-            <input type="range" class="form-range" min="0" max="@FilterSettings.MaxRateSum" id="minRateAverage" name="minRateAverage">
-            <label for="maxRateAverage" class="form-label">Максимальное среднее рейтинга</label>
-            <input type="range" class="form-range" min="@(FilterSettings.MaxRateSum + 1)" max="100" id="maxRateAverage" name="maxRateAverage">
-        </div>
+            <div class="form-group">
+                <label for="minRateSum" class="form-label">Минимальная сумма рейтинга</label>
+                <InputNumber @bind-Value="FilterSettings.MinRateSum" class="form-control" id="minRateSum" name="minRateSum"/>
+                <label for="maxRateSum" class="form-label">Максимальная сумма рейтинга</label>
+                <InputNumber @bind-Value="FilterSettings.MaxRateSum" class="form-control" id="maxRateSum" name="maxRateSum"/>
+            </div>
 
-        <div class="form-group">
-            <label for="minPeopleCount" class="form-label">Минимальное количество персон</label>
-            <input type="number" class="form-range" min="0" max="@FilterSettings.MaxPeopleCount" id="minPeopleCount" name="minPeopleCount">
-            <label for="maxPeopleCount" class="form-label">Максимальное количество персон</label>
-            <input type="number" class="form-range" min="@(FilterSettings.MaxPeopleCount + 1)" id="maxPeopleCount" name="maxPeopleCount">
-        </div>
-    </EditForm>
+            <div class="form-group">
+                <label for="minRateAverage" class="form-label">Минимальное среднее рейтинга</label>
+                <InputNumber @bind-Value="FilterSettings.MinRateAverage" class="form-control" id="minRateAverage" name="minRateAverage"/>
+                <label for="maxRateAverage" class="form-label">Максимальное среднее рейтинга</label>
+                <InputNumber @bind-Value="FilterSettings.MaxRateAverage" class="form-control" id="maxRateAverage" name="maxRateAverage"/>
+            </div>
+
+            <div class="form-group">
+                <label for="minPeopleCount" class="form-label">Минимальное число персон</label>
+                <InputNumber @bind-Value="FilterSettings.MinPeopleCount" class="form-control" id="minPeopleCount" name="minPeopleCount"/>
+                <label for="maxPeopleCount" class="form-label">Максимальное число персон</label>
+                <InputNumber @bind-Value="FilterSettings.MaxPeopleCount" class="form-control" id="maxPeopleCount" name="maxPeopleCount"/>
+            </div>
+        </EditForm>
+    </div>
 
 </div>
 
@@ -68,25 +75,28 @@
 
     protected override async Task OnInitializedAsync()
     {
-        FilterSettings = GetFilterSettings();
+        FilterSettings = GetDefaultFilterSettings();
         editContext = new EditContext(FilterSettings);
         editContext.OnFieldChanged += EditContext_OnFieldChanged;
     }
 
     private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
     {
-        if (editContext.Validate())
+        var validate = editContext.Validate();
+        Console.WriteLine(string.Join("\n", editContext.GetValidationMessages()));
+        Console.WriteLine(JsonSerializer.Serialize(FilterSettings));
+        if (validate)
             OnFilterUpdate.InvokeAsync(FilterSettings);
     }
 
-    private FilterSettings GetFilterSettings()
+    public static FilterSettings GetDefaultFilterSettings()
     {
         return new()
         {
             TopicStatusFilter = new TopicStatusFilterItem[]
             {
-                new (TopicStatus.Archived, false),
-                new (TopicStatus.Active, true)
+                new(TopicStatus.Archived, false),
+                new(TopicStatus.Active, true)
             }
         };
     }
