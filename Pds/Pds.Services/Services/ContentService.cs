@@ -22,7 +22,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Content>> GetAllAsync()
         {
-            return await unitOfWork.Content.GetAllWithBillsWithClientsAsync();
+            return await unitOfWork.Content.GetAllFullAsync();
         }
 
         public async Task<Content> GetAsync(Guid contentId)
@@ -66,7 +66,8 @@ namespace Pds.Services.Services
                     Status = model.Bill.Value == 0 ? BillStatus.Paid : BillStatus.Active,
                     Type = BillType.Content,
                     BrandId = model.BrandId,
-                    ClientId = model.Bill.ClientId
+                    ClientId = model.Bill.ClientId,
+                    Comment = $"Created automatically  for content with id {content.Id} ({content.Title})"
                 };
 
                 content.Bill = bill;
