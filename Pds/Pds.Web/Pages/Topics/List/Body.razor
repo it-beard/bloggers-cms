@@ -1,6 +1,6 @@
 ﻿@page "/topics"
 @attribute [Authorize]
-@using static Common.TitleExtension
+@using static Pds.Web.Common.TitleExtension
 @using Pds.Web.Common
 @using Pds.Web.Common.Models.Topic
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -16,7 +16,7 @@
     Список тем
     <a href="/topics/add" class="btn btn-success">Добавить</a>
 </h3>
-@if (response is null)
+@if (topicInfo is null)
 {
     <p>
         <em>Загрузка...</em>
@@ -24,7 +24,8 @@
 }
 else
 {
-    <Filter OnFilterUpdate="FilterUpdated" Topics="response.Items"/>
+    <Pagination @bind-PaginationSettings="PaginationSettings"/>
+    <Filter @bind-FilterSettings="FilterSettings" Topics="topicInfo.Items"/>
     <table class="table">
         <thead>
         <tr>
@@ -33,13 +34,12 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var topic in FiltratedTopics)
+        @foreach (var topic in PaginatedTopics)
         {
-            var elementId = $"topic_{topic.Id}";
             <tr>
                 <td>@topic.Name</td>
                 <td>
-                    <Actions CurrentTopic="topic"/>
+                    <Actions CurrentTopic="topic" OnTopicUpdate="RefreshTopics"/>
                 </td>
             </tr>
         }
@@ -48,14 +48,35 @@ else
 }
 
 @code {
-    public IEnumerable<GetTopicDto> FiltratedTopics { get; set; }
-    private GetTopicCollectionResponse response;
+
+    public PaginationSettings PaginationSettings { get; set; } = new();
+
+    public FilterSettings FilterSettings
+    {
+        get => filterSettings;
+        set
+        {
+            PaginationSettings.CurrentPage = 0;
+            filterSettings = value;
+        }
+    }
+
+    public IEnumerable<GetTopicDto> FiltratedTopics => FilterTopics();
+
+    public IEnumerable<GetTopicDto> PaginatedTopics => PaginateTopics();
+
+
+    private GetTopicCollectionResponse topicInfo;
+    private FilterSettings filterSettings = new();
 
     protected override async Task OnInitializedAsync()
     {
-        response = await GetTopicsInfo();
-        FiltratedTopics = response.Items;
-        FilterUpdated(Filter.GetDefaultFilterSettings());
+        await RefreshTopics();
+    }
+
+    private async Task RefreshTopics()
+    {
+        topicInfo = await GetTopicsInfo();
     }
 
     private async Task<GetTopicCollectionResponse> GetTopicsInfo()
@@ -63,18 +84,25 @@ else
         return await ApiClient.Get<GetTopicCollectionResponse>(TokenProvider, "topics");
     }
 
-    private void FilterUpdated(FilterSettings filterSettings)
+    private IEnumerable<GetTopicDto> PaginateTopics()
     {
-        var tempEnumerable = response.Items.Select(t => t);
+        return FiltratedTopics
+            .Skip(PaginationSettings.Offset)
+            .Take(PaginationSettings.PageSize);
+    }
 
-        if (!string.IsNullOrEmpty(filterSettings.NameFilter))
-            tempEnumerable = tempEnumerable.Where(t => t.Name.Contains(filterSettings.NameFilter));
+    private IEnumerable<GetTopicDto> FilterTopics()
+    {
+        var tempEnumerable = topicInfo.Items.Select(t => t);
+
+        if (!string.IsNullOrEmpty(FilterSettings.NameFilter))
+            tempEnumerable = tempEnumerable.Where(t => t.Name.Contains(FilterSettings.NameFilter));
 
         tempEnumerable = tempEnumerable
-            .Where(t => filterSettings.TopicStatusFilter
+            .Where(t => FilterSettings.TopicStatusFilter
                 .Any(status => status.Status == t.Status && status.IsSelected));
 
-        if (filterSettings.MinRateSum != null || filterSettings.MaxRateSum != null)
+        if (FilterSettings.MinRateSum != null || FilterSettings.MaxRateSum != null)
         {
             tempEnumerable = tempEnumerable
                 .Select(t => new
@@ -83,14 +111,14 @@ else
                         .Sum(p => p.Rate)
                 })
                 .Where(topicRateSum =>
-                    (filterSettings.MinRateSum == null
-                     || topicRateSum.RateSum >= filterSettings.MinRateSum)
-                    && (filterSettings.MaxRateSum == null
-                        || topicRateSum.RateSum <= filterSettings.MaxRateSum))
+                    (FilterSettings.MinRateSum == null
+                     || topicRateSum.RateSum >= FilterSettings.MinRateSum)
+                    && (FilterSettings.MaxRateSum == null
+                        || topicRateSum.RateSum <= FilterSettings.MaxRateSum))
                 .Select(topicRateSum => topicRateSum.Topic);
         }
 
-        if (filterSettings.MinRateAverage != null || filterSettings.MaxRateAverage != null)
+        if (FilterSettings.MinRateAverage != null || FilterSettings.MaxRateAverage != null)
         {
             tempEnumerable = tempEnumerable
                 .Select(t => new
@@ -101,26 +129,28 @@ else
                             : t.People.Average(person => person.Rate)
                 })
                 .Where(topicRateAverage =>
-                    (filterSettings.MinRateAverage == null
-                     || topicRateAverage.RateAverage >= filterSettings.MinRateAverage)
-                    && (filterSettings.MaxRateAverage == null
-                        || topicRateAverage.RateAverage <= filterSettings.MaxRateAverage))
+                    (FilterSettings.MinRateAverage == null
+                     || topicRateAverage.RateAverage >= FilterSettings.MinRateAverage)
+                    && (FilterSettings.MaxRateAverage == null
+                        || topicRateAverage.RateAverage <= FilterSettings.MaxRateAverage))
                 .Select(topicRateAverage => topicRateAverage.Topic);
         }
 
-        if (filterSettings.MinPeopleCount != null || filterSettings.MaxPeopleCount != null)
+        if (FilterSettings.MinPeopleCount != null || FilterSettings.MaxPeopleCount != null)
         {
             tempEnumerable = tempEnumerable
                 .Select(t => new {Topic = t, PeopleCount = t.People.Count})
                 .Where(topicPeopleCount =>
-                    (filterSettings.MinPeopleCount == null
-                     || topicPeopleCount.PeopleCount >= filterSettings.MinPeopleCount)
-                    && (filterSettings.MaxPeopleCount == null
-                        || topicPeopleCount.PeopleCount <= filterSettings.MaxPeopleCount))
+                    (FilterSettings.MinPeopleCount == null
+                     || topicPeopleCount.PeopleCount >= FilterSettings.MinPeopleCount)
+                    && (FilterSettings.MaxPeopleCount == null
+                        || topicPeopleCount.PeopleCount <= FilterSettings.MaxPeopleCount))
                 .Select(topicPeopleCount => topicPeopleCount.Topic);
         }
 
-        FiltratedTopics = tempEnumerable;
+        var filteredList = tempEnumerable.ToList();
+        PaginationSettings.Total = filteredList.Count;
+        return filteredList;
     }
 
 }

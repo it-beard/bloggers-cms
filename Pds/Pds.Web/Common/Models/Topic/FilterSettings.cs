@@ -1,11 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Pds.Core.Enums;
 
 namespace Pds.Web.Common.Models.Topic
 {
     public class FilterSettings : IValidatableObject
     {
+        public FilterSettings()
+        {
+            TopicStatusFilter = new TopicStatusFilterItem[]
+            {
+                new(TopicStatus.Archived, false),
+                new(TopicStatus.Active, true)
+            };
+        }
+
         [Range(0, int.MaxValue)] public int? MinRateSum { get; set; }
 
         [Range(0, int.MaxValue)] public int? MaxRateSum { get; set; }

@@ -1,9 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Topic
-@using Pds.Core.Enums
 @using Pds.Web.Common.Models.Topic
+@using Pds.Api.Contracts.Topic
 @using Pds.Web.Common
-@using System.Text.Json
 @inject NavigationManager NavigationManager
 @inject IAccessTokenProvider TokenProvider
 
@@ -65,40 +63,26 @@
 @code {
 
     [Parameter]
+    public FilterSettings FilterSettings { get; set; }
+
+    [Parameter]
     public IReadOnlyCollection<GetTopicDto> Topics { get; set; }
 
     [Parameter]
-    public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+    public EventCallback<FilterSettings> FilterSettingsChanged { get; set; }
 
     private EditContext editContext;
-    public FilterSettings FilterSettings { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        FilterSettings = GetDefaultFilterSettings();
         editContext = new EditContext(FilterSettings);
         editContext.OnFieldChanged += EditContext_OnFieldChanged;
     }
 
-    private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    private async void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
     {
-        var validate = editContext.Validate();
-        Console.WriteLine(string.Join("\n", editContext.GetValidationMessages()));
-        Console.WriteLine(JsonSerializer.Serialize(FilterSettings));
-        if (validate)
-            OnFilterUpdate.InvokeAsync(FilterSettings);
-    }
-
-    public static FilterSettings GetDefaultFilterSettings()
-    {
-        return new()
-        {
-            TopicStatusFilter = new TopicStatusFilterItem[]
-            {
-                new(TopicStatus.Archived, false),
-                new(TopicStatus.Active, true)
-            }
-        };
+        if (editContext.Validate())
+            await FilterSettingsChanged.InvokeAsync(FilterSettings);
     }
 
 }
