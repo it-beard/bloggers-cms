@@ -102,22 +102,6 @@ else
             .Where(t => FilterSettings.TopicStatusFilter
                 .Any(status => status.Status == t.Status && status.IsSelected));
 
-        if (FilterSettings.MinRateSum != null || FilterSettings.MaxRateSum != null)
-        {
-            tempEnumerable = tempEnumerable
-                .Select(t => new
-                {
-                    Topic = t, RateSum = t.People
-                        .Sum(p => p.Rate)
-                })
-                .Where(topicRateSum =>
-                    (FilterSettings.MinRateSum == null
-                     || topicRateSum.RateSum >= FilterSettings.MinRateSum)
-                    && (FilterSettings.MaxRateSum == null
-                        || topicRateSum.RateSum <= FilterSettings.MaxRateSum))
-                .Select(topicRateSum => topicRateSum.Topic);
-        }
-
         if (FilterSettings.MinRateAverage != null || FilterSettings.MaxRateAverage != null)
         {
             tempEnumerable = tempEnumerable

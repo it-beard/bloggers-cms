@@ -16,10 +16,6 @@ namespace Pds.Web.Common.Models.Topic
             };
         }
 
-        [Range(0, int.MaxValue)] public int? MinRateSum { get; set; }
-
-        [Range(0, int.MaxValue)] public int? MaxRateSum { get; set; }
-
         [Range(0d, 100d)] public double? MinRateAverage { get; set; }
 
         [Range(0d, 100d)] public double? MaxRateAverage { get; set; }
@@ -35,11 +31,6 @@ namespace Pds.Web.Common.Models.Topic
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (MinRateSum > MaxRateSum)
-                yield return new ValidationResult("Invalid Rate Sum filter value",
-                    Enumerable.Repeat(nameof(MinRateSum),
-                        1));
-
             if (MinRateAverage > MaxRateAverage)
                 yield return new ValidationResult("Invalid Rate Average filter value",
                     Enumerable.Repeat(nameof(MinRateAverage),
