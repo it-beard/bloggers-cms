@@ -1,0 +1,61 @@
+﻿@using Pds.Web.Common.Models.Topic
+@using Pds.Core.Enums
+@using Pds.Web.Common
+// See https://stackoverflow.com/questions/61820763/blazor-work-with-radio-buttons-enum-issue to understand why sorting is implemented so badly.
+// TODO: Refactor radio buttons using standard components
+<div class="form-group">
+    @foreach (var sortingType in Enum.GetValues<TopicSortingType>())
+    {
+        var id = $"sorting_type_{sortingType.ToString()}";
+        <input type="radio"
+               name="sorting_type"
+               class="btn-check"
+               id="@id"
+               value="@sortingType"
+               checked="@(sortingType == SortingSettings.SortingType)"
+               @onchange="@(() => SetSortingType(sortingType))"/>
+        <label class="btn @(sortingType == SortingSettings.SortingType ? "btn-primary" : "btn-secondary")" for="@id">
+            @EnumsTranslator.TopicSortingTypeToRu(sortingType)
+        </label>
+    }
+</div>
+
+<div class="form-group">
+    @foreach (var sortingDirection in Enum.GetValues<SortingDirection>())
+    {
+        var id = $"sorting_direction_{sortingDirection.ToString()}";
+        <input type="radio"
+               name="sorting_direction"
+               class="btn-check"
+               id="@id"
+               value="@sortingDirection"
+               checked="@(sortingDirection == SortingSettings.SortingDirection)"
+               @onchange="@(() => SetSortingDirection(sortingDirection))"/>
+        <label class="btn @(sortingDirection == SortingSettings.SortingDirection ? "btn-primary" : "btn-secondary")" for="@id">
+            @EnumsTranslator.SortingDirectionToRu(sortingDirection)
+        </label>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public SortingSettings SortingSettings { get; set; }
+
+    [Parameter]
+    public EventCallback<SortingSettings> SortingSettingsChanged { get; set; }
+
+    private void SetSortingDirection(SortingDirection sortingDirection)
+    {
+        if (sortingDirection == SortingSettings.SortingDirection) return;
+        SortingSettings.SortingDirection = sortingDirection;
+        SortingSettingsChanged.InvokeAsync(SortingSettings);
+    }
+
+    private void SetSortingType(TopicSortingType sortingType)
+    {
+        if (sortingType == SortingSettings.SortingType) return;
+        SortingSettings.SortingType = sortingType;
+        SortingSettingsChanged.InvokeAsync(SortingSettings);
+    }
+}

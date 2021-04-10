@@ -11,8 +11,8 @@
     </button>
 
     <div class="dropdown-menu" aria-labelledby="filter_menu_toggle_button">
-        <EditForm EditContext="@editContext">
-            <ValidationSummary Model="editContext.Model"/>
+        <EditForm EditContext="editContext">
+            <ValidationSummary/>
             <div class="form-group">
                 @foreach (var filterItem in FilterSettings.TopicStatusFilter)
                 {

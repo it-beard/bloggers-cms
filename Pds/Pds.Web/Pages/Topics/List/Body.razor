@@ -5,6 +5,8 @@
 @using Pds.Web.Common.Models.Topic
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Topic
+@using Pds.Core.Enums
+@using System.Diagnostics.CodeAnalysis
 @inherits BasePageComponent
 
 @inject IApiClient ApiClient
@@ -24,6 +26,7 @@
 }
 else
 {
+    <Sorting @bind-SortingSettings="SortingSettings"/>
     <Pagination @bind-PaginationSettings="PaginationSettings"/>
     <Filter @bind-FilterSettings="FilterSettings" Topics="topicInfo.Items"/>
     <table class="table">
@@ -34,7 +37,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var topic in PaginatedTopics)
+        @foreach (var topic in Topics)
         {
             <tr>
                 <td>@topic.Name</td>
@@ -48,30 +51,42 @@ else
 }
 
 @code {
+    private GetTopicCollectionResponse topicInfo;
+    private FilterSettings filterSettings = new();
+    private SortingSettings sortingSettings = new();
 
     public PaginationSettings PaginationSettings { get; set; } = new();
+
+    public SortingSettings SortingSettings
+    {
+        get => sortingSettings;
+        set
+        {
+            sortingSettings = value;
+            SortedTopics = SortTopics(FilterTopics());
+        }
+    }
 
     public FilterSettings FilterSettings
     {
         get => filterSettings;
         set
         {
-            PaginationSettings.CurrentPage = 0;
             filterSettings = value;
+            SortedTopics = SortTopics(FilterTopics());
+            PaginationSettings.CurrentPage = 0;
         }
     }
 
-    public IEnumerable<GetTopicDto> FiltratedTopics => FilterTopics();
+    public IReadOnlyCollection<GetTopicDto> SortedTopics { get; set; }
 
-    public IEnumerable<GetTopicDto> PaginatedTopics => PaginateTopics();
+    public IEnumerable<GetTopicDto> Topics => PaginateTopics(SortedTopics);
 
-
-    private GetTopicCollectionResponse topicInfo;
-    private FilterSettings filterSettings = new();
 
     protected override async Task OnInitializedAsync()
     {
         await RefreshTopics();
+        SortingSettings = new SortingSettings();
     }
 
     private async Task RefreshTopics()
@@ -84,16 +99,63 @@ else
         return await ApiClient.Get<GetTopicCollectionResponse>(TokenProvider, "topics");
     }
 
-    private IEnumerable<GetTopicDto> PaginateTopics()
+    private IEnumerable<GetTopicDto> PaginateTopics(IEnumerable<GetTopicDto> unpaginatedEnumerable)
     {
-        return FiltratedTopics
+        return unpaginatedEnumerable
             .Skip(PaginationSettings.Offset)
             .Take(PaginationSettings.PageSize);
     }
 
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
+    private IReadOnlyCollection<GetTopicDto> SortTopics(IEnumerable<GetTopicDto> unsortedEnumerable)
+    {
+        var tempEnumerable = unsortedEnumerable;
+        var isAscending = SortingSettings.SortingDirection == SortingDirection.Ascending;
+
+        var averageRateEnumerable = tempEnumerable
+            .Select(t => new
+            {
+                Topic = t, RateAverage =
+                    t.People.Count == 0
+                        ? 0
+                        : t.People.Average(person => person.Rate)
+            });
+
+        var peopleCountEnumerable = tempEnumerable
+            .Select(t => new
+            {
+                Topic = t,
+                PeopleCount = t.People.Count
+            });
+
+        return (SortingSettings.SortingType switch
+        {
+            TopicSortingType.Name => isAscending ? tempEnumerable.OrderBy(t => t.Name) : tempEnumerable.OrderByDescending(t => t.Name),
+            TopicSortingType.AverageRate => isAscending ?
+                averageRateEnumerable
+                    .OrderBy(t => t.RateAverage)
+                    .ThenBy(t => t.Topic.Name)
+                    .Select(t => t.Topic) :
+                averageRateEnumerable
+                    .OrderByDescending(t => t.RateAverage)
+                    .ThenBy(t => t.Topic.Name)
+                    .Select(t => t.Topic),
+            TopicSortingType.PeopleCount => isAscending ?
+                peopleCountEnumerable.OrderBy(t => t.PeopleCount)
+                    .ThenBy(t => t.Topic.Name)
+                    .Select(t => t.Topic) :
+                peopleCountEnumerable.OrderByDescending(t => t.PeopleCount)
+                    .ThenBy(t => t.Topic.Name)
+                    .Select(t => t.Topic)
+            ,
+            _ => throw new ArgumentOutOfRangeException()
+            
+            }).ToList();
+    }
+
     private IEnumerable<GetTopicDto> FilterTopics()
     {
-        var tempEnumerable = topicInfo.Items.Select(t => t);
+        var tempEnumerable = topicInfo.Items.AsEnumerable();
 
         if (!string.IsNullOrEmpty(FilterSettings.NameFilter))
             tempEnumerable = tempEnumerable.Where(t => t.Name.Contains(FilterSettings.NameFilter));
