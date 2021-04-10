@@ -4,21 +4,17 @@
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Core.Enums
-@using Pds.Web.Common.Models.Content
 @using static Pds.Web.Common.TitleExtension 
 @using System.Linq
-@using System.Diagnostics
 @using Pds.Core.Extensions
+@using Pds.Web.Models.Content
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
 <Title>@WithSuffix("Контент")</Title>
 
-<h4 class="card-header d-flex justify-content-between align-items-center">
-    Лента контента
-    <a href="/content/add" class="btn btn-success" >Добавить</a>
-</h4>
+
 @if (content == null)
 {
     <p>
@@ -27,12 +23,17 @@
 }
 else
 {
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+         Лента контента (@content.Items.Count(i => i.IsVisible))
+         <a href="/content/add" class="btn btn-success" >Добавить</a>
+     </h4>
     <Filter OnFilterUpdate="@FilterUpdatedAsync"></Filter>
     <table class="table">
         <thead>
         <tr>
             <th class="release-date-header">Когда</th>
             <th>Название</th>
+            <th>Бренд</th>
             <th>Клиент</th>
             <th>Соцсеть</th>
             <th>Тип</th>
@@ -51,6 +52,9 @@ else
                 </td>
                 <td class="title-row">
                     <a href="content/@item.Id">@item.Title</a>
+                </td>
+                <td>
+                    @item.Brand.Name
                 </td>
                 <td>
                     @item.ClientName
@@ -101,23 +105,43 @@ else
 
     private void FilterUpdatedAsync(FilterSettings filterSettings)
     {
-        var isAnySmSelected = filterSettings.SocialMediaFilterItems.Any(sm => sm.IsSelected);
+        var selectedSocialMediaTypes = filterSettings.SocialMediaFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.SocialMediaType)
+            .ToList();
+        var selectedContentTypes = filterSettings.ContentTypeFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.ContentType)
+            .ToList();
+        var selectedBrandsIds = filterSettings.BrandFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i=>i.Id)
+            .ToList();
+        var totalSelectedFiltersCount = 
+            selectedSocialMediaTypes.Count + 
+            selectedBrandsIds.Count + 
+            selectedContentTypes.Count;
+
+        var itemsToShow = content.Items
+            .Where(i => 
+                (selectedSocialMediaTypes.Contains(i.SocialMediaType) || selectedSocialMediaTypes.Count == 0) &&
+                (selectedContentTypes.Contains(i.Type) || selectedContentTypes.Count == 0) &&
+                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0));
+
         foreach (var item in content.Items)
         {
-            foreach (var smType in (SocialMediaType[])Enum.GetValues(typeof(SocialMediaType)))
+            if (totalSelectedFiltersCount == 0)
             {
-                if (item.SocialMediaType == smType)
-                {
-                    if (!isAnySmSelected)
-                    {
-                        item.IsVisible = true;
-                    }
-                    else
-                    {
-                        item.IsVisible = filterSettings.SocialMediaFilterItems
-                            .First(sm => sm.SocialMediaType == smType).IsSelected;
-                    }
-                }
+                item.IsVisible = true;
+                continue;
+            }
+            if (itemsToShow.Contains(item))
+            {
+                item.IsVisible = true;
+            }
+            else
+            {
+                item.IsVisible = false;
             }
         }
     }

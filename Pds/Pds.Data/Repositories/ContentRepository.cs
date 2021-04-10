@@ -25,11 +25,15 @@ namespace Pds.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Content>> GetAllWithBillsWithClientsAsync()
+        public async Task<List<Content>> GetAllFullAsync()
         {
             return await context.Contents
-                .Include(p=>p.Bill)
-                .ThenInclude(p=>p.Client)
+                .Include(p => p.Bill)
+                .ThenInclude(p => p.Client)
+                .Include(p => p.Brand)
+                .Include(p => p.Person)
+                .ThenInclude(p => p.Resources)
+                .Include(p => p.Costs)
                 .OrderByDescending(p =>p.ReleaseDate)
                 .ThenBy(p=>p.Title)
                 .ToListAsync();

@@ -12,6 +12,7 @@ using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Models;
 using Pds.Services.Models.Content;
+using Pds.Web.Models.Content;
 
 namespace Pds.Mappers
 {
@@ -89,6 +90,7 @@ namespace Pds.Mappers
             CreateMap<Cost, GetContentCostDto>();
 
             CreateMap<Brand, BrandDto>();
+            CreateMap<Brand, ContentListBrandDto>();
 
             #endregion
 
@@ -124,6 +126,7 @@ namespace Pds.Mappers
             #region Blazor WebAssembly
 
             CreateMap<GetContentResponse, EditContentRequest>();
+            CreateMap<Pds.Api.Contracts.Content.BrandForRadioboxGroupDto, BrandFilterItem>();
 
             #endregion
         }
