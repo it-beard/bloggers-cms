@@ -1,0 +1,31 @@
+﻿.card-header {
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+::deep input.bill-cost{
+    width: 120px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+::deep input.pay-date{
+    width: 150px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.label-required::after{
+    content: "*";
+    color: red;
+    margin-left: 3px;
+}
+
+.contact-type {
+    margin-top: 5px;
+}

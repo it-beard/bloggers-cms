@@ -110,7 +110,6 @@ else
     private void SetDefaultFilterValues(FilterSettings filter)
     {
         filter.BrandFilterItems.First(b => b.Name == "АйТиБорода").IsSelected = true;
-        filter.SocialMediaFilterItems.First(b => b.SocialMediaType == SocialMediaType.YouTube).IsSelected = true;
     }
 
     private async Task<List<BrandForRadioboxGroupDto>> GetBrands()

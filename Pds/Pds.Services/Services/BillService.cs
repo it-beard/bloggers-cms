@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
+using Pds.Core.Exceptions.Bill;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -40,6 +41,32 @@ namespace Pds.Services.Services
         public async Task<List<Bill>> GetAllPaidAsync()
         {
             return await unitOfWork.Bills.GetAllPaidOrderByDateDescAsync();
+        }
+
+        public async Task<Guid> CreateAsync(Bill bill)
+        {
+            if (bill == null)
+            {
+                throw new BillCreateException("Запрос был пуст.");
+            }
+
+            if (bill.Type == BillType.Content)
+            {
+                throw new BillCreateException("Счета типа \"Контент\" добавляются через создание контента.");
+            }
+
+            bill.CreatedAt = DateTime.UtcNow;
+            bill.Status = BillStatus.Paid;
+            if (bill.ClientId == Guid.Empty)
+            {
+                bill.ClientId = null;
+                bill.ContactName = null;
+                bill.Contact = null;
+                bill.ContactType = null;
+            }
+            var result = await unitOfWork.Bills.InsertAsync(bill);
+
+            return result.Id;
         }
     }
 }

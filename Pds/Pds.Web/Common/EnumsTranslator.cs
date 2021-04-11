@@ -95,7 +95,7 @@ namespace Pds.Web.Common
             return type switch
             {
                 BillType.Other => "Прочее",
-                BillType.Content => "Конетнт",
+                BillType.Content => "Конент",
                 BillType.Donation => "Донаты",
                 BillType.Resale => "Перепродажа",
                 BillType.Adsense => "AdSense",

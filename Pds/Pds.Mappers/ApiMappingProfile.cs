@@ -73,7 +73,13 @@ namespace Pds.Mappers
 
             CreateMap<Client, ClientDto>();
             CreateMap<Client, GetContentBillClientDto>();
-            CreateMap<Client, ClientForLookupDto>()
+            CreateMap<Client, Pds.Api.Contracts.Content.ClientForLookupDto>()
+                .ForMember(
+                    dest => dest.Name,
+                    opt => opt
+                        .MapFrom((p, s) =>
+                            s.Name = p.Name ?? "Не выбрано"));
+            CreateMap<Client, Pds.Api.Contracts.Bill.ClientForLookupDto>()
                 .ForMember(
                     dest => dest.Name,
                     opt => opt
@@ -81,9 +87,9 @@ namespace Pds.Mappers
                             s.Name = p.Name ?? "Не выбрано"));
 
             CreateMap<Bill, BillDto>();
-            CreateMap<Bill, ContentListBillDto>();
             CreateMap<Bill, ClientBillDto>();
             CreateMap<Bill, GetContentBillDto>();
+            CreateMap<Bill, ContentListBillDto>();
             CreateMap<Bill, GetContentBillForPayResponse>();
 
             CreateMap<Cost, CostDto>();
@@ -98,6 +104,7 @@ namespace Pds.Mappers
 
             CreateMap<CreateClientRequest, Client>();
             CreateMap<CreateCostRequest, Cost>();
+            CreateMap<CreateBillRequest, Bill>();
             CreateMap<ResourceDto, Resource>()
                 .ForMember(
                     dest => dest.CreatedAt,
