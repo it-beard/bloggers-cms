@@ -52,41 +52,51 @@ else
 
 @code {
     private GetTopicCollectionResponse topicInfo;
-    private FilterSettings filterSettings = new();
-    private SortingSettings sortingSettings = new();
+    private FilterSettings filterSettings;
+    private SortingSettings sortingSettings;
+    private PaginationSettings paginationSettings;
 
-    public PaginationSettings PaginationSettings { get; set; } = new();
+    public PaginationSettings PaginationSettings
+    {
+        get => paginationSettings ??= new();
+        set
+        {
+            paginationSettings = value;
+            StateHasChanged();
+        }
+    }
 
     public SortingSettings SortingSettings
     {
-        get => sortingSettings;
+        get => sortingSettings ??= new();
         set
         {
             sortingSettings = value;
-            SortedTopics = SortTopics(FilterTopics());
+            PaginationSettings.CurrentPage = 0;
+            StateHasChanged();
         }
     }
 
     public FilterSettings FilterSettings
     {
-        get => filterSettings;
+        get => filterSettings ??= new();
         set
         {
             filterSettings = value;
-            SortedTopics = SortTopics(FilterTopics());
             PaginationSettings.CurrentPage = 0;
+            StateHasChanged();
         }
     }
 
-    public IReadOnlyCollection<GetTopicDto> SortedTopics { get; set; }
-
-    public IEnumerable<GetTopicDto> Topics => PaginateTopics(SortedTopics);
+    public IEnumerable<GetTopicDto> Topics => ApplySettings(topicInfo.Items);
 
 
     protected override async Task OnInitializedAsync()
     {
         await RefreshTopics();
+        PaginationSettings = new PaginationSettings();
         SortingSettings = new SortingSettings();
+        FilterSettings = new FilterSettings();
     }
 
     private async Task RefreshTopics()
@@ -94,12 +104,21 @@ else
         topicInfo = await GetTopicsInfo();
     }
 
+    private IEnumerable<GetTopicDto> ApplySettings(IReadOnlyCollection<GetTopicDto> source)
+    {
+        var filterTopics = FilterTopics(source);
+        PaginationSettings.Total = filterTopics.Count;
+        var sortedTopics = SortTopics(filterTopics);
+        var paginatedTopics = PaginateTopics(sortedTopics);
+        return paginatedTopics;
+    }
+    
     private async Task<GetTopicCollectionResponse> GetTopicsInfo()
     {
         return await ApiClient.Get<GetTopicCollectionResponse>(TokenProvider, "topics");
     }
 
-    private IEnumerable<GetTopicDto> PaginateTopics(IReadOnlyCollection<GetTopicDto> unpaginated)
+    private IEnumerable<GetTopicDto> PaginateTopics(IEnumerable<GetTopicDto> unpaginated)
     {
         return unpaginated
             .Skip(PaginationSettings.Offset)
@@ -107,7 +126,7 @@ else
     }
 
     [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-    private IReadOnlyCollection<GetTopicDto> SortTopics(IEnumerable<GetTopicDto> unsortedEnumerable)
+    private IEnumerable<GetTopicDto> SortTopics(IEnumerable<GetTopicDto> unsortedEnumerable)
     {
         var tempEnumerable = unsortedEnumerable;
         var isAscending = SortingSettings.SortingDirection == SortingDirection.Ascending;
@@ -128,7 +147,7 @@ else
                 PeopleCount = t.People.Count
             });
 
-        var sortedList = (SortingSettings.SortingType switch
+        var sorted = (SortingSettings.SortingType switch
         {
             TopicSortingType.Name => isAscending ? tempEnumerable.OrderBy(t => t.Name) : tempEnumerable.OrderByDescending(t => t.Name),
             TopicSortingType.AverageRate => isAscending ?
@@ -150,17 +169,15 @@ else
             ,
             _ => throw new ArgumentOutOfRangeException()
             
-            }).ToList();
+            });
 
         
-        PaginationSettings.Total = sortedList.Count;
-        PaginationSettings.CurrentPage = 0;
-        return sortedList;
+        return sorted;
     }
 
-    private IEnumerable<GetTopicDto> FilterTopics()
+    private IReadOnlyCollection<GetTopicDto> FilterTopics(IEnumerable<GetTopicDto> source)
     {
-        var tempEnumerable = topicInfo.Items.AsEnumerable();
+        var tempEnumerable = source;
 
         if (!string.IsNullOrEmpty(FilterSettings.NameFilter))
             tempEnumerable = tempEnumerable.Where(t => t.Name.Contains(FilterSettings.NameFilter));
@@ -199,7 +216,7 @@ else
                 .Select(topicPeopleCount => topicPeopleCount.Topic);
         }
 
-        return tempEnumerable;
+        return tempEnumerable.ToList();
     }
 
 }
