@@ -7,10 +7,6 @@
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
-<button title="Просмотреть детальную информацию" class="btn btn-primary btn-sm" @onclick="OnInfo">
-    <i class="bi bi-eye"></i>
-</button>
-
 <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
     <i class="bi bi-pencil-fill"></i>
 </button>
@@ -32,16 +28,10 @@ else
 @code {
 
     [Parameter]
-    public GetTopicDto CurrentTopic { get; set; }
+    public GetTopicResponse CurrentTopic { get; set; }
 
     [Parameter]
     public EventCallback OnTopicUpdate { get; set; }
-
-    private void OnInfo()
-    {
-        NavigationManager.NavigateTo($"topics/{CurrentTopic.Id}");
-    }
-    
     
     private void OnEdit()
     {

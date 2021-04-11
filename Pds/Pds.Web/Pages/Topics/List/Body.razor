@@ -99,9 +99,9 @@ else
         return await ApiClient.Get<GetTopicCollectionResponse>(TokenProvider, "topics");
     }
 
-    private IEnumerable<GetTopicDto> PaginateTopics(IEnumerable<GetTopicDto> unpaginatedEnumerable)
+    private IEnumerable<GetTopicDto> PaginateTopics(IReadOnlyCollection<GetTopicDto> unpaginated)
     {
-        return unpaginatedEnumerable
+        return unpaginated
             .Skip(PaginationSettings.Offset)
             .Take(PaginationSettings.PageSize);
     }
@@ -128,7 +128,7 @@ else
                 PeopleCount = t.People.Count
             });
 
-        return (SortingSettings.SortingType switch
+        var sortedList = (SortingSettings.SortingType switch
         {
             TopicSortingType.Name => isAscending ? tempEnumerable.OrderBy(t => t.Name) : tempEnumerable.OrderByDescending(t => t.Name),
             TopicSortingType.AverageRate => isAscending ?
@@ -151,6 +151,11 @@ else
             _ => throw new ArgumentOutOfRangeException()
             
             }).ToList();
+
+        
+        PaginationSettings.Total = sortedList.Count;
+        PaginationSettings.CurrentPage = 0;
+        return sortedList;
     }
 
     private IEnumerable<GetTopicDto> FilterTopics()
@@ -194,9 +199,7 @@ else
                 .Select(topicPeopleCount => topicPeopleCount.Topic);
         }
 
-        var filteredList = tempEnumerable.ToList();
-        PaginationSettings.Total = filteredList.Count;
-        return filteredList;
+        return tempEnumerable;
     }
 
 }

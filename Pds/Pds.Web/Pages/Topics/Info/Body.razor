@@ -1,0 +1,108 @@
+﻿@page "/topics/{Id}"
+@attribute [Authorize]
+@using static Common.TitleExtension
+@using Pds.Web.Common
+@using Pds.Web.Pages.Content
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Topic
+@inherits BasePageComponent
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Просмотр темы")</Title>
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Редактирование темы
+    <a class="btn btn-primary" @onclick="GoBack"> Назад </a>
+</h3>
+@if (topicResponse is null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <div class="info-item">
+        <p class="info-title">Имя</p>
+        <p class="info-body">
+            @topicResponse.Name
+        </p>
+    </div>
+
+    <div class="info-item">
+        <p class="info-title">Статуc</p>
+        <p class="info-body">
+            @EnumsTranslator.TopicStatusToRu(topicResponse.Status)
+        </p>
+    </div>
+
+    <div class="info-item">
+        <div class="info-title">
+            Действия
+        </div>
+        <div class="info-body">
+            <Actions CurrentTopic="topicResponse" OnTopicUpdate="RefreshTopicAsync"></Actions>
+        </div>
+    </div>
+
+    <div class="info-item" id="people">
+        <p class="info-title">Персоны:</p>
+        <div class="table info-body">
+            <thead>
+            <tr>
+                <th class="person-header">Кто</th>
+                <th class="rate-header">Рейтинг</th>
+                <th>Где</th>
+                <th>Информация</th>
+                <th>Ссылки</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var person in topicResponse.People)
+            {
+                <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
+                    <td class="person-row">
+                        @person.FullName
+                        <span class="contents">
+                            (@person.Contents.Count)
+                        </span>
+                    </td>
+                    <td class="rate-row">@person.Rate</td>
+                    <td>@person.Location</td>
+                    <td>@person.Info</td>
+                    <td>
+                        @foreach (var resource in person.Resources)
+                        {
+                            <div>
+                                <a href="@resource.Url" target="_blank">@resource.Name</a>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </div>
+    </div>
+}
+
+@code {
+    private GetTopicResponse topicResponse;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshTopicAsync();
+    }
+
+    private async Task RefreshTopicAsync()
+    {
+        topicResponse = await ApiClient.Get<GetTopicResponse>(TokenProvider, $"topics/{{{Id}}}");
+        if (topicResponse is null)
+            NavigationManager.NavigateTo("/topics");
+    }
+    
+}

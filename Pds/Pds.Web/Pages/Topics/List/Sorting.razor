@@ -1,8 +1,11 @@
 ﻿@using Pds.Web.Common.Models.Topic
 @using Pds.Core.Enums
 @using Pds.Web.Common
+
+@*
 // See https://stackoverflow.com/questions/61820763/blazor-work-with-radio-buttons-enum-issue to understand why sorting is implemented so badly.
 // TODO: Refactor radio buttons using standard components
+*@
 <div class="form-group">
     @foreach (var sortingType in Enum.GetValues<TopicSortingType>())
     {

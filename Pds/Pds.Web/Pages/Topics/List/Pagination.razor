@@ -74,6 +74,8 @@
             return;
 
         PaginationSettings.PageSize = pageSize;
+        if (PaginationSettings.Total < PaginationSettings.CurrentPage * PaginationSettings.PageSize)
+            PaginationSettings.CurrentPage = PaginationSettings.Total / PaginationSettings.PageSize - 1;
         await PaginationSettingsChanged.InvokeAsync(PaginationSettings);
     }
 
