@@ -4,8 +4,9 @@
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
 @using Api.Contracts.Paging
+@using Web.Components.Sorting.QueryCreators
+@using Pds.Web.Components.Sorting.QueryCreators.Person
 @using static Pds.Web.Common.TitleExtension
-
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -35,11 +36,14 @@ else
         <thead>
             <tr>
                 <th>
-                    <SortingComponent OnSortPersons="SortPersons"
+                    
+                    <SortingComponent TField="PersonsFieldName" 
+                                      OnSortPersons="SortPersons"
                                       FieldName="PersonsFieldName.FullName">Полное имя</SortingComponent>
                 </th>
                 <th>
-                    <SortingComponent OnSortPersons="SortPersons"
+                    <SortingComponent TField="PersonsFieldName"
+                                      OnSortPersons="SortPersons"
                                       FieldName="PersonsFieldName.Location">Локация</SortingComponent>
                 </th>
                 <th>Информация</th>
@@ -101,55 +105,62 @@ else
         personsInfo = await GetPersonsInfo();
     }
 
-    private void GetPersonsList()
-    {
-        personsList = personsInfo.Items.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
-    }
-
     private async Task<GetPersonsResponse> GetPersonsInfo()
     {
         return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
     }
 
-    //private async Task<GetPersonsResponse> GetPersonsInfo()
-    //{
-    //    var request = new GetPersonsRequest
-    //    {
-    //        PageSettings = pageSettings,
-    //        OrderSettings = orderSettings
-    //    };
-
-    //    var response = await ApiClient.Post<GetPersonsResponse, GetPersonsRequest>(TokenProvider, "persons/search", request);
-
-    //    return response.Payload;
-    //}
-
-    private void Pagination(PagingEventArgs eventArgs)
+    public void GetPersonsList()
     {
+        var query = personsInfo.Items
+            .AsQueryable();
+
+        if (orderSettings?.Length > 0)
+        {
+            var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<PersonDto>>
+            {
+                    {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
+                    {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
+                    {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
+                };
+
+            var queryCreator = new PersonOrderQueryCreator(dictionary);
+            query = queryCreator.Create(orderSettings, query);
+        }
+        else
+        {
+            query = query
+                .OrderByDescending(p => p.Rate)
+                .ThenBy(p => p.FullName);
+        }
+
+        query.ToArray();
+
+        personsList = query.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
+    }
+
+    private void Pagination(PagingEventArgs settings)
+    {
+        isPagingStateHasChanged = default;
         pageSettings = new PageSettings
         {
-            Limit = eventArgs.PageSize,
-            Offset = eventArgs.PageOffSet
+            Limit = settings.PageSize,
+            Offset = settings.PageOffSet
         };
 
         GetPersonsList();
     }
 
-    private async Task SortPersons(SortingEventArgs eventArgs)
+    private void SortPersons(OrderSetting<PersonsFieldName> settings)
     {
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
 
-        var newOrderSettings = new List<OrderSetting<PersonsFieldName>>();
-
-        newOrderSettings.Add(new OrderSetting<PersonsFieldName>
+        orderSettings = new[]
         {
-            Ascending = eventArgs.Ascending,
-            FieldName = eventArgs.FieldName
-        });
-        orderSettings = newOrderSettings.ToArray();
+            settings
+        };
 
-        personsInfo = await GetPersonsInfo();
-        isPagingStateHasChanged = default;
+        GetPersonsList();
     }
 }

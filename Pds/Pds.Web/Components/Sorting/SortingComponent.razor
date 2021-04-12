@@ -1,4 +1,7 @@
-﻿@using Pds.Api.Contracts.Person
+﻿@typeparam TField
+
+@using Pds.Api.Contracts.Paging
+@using Pds.Api.Contracts.Person
 
 <a @onclick="@(() => OnSortColumn())">
     @ChildContent
@@ -7,11 +10,10 @@
 
 @code {
     [Parameter]
-    public EventCallback<SortingEventArgs> OnSortPersons { get; set; }
+    public EventCallback<OrderSetting<TField>> OnSortPersons { get; set; }
 
     [Parameter]
-    public PersonsFieldName FieldName { get; set; }
-
+    public TField FieldName { get; set; }
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
@@ -20,7 +22,12 @@
     private void OnSortColumn()
     {
         ascending = !ascending;
+        var orderSettings = new OrderSetting<TField>
+        {
+            Ascending = ascending,
+            FieldName = FieldName
+        };
 
-        OnSortPersons.InvokeAsync(new SortingEventArgs(FieldName, ascending));
+        OnSortPersons.InvokeAsync(orderSettings);
     }
 }
