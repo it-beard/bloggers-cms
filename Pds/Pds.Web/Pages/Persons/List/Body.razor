@@ -48,7 +48,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var person in personsInfo.Items)
+            @foreach (var person in personsList)
             {
                 <tr>
                     <td>@person.FullName (@person.Rate)</td>
@@ -72,6 +72,7 @@ else
 
 @code {
     private GetPersonsResponse personsInfo;
+    private PersonDto[] personsList;
     private readonly int[] pageSizesList = { 5, 10, 25, 50 };
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
@@ -90,7 +91,9 @@ else
             new OrderSetting<PersonsFieldName>()
         };
 
-        personsInfo = await GetPersonsInfo();
+        await PersonsInfoUpdate();
+        GetPersonsList();
+
     }
 
     private async Task PersonsInfoUpdate()
@@ -98,20 +101,30 @@ else
         personsInfo = await GetPersonsInfo();
     }
 
-    private async Task<GetPersonsResponse> GetPersonsInfo()
+    private void GetPersonsList()
     {
-        var request = new GetPersonsRequest
-        {
-            PageSettings = pageSettings,
-            OrderSettings = orderSettings
-        };
-
-        var response = await ApiClient.Post<GetPersonsResponse, GetPersonsRequest>(TokenProvider, "persons/search", request);
-
-        return response.Payload;
+        personsList = personsInfo.Items.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
     }
 
-    private async Task Pagination(PagingEventArgs eventArgs)
+    private async Task<GetPersonsResponse> GetPersonsInfo()
+    {
+        return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
+    }
+
+    //private async Task<GetPersonsResponse> GetPersonsInfo()
+    //{
+    //    var request = new GetPersonsRequest
+    //    {
+    //        PageSettings = pageSettings,
+    //        OrderSettings = orderSettings
+    //    };
+
+    //    var response = await ApiClient.Post<GetPersonsResponse, GetPersonsRequest>(TokenProvider, "persons/search", request);
+
+    //    return response.Payload;
+    //}
+
+    private void Pagination(PagingEventArgs eventArgs)
     {
         pageSettings = new PageSettings
         {
@@ -119,7 +132,7 @@ else
             Offset = eventArgs.PageOffSet
         };
 
-        personsInfo = await GetPersonsInfo();
+        GetPersonsList();
     }
 
     private async Task SortPersons(SortingEventArgs eventArgs)

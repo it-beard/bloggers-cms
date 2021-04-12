@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -72,7 +73,7 @@ namespace Pds.Api.Controllers
 
                 var response = new GetBillsResponse
                 {
-                    Items = mapper.Map<BillDto[]>(paidBills),
+                    Items = mapper.Map<List<BillDto>>(paidBills),
                     Total = paidBills.Count
                 };
 

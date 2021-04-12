@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -44,7 +45,7 @@ namespace Pds.Api.Controllers
 
                 var response = new GetClientsResponse
                 {
-                    Items = mapper.Map<ClientDto[]>(clients),
+                    Items = mapper.Map<List<ClientDto>>(clients),
                     Total = clients.Count
                 };
 

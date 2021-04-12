@@ -50,7 +50,18 @@ namespace Pds.Data.Repositories
                 .Take(searchSettings.PageSettings?.Limit ?? 10)
                 .ToArrayAsync();
         }
-        
+
+        public async Task<List<Person>> GetAllFullAsync()
+        {
+            return await context.Persons
+                .Include(p => p.Brands)
+                .Include(p => p.Resources)
+                .Include(p => p.Contents)
+                .OrderBy(p => p.LastName)
+                .ThenByDescending(p => p.Rate)
+                .ToListAsync();
+        }
+
         public async Task<List<Person>> GetForListsAsync()
         {
             return await context.Persons

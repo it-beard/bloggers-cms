@@ -1,6 +1,7 @@
 ﻿@using Pds.Api.Contracts.Person
 
 <a @onclick="@(() => OnSortColumn())">
+    @ChildContent
     <i class="bi @(ascending ? "bi-sort-alpha-down" : "bi-sort-alpha-up") "></i>
 </a>
 
@@ -10,6 +11,9 @@
 
     [Parameter]
     public PersonsFieldName FieldName { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
 
     private bool ascending;
 

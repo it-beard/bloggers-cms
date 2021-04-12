@@ -19,6 +19,11 @@ namespace Pds.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
+        public async Task<List<Person>> GetAllAsync()
+        {
+            return await unitOfWork.Persons.GetAllFullAsync();
+        }
+
         public async Task<(Person[] people, int total)> GetPagedAsync(SearchSettings<PersonsFieldName> searchSettings)
         {
             var result = await unitOfWork.Persons.GetAllWithResourcesAsync(searchSettings);

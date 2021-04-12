@@ -40,20 +40,18 @@ namespace Pds.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("search")]
+        [HttpGet]
         [ProducesResponseType(typeof(GetPersonsResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll([FromBody] GetPersonsRequest request)
+        public async Task<IActionResult> GetAll([FromQuery] GetPersonsRequest request)
         {
             try
             {
-                var searchSettings = mapper.Map<GetPersonsRequest, SearchSettings<PersonsFieldName>>(request);
-
-                var result = await personService.GetPagedAsync(searchSettings);
+                var persons = await personService.GetAllAsync();
 
                 var response = new GetPersonsResponse
                 {
-                    Items = mapper.Map<PersonDto[]>(result.people),
-                    Total = result.total
+                    Items = mapper.Map<List<PersonDto>>(persons),
+                    Total = persons.Count
                 };
 
                 return Ok(response);
@@ -63,6 +61,37 @@ namespace Pds.Api.Controllers
                 return ExceptionResult(e);
             }
         }
+
+
+
+        ///// <summary>
+        ///// Return list of persons
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //[HttpPost("search")]
+        //[ProducesResponseType(typeof(GetPersonsResponse), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> GetAll([FromBody] GetPersonsRequest request)
+        //{
+        //    try
+        //    {
+        //        var searchSettings = mapper.Map<GetPersonsRequest, SearchSettings<PersonsFieldName>>(request);
+
+        //        var result = await personService.GetPagedAsync(searchSettings);
+
+        //        var response = new GetPersonsResponse
+        //        {
+        //            Items = mapper.Map<PersonDto[]>(result.people),
+        //            Total = result.total
+        //        };
+
+        //        return Ok(response);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return ExceptionResult(e);
+        //    }
+        //}
 
         /// <summary>
         /// Create a person

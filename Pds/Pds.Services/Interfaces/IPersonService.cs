@@ -8,7 +8,8 @@ namespace Pds.Services.Interfaces
 {
     public interface IPersonService
     {
-        Task<(Person[] people, int total)> GetPagedAsync(SearchSettings<PersonsFieldName> searchSettings);
+        //Task<(Person[] people, int total)> GetPagedAsync(SearchSettings<PersonsFieldName> searchSettings);
+        Task<List<Person>> GetAllAsync();
         Task<Guid> CreateAsync(Person newPerson);
         Task ArchiveAsync(Guid personId);
         Task UnarchiveAsync(Guid personId);
