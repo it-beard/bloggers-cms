@@ -8,7 +8,6 @@ using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
-using Pds.Data.QueryCreators.Settings;
 using Pds.Services.Models.Content;
 
 namespace Pds.Mappers
@@ -105,13 +104,6 @@ namespace Pds.Mappers
             CreateMap<CreateClientRequest, Client>();
             CreateMap<CreateCostRequest, Cost>();
 
-            CreateMap<GetPersonsRequest, SearchSettings<Data.QueryCreators.Settings.PersonsFieldName>>();
-            
-            CreateMap<Api.Contracts.Paging.OrderSetting<Pds.Api.Contracts.Person.PersonsFieldName>, OrderSetting<Data.QueryCreators.Settings.PersonsFieldName>>();
-            CreateMap<Api.Contracts.Paging.PageSettings, PageSettings>();
-            CreateMap<Api.Contracts.Paging.FilterSettings, FilterSettings>();
-
-            CreateMap<CreatePersonRequest, Person>();
             CreateMap<ResourceDto, Resource>()
                 .ForMember(
                     dest => dest.CreatedAt,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
+using Pds.Core.Exceptions;
 using Pds.Core.Exceptions.Person;
 using Pds.Data;
 using Pds.Data.Entities;
@@ -24,28 +25,20 @@ namespace Pds.Services.Services
             return await unitOfWork.Persons.GetAllFullAsync();
         }
 
-        public async Task<(Person[] people, int total)> GetPagedAsync(SearchSettings<PersonsFieldName> searchSettings)
+        public async Task<Guid> CreateAsync(Person person)
         {
-            var result = await unitOfWork.Persons.GetAllWithResourcesAsync(searchSettings);
-            var total = await unitOfWork.Persons.Count();
-
-            return (result, total);
-        }
-
-        public async Task<Guid> CreateAsync(Person newPerson)
-        {
-            if (newPerson == null)
+            if (person == null)
             {
-                throw new ArgumentNullException(nameof(newPerson));
+                throw new ArgumentNullException(nameof(person));
             }
 
-            if (newPerson.Brands.Count == 0)
+            if (person.Brands.Count == 0)
             {
                 throw new PersonCreateException("Персону нельзя создать без бренда.");
             }
             
             // Restore brands from DB
-            var brandsFromApi = newPerson.Brands;
+            var brandsFromApi = person.Brands;
             var brandsFromBd = new List<Brand>();
             foreach (var brandFromApi in brandsFromApi)
             {
@@ -56,9 +49,9 @@ namespace Pds.Services.Services
                 }
             }
 
-            newPerson.Brands = brandsFromBd;
-            newPerson.CreatedAt = DateTime.UtcNow;
-            var result = await unitOfWork.Persons.InsertAsync(newPerson);
+            person.Brands = brandsFromBd;
+            person.CreatedAt = DateTime.UtcNow;
+            var result = await unitOfWork.Persons.InsertAsync(person);
 
             return result.Id;
         }

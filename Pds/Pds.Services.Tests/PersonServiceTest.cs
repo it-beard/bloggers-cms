@@ -6,7 +6,6 @@ using Moq;
 using NUnit.Framework;
 using Pds.Data;
 using Pds.Data.Entities;
-using Pds.Data.QueryCreators.Settings;
 using Pds.Data.Repositories.Interfaces;
 using Pds.Services.Services;
 
@@ -63,45 +62,5 @@ namespace Pds.Services.Tests
             personRepositoryMock.Verify(x => x.InsertAsync(It.IsAny<Person>()), Times.Never);
         }
 
-        [Test]
-        public async Task GetAsync_ShouldReturnPeople()
-        {
-            // arrange
-            var fixture = new Fixture();
-            var expectedId = fixture.Create<Guid>();
-
-            var searchSettings = new SearchSettings<PersonsFieldName>
-            {
-                PageSettings = new PageSettings
-                {
-                    Limit = 10,
-                    Offset = 10
-                }
-            };
-
-            personRepositoryMock
-                .Setup(x => x.GetAllWithResourcesAsync(searchSettings))
-                .ReturnsAsync(new[]
-                {
-                    new Person
-                    {
-                        Id = expectedId
-                    }
-                });
-
-            personRepositoryMock
-               .Setup(x => x.Count())
-               .ReturnsAsync(1);
-
-            // act
-            var result = await service.GetPagedAsync(searchSettings);
-
-            // assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.people);
-            Assert.IsNotEmpty(result.people);
-            Assert.True(result.total > 0);
-            Assert.True(result.people.Any(x => x.Id == expectedId));
-        }
     }
 }

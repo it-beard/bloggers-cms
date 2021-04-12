@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
-using Pds.Data.QueryCreators.Settings;
 using Pds.Services.Interfaces;
-using PersonsFieldName = Pds.Data.QueryCreators.Settings.PersonsFieldName;
 
 namespace Pds.Api.Controllers
 {

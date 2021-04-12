@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Pds.Core.Enums;
 using Pds.Core.Exceptions.Client;
+using Pds.Core.Extensions;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -57,7 +59,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Client>> GetClientsForListsAsync()
         {
-            var clients = new List<Client> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
+            var clients = new List<Client> { new() { Id = Guid.Empty } }; //Add empty as a first element of list
             clients.AddRange(await unitOfWork.Clients.GetAllOrderByNameAsync());
 
             return clients;

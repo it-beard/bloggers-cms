@@ -5,8 +5,9 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Core.Enums
 @using Pds.Web.Common.Models.Content
-@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.TitleExtension
 @using System.Linq
+@using System.Diagnostics
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -15,7 +16,7 @@
 
 <h3 class="card-header d-flex justify-content-between align-items-center">
     Лента контента
-    <a href="/content/add" class="btn btn-success" >Добавить</a>
+    <a href="/content/add" class="btn btn-success">Добавить</a>
 </h3>
 @if (content == null)
 {
@@ -28,56 +29,56 @@ else
     <Filter OnFilterUpdate="@FilterUpdatedAsync"></Filter>
     <table class="table">
         <thead>
-        <tr>
-            <th class="release-date-header">Когда</th>
-            <th>Название</th>
-            <th>Клиент</th>
-            <th>Соцсеть</th>
-            <th>Тип</th>
-            <th class="bill-cost-header">Сколько</th>
-            <th class="text-center actions-header">Действия</th>
-        </tr>
+            <tr>
+                <th class="release-date-header">Когда</th>
+                <th>Название</th>
+                <th>Клиент</th>
+                <th>Соцсеть</th>
+                <th>Тип</th>
+                <th class="bill-cost-header">Сколько</th>
+                <th class="text-center actions-header">Действия</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var item in content.Items.Where(i => i.IsVisible))
-        {
-            <tr class="@GetRowClass(item.Status, item.Bill)">
-                <td class="release-date-row">
-                    <span>
-                        @item.ReleaseDateUtc.Date.ToString("dd.MM")
-                    </span>
-                </td>
-                <td>
-                    @item.Title
-                </td>
-                <td>
-                    @item.ClientName
-                </td>
-                <td>
-                    @EnumsTranslator.SocialMediaTypeToRu(item.SocialMediaType)
-                </td>
-                <td>
-                    @EnumsTranslator.ContentTypeToRu(item.Type)
-                </td>
-                <td class="bill-cost-row">
-                    @if (item.Bill != null)
-                    {
-                        if (item.Bill.PaymentType != null)
+            @foreach (var item in content.Items.Where(i => i.IsVisible))
+            {
+                <tr class="@GetRowClass(item.Status, item.Bill)">
+                    <td class="release-date-row">
+                        <span>
+                            @item.ReleaseDateUtc.Date.ToString("dd.MM")
+                        </span>
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.ClientName
+                    </td>
+                    <td>
+                        @EnumsTranslator.SocialMediaTypeToRu(item.SocialMediaType)
+                    </td>
+                    <td>
+                        @EnumsTranslator.ContentTypeToRu(item.Type)
+                    </td>
+                    <td class="bill-cost-row">
+                        @if (item.Bill != null)
                         {
-                            <i class="@GetPaymentTypeClass(item.Bill.PaymentType)">@EnumsTranslator.PaymentTypeToShortRu(item.Bill.PaymentType)</i>
+                            if (item.Bill.PaymentType != null)
+                            {
+                                <i class="@GetPaymentTypeClass(item.Bill.PaymentType)">@EnumsTranslator.PaymentTypeToShortRu(item.Bill.PaymentType)</i>
+                            }
+                            <span>@item.Bill.Value.ToString("N0")</span>
                         }
-                        <span>@item.Bill.Value.ToString("N0")</span> 
-                    }
-                    else
-                    {
-                        <span class="free-cost">бесплатно</span> 
-                    }
-                </td>
-                <td class="text-center actions-row">
-                    <Actions OnContentUpdate="@ContentInfoUpdate" CurrentContent="@item"></Actions>
-                </td>
-            </tr>
-        }
+                        else
+                        {
+                            <span class="free-cost">бесплатно</span>
+                        }
+                    </td>
+                    <td class="text-center actions-row">
+                        <Actions OnContentUpdate="@ContentInfoUpdate" CurrentContent="@item"></Actions>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }
@@ -145,7 +146,7 @@ else
             _ => string.Empty
         };
     }
-    
+
     private string GetPaymentTypeClass(PaymentType? type)
     {
         return type == PaymentType.BankAccount ? "white" : "red";
