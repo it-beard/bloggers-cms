@@ -1,0 +1,22 @@
+﻿@using Pds.Api.Contracts.Person
+
+<a @onclick="@(() => OnSortColumn())">
+    <i class="bi @(ascending ? "bi-sort-alpha-down" : "bi-sort-alpha-up") "></i>
+</a>
+
+@code {
+    [Parameter]
+    public EventCallback<SortingEventArgs> OnSortPersons { get; set; }
+
+    [Parameter]
+    public PersonsFieldName FieldName { get; set; }
+
+    private bool ascending;
+
+    private void OnSortColumn()
+    {
+        ascending = !ascending;
+
+        OnSortPersons.InvokeAsync(new SortingEventArgs(FieldName, ascending));
+    }
+}
