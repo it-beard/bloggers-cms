@@ -80,11 +80,23 @@ namespace Pds.Services.Services
 
         public async Task DeleteAsync(Guid personId)
         {
-            var person = await unitOfWork.Persons.GetFirstWhereAsync(p => p.Id == personId);
-            if (person != null && person.Status == PersonStatus.Archived)
+            var person = await unitOfWork.Persons.GetFullByIdAsync(personId);
+            if (person == null)
             {
-                await unitOfWork.Persons.Delete(person);
+                throw new PersonDeleteException("Персона не найдена");
             }
+
+            if (person.Status == PersonStatus.Archived)
+            {
+                throw new PersonDeleteException("Нельзя заархивированную персону.");
+            }
+
+            if (person.Contents is {Count: > 0})
+            {
+                throw new PersonDeleteException("Нельзя удалить персону с привязанным контентом.");
+            }
+
+            await unitOfWork.Persons.Delete(person);
         }
 
         public async Task<List<Person>> GetPersonsForListsAsync()

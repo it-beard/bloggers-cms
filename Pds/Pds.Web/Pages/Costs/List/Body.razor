@@ -1,5 +1,5 @@
 ﻿@page "/costs"
-@attribute [Authorize]
+@inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Cost
 @using Pds.Core.Extensions
@@ -11,10 +11,10 @@
 
 <Title>@WithSuffix("Расходы")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
+<h4 class="card-header d-flex justify-content-between align-items-center">
     Список расходов
     <a href="/costs/add" class="btn btn-success" >Добавить</a>
-</h3>
+</h4>
 @if (costsInfo == null)
 {
     <p>

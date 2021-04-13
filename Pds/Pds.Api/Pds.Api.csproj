@@ -29,7 +29,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj" />
-      <ProjectReference Include="..\Pds.Data\Pds.Data.csproj" />
       <ProjectReference Include="..\Pds.Di\Pds.Di.csproj" />
       <ProjectReference Include="..\Pds.Mappers\Pds.Mappers.csproj" />
       <ProjectReference Include="..\Pds.Services\Pds.Services.csproj" />

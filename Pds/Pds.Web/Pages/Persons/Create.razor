@@ -1,5 +1,5 @@
 ﻿@page "/persons/add"
-@attribute [Authorize]
+@inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
@@ -19,10 +19,10 @@
 }
 else
 {
-    <h3 class="card-header d-flex justify-content-between align-items-center">
+    <h4 class="card-header d-flex justify-content-between align-items-center">
         Добавление персоны
-        <a href="/persons" class="btn btn-primary"> Назад </a>
-    </h3>
+        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+    </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
         <div class="form-group">

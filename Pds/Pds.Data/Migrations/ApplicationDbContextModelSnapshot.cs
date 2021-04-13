@@ -50,20 +50,28 @@ namespace Pds.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Contact")
-                        .IsRequired()
                         .HasColumnType("varchar(300)");
 
                     b.Property<string>("ContactName")
                         .HasColumnType("varchar(300)");
 
-                    b.Property<int>("ContactType")
+                    b.Property<int?>("ContactType")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("ContentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ContractDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ContractNumber")
+                        .HasColumnType("varchar(50)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsNeedPayNds")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("PaidAt")
                         .HasColumnType("datetime2");
@@ -179,13 +187,13 @@ namespace Pds.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("EndDateUtc")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("PersonId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ReleaseDateUtc")
+                    b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("SocialMediaType")

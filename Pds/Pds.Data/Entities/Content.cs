@@ -25,9 +25,9 @@ namespace Pds.Data.Entities
         public string Comment { get; set; }
 
         [Required]
-        public DateTime ReleaseDateUtc { get; set; }
+        public DateTime ReleaseDate { get; set; }
 
-        public DateTime? EndDateUtc { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public Guid? BillId { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿@page "/persons"
+
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
@@ -8,15 +9,18 @@
 @using Pds.Web.Components.Sorting.QueryCreators.Person
 @using static Pds.Web.Common.TitleExtension
 
+
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
 <Title>@WithSuffix("Персоны")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
+<h4 class="card-header d-flex justify-content-between align-items-center">
     Список персон
-    <a href="/persons/add" class="btn btn-success">Добавить</a>
-</h3>
+
+    <a href="/persons/add" class="btn btn-success" >Добавить</a>
+</h4>
+
 @if (personsInfo == null)
 {
     <p>
@@ -34,6 +38,7 @@ else
 
     <table class="table">
         <thead>
+
             <tr>
                 <th>
                     
@@ -49,6 +54,7 @@ else
                 <th>Информация</th>
                 <th>Ссылки</th>
                 <th class="text-center actions">Действия</th>
+
             </tr>
         </thead>
         <tbody>

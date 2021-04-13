@@ -22,15 +22,20 @@ namespace Pds.Data.Entities
 
         public string Comment { get; set; }
 
-        [Required]
         [Column(TypeName = "varchar(300)")]
         public string Contact { get; set; }
 
         [Column(TypeName = "varchar(300)")]
         public string ContactName { get; set; }
 
-        [Required]
-        public ContactType ContactType { get; set; }
+        public ContactType? ContactType { get; set; }
+        
+        [Column(TypeName = "varchar(50)")]
+        public string ContractNumber { get; set; }
+
+        public DateTime? ContractDate { get; set; }
+
+        public bool IsNeedPayNds { get; set; }
 
         public DateTime? PaidAt { get; set; }
 

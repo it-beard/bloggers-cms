@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="10.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="5.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.2" PrivateAssets="all" />
@@ -24,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj" />
+      <ProjectReference Include="..\Pds.Mappers\Pds.Mappers.csproj" />
     </ItemGroup>
 
     <ItemGroup>
