@@ -131,14 +131,14 @@ else
 
         if (orderSettings?.Length > 0)
         {
-            var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<PersonDto>>
-    {
-                    {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
-                    {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
-                    {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
-                };
+            var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<PersonDto, PersonDto>>
+            {
+                {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
+                {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
+                {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
+            };
 
-            var queryCreator = new PersonOrderQueryCreator(dictionary);
+            var queryCreator = new OrderQueryCreator<PersonDto, PersonsFieldName>(dictionary);
             query = queryCreator.Create(orderSettings, query);
         }
         else
@@ -148,7 +148,7 @@ else
                 .ThenBy(p => p.FullName);
         }
 
-        query.ToArray();
+        //query.ToArray();
 
         personsList = query.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
     }

@@ -1,11 +1,10 @@
-﻿using Pds.Api.Contracts.Person;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Pds.Web.Components.Sorting.QueryCreators
 {
-    public interface IOrderQuery<out T>
+    public interface IOrderQuery<out TOut, TIn>
     {
-        IOrderedQueryable<T> CreateOrderBy(IQueryable<PersonDto> query, bool ascending);
-        IOrderedQueryable<T> CreateThenBy(IOrderedQueryable<PersonDto> query, bool ascending);
+        IOrderedQueryable<TOut> CreateOrderBy(IQueryable<TIn> query, bool ascending);
+        IOrderedQueryable<TOut> CreateThenBy(IOrderedQueryable<TIn> query, bool ascending);
     }
 }

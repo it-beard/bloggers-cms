@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Pds.Web.Components.Sorting.QueryCreators.Person
 {
-    public partial class PersonRatingOrderQueryCreator : IOrderQuery<PersonDto>
+    public partial class PersonRatingOrderQueryCreator : IOrderQuery<PersonDto, PersonDto>
     {
         public IOrderedQueryable<PersonDto> CreateOrderBy(IQueryable<PersonDto> query, bool ascending)
         {

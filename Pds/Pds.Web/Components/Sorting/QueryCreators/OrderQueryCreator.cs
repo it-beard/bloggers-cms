@@ -1,21 +1,22 @@
-﻿using Pds.Api.Contracts.Person;
-using Pds.Api.Contracts.Paging;
+﻿using Pds.Api.Contracts.Paging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Pds.Web.Components.Sorting.QueryCreators.Person
+namespace Pds.Web.Components.Sorting.QueryCreators
 {
-    public class PersonOrderQueryCreator
+    public class OrderQueryCreator<T, TField> where T : class 
+                                              where TField : Enum
     {
-        private readonly Dictionary<PersonsFieldName, IOrderQuery<PersonDto>> queryCreators;
+        private readonly Dictionary<TField, IOrderQuery<T, T>> queryCreators;
 
-        public PersonOrderQueryCreator(Dictionary<PersonsFieldName, IOrderQuery<PersonDto>> queryCreators)
+        public OrderQueryCreator(Dictionary<TField, IOrderQuery<T, T>> queryCreators)
         {
             this.queryCreators = queryCreators;
         }
 
-        public IQueryable<PersonDto> Create(OrderSetting<PersonsFieldName>[] orderSettings, IQueryable<PersonDto> query)
+        public IQueryable<T> Create(OrderSetting<TField>[] orderSettings, IQueryable<T> query)
         {
             var selector = queryCreators[orderSettings[0].FieldName];
             var orderedQuery = selector.CreateOrderBy(query, orderSettings[0].Ascending);
