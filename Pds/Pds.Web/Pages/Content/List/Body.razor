@@ -45,17 +45,19 @@ else
         {
             <tr class="@ContentHelper.GetContentBgColorClass(item.Status, item.Bill)">
                 <td class="release-date-row">
-                    <span class=" no-wrap">
-                        @item.ReleaseDate.Date.ToShortStringDateWithDay()
-                    </span>
                     @if (item.EndDate != null)
                     {
-                        <div>   
+                        <div>
                             <span class=" no-wrap">
                                 @item.EndDate.Value.Date.ToShortStringDateWithDay()
                             </span>
                         </div>
                     }
+                    <div>
+                        <span class=" no-wrap">
+                            @item.ReleaseDate.Date.ToShortStringDateWithDay()
+                        </span>
+                    </div>
                 </td>
                 <td class="title-row">
                     <a href="content/@item.Id">@item.Title</a>
