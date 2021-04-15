@@ -1,0 +1,91 @@
+﻿@page "/clients/{clientId}/edit"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Client
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+@using AutoMapper
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IMapper Mapper
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Редактирование клиента")</Title>
+
+@if (client == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Редактирование клиента
+        <button @onclick="GoBack" class="btn btn-primary">Назад</button>
+    </h4>
+
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <div class="form-group">
+            <label for="first_name" class="form-label label-required">Наименование</label>
+            <InputText class="form-control" id="first_name" @bind-Value="client.Name"/>
+        </div>
+
+        <div class="form-group">
+            <label for="information" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="information" @bind-Value="client.Comment" rows="3"/>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Сохранить</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string ClientId { get; set; }
+    private EditClientRequest client;
+    private EditContext editContext;
+    private ValidationMessageStore msgStore;
+    private bool isCreateButtonDisabled;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        isCreateButtonDisabled = false;
+        client = await GetClient();
+        editContext = new EditContext(client);
+        msgStore = new ValidationMessageStore(editContext);
+    }
+    
+    private async Task HandleSubmit()
+    {
+        msgStore.Clear();
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isCreateButtonDisabled = true;
+            var result = await ApiClient.Put<object, EditClientRequest>(TokenProvider, "clients", client);
+            isCreateButtonDisabled = false;
+            if (result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/clients");
+            }
+            else
+            {
+                result.AddErrors(msgStore, editContext);
+            }
+        }
+    }
+
+    private async Task<EditClientRequest> GetClient()
+    {
+        var clientResponse = await ApiClient.Get<GetClientResponse>(TokenProvider, $"clients/{ClientId}");
+        return Mapper.Map<EditClientRequest>(clientResponse);
+    }
+}

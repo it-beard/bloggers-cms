@@ -11,6 +11,7 @@ using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Models;
+using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Web.Models.Content;
 
@@ -72,6 +73,7 @@ namespace Pds.Mappers
             CreateMap<Brand, BrandForCheckboxesDto>();
 
             CreateMap<Client, ClientDto>();
+            CreateMap<Client, GetClientResponse>();
             CreateMap<Client, GetContentBillClientDto>();
             CreateMap<Client, Pds.Api.Contracts.Content.ClientForLookupDto>()
                 .ForMember(
@@ -128,6 +130,7 @@ namespace Pds.Mappers
                         .MapFrom(p => p.BrandId.Value));
             CreateMap<EditContentBillDto, EditContentBillModel>();
             CreateMap<EditContentRequest, EditContentModel>();
+            CreateMap<EditClientRequest, EditClientModel>();
             
             #endregion
 
@@ -136,6 +139,7 @@ namespace Pds.Mappers
             CreateMap<GetContentResponse, EditContentRequest>();
             CreateMap<GetContentBillDto, EditContentBillDto>();
             CreateMap<Pds.Api.Contracts.Content.BrandForRadioboxGroupDto, BrandFilterItem>();
+            CreateMap<GetClientResponse, EditClientRequest>();
 
             #endregion
         }

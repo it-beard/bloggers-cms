@@ -7,6 +7,7 @@ using Pds.Core.Extensions;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Client;
 
 namespace Pds.Services.Services
 {
@@ -17,6 +18,11 @@ namespace Pds.Services.Services
         public ClientService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
+        }
+
+        public async Task<Client> GetAsync(Guid clientId)
+        {
+            return await unitOfWork.Clients.GetFullByIdAsync(clientId);
         }
 
         public async Task<List<Client>> GetAllAsync()
@@ -43,9 +49,36 @@ namespace Pds.Services.Services
             return result.Id;
         }
 
+        public async Task<Guid> EditAsync(EditClientModel model)
+        {
+            if (model == null)
+            {
+                throw new ClientEditException($"Модель запроса пуста.");
+            }
+
+            var client = await unitOfWork.Clients.GetFullByIdAsync(model.Id);
+            
+            if (client == null)
+            {
+                throw new ClientEditException($"Клиент с id {model.Id} не найден.");
+            }
+
+            if (client.Name != model.Name && await unitOfWork.Clients.IsExistsByNameAsync(model.Name))
+            {
+                throw new ClientCreateException("Клиент с таким именем существует в системе.");
+            }
+
+            client.UpdatedAt = DateTime.UtcNow;
+            client.Name = model.Name.Trim();
+            client.Comment = model.Comment;
+            var result = await unitOfWork.Clients.UpdateAsync(client);
+
+            return result.Id;
+        }
+
         public async Task DeleteAsync(Guid clientId)
         {
-            var client = await unitOfWork.Clients.GetWithBillsByIdAsync(clientId);
+            var client = await unitOfWork.Clients.GetFullByIdAsync(clientId);
             if (client.Bills != null && client.Bills.Count > 0)
             {
                 throw new ClientDeleteException("Нельзя удалить клиента с привязанным контентом.");
