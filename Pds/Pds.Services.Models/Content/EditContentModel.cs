@@ -18,5 +18,9 @@ namespace Pds.Services.Models.Content
         public DateTime ReleaseDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+        
+        public EditContentBillModel Bill { get; set; }
+
+        public Guid? PersonId { get; set; }
     }
 }

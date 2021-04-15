@@ -152,7 +152,7 @@ else
         BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), //Default АйТиБорода
         Type = ContentType.Integration, //Default
         SocialMediaType = SocialMediaType.YouTube,  //Default
-        Bill = new ContentBillDto()
+        Bill = new CreateContentBillDto()
         {
             ContactType = ContactType.Telegram //Default
         }
@@ -163,7 +163,7 @@ else
     private List<ClientForLookupDto> clients;
     private List<PersonForLookupDto> persons;
     private bool isCreateButtonDisabled;
-    private ContentBillDto fakeBill = new()
+    private CreateContentBillDto fakeBill = new()
     {
         ContactType = ContactType.Telegram,
         ClientId = Guid.NewGuid(),

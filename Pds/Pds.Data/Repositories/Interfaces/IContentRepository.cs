@@ -12,5 +12,6 @@ namespace Pds.Data.Repositories.Interfaces
         Task<Content> GetByIdFullAsync(Guid contentId);
         Task<Content> GetByIdWithBillAsync(Guid contentId);
         Task<List<Content>> GetAllOrderByReleaseDateDescAsync();
+        Task<Content> FullUpdateAsync(Content content);
     }
 }

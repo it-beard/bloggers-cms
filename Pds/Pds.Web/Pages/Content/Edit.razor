@@ -19,7 +19,7 @@
     Редактирование контента
     <button @onclick="GoBack" class="btn btn-primary">Назад</button>
 </h4>
-@if (content == null)
+@if (content == null || clients == null || persons == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -62,16 +62,82 @@ else
         </div>
 
         <div class="form-group">
+            @if (content.Bill != null)
+            {
+                <label for="bill_cost" class="form-label label-required">Стоимость USD:</label>
+                <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.Bill.Value"/>
+            }
+
             <label for="release_date" class="form-label label-required">Когда:</label>
             <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
-            
+
             <label for="release_date" class="form-label">Продлится до:</label>
             <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDate"/>
         </div>
 
+        @if (content.Bill != null)
+                {
+                    <div class="form-group">
+                        <label for="clients" class="form-label label-required">Клиент</label>
+                        <InputSelect class="form-control" id="clients" @bind-Value="content.Bill.ClientId" se>
+                            @foreach (var client in clients)
+                            {
+                                if (client.Id == content.Bill.ClientId)
+                                {
+                                    <option value="@client.Id" selected>@client.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@client.Id">@client.Name</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="bill_contact_name" class="form-label label-required">ФИО представителя</label>
+                        <InputText class="form-control" id="bill_contact_name" @bind-Value="content.Bill.ContactName"/>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="bill_contact" class="form-label label-required">Контакт представителя</label>
+                        <InputText class="form-control" id="bill_contact" @bind-Value="content.Bill.Contact"/>
+                        <div class="contact-type">
+                            <InputRadioGroup Name="contact-type" @bind-Value="content.Bill.ContactType">
+                                @foreach (var type in (ContactType[])Enum
+                                    .GetValues(typeof(ContactType)))
+                                {
+                                    var id = $"contact-type{type.ToString()}";
+                                    <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
+                                    <label class="btn btn-secondary btn-sm" for="@id">
+                                        @EnumsTranslator.ContactTypeToRu(type)
+                                    </label>
+                                }
+                            </InputRadioGroup>
+                        </div>
+                    </div>
+                }
+
         <div class="form-group">
             <label for="comment" class="form-label">Комментарий</label>
             <InputTextArea class="form-control" id="comment" @bind-Value="content.Comment" rows="3"/>
+        </div>
+
+        <div class="form-group">
+            <label for="persons" class="form-label">Персона</label>
+            <InputSelect class="form-control" id="persons" @bind-Value="content.PersonId">
+                @foreach (var person in persons)
+                {
+                    if (person.Id == content.PersonId)
+                    {
+                        <option value="@person.Id" selected>@person.FullName</option>
+                    }
+                    else
+                    {
+                        <option value="@person.Id">@person.FullName</option>
+                    }
+                }
+            </InputSelect>
         </div>
 
         <ObjectGraphDataAnnotationsValidator />
@@ -86,6 +152,8 @@ else
 @code {
     [Parameter]
     public string ContentId { get; set; }
+    private List<ClientForLookupDto> clients;
+    private List<PersonForLookupDto> persons;
     private EditContentRequest content;
     private EditContext editContext;
     private bool isEditButtonDisabled;
@@ -94,6 +162,8 @@ else
     {
         isEditButtonDisabled = false;
         content = await GetContent();
+        clients = await GetClients();
+        persons = await GetPersons();
         editContext = new EditContext(content);
     }
 
@@ -113,5 +183,15 @@ else
     {
         var contentResponse = await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{ContentId}");
         return Mapper.Map<EditContentRequest>(contentResponse);
+    }
+
+    private async Task<List<ClientForLookupDto>> GetClients()
+    {
+        return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "content/get-clients");
+    }
+
+    private async Task<List<PersonForLookupDto>> GetPersons()
+    {
+        return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, "content/get-persons");
     }
 }
