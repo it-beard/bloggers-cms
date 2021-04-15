@@ -3,7 +3,7 @@ using Pds.Api.Contracts.Person;
 
 namespace Pds.Web.Components.Sorting.QueryCreators.Person
 {
-    public class PersonLocationOrderQueryCreator : IOrderQuery<PersonDto>
+    public class PersonLocationOrderQueryCreator : IOrderQuery<PersonDto, PersonDto>
     {
         public IOrderedQueryable<PersonDto> CreateOrderBy(IQueryable<PersonDto> query, bool ascending)
         {
