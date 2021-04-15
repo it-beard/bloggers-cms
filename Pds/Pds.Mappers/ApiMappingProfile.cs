@@ -120,19 +120,21 @@ namespace Pds.Mappers
             
             #region Contracts to Models
 
-            CreateMap<ContentBillDto, ContentBillModel>();
-            CreateMap<EditContentRequest, EditContentModel>();
+            CreateMap<CreateContentBillDto, CreateContentBillModel>();
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
                     dest => dest.BrandId,
                     opt => opt
                         .MapFrom(p => p.BrandId.Value));
+            CreateMap<EditContentBillDto, EditContentBillModel>();
+            CreateMap<EditContentRequest, EditContentModel>();
             
             #endregion
 
             #region Blazor WebAssembly
 
             CreateMap<GetContentResponse, EditContentRequest>();
+            CreateMap<GetContentBillDto, EditContentBillDto>();
             CreateMap<Pds.Api.Contracts.Content.BrandForRadioboxGroupDto, BrandFilterItem>();
 
             #endregion

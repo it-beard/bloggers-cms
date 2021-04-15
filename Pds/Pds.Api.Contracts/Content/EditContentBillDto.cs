@@ -5,7 +5,7 @@ using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Content
 {
-    public class ContentBillDto
+    public class EditContentBillDto
     {
         [GuidNotEmpty]
         public Guid ClientId { get; set; }

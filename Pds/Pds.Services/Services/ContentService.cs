@@ -105,8 +105,17 @@ namespace Pds.Services.Services
             content.Comment = model.Comment;
             content.ReleaseDate = model.ReleaseDate.Date;
             content.EndDate = model.EndDate?.Date;
+            content.PersonId = model.PersonId != null && model.PersonId.Value == Guid.Empty ? null : model.PersonId;
+            if (model.Bill != null && content.Bill != null)
+            {
+                content.Bill.ClientId =  model.Bill.ClientId;
+                content.Bill.Contact =  model.Bill.Contact;
+                content.Bill.ContactName =  model.Bill.ContactName;
+                content.Bill.ContactType =  model.Bill.ContactType;
+                content.Bill.Value =  model.Bill.Value;
+            }
 
-            var result = await unitOfWork.Content.UpdateAsync(content);
+            var result = await unitOfWork.Content.FullUpdateAsync(content);
 
             return result.Id;
         }

@@ -28,6 +28,8 @@ namespace Pds.Api.Contracts.Content
         public DateTime? ContractDate { get; set; }
 
         public bool IsNeedPayNds { get; set; }
+
+        public Guid ClientId { get; set; }
         
         public GetContentBillClientDto Client { get; set; }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Pds.Core.Exceptions;
 using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
 
@@ -63,6 +64,31 @@ namespace Pds.Data.Repositories
             return await context.Contents
                 .OrderByDescending(p =>p.ReleaseDate)
                 .ToListAsync();
+        }
+
+        public async Task<Content> FullUpdateAsync(Content content)
+        {
+            await using var transaction = await context.Database.BeginTransactionAsync();
+            try
+            {
+                await transaction.CreateSavepointAsync("BeforeUpdateContent");
+                context.Contents.Update(content);
+                await context.SaveChangesAsync();
+                if (content.Bill != null)
+                {
+                    context.Bills.Update(content.Bill);
+                    await context.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+                return content;
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackToSavepointAsync("BeforeUpdateContent");
+                throw new RepositoryException(e.Message, e.InnerException, typeof(Content).ToString());
+                // TODO: logging need to be implemented here
+            }
         }
     }
 }
