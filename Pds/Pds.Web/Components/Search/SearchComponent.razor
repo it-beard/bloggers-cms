@@ -1,0 +1,30 @@
+﻿
+    <div class="d-flex justify-content-end">
+        <div class="d-flex position-relative">
+            <input class="form-control " @bind-value="searchText" placeholder="Будем искать"/>
+            <span class="searchcleaner position-absolute" @onclick="OnClean">X</span>
+            
+        </div>
+        <div >
+            <button class="btn btn-primary search-btn" @onclick="OnSearch">Найти</button>
+        </div>      
+    </div>
+
+
+@code {
+    private string searchText;
+
+    [Parameter]
+    public EventCallback<string> Search { get; set; }
+
+    private void OnSearch()
+    {
+        Search.InvokeAsync(searchText);
+    }
+
+    private void OnClean()
+    {
+        searchText = string.Empty;
+        OnSearch();
+    }
+}
