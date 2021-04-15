@@ -1,0 +1,95 @@
+﻿@page "/clients/{clientId}"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Client
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+@if (client == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <Title>@WithSuffix($"Клиент \"{client.Name}\"")</Title>
+    
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Клиент "@client.Name"
+        <button @onclick="GoBack" class="btn btn-primary" >Назад</button>
+    </h4>
+    <div class="page-container">
+        <div class="info-item">
+            <div class="info-title">Комментарий</div>
+            <div class="info-body">
+                @client.Comment
+            </div>
+        </div>
+        
+        <div class="info-item info-item-bill-active">
+            @{
+                var notPaidBills = client.Bills.Where(b => b.Status == BillStatus.Active);
+                var notPaidBillsCost = notPaidBills.Sum(npb => npb.Value);
+            }
+            <div class="info-title">Неоплаченные счета - @notPaidBills.Count() шт., <b>$@notPaidBillsCost.ToString("N0")</b></div>
+            <div class="info-body bill-cost">
+                <ul>
+                    @foreach (var bill in notPaidBills.OrderByDescending(b => b.PaidAt))
+                    {
+                        <li>
+                            <Bill Item="@bill"/>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-item info-item-bill-paid">
+            @{
+                var paidBills = client.Bills.Where(b => b.Status == BillStatus.Paid);
+                var paidBillsCost = notPaidBills.Sum(npb => npb.Value);
+            }
+            <div class="info-title">Оплаченные счета - @paidBills.Count() шт., <b>$@paidBillsCost.ToString("N0")</b></div>
+            <div class="info-body bill-cost">
+                <ul>
+                    @foreach (var bill in paidBills.OrderByDescending(b => b.PaidAt))
+                    {
+                        <li>
+                            <Bill Item="@bill"/>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <Actions OnClientUpdate="@ClientInfoUpdate" CurrentClient="@client"></Actions>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string ClientId { get; set; }
+    private GetClientResponse client { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        client = await GetClient();
+    }
+
+    private async Task<GetClientResponse> GetClient()
+    {
+        return await ApiClient.Get<GetClientResponse>(TokenProvider, $"clients/{ClientId}");
+    }
+
+    private async Task ClientInfoUpdate()
+    {
+        client = await GetClient();
+    }
+}
