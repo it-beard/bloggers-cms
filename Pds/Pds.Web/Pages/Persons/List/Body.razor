@@ -27,12 +27,20 @@
 }
 else
 {
-    <CascadingValue Value="isPagingStateHasChanged">
-        <PagingComponent PageSizeList="pageSizesList"
-                         TotalItems="personsInfo.Total"
-                         Radius="2"
-                         Pagination="Pagination" />
-    </CascadingValue>
+    <div class="row">
+        <div class="col-7">
+            <CascadingValue Value="isPagingStateHasChanged">
+                <PagingComponent PageSizeList="pageSizesList"
+                                 TotalItems="totalElements"
+                                 Radius="2"
+                                 Pagination="Pagination" />
+            </CascadingValue>
+        </div>
+        <div class="col-5">
+            <Pds.Web.Components.Search.SearchComponent Search="SearchPerson"/>
+        </div>    
+    </div>
+    
 
     <table class="table">
         <thead>
@@ -92,9 +100,11 @@ else
     private GetPersonsResponse personsInfo;
     private PersonDto[] personsList;
     private readonly int[] pageSizesList = { 5, 10, 25, 50 };
+    private int totalElements;
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
     private OrderSetting<PersonsFieldName>[] orderSettings;
+    private FilterSettings filterSettings;
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,6 +119,11 @@ else
             new OrderSetting<PersonsFieldName>()
         };
 
+        filterSettings = new FilterSettings
+        {
+            Search = string.Empty
+        };
+
         await PersonsInfoUpdate();
         GetPersonsList();
 
@@ -117,6 +132,7 @@ else
     private async Task PersonsInfoUpdate()
     {
         personsInfo = await GetPersonsInfo();
+        totalElements = personsInfo.Total;
     }
 
     private async Task<GetPersonsResponse> GetPersonsInfo()
@@ -148,9 +164,18 @@ else
                 .ThenBy(p => p.FullName);
         }
 
-        //query.ToArray();
+        var searchLine = filterSettings.Search.ToLower();
 
-        personsList = query.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
+        if (query.Any(x => x.Location.ToLower().Contains(searchLine)))
+            personsList = Array.FindAll(query.ToArray(), x => x.Location.ToLower().Contains(searchLine));
+        else if (query.Any(x => x.FullName.ToLower().Contains(searchLine)))
+            personsList = Array.FindAll(query.ToArray(), x => x.FullName.ToLower().Contains(searchLine));
+        else if (query.Any(x => x.Info.ToLower().Contains(searchLine)))
+            personsList = Array.FindAll(query.ToArray(), x => x.Info.ToLower().Contains(searchLine));
+        else
+            personsList = query.ToArray();
+        totalElements = personsList.Length;
+        personsList = personsList.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
     }
 
     private void Pagination(PagingEventArgs settings)
@@ -174,6 +199,16 @@ else
         {
             settings
         };
+
+        GetPersonsList();
+    }
+
+    private void SearchPerson(string searchText)
+    {
+        isPagingStateHasChanged = true;
+        pageSettings.Offset = 0;
+
+        filterSettings.Search = searchText;
 
         GetPersonsList();
     }
