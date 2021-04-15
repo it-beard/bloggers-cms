@@ -166,8 +166,8 @@ namespace Pds.Api.Controllers
                 if (ModelState.IsValid)
                 {
                     var editContentModel = mapper.Map<EditContentModel>(request);
-                    var clientId = await contentService.EditAsync(editContentModel);
-                    return Ok(new EditContentResponse{Id = clientId});
+                    var contentId = await contentService.EditAsync(editContentModel);
+                    return Ok(new EditContentResponse{Id = contentId});
                 }
 
                 return BadRequest();

@@ -122,7 +122,7 @@ namespace Pds.Services.Services
 
         public async Task DeleteAsync(Guid clientId)
         {
-            var content = await unitOfWork.Content.GetByIdWithBillAsync(clientId);
+            var content = await unitOfWork.Content.GetByIdWithBillWithCostsAsync(clientId);
             var bill = content?.BillId != null ? 
                 await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == content.BillId) : 
                 null;
@@ -136,18 +136,13 @@ namespace Pds.Services.Services
             {
                 throw new ContentDeleteException("Нельзя удалить заархивированый контент.");
             }
-            
-            if (bill == null)
+
+            if (bill != null && content.Bill.Status == BillStatus.Paid)
             {
-                await unitOfWork.Content.Delete(content);
-                return;
+                throw new ContentDeleteException("Нельзя удалить оплаченный контент.");
             }
-            
-            if (content.Status == ContentStatus.Active && content.Bill.Status == BillStatus.Active)
-            {
-                await unitOfWork.Content.Delete(content);
-                await unitOfWork.Bills.Delete(content.Bill);
-            }
+
+            await unitOfWork.Content.FullDeleteAsync(content);
         }
 
         public async Task ArchiveAsync(Guid contentId)
