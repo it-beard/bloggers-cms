@@ -75,13 +75,13 @@ namespace Pds.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(GetTopicDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetTopicResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> FindById([FromRoute] Guid id)
         {
             try
             {
                 var result = await topicService.FindById(id);
-                var response = mapper.Map<GetTopicDto>(result);
+                var response = mapper.Map<GetTopicResponse>(result);
                 return Ok(response);
             }
             catch (Exception exception)

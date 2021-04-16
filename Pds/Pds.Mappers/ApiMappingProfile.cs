@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -11,10 +10,11 @@ using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
-using Pds.Services.Models;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Web.Models.Content;
+using BrandForRadioboxGroupDto = Pds.Api.Contracts.Content.BrandForRadioboxGroupDto;
+using ClientForLookupDto = Pds.Api.Contracts.Content.ClientForLookupDto;
 
 namespace Pds.Mappers
 {
@@ -39,14 +39,14 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.FullName,
                     opt => opt
-                        .MapFrom((p,s) => 
-                            s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
-                                "Не выбрано" : 
-                                $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+                        .MapFrom((p, s) =>
+                            s.FullName = string.IsNullOrEmpty(p.FirstName)
+                                ? "Не выбрано"
+                                : $"{p.FirstName} {p.ThirdName} {p.LastName}"));
 
             CreateMap<Resource, ResourceDto>();
             CreateMap<Resource, GetContentPersonResourceDto>();
-            
+
             CreateMap<Content, BillContentDto>();
             CreateMap<Content, CostContentDto>();
             CreateMap<Content, PersonContentDto>();
@@ -55,9 +55,9 @@ namespace Pds.Mappers
                     dest => dest.Title,
                     opt => opt
                         .MapFrom((p, s) =>
-                            s.Title = string.IsNullOrEmpty(p.Title) ? 
-                                "Не выбрано" : 
-                                $"{p.ReleaseDate:dd.MM} / {p.Title}"));
+                            s.Title = string.IsNullOrEmpty(p.Title)
+                                ? "Не выбрано"
+                                : $"{p.ReleaseDate:dd.MM} / {p.Title}"));
             CreateMap<Content, ContentDto>()
                 .ForMember(
                     dest => dest.ClientName,
@@ -70,20 +70,20 @@ namespace Pds.Mappers
             CreateMap<Content, GetContentResponse>();
             CreateMap<Content, GetContentForPayResponse>();
 
-            CreateMap<Brand, Pds.Api.Contracts.Content.BrandForRadioboxGroupDto>();
-            CreateMap<Brand, Pds.Api.Contracts.Cost.BrandForRadioboxGroupDto>();
+            CreateMap<Brand, BrandForRadioboxGroupDto>();
+            CreateMap<Brand, Api.Contracts.Cost.BrandForRadioboxGroupDto>();
             CreateMap<Brand, BrandForCheckboxesDto>();
 
             CreateMap<Client, ClientDto>();
             CreateMap<Client, GetClientResponse>();
             CreateMap<Client, GetContentBillClientDto>();
-            CreateMap<Client, Pds.Api.Contracts.Content.ClientForLookupDto>()
+            CreateMap<Client, ClientForLookupDto>()
                 .ForMember(
                     dest => dest.Name,
                     opt => opt
                         .MapFrom((p, s) =>
                             s.Name = p.Name ?? "Не выбрано"));
-            CreateMap<Client, Pds.Api.Contracts.Bill.ClientForLookupDto>()
+            CreateMap<Client, Api.Contracts.Bill.ClientForLookupDto>()
                 .ForMember(
                     dest => dest.Name,
                     opt => opt
@@ -103,6 +103,14 @@ namespace Pds.Mappers
             CreateMap<Brand, ContentListBrandDto>();
 
             CreateMap<Topic, GetTopicDto>();
+
+            CreateMap<Topic, GetTopicResponse>()
+                .ForMember(dest => dest.People,
+                    opt => opt.MapFrom(topic => topic.PersonTopics));
+
+            CreateMap<PersonTopic, PersonDto>()
+                .IncludeMembers(personTopic => personTopic.Person);
+
             #endregion
 
             #region Contracts to Entities
@@ -142,14 +150,14 @@ namespace Pds.Mappers
             CreateMap<EditContentBillDto, EditContentBillModel>();
             CreateMap<EditContentRequest, EditContentModel>();
             CreateMap<EditClientRequest, EditClientModel>();
-            
+
             #endregion
 
             #region Blazor WebAssembly
 
             CreateMap<GetContentResponse, EditContentRequest>();
             CreateMap<GetContentBillDto, EditContentBillDto>();
-            CreateMap<Pds.Api.Contracts.Content.BrandForRadioboxGroupDto, BrandFilterItem>();
+            CreateMap<BrandForRadioboxGroupDto, BrandFilterItem>();
             CreateMap<GetClientResponse, EditClientRequest>();
 
             #endregion

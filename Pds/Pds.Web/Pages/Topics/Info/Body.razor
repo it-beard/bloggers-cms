@@ -43,46 +43,14 @@ else
             Действия
         </div>
         <div class="info-body">
-            <Actions CurrentTopic="topicResponse" OnTopicUpdate="RefreshTopicAsync"></Actions>
+            <InfoActions CurrentTopic="topicResponse" OnTopicUpdate="RefreshTopicAsync"></InfoActions>
         </div>
     </div>
 
     <div class="info-item" id="people">
         <p class="info-title">Персоны:</p>
         <div class="table info-body">
-            <thead>
-            <tr>
-                <th class="person-header">Кто</th>
-                <th class="rate-header">Рейтинг</th>
-                <th>Где</th>
-                <th>Информация</th>
-                <th>Ссылки</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var person in topicResponse.People)
-            {
-                <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
-                    <td class="person-row">
-                        @person.FullName
-                        <span class="contents">
-                            (@person.Contents.Count)
-                        </span>
-                    </td>
-                    <td class="rate-row">@person.Rate</td>
-                    <td>@person.Location</td>
-                    <td>@person.Info</td>
-                    <td>
-                        @foreach (var resource in person.Resources)
-                        {
-                            <div>
-                                <a href="@resource.Url" target="_blank">@resource.Name</a>
-                            </div>
-                        }
-                    </td>
-                </tr>
-            }
-            </tbody>
+            <PersonTopicTable People="@topicResponse.People"></PersonTopicTable>
         </div>
     </div>
 }
