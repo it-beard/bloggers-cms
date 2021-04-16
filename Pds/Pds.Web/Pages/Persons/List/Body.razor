@@ -5,7 +5,10 @@
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
 @using Pds.Web.Pages.Content
-@using static Pds.Web.Common.TitleExtension 
+@using Api.Contracts.Paging
+@using Web.Components.Sorting.QueryCreators
+@using Pds.Web.Components.Sorting.QueryCreators.Person
+@using static Pds.Web.Common.TitleExtension
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -14,7 +17,7 @@
 
 <h4 class="card-header d-flex justify-content-between align-items-center">
     Список персон
-    <a href="/persons/add" class="btn btn-success" >Добавить</a>
+    <a href="/persons/add" class="btn btn-success">Добавить</a>
 </h4>
 @if (personsInfo == null)
 {
@@ -24,62 +27,189 @@
 }
 else
 {
+    <div class="row">
+        <div class="col-7">
+            <CascadingValue Value="isPagingStateHasChanged">
+                <PagingComponent PageSizeList="pageSizesList"
+                                 TotalItems="totalElements"
+                                 Radius="2"
+                                 Pagination="Pagination" />
+            </CascadingValue>
+        </div>
+        <div class="col-5">
+            <Pds.Web.Components.Search.SearchComponent Search="SearchPerson"/>
+        </div>    
+    </div>
+    
+
     <table class="table">
         <thead>
-        <tr>
-            <th class="person-header">Кто</th>
-            <th class="rate-header">Рейтинг</th>
-            <th>Где</th>
-            <th>Информация</th>
-            <th>Ссылки</th>
-            <th class="text-center actions-header">Действия</th>
-        </tr>
+            <tr>
+                <th class="person-header">
+                    <SortingComponent TField="PersonsFieldName"
+                                      OnSortPersons="SortPersons"
+                                      FieldName="PersonsFieldName.FullName">Кто</SortingComponent>
+                
+                </th>
+                <th class="rate-header">
+                    <SortingComponent TField="PersonsFieldName"
+                                      OnSortPersons="SortPersons"
+                                      FieldName="PersonsFieldName.Rating">Рейтинг</SortingComponent>
+                </th>
+                <th>
+                    <SortingComponent TField="PersonsFieldName"
+                                      OnSortPersons="SortPersons"
+                                      FieldName="PersonsFieldName.Location">Где</SortingComponent>
+                </th>
+                <th>Информация</th>
+                <th>Ссылки</th>
+                <th class="text-center actions-header">Действия</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var person in personsInfo.Items)
-        {
-            <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
-                <td class="person-row">
-                    @person.FullName
-                    <span class="contents">
-                        (@person.Contents.Count)
-                    </span>
-                </td>
-                <td class="rate-row">@person.Rate</td>
-                <td>@person.Location</td>
-                <td>@person.Info</td>
-                <td>
-                    @foreach (var resource in person.Resources)
-                    {
-                        <div>
-                            <a href="@resource.Url" target="_blank">@resource.Name</a>
-                        </div>
-                    }
-                </td>
-                <td class="text-center">
-                    <Actions OnPersonUpdate="@PersonsInfoUpdate" CurrentPerson="@person"></Actions>
-                </td>
-            </tr>
-        }
+            @foreach (var person in personsList)
+            {
+                <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
+                    <td class="person-row">
+                        @person.FullName
+                        <span class="contents">
+                            (@person.Contents.Count)
+                        </span>
+                    </td>
+                    <td class="rate-row">@person.Rate</td>
+                    <td>@person.Location</td>
+                    <td>@person.Info</td>
+                    <td>
+                        @foreach (var resource in person.Resources)
+                        {
+                            <div>
+                                <a href="@resource.Url" target="_blank">@resource.Name</a>
+                            </div>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <Actions OnPersonUpdate="@PersonsInfoUpdate" CurrentPerson="@person"></Actions>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }
 
 @code {
     private GetPersonsResponse personsInfo;
+    private PersonDto[] personsList;
+    private readonly int[] pageSizesList = { 5, 10, 25, 50 };
+    private int totalElements;
+    private bool isPagingStateHasChanged;
+    private PageSettings pageSettings;
+    private OrderSetting<PersonsFieldName>[] orderSettings;
+    private FilterSettings filterSettings;
 
     protected override async Task OnInitializedAsync()
     {
-        personsInfo = await GetPersonsInfo();
+        pageSettings = new PageSettings
+        {
+            Limit = pageSizesList[0],
+            Offset = 0
+        };
+
+        orderSettings = new[]
+        {
+            new OrderSetting<PersonsFieldName>()
+        };
+
+        filterSettings = new FilterSettings
+        {
+            Search = string.Empty
+        };
+
+        await PersonsInfoUpdate();
+        GetPersonsList();
+
     }
 
     private async Task PersonsInfoUpdate()
     {
         personsInfo = await GetPersonsInfo();
+        totalElements = personsInfo.Total;
     }
 
     private async Task<GetPersonsResponse> GetPersonsInfo()
     {
         return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
+    }
+
+    public void GetPersonsList()
+    {
+        var query = personsInfo.Items
+            .AsQueryable();
+
+        if (orderSettings?.Length > 0)
+        {
+            var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<PersonDto, PersonDto>>
+            {
+                {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
+                {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
+                {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
+            };
+
+            var queryCreator = new OrderQueryCreator<PersonDto, PersonsFieldName>(dictionary);
+            query = queryCreator.Create(orderSettings, query);
+        }
+        else
+        {
+            query = query
+                .OrderByDescending(p => p.Rate)
+                .ThenBy(p => p.FullName);
+        }
+
+        var searchLine = filterSettings.Search.ToLower();
+
+        if (query.Any(x => x.Location.ToLower().Contains(searchLine)))
+            personsList = Array.FindAll(query.ToArray(), x => x.Location.ToLower().Contains(searchLine));
+        else if (query.Any(x => x.FullName.ToLower().Contains(searchLine)))
+            personsList = Array.FindAll(query.ToArray(), x => x.FullName.ToLower().Contains(searchLine));
+        else if (query.Any(x => x.Info.ToLower().Contains(searchLine)))
+            personsList = Array.FindAll(query.ToArray(), x => x.Info.ToLower().Contains(searchLine));
+        else
+            personsList = query.ToArray();
+        totalElements = personsList.Length;
+        personsList = personsList.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
+    }
+
+    private void Pagination(PagingEventArgs settings)
+    {
+        isPagingStateHasChanged = default;
+        pageSettings = new PageSettings
+        {
+            Limit = settings.PageSize,
+            Offset = settings.PageOffSet
+        };
+
+        GetPersonsList();
+    }
+
+    private void SortPersons(OrderSetting<PersonsFieldName> settings)
+    {
+        isPagingStateHasChanged = true;
+        pageSettings.Offset = 0;
+
+        orderSettings = new[]
+        {
+            settings
+        };
+
+        GetPersonsList();
+    }
+
+    private void SearchPerson(string searchText)
+    {
+        isPagingStateHasChanged = true;
+        pageSettings.Offset = 0;
+
+        filterSettings.Search = searchText;
+
+        GetPersonsList();
     }
 }
