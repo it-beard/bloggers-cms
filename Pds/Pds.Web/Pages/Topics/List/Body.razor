@@ -3,7 +3,13 @@
 @using static Pds.Web.Common.TitleExtension
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Paging
+@using Pds.Api.Contracts.Person
 @using Pds.Api.Contracts.Topic
+@using Pds.Web.Components.Sorting.QueryCreators
+@using Pds.Web.Components.Sorting.QueryCreators.Person
+@using Pds.Web.Components.Sorting.QueryCreators.Topic
+@using System.Linq
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -22,21 +28,40 @@
 }
 else
 {
+    <div class="row">
+        <div class="col-7">
+            <CascadingValue Value="isPagingStateHasChanged">
+                <PagingComponent PageSizeList="pageSizesList"
+                                 TotalItems="totalElements"
+                                 Radius="2"
+                                 Pagination="PaginateTopics" />
+            </CascadingValue>
+        </div>
+        <div class="col-5">
+            <SearchComponent Search="SortTopics"/>
+        </div>    
+    </div>
+    
+    
     <table class="table">
         <thead>
         <tr>
-            <th>Название</th>
+            <th>
+                <SortingComponent TField="TopicSortingType"
+                                  OnSortPersons="SortTopics"
+                                  FieldName="TopicSortingType.Name">Название</SortingComponent>
+            </th>
             <th>Действия</th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var topic in response.Items)
+        @foreach (var topic in Result)
         {
             var elementId = $"topic{topic.Id:N}";
             <tr>
                 <td>@topic.Name</td>
                 <td>
-                    <Actions CurrentTopic="topic"/>
+                    <Actions CurrentTopic="topic" OnTopicUpdate="FetchTopics"/>
                 </td>
             </tr>
         }
@@ -45,13 +70,112 @@ else
 }
 
 @code {
+    private readonly int[] pageSizesList = { 5, 10, 25, 50 };
+    private int totalElements;
+    private bool isPagingStateHasChanged;
+    private PageSettings pageSettings;
+    private OrderSetting<TopicSortingType>[] orderSettings;
+    private FilterSettings filterSettings;
     private GetTopicCollectionResponse response;
-
+    
+    private IEnumerable<GetTopicDto> Result { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
-        response = await GetTopicsInfo();
+        pageSettings = new PageSettings
+        {
+            Limit = pageSizesList[0],
+            Offset = 0
+        };
+
+        orderSettings = new[]
+        {
+            new OrderSetting<TopicSortingType>()
+        };
+
+        filterSettings = new FilterSettings
+        {
+            Search = string.Empty
+        };
+
+        await FetchTopics();
     }
 
+    private async Task FetchTopics()
+    {
+        response = await GetTopicsInfo();
+        totalElements = response.Items.Count;
+        ApplySettings();
+    }
+
+
+    public void ApplySettings()
+    {
+        var query = response.Items.AsQueryable();
+
+        var searchLine = filterSettings.Search.ToLower();
+        
+        if (query.Any(topic => topic.Name
+            .Contains(searchLine, StringComparison.InvariantCultureIgnoreCase)))
+            query = query.Where(topic => topic.Name
+                .Contains(searchLine, StringComparison.InvariantCultureIgnoreCase));
+        
+        if (orderSettings?.Length > 0)
+        {
+            var dictionary = new Dictionary<TopicSortingType, IOrderQuery<GetTopicDto, GetTopicDto>>
+            {
+                {TopicSortingType.Name, new TopicNameOrderQueryCreator()}
+            };
+
+            var queryCreator = new OrderQueryCreator<GetTopicDto, TopicSortingType>(dictionary);
+            query = queryCreator.Create(orderSettings, query);
+        }
+        else
+        {
+            query = query
+                .OrderBy(topic => topic.Name);
+        }
+
+        var resultCollection = (IReadOnlyCollection<GetTopicDto>) query.ToArray();
+        totalElements = resultCollection.Count;
+        Result = resultCollection.Skip(pageSettings.Offset).Take(pageSettings.Limit);
+    }
+
+    private void PaginateTopics(PagingEventArgs settings)
+    {
+        isPagingStateHasChanged = default;
+        pageSettings = new PageSettings
+        {
+            Limit = settings.PageSize,
+            Offset = settings.PageOffSet
+        };
+
+        ApplySettings();
+    }
+
+    private void SortTopics(OrderSetting<TopicSortingType> settings)
+    {
+        isPagingStateHasChanged = true;
+        pageSettings.Offset = 0;
+
+        orderSettings = new[]
+        {
+            settings
+        };
+
+        ApplySettings();
+    }
+
+    private void SortTopics(string searchText)
+    {
+        isPagingStateHasChanged = true;
+        pageSettings.Offset = 0;
+
+        filterSettings.Search = searchText;
+
+        ApplySettings();
+    }
+    
     private async Task<GetTopicCollectionResponse> GetTopicsInfo()
     {
         return await ApiClient.Get<GetTopicCollectionResponse>(TokenProvider, "topics");

@@ -102,7 +102,7 @@ namespace Pds.Mappers
             CreateMap<Brand, BrandDto>();
             CreateMap<Brand, ContentListBrandDto>();
 
-            CreateMap<PersonTopic, PersonDto>().IncludeMembers(pt => pt.Person);
+            CreateMap<Topic, GetTopicDto>();
             #endregion
 
             #region Contracts to Entities
