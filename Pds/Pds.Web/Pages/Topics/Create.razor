@@ -1,18 +1,20 @@
 ﻿@page "/topics/add"
 @attribute [Authorize]
-@using static Pds.Web.Common.TitleExtension
+@using static Common.TitleExtension
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Topic
 @using Pds.Api.Contracts.Person
-
+@inherits BasePageComponent
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
-@inject CustomJSRuntimeCaller JsRuntimeCaller
 
 <Title>@WithSuffix("Добавление темы")</Title>
-
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Добавление темы
+    <a class="btn btn-primary" @onclick="GoBack"> Назад </a>
+</h3>
 @if (request is null)
 {
     <p>
@@ -21,11 +23,6 @@
 }
 else
 {
-    <h3 class="card-header d-flex justify-content-between align-items-center">
-        Добавление темы
-        <a class="btn btn-primary" @onclick="() => JsRuntimeCaller.InvokeHistoryBack()"> Назад </a>
-    </h3>
-
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
         <div class="form-group">
             <label for="name" class="form-label">Имя</label>

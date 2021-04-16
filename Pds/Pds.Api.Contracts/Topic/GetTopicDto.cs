@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Pds.Api.Contracts.Person;
 using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Topic
@@ -13,6 +15,8 @@ namespace Pds.Api.Contracts.Topic
 
         public string Name { get; set; }
 
+        public ICollection<PersonDto> People { get; set; }
+        
         public TopicStatus Status { get; set; }
     }
 }
