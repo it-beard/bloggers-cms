@@ -79,14 +79,28 @@ namespace Pds.Data.Repositories
             await using var transaction = await context.Database.BeginTransactionAsync();
             try
             {
+                var oldBill = context.Bills.FirstOrDefault(b => b.Id == content.BillId);
                 await transaction.CreateSavepointAsync("BeforeUpdateContent");
-                context.Contents.Update(content);
-                await context.SaveChangesAsync();
-                if (content.Bill != null)
+                if (content.Bill != null && oldBill != null)
                 {
                     context.Bills.Update(content.Bill);
                     await context.SaveChangesAsync();
                 }
+                else if (content.Bill != null && oldBill == null)
+                {
+                    content.BillId = content.Bill.Id;
+                    context.Bills.Add(content.Bill);
+                    await context.SaveChangesAsync();
+                }
+                else if (content.Bill == null && oldBill != null)
+                {
+                    content.BillId = null;
+                    context.Bills.Remove(oldBill);
+                    await context.SaveChangesAsync();
+                }
+
+                context.Contents.Update(content);
+                await context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
                 return content;

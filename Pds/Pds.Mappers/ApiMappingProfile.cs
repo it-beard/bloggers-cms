@@ -142,6 +142,10 @@ namespace Pds.Mappers
             CreateMap<GetClientResponse, EditClientRequest>();
 
             #endregion
+            
+            #region models to entities
+            CreateMap<EditContentBillModel, Bill>();
+            #endregion
         }
 
         private ICollection<Brand> BrandsDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
