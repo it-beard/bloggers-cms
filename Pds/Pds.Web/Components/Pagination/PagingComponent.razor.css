@@ -1,4 +1,8 @@
-﻿.btn-paging {
+﻿.paging-position{
+    justify-content: center;
+}
+
+.btn-paging {
     margin-right: 4px;
 }
 
