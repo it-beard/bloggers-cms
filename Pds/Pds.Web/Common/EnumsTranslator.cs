@@ -112,26 +112,5 @@ namespace Pds.Web.Common
                 _ => status.ToString()
             };
         }
-
-        public static string TopicSortingTypeToRu(TopicSortingType sortingType)
-        {
-            return sortingType switch
-            {
-                TopicSortingType.Name => "Сортировка по имени",
-                TopicSortingType.AverageRate => "Сортировка по среднему рейтингу",
-                TopicSortingType.PeopleCount => "Сортировка по числу персон",
-                _ => sortingType.ToString()
-            };
-        }
-
-        public static string SortingDirectionToRu(SortingDirection sortingDirection)
-        {
-            return sortingDirection switch
-            {
-                SortingDirection.Ascending => "По возрастанию",
-                SortingDirection.Descending => "По убыванию",
-                _ => sortingDirection.ToString()
-            };
-        }
     }
 }

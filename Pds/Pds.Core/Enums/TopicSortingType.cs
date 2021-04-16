@@ -3,7 +3,6 @@
     public enum TopicSortingType
     {
         Name,
-        AverageRate,
-        PeopleCount
+        Status
     }
 }
