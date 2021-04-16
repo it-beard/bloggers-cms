@@ -27,20 +27,7 @@
 }
 else
 {
-    <div class="row">
-        <div class="col-7">
-            <CascadingValue Value="isPagingStateHasChanged">
-                <PagingComponent PageSizeList="pageSizesList"
-                                 TotalItems="totalElements"
-                                 Radius="2"
-                                 Pagination="Pagination" />
-            </CascadingValue>
-        </div>
-        <div class="col-5">
-            <Pds.Web.Components.Search.SearchComponent Search="SearchPerson"/>
-        </div>    
-    </div>
-    
+   <Pds.Web.Components.Search.SearchComponent Search="SearchPerson" />
 
     <table class="table">
         <thead>
@@ -49,7 +36,7 @@ else
                     <SortingComponent TField="PersonsFieldName"
                                       OnSortPersons="SortPersons"
                                       FieldName="PersonsFieldName.FullName">Кто</SortingComponent>
-                
+
                 </th>
                 <th class="rate-header">
                     <SortingComponent TField="PersonsFieldName"
@@ -94,12 +81,18 @@ else
             }
         </tbody>
     </table>
+    <CascadingValue Value="isPagingStateHasChanged">
+        <PagingComponent PageSizeList="pageSizesList"
+                         TotalItems="totalElements"
+                         Radius="2"
+                         Pagination="Pagination" />
+    </CascadingValue>
 }
 
 @code {
     private GetPersonsResponse personsInfo;
     private PersonDto[] personsList;
-    private readonly int[] pageSizesList = { 5, 10, 25, 50 };
+    private readonly int[] pageSizesList = { 10, 30, 50, 100 };
     private int totalElements;
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
@@ -107,6 +100,11 @@ else
     private FilterSettings filterSettings;
 
     protected override async Task OnInitializedAsync()
+    {
+        await PersonsInfoUpdate();
+    }
+
+    private async Task PersonsInfoUpdate()
     {
         pageSettings = new PageSettings
         {
@@ -124,15 +122,10 @@ else
             Search = string.Empty
         };
 
-        await PersonsInfoUpdate();
-        GetPersonsList();
-
-    }
-
-    private async Task PersonsInfoUpdate()
-    {
         personsInfo = await GetPersonsInfo();
         totalElements = personsInfo.Total;
+        SetDefaultPaging();
+        GetPersonsList();
     }
 
     private async Task<GetPersonsResponse> GetPersonsInfo()
@@ -148,7 +141,7 @@ else
         if (orderSettings?.Length > 0)
         {
             var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<PersonDto, PersonDto>>
-            {
+{
                 {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
                 {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
                 {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
@@ -192,8 +185,7 @@ else
 
     private void SortPersons(OrderSetting<PersonsFieldName> settings)
     {
-        isPagingStateHasChanged = true;
-        pageSettings.Offset = 0;
+        SetDefaultPaging();
 
         orderSettings = new[]
         {
@@ -205,11 +197,16 @@ else
 
     private void SearchPerson(string searchText)
     {
-        isPagingStateHasChanged = true;
-        pageSettings.Offset = 0;
+        SetDefaultPaging();
 
         filterSettings.Search = searchText;
 
         GetPersonsList();
+    }
+
+    private void SetDefaultPaging()
+    {
+        isPagingStateHasChanged = true;
+        pageSettings.Offset = 0;
     }
 }
