@@ -36,7 +36,6 @@ else
                     <SortingComponent TField="PersonsFieldName"
                                       OnSortPersons="SortPersons"
                                       FieldName="PersonsFieldName.FullName">Кто</SortingComponent>
-
                 </th>
                 <th class="rate-header">
                     <SortingComponent TField="PersonsFieldName"
@@ -101,11 +100,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await PersonsInfoUpdate();
-    }
-
-    private async Task PersonsInfoUpdate()
-    {
         pageSettings = new PageSettings
         {
             Limit = pageSizesList[0],
@@ -117,6 +111,16 @@ else
             new OrderSetting<PersonsFieldName>()
         };
 
+        filterSettings = new FilterSettings
+        {
+            Search = string.Empty
+        };
+
+        await PersonsInfoUpdate();
+    }
+
+    private async Task PersonsInfoUpdate()
+    {
         filterSettings = new FilterSettings
         {
             Search = string.Empty
@@ -167,7 +171,9 @@ else
             personsList = Array.FindAll(query.ToArray(), x => x.Info.ToLower().Contains(searchLine));
         else
             personsList = query.ToArray();
+
         totalElements = personsList.Length;
+
         personsList = personsList.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
     }
 
