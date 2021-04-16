@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Pds.Core.Enums;
 using Pds.Core.Exceptions.Content;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
-using Pds.Services.Models;
 using Pds.Services.Models.Content;
 
 namespace Pds.Services.Services
@@ -14,10 +14,12 @@ namespace Pds.Services.Services
     public class ContentService : IContentService
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public ContentService(IUnitOfWork unitOfWork)
+        public ContentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<List<Content>> GetAllAsync()
@@ -106,13 +108,26 @@ namespace Pds.Services.Services
             content.ReleaseDate = model.ReleaseDate.Date;
             content.EndDate = model.EndDate?.Date;
             content.PersonId = model.PersonId != null && model.PersonId.Value == Guid.Empty ? null : model.PersonId;
-            if (model.Bill != null && content.Bill != null)
+            if (model.Bill != null && content.Bill != null) // Just update existed bill
             {
                 content.Bill.ClientId =  model.Bill.ClientId;
                 content.Bill.Contact =  model.Bill.Contact;
                 content.Bill.ContactName =  model.Bill.ContactName;
                 content.Bill.ContactType =  model.Bill.ContactType;
                 content.Bill.Value =  model.Bill.Value;
+                content.Bill.UpdatedAt = DateTime.UtcNow;
+            }
+            else if(model.Bill != null && content.Bill == null) // Create new bill
+            {
+                content.Bill = mapper.Map<Bill>(model.Bill);
+                content.Bill.Id = Guid.NewGuid();
+                content.Bill.Type = BillType.Content;
+                content.Bill.BrandId = content.BrandId;
+                content.Bill.CreatedAt = DateTime.UtcNow;
+            }
+            else if(model.Bill == null && content.Bill != null) // Delete bill
+            {
+                content.Bill = null;
             }
 
             var result = await unitOfWork.Content.FullUpdateAsync(content);
