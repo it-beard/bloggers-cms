@@ -1,6 +1,6 @@
 ﻿using Pds.Core.Enums;
 
-namespace Pds.Web.Common.Models.Content
+namespace Pds.Web.Models.Content
 {
     public class SocialMediaFilterItem
     {

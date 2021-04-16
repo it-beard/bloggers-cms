@@ -58,6 +58,10 @@ a, .btn-link {
     border-color: #146c43;
 }
 
+.no-wrap {
+    white-space: nowrap;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

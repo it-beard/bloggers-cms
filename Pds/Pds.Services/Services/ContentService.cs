@@ -22,7 +22,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Content>> GetAllAsync()
         {
-            return await unitOfWork.Content.GetAllWithBillsWithClientsAsync();
+            return await unitOfWork.Content.GetAllFullAsync();
         }
 
         public async Task<Content> GetAsync(Guid contentId)
@@ -66,7 +66,8 @@ namespace Pds.Services.Services
                     Status = model.Bill.Value == 0 ? BillStatus.Paid : BillStatus.Active,
                     Type = BillType.Content,
                     BrandId = model.BrandId,
-                    ClientId = model.Bill.ClientId
+                    ClientId = model.Bill.ClientId,
+                    Comment = $"Created automatically  for content with id {content.Id} ({content.Title})"
                 };
 
                 content.Bill = bill;
@@ -104,15 +105,24 @@ namespace Pds.Services.Services
             content.Comment = model.Comment;
             content.ReleaseDate = model.ReleaseDate.Date;
             content.EndDate = model.EndDate?.Date;
+            content.PersonId = model.PersonId != null && model.PersonId.Value == Guid.Empty ? null : model.PersonId;
+            if (model.Bill != null && content.Bill != null)
+            {
+                content.Bill.ClientId =  model.Bill.ClientId;
+                content.Bill.Contact =  model.Bill.Contact;
+                content.Bill.ContactName =  model.Bill.ContactName;
+                content.Bill.ContactType =  model.Bill.ContactType;
+                content.Bill.Value =  model.Bill.Value;
+            }
 
-            var result = await unitOfWork.Content.UpdateAsync(content);
+            var result = await unitOfWork.Content.FullUpdateAsync(content);
 
             return result.Id;
         }
 
         public async Task DeleteAsync(Guid clientId)
         {
-            var content = await unitOfWork.Content.GetByIdWithBillAsync(clientId);
+            var content = await unitOfWork.Content.GetByIdWithBillWithCostsAsync(clientId);
             var bill = content?.BillId != null ? 
                 await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == content.BillId) : 
                 null;
@@ -126,18 +136,13 @@ namespace Pds.Services.Services
             {
                 throw new ContentDeleteException("Нельзя удалить заархивированый контент.");
             }
-            
-            if (bill == null)
+
+            if (bill != null && content.Bill.Status == BillStatus.Paid)
             {
-                await unitOfWork.Content.Delete(content);
-                return;
+                throw new ContentDeleteException("Нельзя удалить оплаченный контент.");
             }
-            
-            if (content.Status == ContentStatus.Active && content.Bill.Status == BillStatus.Active)
-            {
-                await unitOfWork.Content.Delete(content);
-                await unitOfWork.Bills.Delete(content.Bill);
-            }
+
+            await unitOfWork.Content.FullDeleteAsync(content);
         }
 
         public async Task ArchiveAsync(Guid contentId)

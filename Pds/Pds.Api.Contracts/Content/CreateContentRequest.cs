@@ -28,7 +28,7 @@ namespace Pds.Api.Contracts.Content
         public bool IsFree { get; set; }
 
         [ValidateComplexType]
-        public ContentBillDto Bill { get; set; }
+        public CreateContentBillDto Bill { get; set; }
 
         public Guid? PersonId { get; set; }
     }

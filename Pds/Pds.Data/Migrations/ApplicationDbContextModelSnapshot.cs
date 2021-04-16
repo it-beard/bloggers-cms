@@ -50,13 +50,12 @@ namespace Pds.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Contact")
-                        .IsRequired()
                         .HasColumnType("varchar(300)");
 
                     b.Property<string>("ContactName")
                         .HasColumnType("varchar(300)");
 
-                    b.Property<int>("ContactType")
+                    b.Property<int?>("ContactType")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("ContentId")

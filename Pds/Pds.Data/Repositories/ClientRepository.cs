@@ -33,7 +33,7 @@ namespace Pds.Data.Repositories
                 .ToListAsync();
         }
         
-        public async Task<Client> GetWithBillsByIdAsync(Guid clientId)
+        public async Task<Client> GetFullByIdAsync(Guid clientId)
         {
             return await context.Clients
                 .Include(c => c.Bills)

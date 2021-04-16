@@ -1,31 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31112.23
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Web", "Pds.Web\Pds.Web.csproj", "{70D0A540-869E-48C3-8693-81A466F52070}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Web", "Pds.Web\Pds.Web.csproj", "{70D0A540-869E-48C3-8693-81A466F52070}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Api", "Pds.Api\Pds.Api.csproj", "{6CD3D49C-679E-4F07-8344-866926857373}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Api", "Pds.Api\Pds.Api.csproj", "{6CD3D49C-679E-4F07-8344-866926857373}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Services", "Pds.Services\Pds.Services.csproj", "{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Services", "Pds.Services\Pds.Services.csproj", "{FA52EFCC-10D8-4B31-A6BC-E86B7F9B6753}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Data", "Pds.Data\Pds.Data.csproj", "{DE61254D-F1CB-470F-B598-8FFDBA11E130}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Data", "Pds.Data\Pds.Data.csproj", "{DE61254D-F1CB-470F-B598-8FFDBA11E130}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Core", "Pds.Core\Pds.Core.csproj", "{02E85632-861F-4A32-82C8-406DE16E6CBD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Core", "Pds.Core\Pds.Core.csproj", "{02E85632-861F-4A32-82C8-406DE16E6CBD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Di", "Pds.Di\Pds.Di.csproj", "{1B6B5347-C29E-4DEF-BC1C-1D891E711595}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Di", "Pds.Di\Pds.Di.csproj", "{1B6B5347-C29E-4DEF-BC1C-1D891E711595}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Mappers", "Pds.Mappers\Pds.Mappers.csproj", "{80BEA23E-0B01-4DD6-858F-14D8A75F633F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Mappers", "Pds.Mappers\Pds.Mappers.csproj", "{80BEA23E-0B01-4DD6-858F-14D8A75F633F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Api.Contracts", "Pds.Api.Contracts\Pds.Api.Contracts.csproj", "{DF4A2463-B2EE-43EB-B82A-08DB61A55CE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Api.Contracts", "Pds.Api.Contracts\Pds.Api.Contracts.csproj", "{DF4A2463-B2EE-43EB-B82A-08DB61A55CE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Services.Tests", "Pds.Services.Tests\Pds.Services.Tests.csproj", "{FFCE3C93-2CA1-4AE6-A526-A8961ECD1175}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Services.Tests", "Pds.Services.Tests\Pds.Services.Tests.csproj", "{FFCE3C93-2CA1-4AE6-A526-A8961ECD1175}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Api.Tests", "Pds.Api.Tests\Pds.Api.Tests.csproj", "{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Api.Tests", "Pds.Api.Tests\Pds.Api.Tests.csproj", "{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApps", "WebApps", "{B452C78D-1671-442B-AC8E-7EFEA7483F58}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pds.Services.Models", "Pds.Services.Models\Pds.Services.Models.csproj", "{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Services.Models", "Pds.Services.Models\Pds.Services.Models.csproj", "{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Web.Models", "Pds.Web.Models\Pds.Web.Models.csproj", "{2787BC25-377D-4EA3-8FFF-84B4C9275F01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,17 +76,16 @@ Global
 		{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEAC85A6-306C-4B02-BFD7-78CF97E3B014}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		{2787BC25-377D-4EA3-8FFF-84B4C9275F01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2787BC25-377D-4EA3-8FFF-84B4C9275F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2787BC25-377D-4EA3-8FFF-84B4C9275F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2787BC25-377D-4EA3-8FFF-84B4C9275F01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{70D0A540-869E-48C3-8693-81A466F52070} = {B452C78D-1671-442B-AC8E-7EFEA7483F58}
 		{6CD3D49C-679E-4F07-8344-866926857373} = {B452C78D-1671-442B-AC8E-7EFEA7483F58}
-		{DF4A2463-B2EE-43EB-B82A-08DB61A55CE2} = {B452C78D-1671-442B-AC8E-7EFEA7483F58}
 		{5279C679-EBAC-496F-A3FA-18FCAD2F5BD6} = {B452C78D-1671-442B-AC8E-7EFEA7483F58}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {858BBE89-DC74-4B73-9C77-2F79A439DE68}
+		{DF4A2463-B2EE-43EB-B82A-08DB61A55CE2} = {B452C78D-1671-442B-AC8E-7EFEA7483F58}
+		{70D0A540-869E-48C3-8693-81A466F52070} = {B452C78D-1671-442B-AC8E-7EFEA7483F58}
+		{2787BC25-377D-4EA3-8FFF-84B4C9275F01} = {B452C78D-1671-442B-AC8E-7EFEA7483F58}
 	EndGlobalSection
 EndGlobal

@@ -1,39 +1,78 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Content
 @using Pds.Core.Enums
 @using Pds.Web.Common
-@using Pds.Web.Common.Models.Content
+@using Pds.Web.Models.Content
+@using Microsoft.AspNetCore.Components
+@using AutoMapper
 
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 @inject IAccessTokenProvider TokenProvider
+@inject IApiClient ApiClient
+@inject IMapper Mapper
 
-<div class="">
-    <EditForm EditContext="@editContext" >
-        <div class="form-group">
-            @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
-            {
-                var id = $"sm_type_{smFilterItem.SocialMediaType.ToString()}";
-                <InputCheckbox name="@id" class="btn-check" @bind-Value="smFilterItem.IsSelected" Id="@id"/>
-                <label class="btn btn-secondary" for="@id">
-                    @EnumsTranslator.SocialMediaTypeToRu(smFilterItem.SocialMediaType)
-                </label>
-            }
-        </div>
-    </EditForm>
+@if (brands == null)
+{
+    <p>
+        <em>Загрузка фильтр...</em>
+    </p>
+}
+else
+{
+    <div class="">
+        <EditForm EditContext="@editContext">
+            <div class="form-group no-wrap">
+                @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
+                {
+                    var id = $"sm_type_{brandFilterItem.Id.ToString()}";
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @brandFilterItem.Name
+                    </label>
+                }
+            </div>
+            <div class="form-group no-wrap">
+                @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
+                {
+                    var id = $"sm_type_{smFilterItem.SocialMediaType.ToString()}";
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="smFilterItem.IsSelected" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.SocialMediaTypeToRu(smFilterItem.SocialMediaType)
+                    </label>
+                }
+            </div>
+            <div class="form-group no-wrap">
+                @foreach (var contentTypeFilterItem in filterSettings.ContentTypeFilterItems)
+                {
+                    var id = $"ct_type_{contentTypeFilterItem.ContentType.ToString()}";
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="contentTypeFilterItem.IsSelected" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.ContentTypeToRu(contentTypeFilterItem.ContentType)
+                    </label>
+                }
+            </div>
+        </EditForm>
 
-</div>
+    </div>
+}
 
 @code {
+
     [Parameter]
     public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+
     private EditContext editContext;
     private FilterSettings filterSettings { get; set; }
+    private List<BrandForRadioboxGroupDto> brands { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        filterSettings = GetFilterSettings();
+        brands = await GetBrands();
+        filterSettings = GetFilterSettings(brands);
         editContext = new EditContext(filterSettings);
         editContext.OnFieldChanged += EditContext_OnFieldChanged;
+        await OnFilterUpdate.InvokeAsync(filterSettings); //trigger filter initialize
     }
 
     private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
@@ -41,18 +80,40 @@
         OnFilterUpdate.InvokeAsync(filterSettings);
     }
 
-    private FilterSettings GetFilterSettings()
+    private FilterSettings GetFilterSettings(List<BrandForRadioboxGroupDto> brands)
     {
-        return new()
+        var filter = new FilterSettings
         {
             SocialMediaFilterItems = ((SocialMediaType[]) Enum.GetValues(typeof(SocialMediaType)))
                 .Select(smType =>
-                    new SocialMediaFilterItem()
+                    new SocialMediaFilterItem
                     {
                         SocialMediaType = smType,
                         IsSelected = false
                     })
-                .ToList()
+                .ToList(),
+            ContentTypeFilterItems = ((ContentType[]) Enum.GetValues(typeof(ContentType)))
+                .Select(ctType =>
+                    new ContentTypeFilterItem
+                    {
+                        ContentType = ctType,
+                        IsSelected = false
+                    })
+                .ToList(),
+            BrandFilterItems = Mapper.Map<List<BrandFilterItem>>(brands)
         };
+        SetDefaultFilterValues(filter);
+
+        return filter;
+    }
+
+    private void SetDefaultFilterValues(FilterSettings filter)
+    {
+        filter.BrandFilterItems.First(b => b.Name == "АйТиБорода").IsSelected = true;
+    }
+
+    private async Task<List<BrandForRadioboxGroupDto>> GetBrands()
+    {
+        return await ApiClient.Get<List<BrandForRadioboxGroupDto>>(TokenProvider, "content/get-brands");
     }
 }

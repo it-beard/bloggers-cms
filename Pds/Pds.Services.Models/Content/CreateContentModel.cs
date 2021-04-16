@@ -23,6 +23,6 @@ namespace Pds.Services.Models.Content
 
         public bool IsFree { get; set; }
         
-        public ContentBillModel Bill { get; set; }
+        public CreateContentBillModel Bill { get; set; }
     }
 }

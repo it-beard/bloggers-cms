@@ -12,7 +12,9 @@ using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
 using Pds.Services.Models;
+using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
+using Pds.Web.Models.Content;
 
 namespace Pds.Mappers
 {
@@ -73,8 +75,15 @@ namespace Pds.Mappers
             CreateMap<Brand, BrandForCheckboxesDto>();
 
             CreateMap<Client, ClientDto>();
+            CreateMap<Client, GetClientResponse>();
             CreateMap<Client, GetContentBillClientDto>();
-            CreateMap<Client, ClientForLookupDto>()
+            CreateMap<Client, Pds.Api.Contracts.Content.ClientForLookupDto>()
+                .ForMember(
+                    dest => dest.Name,
+                    opt => opt
+                        .MapFrom((p, s) =>
+                            s.Name = p.Name ?? "Не выбрано"));
+            CreateMap<Client, Pds.Api.Contracts.Bill.ClientForLookupDto>()
                 .ForMember(
                     dest => dest.Name,
                     opt => opt
@@ -82,15 +91,16 @@ namespace Pds.Mappers
                             s.Name = p.Name ?? "Не выбрано"));
 
             CreateMap<Bill, BillDto>();
-            CreateMap<Bill, ContentListBillDto>();
             CreateMap<Bill, ClientBillDto>();
             CreateMap<Bill, GetContentBillDto>();
+            CreateMap<Bill, ContentListBillDto>();
             CreateMap<Bill, GetContentBillForPayResponse>();
 
             CreateMap<Cost, CostDto>();
             CreateMap<Cost, GetContentCostDto>();
 
             CreateMap<Brand, BrandDto>();
+            CreateMap<Brand, ContentListBrandDto>();
 
             CreateMap<PersonTopic, PersonDto>().IncludeMembers(pt => pt.Person);
             #endregion
@@ -99,6 +109,7 @@ namespace Pds.Mappers
 
             CreateMap<CreateClientRequest, Client>();
             CreateMap<CreateCostRequest, Cost>();
+            CreateMap<CreateBillRequest, Bill>();
             CreateMap<ResourceDto, Resource>()
                 .ForMember(
                     dest => dest.CreatedAt,
@@ -122,19 +133,24 @@ namespace Pds.Mappers
 
             #region Contracts to Models
 
-            CreateMap<ContentBillDto, ContentBillModel>();
-            CreateMap<EditContentRequest, EditContentModel>();
+            CreateMap<CreateContentBillDto, CreateContentBillModel>();
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
                     dest => dest.BrandId,
                     opt => opt
                         .MapFrom(p => p.BrandId.Value));
+            CreateMap<EditContentBillDto, EditContentBillModel>();
+            CreateMap<EditContentRequest, EditContentModel>();
+            CreateMap<EditClientRequest, EditClientModel>();
             
             #endregion
 
             #region Blazor WebAssembly
 
             CreateMap<GetContentResponse, EditContentRequest>();
+            CreateMap<GetContentBillDto, EditContentBillDto>();
+            CreateMap<Pds.Api.Contracts.Content.BrandForRadioboxGroupDto, BrandFilterItem>();
+            CreateMap<GetClientResponse, EditClientRequest>();
 
             #endregion
         }

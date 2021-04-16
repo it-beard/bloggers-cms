@@ -3,7 +3,7 @@ using Pds.Core.Enums;
 
 namespace Pds.Services.Models.Content
 {
-    public class ContentBillModel
+    public class EditContentBillModel
     {
         public Guid ClientId { get; set; }
 

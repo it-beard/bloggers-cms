@@ -24,5 +24,7 @@ namespace Pds.Api.Contracts.Content
         public ContentType Type { get; set; }
 
         public ContentListBillDto Bill { get; set; }
+
+        public ContentListBrandDto Brand { get; set; }
     }
 }

@@ -1,0 +1,195 @@
+﻿@page "/bills/add"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Bill
+@using Pds.Api.Contracts.Cost
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+@using Microsoft.AspNetCore.Components
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление дохода")</Title>
+
+@if (brands == null || clients == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Фиксация дохода
+        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+    </h4>
+
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
+        <div class="form-group">
+            <InputRadioGroup Name="brand" @bind-Value="bill.BrandId">
+                @foreach (var brand in brands)
+                {
+                    var id = $"brand_{brand.Id.ToString()}";
+                    <InputRadio Name="brand" class="btn-check" Value="brand.Id" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@brand.Name</label>
+                }
+            </InputRadioGroup>
+        </div>
+        
+        <div class="form-group">
+            <InputRadioGroup Name="bill-type" @bind-Value="bill.Type">
+                @foreach (var billType in ((BillType[])Enum
+                    .GetValues(typeof(BillType))).Where(u => u != BillType.Content))
+                {
+                    var id = $"bill_type_{billType.ToString()}";
+                    <InputRadio Name="bill-type" class="btn-check" Value="billType" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.BillTypeToRu(billType)
+                    </label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <InputRadioGroup Name="payment-type" @bind-Value="bill.PaymentType">
+                @foreach (var paymentType in (PaymentType[])Enum
+                    .GetValues(typeof(PaymentType)))
+                {
+                    var id = $"payment_type_{paymentType.ToString()}";
+                    <InputRadio Name="payment-type" class="btn-check" Value="paymentType" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.PaymentTypeToRu(paymentType)
+                    </label>
+                }
+            </InputRadioGroup>
+        </div>
+        
+        @if (bill.PaymentType == PaymentType.BankAccount)
+        {
+            <div class="form-group">
+                <label for="contract_number" class="form-label">Номер договора:</label>
+                <InputText class="form-control pay-date" id="contract_number" @bind-Value="bill.ContractNumber"/>
+
+                <label for="contract_date" class="form-label">Дата договора:</label>
+                <InputDate class="form-control pay-date" id="contract_date" @bind-Value="bill.ContractDate"/>
+            </div>
+        }
+
+        <div class="form-group">
+            <label for="bill_cost" class="form-label  label-required">Финальная стоимость USD:</label>
+            <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="bill.Value"/>
+
+            <label for="bill_cost" class="form-label  label-required">Дата оплаты:</label>
+            <InputDate class="form-control pay-date" id="bill_cost" @bind-Value="bill.PaidAt"/>
+
+            @if (bill.PaymentType == PaymentType.BankAccount)
+            {
+                <InputCheckbox name="is_nds" class="btn-check" @bind-Value="bill.IsNeedPayNds" Id="is_nds"/>
+                <label for="is_nds" class="btn btn-secondary">Включая НДС</label>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="comment" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="bill.Comment" rows="3"/>
+        </div>
+
+        <div class="form-group">
+            <label for="clients" class="form-label">Клиент</label>
+            <InputSelect class="form-control" id="clients" @bind-Value="bill.ClientId">
+                @foreach (var client in clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        @if (bill.ClientId != Guid.Empty)
+        {
+            <div class="form-group">
+                <label for="bill_contact_name" class="form-label">ФИО представителя</label>
+                <InputText class="form-control" id="bill_contact_name" @bind-Value="bill.ContactName"/>
+            </div>
+
+            <div class="form-group">
+                <label for="bill_contact" class="form-label">Контакт представителя</label>
+                <InputText class="form-control" id="bill_contact" @bind-Value="bill.Contact"/>
+                <div class="contact-type">
+                    <InputRadioGroup Name="contact-type" @bind-Value="bill.ContactType">
+                        @foreach (var type in (ContactType[])Enum
+                            .GetValues(typeof(ContactType)))
+                        {
+                            var id = $"contact-type{type.ToString()}";
+                            <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
+                            <label class="btn btn-secondary btn-sm" for="@id">
+                                @EnumsTranslator.ContactTypeToRu(type)
+                            </label>
+                        }
+                    </InputRadioGroup>
+                </div>
+            </div>
+        }
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Записать</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private CreateBillRequest bill = new();
+    private EditContext editContext;
+    private bool isCreateButtonDisabled;
+    private List<BrandForRadioboxGroupDto> brands;
+    private List<ClientForLookupDto> clients;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await SetDefaultValues();
+        editContext = new EditContext(bill);
+    }
+    
+    private async Task HandleSubmitAsync()
+    {
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isCreateButtonDisabled = true;
+            await ApiClient.Post<object, CreateBillRequest>(TokenProvider, "bills", bill);
+            NavigationManager.NavigateTo("/bills");
+        }
+    }
+
+    private async Task<List<BrandForRadioboxGroupDto>> GetBrandsAsync()
+    {
+        return await ApiClient.Get<List<BrandForRadioboxGroupDto>>(TokenProvider, "content/get-brands");
+    }
+
+    private async Task<List<ClientForLookupDto>> GetClientsAsync()
+    {
+        return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "bills/get-clients");
+    }
+
+    private async Task SetDefaultValues()
+    {
+        isCreateButtonDisabled = false;
+        bill.BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"); //Default АйТиБорода
+        bill.ClientId = Guid.Empty;
+        bill.PaidAt = GetCurrentDateWithoutOffset();
+        brands = await GetBrandsAsync();
+        clients = await GetClientsAsync();
+    }
+
+    private DateTime GetCurrentDateWithoutOffset()
+    {
+        var date = DateTime.Now.Date;
+        return new DateTime(date.Ticks);
+    }
+}

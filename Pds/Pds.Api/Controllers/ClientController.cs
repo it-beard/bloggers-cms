@@ -10,6 +10,7 @@ using Pds.Api.Authentication;
 using Pds.Api.Contracts.Client;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Client;
 
 namespace Pds.Api.Controllers
 {
@@ -97,6 +98,54 @@ namespace Pds.Api.Controllers
             {
                 await clientService.DeleteAsync(clientId);
                 return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Get client by id
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
+        [HttpGet("{clientId}")]
+        [ProducesResponseType(typeof(GetClientResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetClient(Guid clientId)
+        {
+            try
+            {
+                var client = await clientService.GetAsync(clientId);
+                var response = mapper.Map<GetClientResponse>(client);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Edit client
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(EditClientResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Edit(EditClientRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var editClientModel = mapper.Map<EditClientModel>(request);
+                    var clientId = await clientService.EditAsync(editClientModel);
+                    return Ok(new EditClientResponse{Id = clientId});
+                }
+
+                return BadRequest();
             }
             catch (Exception e)
             {
