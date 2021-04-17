@@ -27,14 +27,6 @@
 else
 {
     <div class="row">
-        <div class="col-7">
-            <CascadingValue Value="isPagingStateHasChanged">
-                <PagingComponent PageSizeList="pageSizesList"
-                                 TotalItems="totalElements"
-                                 Radius="2"
-                                 Pagination="PaginateTopics"/>
-            </CascadingValue>
-        </div>
         <div class="col-5">
             <SearchComponent Search="FilterTopics"/>
         </div>
@@ -75,6 +67,16 @@ else
         }
         </tbody>
     </table>
+    <div class="row">
+        <div class="col-7">
+                    <CascadingValue Value="isPagingStateHasChanged">
+                        <PagingComponent PageSizeList="pageSizesList"
+                                         TotalItems="totalElements"
+                                         Radius="2"
+                                         Pagination="PaginateTopics"/>
+                    </CascadingValue>
+                </div>
+    </div>
 }
 
 @code {
