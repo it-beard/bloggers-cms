@@ -7,27 +7,30 @@
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
-<button title="Просмотреть детальную информацию" class="btn btn-primary btn-sm" @onclick="OnInfo">
-    <i class="bi bi-eye"></i>
-</button>
+<div class="actions-panel panel panel-default">
 
-<button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
-    <i class="bi bi-pencil-fill"></i>
-</button>
-
-
-@if (CurrentTopic.Status == TopicStatus.Archived)
-{
-    <button title="Разархивировать" class="btn btn-secondary btn-sm" @onclick="OnUnarchive">
-        <i class="bi bi-trash"></i>
+    <button title="Просмотреть детальную информацию" class="btn btn-primary btn-sm" @onclick="OnInfo">
+        <i class="bi bi-eye"></i>
     </button>
-}
-else
-{
-    <button title="Архивировать" class="btn btn-danger btn-sm" @onclick="OnArchive">
-        <i class="bi bi-trash-fill"></i>
+
+    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+        <i class="bi bi-pencil-fill"></i>
     </button>
-}
+
+
+    @if (CurrentTopic.Status == TopicStatus.Archived)
+    {
+        <button title="Разархивировать" class="btn btn-secondary btn-sm" @onclick="OnUnarchive">
+            <i class="bi bi-trash"></i>
+        </button>
+    }
+    else
+    {
+        <button title="Архивировать" class="btn btn-danger btn-sm" @onclick="OnArchive">
+            <i class="bi bi-trash-fill"></i>
+        </button>
+    }
+</div>
 
 @code {
 
@@ -41,8 +44,8 @@ else
     {
         NavigationManager.NavigateTo($"topics/{CurrentTopic.Id}");
     }
-    
-    
+
+
     private void OnEdit()
     {
         NavigationManager.NavigateTo($"topics/edit/{CurrentTopic.Id}");

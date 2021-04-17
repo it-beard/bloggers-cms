@@ -2,7 +2,6 @@
 @attribute [Authorize]
 @using static Common.TitleExtension
 @using Pds.Web.Common
-@using Pds.Web.Pages.Content
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Topic
 @inherits BasePageComponent
@@ -50,7 +49,7 @@ else
     <div class="info-item" id="people">
         <p class="info-title">Персоны:</p>
         <div class="table info-body">
-            <PersonTopicTable People="@topicResponse.People"></PersonTopicTable>
+            <PersonTopicTable People="@topicResponse.People" OnPersonUpdate="RefreshTopicAsync"></PersonTopicTable>
         </div>
     </div>
 }
@@ -72,5 +71,5 @@ else
         if (topicResponse is null)
             NavigationManager.NavigateTo("/topics");
     }
-    
+
 }
