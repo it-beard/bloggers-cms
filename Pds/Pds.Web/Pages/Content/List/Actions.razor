@@ -37,7 +37,7 @@
         </button>
     }
 
-    @if (CurrentContent.Status == ContentStatus.Active && (CurrentContent.Bill == null || CurrentContent.Bill.Status == BillStatus.Active))
+    @if (CurrentContent.Status == ContentStatus.Active)
     {
         <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDeleteAsync">
             <i class="bi bi-trash-fill"></i>

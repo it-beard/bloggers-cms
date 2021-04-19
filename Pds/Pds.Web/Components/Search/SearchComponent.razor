@@ -1,5 +1,5 @@
 ﻿
-    <div class="d-flex justify-content-end">
+    <div class="search-position">
         <div class="d-flex position-relative">
             <input class="form-control " @bind-value="searchText" placeholder="Будем искать"/>
             <span class="searchcleaner position-absolute" @onclick="OnClean">X</span>
@@ -16,6 +16,11 @@
 
     [Parameter]
     public EventCallback<string> Search { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        searchText = string.Empty;
+    }
 
     private void OnSearch()
     {

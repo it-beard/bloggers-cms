@@ -1,4 +1,9 @@
-﻿.search-btn {
+﻿.search-position {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-btn {
     margin-left: 10px;
     color: #fff;
     background-color: #1b6ec2;
