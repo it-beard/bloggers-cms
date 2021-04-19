@@ -1,11 +1,10 @@
 ﻿
     <div class="search-position">
         <div class="d-flex position-relative">
-            <input class="form-control " @bind-value="searchText" placeholder="Будем искать"/>
-            <span class="searchcleaner position-absolute" @onclick="OnClean">X</span>
-            
+            <input class="form-control " @bind-value="SearchText" @bind-value:event="oninput" placeholder="Будем искать"/>
+            <span class="searchcleaner position-absolute" @onclick="OnClean">&times;</span> 
         </div>
-        <div >
+        <div class="search-button-show">
             <button class="btn btn-primary search-btn" @onclick="OnSearch">Найти</button>
         </div>      
     </div>
@@ -13,23 +12,37 @@
 
 @code {
     private string searchText;
+    private string SearchText
+    {
+        get { return searchText; }
+        set
+        {
+            searchText = value;
+            OnSearch();
+        }
+    }
+
+    [CascadingParameter]
+    public bool IsAction { get; set; }
 
     [Parameter]
     public EventCallback<string> Search { get; set; }
 
     protected override void OnParametersSet()
     {
-        searchText = string.Empty;
+        if(IsAction)
+            searchText = string.Empty;
     }
 
     private void OnSearch()
     {
-        Search.InvokeAsync(searchText);
+        Console.WriteLine(SearchText);
+        Search.InvokeAsync(SearchText);
     }
 
     private void OnClean()
     {
-        searchText = string.Empty;
+        SearchText = string.Empty;
         OnSearch();
     }
 }

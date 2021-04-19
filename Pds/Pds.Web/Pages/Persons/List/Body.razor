@@ -27,8 +27,9 @@
 }
 else
 {
-   <Pds.Web.Components.Search.SearchComponent Search="SearchPerson" />
-
+    <CascadingValue Value="isAction">
+        <SearchComponent Search="SearchPerson" />
+    </CascadingValue>
     <table class="table">
         <thead>
             <tr>
@@ -94,6 +95,7 @@ else
     private readonly int[] pageSizesList = { 10, 30, 50, 100 };
     private int totalElements;
     private bool isPagingStateHasChanged;
+    private bool isAction;
     private PageSettings pageSettings;
     private OrderSetting<PersonsFieldName>[] orderSettings;
     private FilterSettings filterSettings;
@@ -130,6 +132,7 @@ else
         totalElements = personsInfo.Total;
         SetDefaultPaging();
         GetPersonsList();
+        isAction = true;
     }
 
     private async Task<GetPersonsResponse> GetPersonsInfo()
@@ -203,6 +206,7 @@ else
 
     private void SearchPerson(string searchText)
     {
+        isAction = default;
         SetDefaultPaging();
 
         filterSettings.Search = searchText;
