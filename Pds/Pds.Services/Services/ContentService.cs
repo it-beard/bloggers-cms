@@ -152,11 +152,6 @@ namespace Pds.Services.Services
                 throw new ContentDeleteException("Нельзя удалить заархивированый контент.");
             }
 
-            if (bill != null && content.Bill.Status == BillStatus.Paid)
-            {
-                throw new ContentDeleteException("Нельзя удалить оплаченный контент.");
-            }
-
             await unitOfWork.Content.FullDeleteAsync(content);
         }
 
