@@ -1,0 +1,53 @@
+﻿@page "/persons/{id}"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Person
+@using Pds.Core.Enums
+@using Pds.Core.Exceptions
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+@if (PersonInfo == null)
+{
+    <p>
+        <em>
+            Подождите, идет загрузка...
+        </em>
+    </p>
+}
+else
+{
+    <Title>@WithSuffix($"Персона \"{PersonInfo.FullName}\"")</Title>
+
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Персона "@PersonInfo.FullName"
+        <button @onclick="Goback" class="btn btn-primary"></button>
+    </h4>
+
+}
+
+@code {
+    [Parameter]
+    public string PersonId { get; set; }
+    private PersonDto PersonInfo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        PersonInfo = await GetPersonInfo();
+    }
+
+    private async Task<PersonDto> GetPersonInfo()
+    {
+        return await ApiClient.Get<PersonDto>(TokenProvider, $"persons/{PersonId}");
+    }
+
+    private async Task ContentInfoUpdate()
+    {
+        PersonInfo = await GetPersonInfo();
+    }
+
+}
