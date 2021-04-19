@@ -62,6 +62,28 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
+        /// Get person by id
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        [HttpGet("{personId}")]
+        [ProducesResponseType(typeof(PersonDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPerson(Guid personId)
+        {
+            try
+            {
+                var person = await personService.GetAsync(personId);
+                var response = mapper.Map<PersonDto>(person);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
         /// Create a person
         /// </summary>
         /// <returns></returns>
@@ -76,7 +98,7 @@ namespace Pds.Api.Controllers
                 {
                     var newPerson = mapper.Map<Person>(request);
                     var personId = await personService.CreateAsync(newPerson);
-                    return Ok(new CreatePersonResponse{Id = personId});
+                    return Ok(new CreatePersonResponse { Id = personId });
                 }
 
                 return BadRequest();
