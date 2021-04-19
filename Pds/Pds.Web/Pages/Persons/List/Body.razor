@@ -8,6 +8,7 @@
 @using Api.Contracts.Paging
 @using Web.Components.Sorting.QueryCreators
 @using Pds.Web.Components.Sorting.QueryCreators.Person
+@using Pds.Web.Components.Search.Person
 @using static Pds.Web.Common.TitleExtension
 
 @inject IApiClient ApiClient
@@ -27,9 +28,7 @@
 }
 else
 {
-    <CascadingValue Value="isAction">
-        <SearchComponent Search="SearchPerson" />
-    </CascadingValue>
+    <SearchComponent Search="SearchPerson" />
     <table class="table">
         <thead>
             <tr>
@@ -95,7 +94,6 @@ else
     private readonly int[] pageSizesList = { 10, 30, 50, 100 };
     private int totalElements;
     private bool isPagingStateHasChanged;
-    private bool isAction;
     private PageSettings pageSettings;
     private OrderSetting<PersonsFieldName>[] orderSettings;
     private FilterSettings filterSettings;
@@ -123,16 +121,10 @@ else
 
     private async Task PersonsInfoUpdate()
     {
-        filterSettings = new FilterSettings
-        {
-            Search = string.Empty
-        };
-
         personsInfo = await GetPersonsInfo();
         totalElements = personsInfo.Total;
         SetDefaultPaging();
         GetPersonsList();
-        isAction = true;
     }
 
     private async Task<GetPersonsResponse> GetPersonsInfo()
@@ -164,16 +156,18 @@ else
                 .ThenBy(p => p.FullName);
         }
 
+
         var searchLine = filterSettings.Search.ToLower();
 
-        if (query.Any(x => x.Location.ToLower().Contains(searchLine)))
-            personsList = Array.FindAll(query.ToArray(), x => x.Location.ToLower().Contains(searchLine));
-        else if (query.Any(x => x.FullName.ToLower().Contains(searchLine)))
-            personsList = Array.FindAll(query.ToArray(), x => x.FullName.ToLower().Contains(searchLine));
-        else if (query.Any(x => x.Info.ToLower().Contains(searchLine)))
-            personsList = Array.FindAll(query.ToArray(), x => x.Info.ToLower().Contains(searchLine));
+        if(searchLine != string.Empty)
+        {
+            var searchPredicate = new PersonsSearch().GetSearchPredicat(searchLine);
+
+            personsList = query.Where(searchPredicate).ToArray();
+        }
         else
-            personsList = query.ToArray();
+            personsList=query.ToArray();
+
 
         totalElements = personsList.Length;
 
@@ -206,7 +200,6 @@ else
 
     private void SearchPerson(string searchText)
     {
-        isAction = default;
         SetDefaultPaging();
 
         filterSettings.Search = searchText;

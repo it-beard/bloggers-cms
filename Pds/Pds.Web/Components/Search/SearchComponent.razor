@@ -22,21 +22,11 @@
         }
     }
 
-    [CascadingParameter]
-    public bool IsAction { get; set; }
-
     [Parameter]
     public EventCallback<string> Search { get; set; }
 
-    protected override void OnParametersSet()
-    {
-        if(IsAction)
-            searchText = string.Empty;
-    }
-
     private void OnSearch()
     {
-        Console.WriteLine(SearchText);
         Search.InvokeAsync(SearchText);
     }
 

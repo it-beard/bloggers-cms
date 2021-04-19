@@ -32,7 +32,10 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.Location,
                     opt => opt
-                        .MapFrom(p => $"{p.Country} {p.City}"));
+                        .MapFrom(p => $"{p.Country} {p.City}"))
+                .ForMember(
+                    dest => dest.Info,
+                    opt => opt.MapFrom(p => $"{p.Info}"));
             CreateMap<Person, PersonForLookupDto>()
                 .ForMember(
                     dest => dest.FullName,
