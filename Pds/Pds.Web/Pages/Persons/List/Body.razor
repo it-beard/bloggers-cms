@@ -156,22 +156,22 @@ else
                 .ThenBy(p => p.FullName);
         }
 
-
-        var searchLine = filterSettings.Search.ToLower();
-
-        if(searchLine != string.Empty)
+        var searchLine = filterSettings.Search?.ToLower();
+        if(!string.IsNullOrWhiteSpace(searchLine))
         {
-            var searchPredicate = new PersonsSearch().GetSearchPredicat(searchLine);
-
+            var searchPredicate = new PersonsSearch().GetSearchPredicate(searchLine);
             personsList = query.Where(searchPredicate).ToArray();
         }
         else
-            personsList=query.ToArray();
-
+        {
+            personsList = query.ToArray();
+        }
 
         totalElements = personsList.Length;
-
-        personsList = personsList.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
+        personsList = personsList
+            .Skip(pageSettings.Offset)
+            .Take(pageSettings.Limit)
+            .ToArray();
     }
 
     private void Pagination(PagingEventArgs settings)
@@ -189,7 +189,6 @@ else
     private void SortPersons(OrderSetting<PersonsFieldName> settings)
     {
         SetDefaultPaging();
-
         orderSettings = new[]
         {
             settings
@@ -201,9 +200,7 @@ else
     private void SearchPerson(string searchText)
     {
         SetDefaultPaging();
-
         filterSettings.Search = searchText;
-
         GetPersonsList();
     }
 
