@@ -1,2 +1,23 @@
-﻿body {
+﻿.page-container {
+    padding-top: 15px;
 }
+
+.info-item {
+    margin-bottom: 15px;
+}
+
+    .info-item .info-title {
+        background-color: lightgray;
+        padding: 5px 15px;
+        border-radius: 5px 5px 0 0;
+        font-size: 0.8rem;
+        font-style: italic;
+        border-bottom: 6px double white;
+    }
+
+    .info-item .info-body {
+        background-color: lightgreen;                      
+        padding: 10px 15px 10px 15px;
+        border-radius: 0 0 5px 5px;
+        margin-bottom: 10px;
+    }

@@ -47,11 +47,11 @@
     [Parameter]
     public EventCallback OnPersonUpdate { get; set; }
     [Parameter]
-    public PersonDto CurrentPerson { get; set; }
+    public GetPersonResponse CurrentPerson { get; set; }
 
     private void OnEdit()
     {
-        NavigationManager.NavigateTo($"/content/{CurrentPerson.Id}/edit");
+        NavigationManager.NavigateTo($"/persons/{CurrentPerson.Id}/edit");
     }
 
     private async Task OnDeleteAsync()
@@ -59,7 +59,7 @@
         var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите удалить \"{CurrentPerson.FullName}\"?");
         if (confirmed)
         {
-            await ApiClient.Delete<object>(TokenProvider, $"content/{CurrentPerson.Id}");
+            await ApiClient.Delete<object>(TokenProvider, $"persons/{CurrentPerson.Id}");
             await OnPersonUpdate.InvokeAsync(); // Update UI
         }
     }
@@ -69,14 +69,14 @@
         var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать \"{CurrentPerson.FullName}\"?");
         if (confirmed)
         {
-            await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentPerson.Id}/archive", null);
+            await ApiClient.Put<object, object>(TokenProvider, $"persons/{CurrentPerson.Id}/archive", null);
             await OnPersonUpdate.InvokeAsync(); // Update UI
         }
     }
 
     private async Task OnUnarchiveAsync()
     {
-        await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentPerson.Id}/unarchive", null);
+        await ApiClient.Put<object, object>(TokenProvider, $"persons/{CurrentPerson.Id}/unarchive", null);
         await OnPersonUpdate.InvokeAsync(); // Update UI
     }
 
