@@ -43,10 +43,6 @@ namespace Pds.Data
                 .HasOne(a => a.Bill)
                 .WithOne(a => a.Content)
                 .HasForeignKey<Bill>(c => c.ContentId);
-
-            modelBuilder.Entity<Topic>()
-                .HasMany(t => t.People)
-                .WithMany(p => p.Topics);
         }
 
         private void SeedDate(ModelBuilder builder)
