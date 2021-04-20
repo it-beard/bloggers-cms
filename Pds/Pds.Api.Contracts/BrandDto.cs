@@ -1,8 +1,10 @@
-﻿namespace Pds.Api.Contracts
+﻿using System;
+
+namespace Pds.Api.Contracts
 {
     public class BrandDto
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
     }
 }

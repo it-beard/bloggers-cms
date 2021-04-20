@@ -19,6 +19,11 @@ namespace Pds.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
+        public async Task<Person> GetAsync(Guid personId)
+        {
+            return await unitOfWork.Persons.GetFullByIdAsync(personId);
+        }
+
         public async Task<List<Person>> GetAllAsync()
         {
             return await unitOfWork.Persons.GetAllFullAsync();
@@ -35,7 +40,7 @@ namespace Pds.Services.Services
             {
                 throw new PersonCreateException("Персону нельзя создать без бренда.");
             }
-            
+
             // Restore brands from DB
             var brandsFromApi = person.Brands;
             var brandsFromBd = new List<Brand>();
@@ -90,7 +95,7 @@ namespace Pds.Services.Services
                 throw new PersonDeleteException("Нельзя заархивированную персону.");
             }
 
-            if (person.Contents is {Count: > 0})
+            if (person.Contents is { Count: > 0 })
             {
                 throw new PersonDeleteException("Нельзя удалить персону с привязанным контентом.");
             }
@@ -100,8 +105,7 @@ namespace Pds.Services.Services
 
         public async Task<List<Person>> GetPersonsForListsAsync()
         {
-            
-            var persons = new List<Person> {new() {Id = Guid.Empty}};
+            var persons = new List<Person> { new() { Id = Guid.Empty } };
             var personsFromDb = await unitOfWork.Persons.GetForListsAsync();
             persons.AddRange(personsFromDb);
 

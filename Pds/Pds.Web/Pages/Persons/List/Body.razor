@@ -8,6 +8,7 @@
 @using Api.Contracts.Paging
 @using Web.Components.Sorting.QueryCreators
 @using Pds.Web.Components.Sorting.QueryCreators.Person
+@using Pds.Web.Components.Search.Person
 @using static Pds.Web.Common.TitleExtension
 
 @inject IApiClient ApiClient
@@ -27,7 +28,7 @@
 }
 else
 {
-   <Pds.Web.Components.Search.SearchComponent Search="SearchPerson" />
+    <Pds.Web.Components.Search.SearchComponent Search="SearchPerson" />
 
     <table class="table">
         <thead>
@@ -57,7 +58,7 @@ else
             {
                 <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
                     <td class="person-row">
-                        @person.FullName
+                        <a href="persons/@person.Id">@person.FullName</a>
                         <span class="contents">
                             (@person.Contents.Count)
                         </span>
@@ -121,11 +122,6 @@ else
 
     private async Task PersonsInfoUpdate()
     {
-        filterSettings = new FilterSettings
-        {
-            Search = string.Empty
-        };
-
         personsInfo = await GetPersonsInfo();
         totalElements = personsInfo.Total;
         SetDefaultPaging();
@@ -161,20 +157,22 @@ else
                 .ThenBy(p => p.FullName);
         }
 
-        var searchLine = filterSettings.Search.ToLower();
-
-        if (query.Any(x => x.Location.ToLower().Contains(searchLine)))
-            personsList = Array.FindAll(query.ToArray(), x => x.Location.ToLower().Contains(searchLine));
-        else if (query.Any(x => x.FullName.ToLower().Contains(searchLine)))
-            personsList = Array.FindAll(query.ToArray(), x => x.FullName.ToLower().Contains(searchLine));
-        else if (query.Any(x => x.Info.ToLower().Contains(searchLine)))
-            personsList = Array.FindAll(query.ToArray(), x => x.Info.ToLower().Contains(searchLine));
+        var searchLine = filterSettings.Search?.ToLower();
+        if(!string.IsNullOrWhiteSpace(searchLine))
+        {
+            var searchPredicate = new PersonsSearch().GetSearchPredicate(searchLine);
+            personsList = query.Where(searchPredicate).ToArray();
+        }
         else
+        {
             personsList = query.ToArray();
+        }
 
         totalElements = personsList.Length;
-
-        personsList = personsList.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
+        personsList = personsList
+            .Skip(pageSettings.Offset)
+            .Take(pageSettings.Limit)
+            .ToArray();
     }
 
     private void Pagination(PagingEventArgs settings)
@@ -192,7 +190,6 @@ else
     private void SortPersons(OrderSetting<PersonsFieldName> settings)
     {
         SetDefaultPaging();
-
         orderSettings = new[]
         {
             settings
@@ -204,9 +201,7 @@ else
     private void SearchPerson(string searchText)
     {
         SetDefaultPaging();
-
         filterSettings.Search = searchText;
-
         GetPersonsList();
     }
 
@@ -215,4 +210,19 @@ else
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
     }
+
+    [Parameter]
+    public string PersonId { get; set; }
+    private GetPersonResponse person { get; set; }
+
+    private async Task<GetPersonResponse> Getperson()
+    {
+        return await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
+    }
+
+    private async Task ContentInfoUpdate()
+    {
+        person = await Getperson();
+    }
+
 }

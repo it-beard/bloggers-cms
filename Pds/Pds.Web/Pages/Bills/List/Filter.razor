@@ -1,11 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Content
 @using Pds.Core.Enums
 @using Pds.Web.Common
-@using Pds.Web.Models.Content
+@using Pds.Web.Models.Bill
 @using Microsoft.AspNetCore.Components
 @using AutoMapper
 @using Pds.Api.Contracts
+@using Pds.Web.Pages.Clients.Info
 
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
@@ -34,6 +34,16 @@ else
                 }
             </div>
             <div class="form-group no-wrap">
+                @foreach (var billTypeFilterItem in filterSettings.BillTypeFilterItems)
+                {
+                    var id = $"bill_type_{billTypeFilterItem.BillType.ToString()}";
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="billTypeFilterItem.IsSelected" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.BillTypeToRu(billTypeFilterItem.BillType)
+                    </label>
+                }
+            </div>
+            <div class="form-group no-wrap">
                 @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
                 {
                     var id = $"sm_type_{smFilterItem.SocialMediaType.ToString()}";
@@ -44,12 +54,12 @@ else
                 }
             </div>
             <div class="form-group no-wrap">
-                @foreach (var contentTypeFilterItem in filterSettings.ContentTypeFilterItems)
+                @foreach (var paymentTypeFilterItem in filterSettings.PaymentTypeFilterItems)
                 {
-                    var id = $"ct_type_{contentTypeFilterItem.ContentType.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="contentTypeFilterItem.IsSelected" Id="@id"/>
+                    var id = $"payment_type_{paymentTypeFilterItem.PaymentType.ToString()}";
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="paymentTypeFilterItem.IsSelected" Id="@id"/>
                     <label class="btn btn-secondary" for="@id">
-                        @EnumsTranslator.ContentTypeToRu(contentTypeFilterItem.ContentType)
+                        @EnumsTranslator.PaymentTypeToRu(paymentTypeFilterItem.PaymentType)
                     </label>
                 }
             </div>
@@ -93,11 +103,19 @@ else
                         IsSelected = false
                     })
                 .ToList(),
-            ContentTypeFilterItems = ((ContentType[]) Enum.GetValues(typeof(ContentType)))
-                .Select(ctType =>
-                    new ContentTypeFilterItem
+            BillTypeFilterItems = ((BillType[]) Enum.GetValues(typeof(BillType)))
+                .Select(bType =>
+                    new BillTypeFilterItem
                     {
-                        ContentType = ctType,
+                        BillType = bType,
+                        IsSelected = false
+                    })
+                .ToList(),
+            PaymentTypeFilterItems = ((PaymentType[]) Enum.GetValues(typeof(PaymentType)))
+                .Select(pType =>
+                    new PaymentTypeFilterItem
+                    {
+                        PaymentType = pType,
                         IsSelected = false
                     })
                 .ToList(),

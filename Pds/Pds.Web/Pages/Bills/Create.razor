@@ -7,6 +7,7 @@
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 @using Microsoft.AspNetCore.Components
+@using Pds.Api.Contracts
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
@@ -146,7 +147,7 @@ else
     private CreateBillRequest bill = new();
     private EditContext editContext;
     private bool isCreateButtonDisabled;
-    private List<BrandForRadioboxGroupDto> brands;
+    private List<BrandDto> brands;
     private List<ClientForLookupDto> clients;
     
     protected override async Task OnInitializedAsync()
@@ -167,9 +168,9 @@ else
         }
     }
 
-    private async Task<List<BrandForRadioboxGroupDto>> GetBrandsAsync()
+    private async Task<List<BrandDto>> GetBrandsAsync()
     {
-        return await ApiClient.Get<List<BrandForRadioboxGroupDto>>(TokenProvider, "content/get-brands");
+        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
     }
 
     private async Task<List<ClientForLookupDto>> GetClientsAsync()
