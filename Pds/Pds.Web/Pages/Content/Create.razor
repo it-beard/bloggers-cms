@@ -1,6 +1,7 @@
 ﻿@page "/content/add"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts
 @using Pds.Api.Contracts.Content
 @using Pds.Core.Enums
 @using Pds.Web.Common
@@ -159,7 +160,7 @@ else
     };
 
     private EditContext editContext;
-    private List<BrandForRadioboxGroupDto> brands;
+    private List<BrandDto> brands;
     private List<ClientForLookupDto> clients;
     private List<PersonForLookupDto> persons;
     private bool isCreateButtonDisabled;
@@ -200,9 +201,9 @@ else
         }
     }
 
-    private async Task<List<BrandForRadioboxGroupDto>> GetBrands()
+    private async Task<List<BrandDto>> GetBrands()
     {
-        return await ApiClient.Get<List<BrandForRadioboxGroupDto>>(TokenProvider, "content/get-brands");
+        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
     }
 
     private async Task<List<ClientForLookupDto>> GetClients()

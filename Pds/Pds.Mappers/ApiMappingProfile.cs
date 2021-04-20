@@ -68,8 +68,7 @@ namespace Pds.Mappers
             CreateMap<Content, GetContentResponse>();
             CreateMap<Content, GetContentForPayResponse>();
 
-            CreateMap<Brand, Pds.Api.Contracts.Content.BrandForRadioboxGroupDto>();
-            CreateMap<Brand, Pds.Api.Contracts.Cost.BrandForRadioboxGroupDto>();
+            CreateMap<Brand, Pds.Api.Contracts.BrandDto>();
             CreateMap<Brand, BrandForCheckboxesDto>();
 
             CreateMap<Client, ClientDto>();
@@ -98,7 +97,6 @@ namespace Pds.Mappers
             CreateMap<Cost, GetContentCostDto>();
 
             CreateMap<Brand, BrandDto>();
-            CreateMap<Brand, ContentListBrandDto>();
 
             #endregion
 
@@ -138,7 +136,8 @@ namespace Pds.Mappers
 
             CreateMap<GetContentResponse, EditContentRequest>();
             CreateMap<GetContentBillDto, EditContentBillDto>();
-            CreateMap<Pds.Api.Contracts.Content.BrandForRadioboxGroupDto, BrandFilterItem>();
+            CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
+            CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
             CreateMap<GetClientResponse, EditClientRequest>();
 
             #endregion

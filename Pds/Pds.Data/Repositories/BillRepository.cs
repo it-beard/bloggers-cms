@@ -22,6 +22,7 @@ namespace Pds.Data.Repositories
             return await context.Bills
                 .Where(b => b.Status == BillStatus.Paid)
                 .Include(b=>b.Content)
+                .Include(b=>b.Brand)
                 .OrderByDescending(p =>p.PaidAt)
                 .ToListAsync();
         }

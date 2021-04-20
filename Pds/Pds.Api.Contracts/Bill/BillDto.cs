@@ -18,5 +18,9 @@ namespace Pds.Api.Contracts.Bill
         public string Comment { get; set; }
 
         public BillContentDto Content { get; set; }
+
+        public BrandDto Brand { get; set; }
+        
+        public bool IsVisible { get; set; }
     }
 }
