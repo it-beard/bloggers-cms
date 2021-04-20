@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
 using Pds.Data;
@@ -36,10 +34,8 @@ namespace Pds.Services.Services
         public async Task<Guid> CreateAsync(Topic topic)
         {
             topic.CreatedAt = DateTime.UtcNow;
-            var personTopics = topic.PersonTopics;
-            topic.PersonTopics = null;
+            topic.People = await AssignPeopleFromDb(topic.People);
             var createdTopic = await unitOfWork.Topics.InsertAsync(topic);
-            await RecreatePersonTopics(topic.Id, personTopics);
             return createdTopic.Id;
         }
 
@@ -50,7 +46,7 @@ namespace Pds.Services.Services
 
         public Task<Topic> FindById(Guid id)
         {
-            return unitOfWork.Topics.GetFirstWhereAsync(t => t.Id == id);
+            return unitOfWork.Topics.GetFirstWithPeople(t => t.Id == id);
         }
 
         public async Task<Guid> UpdateAsync(Topic topic)
@@ -60,9 +56,7 @@ namespace Pds.Services.Services
                 throw new InvalidOperationException("Topic not found");
             HandleCreatedAtAndUpdatedAtChanges(topic, oldTopic);
             HandleStatusChanges(topic, oldTopic);
-            var personTopics = topic.PersonTopics;
-            await RecreatePersonTopics(topic.Id, personTopics);
-            topic.PersonTopics = null;
+            topic.People = await AssignPeopleFromDb(topic.People);
             var updatedTopic = await unitOfWork.Topics.UpdateAsync(topic);
             return updatedTopic.Id;
         }
@@ -73,47 +67,38 @@ namespace Pds.Services.Services
             topic.CreatedAt = oldTopic.CreatedAt;
         }
 
-        private void HandleStatusChanges(Topic topic, Topic oldTopic)
+        private static void HandleStatusChanges(Topic topic, Topic oldTopic)
         {
-            if (oldTopic.Status == topic.Status)
-                return;
-            if (oldTopic.Status == TopicStatus.Active
-                && topic.Status == TopicStatus.Archived)
-                topic.Archive();
-            if (oldTopic.Status == TopicStatus.Archived
-                && topic.Status == TopicStatus.Active)
-                topic.Unarchive();
-        }
-
-        private async Task RecreatePersonTopics(Guid topicId, IEnumerable<PersonTopic> personTopics)
-        {
-            var newPersonTopics =  await RestorePersonTopics(topicId, personTopics);
-            var oldPersonTopics = await unitOfWork.PersonTopics.FindAllByWhereAsync(pt => topicId == pt.TopicId);
-            var removes = !oldPersonTopics.Any()
-                ? new List<PersonTopic>(0)
-                : oldPersonTopics.Where(oldPersonTopic => !newPersonTopics.Contains(oldPersonTopic))
-                    .ToList();
-            await unitOfWork.PersonTopics.DeleteRange(removes);
-            var inserts = !oldPersonTopics.Any()
-                ? newPersonTopics
-                : newPersonTopics.Where(newPersonTopic => !oldPersonTopics.Contains(newPersonTopic))
-                    .ToList();
-            await unitOfWork.PersonTopics.InsertRangeAsync(inserts);
-            
-        }
-
-        private async Task<IList<PersonTopic>> RestorePersonTopics(Guid topicId, IEnumerable<PersonTopic> personTopics)
-        {
-            var list = new List<PersonTopic>();
-            foreach (var personTopic in personTopics)
+            if (oldTopic.Status == topic.Status) return;
+            switch (oldTopic.Status)
             {
-                var firstPerson = await unitOfWork.Persons
-                    .GetFirstWhereAsync(person => personTopic.PersonId == person.Id);
-                if (firstPerson is not null)
-                    list.Add(new PersonTopic(topicId, firstPerson.Id));
+                case TopicStatus.Active when topic.Status == TopicStatus.Archived:
+                    topic.Archive();
+                    break;
+                case TopicStatus.Archived when topic.Status == TopicStatus.Active:
+                    topic.Unarchive();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(oldTopic.Status),
+                        oldTopic.Status,
+                        "Cannot handle this status kind.");
+            }
+        }
+
+        private async Task<ICollection<Person>> AssignPeopleFromDb(IEnumerable<Person> people)
+        {
+            var peopleFromDb = new List<Person>();
+
+            foreach (var assignedPerson in people)
+            {
+                var personFromDb = await unitOfWork.Persons
+                    .GetFirstWhereAsync(person => assignedPerson.Id == person.Id);
+                if (personFromDb is not null)
+                    peopleFromDb.Add(personFromDb);
             }
 
-            return list;
+            return peopleFromDb;
         }
     }
 }

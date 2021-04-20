@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pds.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Pds.Core.Enums;
+using Pds.Data.Entities;
 
 namespace Pds.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options){}
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
 
         public DbSet<Person> Persons { get; set; }
+
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Content> Contents { get; set; }
         public DbSet<Bill> Bills { get; set; }
         public DbSet<Cost> Costs { get; set; }
         public DbSet<Client> Clients { get; set; }
+
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<PersonTopic> PersonTopics { get; set; }
         public DbSet<Topic> Topics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -35,24 +38,15 @@ namespace Pds.Data
 
             modelBuilder.Entity<Content>()
                 .Property(b => b.SocialMediaType);
-            
+
             modelBuilder.Entity<Content>()
                 .HasOne(a => a.Bill)
                 .WithOne(a => a.Content)
                 .HasForeignKey<Bill>(c => c.ContentId);
 
-            modelBuilder.Entity<PersonTopic>()
-                .HasOne(pt => pt.Person)
-                .WithMany(p => p.PersonTopics)
-                .HasForeignKey(pt => pt.PersonId);
-
-            modelBuilder.Entity<PersonTopic>()
-                .HasOne(pt => pt.Topic)
-                .WithMany(p => p.PersonTopics)
-                .HasForeignKey(pt => pt.TopicId);
-
-            modelBuilder.Entity<PersonTopic>()
-                .HasKey(pt => new {pt.TopicId, pt.PersonId});
+            modelBuilder.Entity<Topic>()
+                .HasMany(t => t.People)
+                .WithMany(p => p.Topics);
         }
 
         private void SeedDate(ModelBuilder builder)

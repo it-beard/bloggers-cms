@@ -104,12 +104,7 @@ namespace Pds.Mappers
 
             CreateMap<Topic, GetTopicDto>();
 
-            CreateMap<Topic, GetTopicResponse>()
-                .ForMember(dest => dest.People,
-                    opt => opt.MapFrom(topic => topic.PersonTopics));
-
-            CreateMap<PersonTopic, PersonDto>()
-                .IncludeMembers(personTopic => personTopic.Person);
+            CreateMap<Topic, GetTopicResponse>();
 
             #endregion
 
@@ -129,13 +124,13 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where(c => c.IsSelected).ToList())));
             CreateMap<CreateTopicRequest, Topic>()
-                .ForMember(dest => dest.PersonTopics,
+                .ForMember(dest => dest.People,
                     opt =>
-                        opt.MapFrom(ctr => ctr.People.Select(guid => new PersonTopic(default, guid)).ToList()));
+                        opt.MapFrom(ctr => ctr.People.Select(guid => new Person {Id = guid})));
             CreateMap<UpdateTopicRequest, Topic>()
-                .ForMember(dest => dest.PersonTopics,
+                .ForMember(dest => dest.People,
                     opt =>
-                        opt.MapFrom((ctr, t) => ctr.People.Select(guid => new PersonTopic(t.Id, guid)).ToList()));
+                        opt.MapFrom((ctr, _) => ctr.People.Select(guid => new Person {Id = guid})));
 
             #endregion
 

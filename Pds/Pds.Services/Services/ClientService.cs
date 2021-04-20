@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pds.Core.Enums;
 using Pds.Core.Exceptions.Client;
-using Pds.Core.Extensions;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -32,15 +30,10 @@ namespace Pds.Services.Services
 
         public async Task<Guid> CreateAsync(Client client)
         {
-            if (client == null)
-            {
-                throw new ArgumentNullException(nameof(client));
-            }
+            if (client == null) throw new ArgumentNullException(nameof(client));
 
             if (await unitOfWork.Clients.IsExistsByNameAsync(client.Name))
-            {
                 throw new ClientCreateException("Клиент с таким именем существует в системе.");
-            }
 
             client.CreatedAt = DateTime.UtcNow;
             client.Name = client.Name.Trim();
@@ -51,22 +44,14 @@ namespace Pds.Services.Services
 
         public async Task<Guid> EditAsync(EditClientModel model)
         {
-            if (model == null)
-            {
-                throw new ClientEditException($"Модель запроса пуста.");
-            }
+            if (model == null) throw new ClientEditException("Модель запроса пуста.");
 
             var client = await unitOfWork.Clients.GetFullByIdAsync(model.Id);
-            
-            if (client == null)
-            {
-                throw new ClientEditException($"Клиент с id {model.Id} не найден.");
-            }
+
+            if (client == null) throw new ClientEditException($"Клиент с id {model.Id} не найден.");
 
             if (client.Name != model.Name && await unitOfWork.Clients.IsExistsByNameAsync(model.Name))
-            {
                 throw new ClientCreateException("Клиент с таким именем существует в системе.");
-            }
 
             client.UpdatedAt = DateTime.UtcNow;
             client.Name = model.Name.Trim();
@@ -80,14 +65,9 @@ namespace Pds.Services.Services
         {
             var client = await unitOfWork.Clients.GetFullByIdAsync(clientId);
             if (client.Bills != null && client.Bills.Count > 0)
-            {
                 throw new ClientDeleteException("Нельзя удалить клиента с привязанным контентом.");
-            }
 
-            if (client != null)
-            {
-                await unitOfWork.Clients.Delete(client);
-            }
+            if (client != null) await unitOfWork.Clients.Delete(client);
         }
 
         public async Task<List<Client>> GetClientsForListsAsync()

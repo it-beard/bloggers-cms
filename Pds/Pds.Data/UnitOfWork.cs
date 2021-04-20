@@ -7,15 +7,16 @@ namespace Pds.Data
     public sealed class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext context;
-        private IPersonRepository personRepository;
-        private IResourceRepository resourceRepository;
-        private IContentRepository contentRepository;
+        private IBillRepository billRepository;
         private IBrandRepository brandRepository;
         private IClientRepository clientRepository;
-        private IBillRepository billRepository;
-        private ITopicRepository topicRepository;
-        private IPersonTopicRepository personTopicRepository;
+        private IContentRepository contentRepository;
         private ICostRepository costRepository;
+
+        private bool disposed;
+        private IPersonRepository personRepository;
+        private IResourceRepository resourceRepository;
+        private ITopicRepository topicRepository;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -29,7 +30,6 @@ namespace Pds.Data
         public IClientRepository Clients => clientRepository ??= new ClientRepository(context);
         public IBillRepository Bills => billRepository ??= new BillRepository(context);
         public ITopicRepository Topics => topicRepository ??= new TopicRepository(context);
-        public IPersonTopicRepository PersonTopics => personTopicRepository ??= new PersonTopicRepository(context);
         public ICostRepository Costs => costRepository ??= new CostRepository(context);
 
         public void Save()
@@ -43,19 +43,13 @@ namespace Pds.Data
             GC.SuppressFinalize(this);
         }
 
-        private bool disposed = false;
-
         private void Dispose(bool disposing)
         {
-            if (!this.disposed)
-            {
+            if (!disposed)
                 if (disposing)
-                {
                     context.Dispose();
-                }
-            }
 
-            this.disposed = true;
+            disposed = true;
         }
     }
 }

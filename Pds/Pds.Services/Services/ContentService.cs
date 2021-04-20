@@ -6,7 +6,6 @@ using Pds.Core.Exceptions.Content;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
-using Pds.Services.Models;
 using Pds.Services.Models.Content;
 
 namespace Pds.Services.Services
@@ -32,10 +31,7 @@ namespace Pds.Services.Services
 
         public async Task<Guid> CreateAsync(CreateContentModel model)
         {
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
+            if (model == null) throw new ArgumentNullException(nameof(model));
 
             var content = new Content
             {
@@ -81,22 +77,14 @@ namespace Pds.Services.Services
 
         public async Task<Guid> EditAsync(EditContentModel model)
         {
-            if (model == null)
-            {
-                throw new ContentEditException($"Модель запроса пуста.");
-            }
+            if (model == null) throw new ContentEditException("Модель запроса пуста.");
 
             var content = await unitOfWork.Content.GetByIdWithBillAsync(model.Id);
-            
-            if (content == null)
-            {
-                throw new ContentEditException($"Контент с id {model.Id} не найден.");
-            }
+
+            if (content == null) throw new ContentEditException($"Контент с id {model.Id} не найден.");
 
             if (content.Status == ContentStatus.Archived)
-            {
-                throw new ContentEditException($"Нельзя редактировать архивный контент.");
-            }
+                throw new ContentEditException("Нельзя редактировать архивный контент.");
 
             content.UpdatedAt = DateTime.UtcNow;
             content.Title = model.Title;
@@ -108,11 +96,11 @@ namespace Pds.Services.Services
             content.PersonId = model.PersonId != null && model.PersonId.Value == Guid.Empty ? null : model.PersonId;
             if (model.Bill != null && content.Bill != null)
             {
-                content.Bill.ClientId =  model.Bill.ClientId;
-                content.Bill.Contact =  model.Bill.Contact;
-                content.Bill.ContactName =  model.Bill.ContactName;
-                content.Bill.ContactType =  model.Bill.ContactType;
-                content.Bill.Value =  model.Bill.Value;
+                content.Bill.ClientId = model.Bill.ClientId;
+                content.Bill.Contact = model.Bill.Contact;
+                content.Bill.ContactName = model.Bill.ContactName;
+                content.Bill.ContactType = model.Bill.ContactType;
+                content.Bill.Value = model.Bill.Value;
             }
 
             var result = await unitOfWork.Content.FullUpdateAsync(content);
@@ -123,24 +111,17 @@ namespace Pds.Services.Services
         public async Task DeleteAsync(Guid clientId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillWithCostsAsync(clientId);
-            var bill = content?.BillId != null ? 
-                await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == content.BillId) : 
-                null;
+            var bill = content?.BillId != null
+                ? await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == content.BillId)
+                : null;
 
-            if (content == null)
-            {
-                throw new ContentDeleteException("Контент не найден.");
-            }
+            if (content == null) throw new ContentDeleteException("Контент не найден.");
 
             if (content.Status == ContentStatus.Archived)
-            {
                 throw new ContentDeleteException("Нельзя удалить заархивированый контент.");
-            }
 
             if (bill != null && content.Bill.Status == BillStatus.Paid)
-            {
                 throw new ContentDeleteException("Нельзя удалить оплаченный контент.");
-            }
 
             await unitOfWork.Content.FullDeleteAsync(content);
         }
@@ -148,7 +129,8 @@ namespace Pds.Services.Services
         public async Task ArchiveAsync(Guid contentId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
-            if (content is {Status: ContentStatus.Active} && (content.Bill == null || content.Bill.Status == BillStatus.Paid))
+            if (content is {Status: ContentStatus.Active} &&
+                (content.Bill == null || content.Bill.Status == BillStatus.Paid))
             {
                 content.Status = ContentStatus.Archived;
                 content.UpdatedAt = DateTime.UtcNow;

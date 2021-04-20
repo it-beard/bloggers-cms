@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pds.Core.Enums;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
-using Pds.Services.Models.Bill;
 
 namespace Pds.Services.Services
 {
@@ -25,10 +23,7 @@ namespace Pds.Services.Services
 
         public async Task<Guid> CreateAsync(Cost cost)
         {
-            if (cost == null)
-            {
-                throw new ArgumentNullException(nameof(cost));
-            }
+            if (cost == null) throw new ArgumentNullException(nameof(cost));
 
             cost.CreatedAt = DateTime.UtcNow;
             var result = await unitOfWork.Costs.InsertAsync(cost);
@@ -39,10 +34,7 @@ namespace Pds.Services.Services
         public async Task DeleteAsync(Guid costId)
         {
             var cost = await unitOfWork.Costs.GetFirstWhereAsync(p => p.Id == costId);
-            if (cost != null)
-            {
-                await unitOfWork.Costs.Delete(cost);
-            }
+            if (cost != null) await unitOfWork.Costs.Delete(cost);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Pds.Core.Enums;
@@ -17,15 +16,14 @@ namespace Pds.Data.Entities
         [Column(TypeName = "varchar(300)")]
         public string LastName { get; set; }
 
-        [Column(TypeName = "varchar(300)")]
-        public string ThirdName { get; set; }
+        [Column(TypeName = "varchar(300)")] public string ThirdName { get; set; }
 
         public string Info { get; set; }
 
         public int? Rate { get; set; }
 
         public string Country { get; set; }
-        
+
         public string City { get; set; }
 
         public string Latitude { get; set; }
@@ -44,6 +42,6 @@ namespace Pds.Data.Entities
 
         public virtual ICollection<Brand> Brands { get; set; }
 
-        public virtual ICollection<PersonTopic> PersonTopics { get; set; }
+        public virtual ICollection<Topic> Topics { get; set; }
     }
 }

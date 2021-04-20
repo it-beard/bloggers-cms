@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
-using Pds.Core.Exceptions;
 using Pds.Core.Exceptions.Person;
 using Pds.Data;
 using Pds.Data.Entities;
@@ -26,26 +25,17 @@ namespace Pds.Services.Services
 
         public async Task<Guid> CreateAsync(Person person)
         {
-            if (person == null)
-            {
-                throw new ArgumentNullException(nameof(person));
-            }
+            if (person == null) throw new ArgumentNullException(nameof(person));
 
-            if (person.Brands.Count == 0)
-            {
-                throw new PersonCreateException("Персону нельзя создать без бренда.");
-            }
-            
+            if (person.Brands.Count == 0) throw new PersonCreateException("Персону нельзя создать без бренда.");
+
             // Restore brands from DB
             var brandsFromApi = person.Brands;
             var brandsFromBd = new List<Brand>();
             foreach (var brandFromApi in brandsFromApi)
             {
                 var brandFromDb = await unitOfWork.Brands.GetFirstWhereAsync(c => c.Id == brandFromApi.Id);
-                if (brandFromDb != null)
-                {
-                    brandsFromBd.Add(brandFromDb);
-                }
+                if (brandFromDb != null) brandsFromBd.Add(brandFromDb);
             }
 
             person.Brands = brandsFromBd;
@@ -80,27 +70,19 @@ namespace Pds.Services.Services
         public async Task DeleteAsync(Guid personId)
         {
             var person = await unitOfWork.Persons.GetFullByIdAsync(personId);
-            if (person == null)
-            {
-                throw new PersonDeleteException("Персона не найдена");
-            }
+            if (person == null) throw new PersonDeleteException("Персона не найдена");
 
             if (person.Status == PersonStatus.Archived)
-            {
                 throw new PersonDeleteException("Нельзя заархивированную персону.");
-            }
 
             if (person.Contents is {Count: > 0})
-            {
                 throw new PersonDeleteException("Нельзя удалить персону с привязанным контентом.");
-            }
 
             await unitOfWork.Persons.Delete(person);
         }
 
         public async Task<List<Person>> GetPersonsForListsAsync()
         {
-            
             var persons = new List<Person> {new() {Id = Guid.Empty}};
             var personsFromDb = await unitOfWork.Persons.GetForListsAsync();
             persons.AddRange(personsFromDb);

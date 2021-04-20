@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
 
@@ -18,27 +17,12 @@ namespace Pds.Data.Repositories
             this.context = context;
         }
 
-        private IIncludableQueryable<Topic, Person> IncludeQueryable
-        {
-            get
-            {
-                return context.Topics
-                    .AsNoTracking()
-                    .Include(t => t.PersonTopics)
-                    .ThenInclude(pt => pt.Person);
-            }
-        }
-
-        public override Task<List<Topic>> GetAllAsync()
-        {
-            return context.Topics
+        private IQueryable<Topic> IncludeQueryable =>
+            context.Topics
                 .AsNoTracking()
-                .Include(t => t.PersonTopics)
-                .ThenInclude(pt => pt.Person)
-                .ToListAsync();
-        }
+                .Include(t => t.People);
 
-        public override async Task<Topic> GetFirstWhereAsync(Expression<Func<Topic, bool>> match)
+        public async Task<Topic> GetFirstWithPeople(Expression<Func<Topic, bool>> match)
         {
             return await IncludeQueryable
                 .FirstOrDefaultAsync(match);
