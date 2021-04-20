@@ -33,7 +33,7 @@
         </button>
     }
 
-    @if (CurrentPerson.Status == PersonStatus.Active)
+    @if (CurrentPerson.Status == PersonStatus.Active && CurrentPerson.Contents.Count == 0)
     {
         <button title="Удалить" class="btn btn-danger" @onclick="OnDeleteAsync">
             <i class="bi bi-trash-fill"></i>
