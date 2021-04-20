@@ -27,7 +27,17 @@
     margin-left: 5px;
     color: #888;
     font-weight: bold;
+    text-decoration: none;
 }
+
+.person-row a {
+    color: #212529;
+    text-decoration: none;
+}
+
+    .person-row a:hover {
+        border-bottom: 2px dotted black;
+    }
 
 .active {
     background-color: lightgreen;
@@ -41,9 +51,9 @@
     color: #bbb !important;
 }
 
-.archived:hover,
-.archived:hover a,
-.archived:hover span,
-.archived:hover .rate-row {
-    color: black !important;
-}
+    .archived:hover,
+    .archived:hover a,
+    .archived:hover span,
+    .archived:hover .rate-row {
+        color: black !important;
+    }

@@ -28,7 +28,8 @@
 }
 else
 {
-    <SearchComponent Search="SearchPerson" />
+    <Pds.Web.Components.Search.SearchComponent Search="SearchPerson" />
+
     <table class="table">
         <thead>
             <tr>
@@ -57,7 +58,7 @@ else
             {
                 <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
                     <td class="person-row">
-                        @person.FullName
+                        <a href="persons/@person.Id">@person.FullName</a>
                         <span class="contents">
                             (@person.Contents.Count)
                         </span>
@@ -209,4 +210,19 @@ else
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
     }
+
+    [Parameter]
+    public string PersonId { get; set; }
+    private GetPersonResponse person { get; set; }
+
+    private async Task<GetPersonResponse> Getperson()
+    {
+        return await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
+    }
+
+    private async Task ContentInfoUpdate()
+    {
+        person = await Getperson();
+    }
+
 }
