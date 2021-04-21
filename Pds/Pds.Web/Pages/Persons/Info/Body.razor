@@ -71,17 +71,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        person = await Getperson();
+        person = await GetPerson();
     }
 
-    private async Task<GetPersonResponse> Getperson()
+    private async Task<GetPersonResponse> GetPerson()
     {
         return await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
     }
 
     private async Task ContentInfoUpdate()
     {
-        person = await Getperson();
+        person = await GetPerson();
     }
 
 }
