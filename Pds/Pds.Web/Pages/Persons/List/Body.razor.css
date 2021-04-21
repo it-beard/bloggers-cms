@@ -30,15 +30,6 @@
     text-decoration: none;
 }
 
-.person-row a {
-    color: #212529;
-    text-decoration: none;
-}
-
-    .person-row a:hover {
-        border-bottom: 2px dotted black;
-    }
-
 .active {
     background-color: lightgreen;
 }

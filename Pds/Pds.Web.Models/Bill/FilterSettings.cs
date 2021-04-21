@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Pds.Web.Models.Bill
 {
@@ -9,5 +10,9 @@ namespace Pds.Web.Models.Bill
         public List<BillTypeFilterItem> BillTypeFilterItems { get; set; }
         public List<PaymentTypeFilterItem> PaymentTypeFilterItems { get; set; }
         public List<BrandFilterItem> BrandFilterItems { get; set; }
+
+        public DateTime? From { get; set; }
+
+        public DateTime? To { get; set; }
     }
 }

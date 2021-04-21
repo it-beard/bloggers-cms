@@ -9,7 +9,7 @@
 @inject IAccessTokenProvider TokenProvider
 
 <div class="panel panel-default actions-panel">
-    
+
     <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
         <i class="bi bi-pencil-fill"></i>
     </button>
@@ -30,7 +30,10 @@
 
     private void OnEdit()
     {
-        NavigationManager.NavigateTo($"/bills/{CurrentBill.Id}");
+        NavigationManager.NavigateTo(
+            CurrentBill.Content != null ? 
+                $"/content/{CurrentBill.Content.Id}/edit" : 
+                $"/bills/{CurrentBill.Id}");
     }
 
     private async Task OnDelete()
