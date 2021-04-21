@@ -16,5 +16,7 @@ namespace Pds.Api.Contracts.Cost
         public string Comment { get; set; }
 
         public CostContentDto Content { get; set; }
+
+        public BrandDto Brand { get; set; }
     }
 }

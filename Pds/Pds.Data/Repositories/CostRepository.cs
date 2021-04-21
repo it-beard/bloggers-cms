@@ -21,6 +21,7 @@ namespace Pds.Data.Repositories
         {
             return await context.Costs
                 .Include(b=>b.Content)
+                .Include(b=>b.Brand)
                 .OrderByDescending(p =>p.PaidAt)
                 .ToListAsync();
         }

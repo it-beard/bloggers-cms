@@ -35,7 +35,7 @@ else
             {
                 <tr>
                     <td class="client-name-row">
-                        <a href="clients/@client.Id">@client.Name</a>
+                        <a class="custom-link" href="clients/@client.Id">@client.Name</a>
                         @if (client.Bills is { Count: > 0 })
                         {
                             <span class="contents">
