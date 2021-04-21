@@ -30,6 +30,7 @@ else
             <th class="id-header">ID</th>
             <th class="cost-value-header">Сколько</th>
             <th class="cost-type-header">Тип</th>
+            <th class="cost-type-header">Бренд</th>
             <th>Комментарий</th>
             <th class="text-center actions-header">Действия</th>
         </tr>
@@ -61,6 +62,7 @@ else
                 <td>
                     @EnumsTranslator.CostTypeToRu(cost.Type)
                 </td>
+                <td>@cost.Brand.Name</td>
                 <td>@cost.Comment</td>
                 <td class="text-center">
                     <Actions OnClientUpdate="@CostsInfoUpdate" CurrentCost="@cost"></Actions>

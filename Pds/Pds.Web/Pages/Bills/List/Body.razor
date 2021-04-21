@@ -39,6 +39,7 @@ else
             <th class="id-header">ID</th>
             <th class="bill-cost-header">Сколько</th>
             <th>Тип</th>
+            <th>Бренд</th>
             <th>Комментарий</th>
             <th class="text-center actions-header">Действия</th>
         </tr>
@@ -75,6 +76,7 @@ else
                         @EnumsTranslator.BillTypeToRu(bill.Type)
                     }
                 </td>
+                <td>@bill.Brand.Name</td>
                 <td>@bill.Comment</td>
                 <td class="text-center">
                     <Actions OnClientUpdate="@BillsInfoUpdate" CurrentBill="@bill"></Actions>
