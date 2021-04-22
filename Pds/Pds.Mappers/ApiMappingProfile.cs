@@ -143,6 +143,7 @@ namespace Pds.Mappers
             CreateMap<GetClientResponse, EditClientRequest>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
+            CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
 
             #endregion
             
