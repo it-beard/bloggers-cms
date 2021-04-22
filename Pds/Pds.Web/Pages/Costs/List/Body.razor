@@ -79,7 +79,7 @@ else
                 <td>@cost.Brand.Name</td>
                 <td>@cost.Comment</td>
                 <td class="text-center">
-                    <Actions OnClientUpdate="@CostsInfoUpdate" CurrentCost="@cost"></Actions>
+                    <Actions OnCostUpdate="@CostsInfoUpdate" CurrentCost="@cost"></Actions>
                 </td>
             </tr>
         }
@@ -89,6 +89,7 @@ else
 
 @code {
     private GetCostsResponse costsInfo;
+    private FilterSettings lastFilterSettings;
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,6 +99,7 @@ else
     private async Task CostsInfoUpdate()
     {
         costsInfo = await GetCostsInfo();
+        FilterUpdated(lastFilterSettings);
     }
 
     private async Task<GetCostsResponse> GetCostsInfo()
@@ -107,6 +109,7 @@ else
 
     private void FilterUpdated(FilterSettings filterSettings)
     {
+        lastFilterSettings = filterSettings;
         var selectedCostTypes = filterSettings.CostTypeFilterItems
             .Where(i => i.IsSelected)
             .Select(i => i.CostType)
