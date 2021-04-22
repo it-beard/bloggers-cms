@@ -1,4 +1,4 @@
-﻿@page "/costs/add"
+﻿@page "/costs/{costId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts
@@ -6,14 +6,16 @@
 @using Pds.Core.Enums
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
+@using AutoMapper
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
+@inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
 
-<Title>@WithSuffix("Добавление клиента")</Title>
+<Title>@WithSuffix("Редактирование расхода")</Title>
 
-@if (brands == null || contents == null)
+@if (cost == null || brands == null || contents == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -22,7 +24,7 @@
 else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
-        Фиксация расхода
+        Редактирование расхода
         <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
     </h4>
 
@@ -70,7 +72,14 @@ else
             <InputSelect class="form-control" id="contents" @bind-Value="cost.ContentId">
                 @foreach (var content in contents)
                 {
-                    <option value="@content.Id">@content.Title</option>
+                    if (content.Id == cost.ContentId)
+                    {
+                        <option value="@content.Id" selected>@content.Title</option>
+                    }
+                    else
+                    {
+                        <option value="@content.Id">@content.Title</option>
+                    }
                 }
             </InputSelect>
         </div>
@@ -79,33 +88,49 @@ else
         <ValidationSummary/>
 
         <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Записать</button>
+            <button type="submit" class="btn btn-success" disabled="@isSaveButtonDisabled">Сохранить</button>
         </div>
     </EditForm>
 }
 
 @code {
-    private CreateCostRequest cost = new();
+    [Parameter]
+    public string CostId { get; set; }
+    private EditCostRequest cost;
     private EditContext editContext;
-    private bool isCreateButtonDisabled;
+    private ValidationMessageStore msgStore;
+    private bool isSaveButtonDisabled;
     private List<BrandDto> brands;
     private List<ContentForLookupDto> contents;
     
     protected override async Task OnInitializedAsync()
     {
-        await SetDefaultValues();
+        isSaveButtonDisabled = false;
+        cost = await GetCost();
+        brands = await GetBrandsAsync();
+        contents = await GetContentsAsync();
         editContext = new EditContext(cost);
+        msgStore = new ValidationMessageStore(editContext);
     }
     
     private async Task HandleSubmitAsync()
     {
+        msgStore.Clear();
         var isValid = editContext.Validate();
 
         if (isValid)
         {
-            isCreateButtonDisabled = true;
-            await ApiClient.Post<object, CreateCostRequest>(TokenProvider, "costs", cost);
-            NavigationManager.NavigateTo("/costs");
+            isSaveButtonDisabled = true;
+            var result = await ApiClient.Put<object, EditCostRequest>(TokenProvider, "costs", cost);
+            isSaveButtonDisabled = false;
+            if (result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/costs");
+            }
+            else
+            {
+                result.AddErrors(msgStore, editContext);
+            }
         }
     }
 
@@ -119,18 +144,9 @@ else
         return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, "costs/get-contents");
     }
 
-    private async Task SetDefaultValues()
+    private async Task<EditCostRequest> GetCost()
     {
-        isCreateButtonDisabled = false;
-        cost.BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"); //Default АйТиБорода
-        cost.PaidAt = GetCurrentDateWithoutOffset();
-        brands = await GetBrandsAsync();
-        contents = await GetContentsAsync();
-    }
-
-    private DateTime GetCurrentDateWithoutOffset()
-    {
-        var date = DateTime.Now.Date;
-        return new DateTime(date.Ticks);
+        var clientResponse = await ApiClient.Get<GetCostResponse>(TokenProvider, $"costs/{CostId}");
+        return Mapper.Map<EditCostRequest>(clientResponse);
     }
 }

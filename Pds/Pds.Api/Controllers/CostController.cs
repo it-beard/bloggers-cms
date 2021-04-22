@@ -9,6 +9,7 @@ using Pds.Api.Authentication;
 using Pds.Api.Contracts.Cost;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Cost;
 
 namespace Pds.Api.Controllers
 {
@@ -31,6 +32,28 @@ namespace Pds.Api.Controllers
             this.mapper = mapper;
             this.costService = costService;
             this.contentService = contentService;
+        }
+
+        /// <summary>
+        /// Get cost by id
+        /// </summary>
+        /// <param name="costId"></param>
+        /// <returns></returns>
+        [HttpGet("{costId}")]
+        [ProducesResponseType(typeof(GetCostResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(Guid costId)
+        {
+            try
+            {
+                var cost = await costService.GetAsync(costId);
+                var response = mapper.Map<GetCostResponse>(cost);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
         }
 
         /// <summary>
@@ -81,7 +104,7 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Add cost
+        /// Create cost
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -98,6 +121,72 @@ namespace Pds.Api.Controllers
                 }
 
                 return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Edit cost
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(EditCostResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Edit(EditCostRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var editCostModel = mapper.Map<EditCostModel>(request);
+                    var costId = await costService.EditAsync(editCostModel);
+                    return Ok(new EditCostResponse{Id = costId});
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Archive specified cost
+        /// </summary>
+        /// <param name="costId"></param>
+        /// <returns></returns>
+        [HttpPut("{costId}/archive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Archive(Guid costId)
+        {
+            try
+            {
+                await costService.ArchiveAsync(costId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Unarchive specified cost
+        /// </summary>
+        /// <param name="costId"></param>
+        /// <returns></returns>
+        [HttpPut("{costId}/unarchive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Unarchive(Guid costId)
+        {
+            try
+            {
+                await costService.UnarchiveAsync(costId);
+                return Ok();
             }
             catch (Exception e)
             {

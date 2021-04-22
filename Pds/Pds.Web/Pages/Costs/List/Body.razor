@@ -45,16 +45,20 @@ else
                     </span>
                 </td>
                 <td>
-                    @{
-                        var title = string.Empty;
-                        if (cost.Content != null)
-                        {
-                            title = cost.Content.Title;
-                        }
+                    @if (cost.Content != null)
+                    {
+                        <a class="custom-link" href="content/@cost.Content.Id" title="@cost.Content.Title">
+                            <span class="id-row">
+                                @cost.Id.ToShortString()
+                            </span>
+                        </a> 
                     }
-                    <span class="id-row" title="@title">
-                        @cost.Id.ToShortString()
-                    </span>
+                    else
+                    {
+                        <span class="id-row">
+                            @cost.Id.ToShortString()
+                        </span>
+                    }
                 </td>
                 <td class="cost-value-row">
                     <span>@cost.Value.ToString("N0")</span>

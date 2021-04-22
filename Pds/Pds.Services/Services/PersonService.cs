@@ -74,7 +74,7 @@ namespace Pds.Services.Services
         public async Task UnarchiveAsync(Guid personId)
         {
             var person = await unitOfWork.Persons.GetFirstWhereAsync(p => p.Id == personId);
-            if (person != null && person.Status == PersonStatus.Archived)
+            if (person is {Status: PersonStatus.Archived})
             {
                 person.Status = PersonStatus.Active;
                 person.UnarchivedAt = DateTime.UtcNow;

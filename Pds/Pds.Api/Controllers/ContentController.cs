@@ -208,7 +208,7 @@ namespace Pds.Api.Controllers
         /// <returns></returns>
         [HttpGet("{contentId}")]
         [ProducesResponseType(typeof(GetContentResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetContent(Guid contentId)
+        public async Task<IActionResult> Get(Guid contentId)
         {
             try
             {

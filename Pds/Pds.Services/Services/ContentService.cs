@@ -157,18 +157,16 @@ namespace Pds.Services.Services
 
         public async Task ArchiveAsync(Guid contentId)
         {
-            var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            var content = await unitOfWork.Content.GetFullByIdAsync(contentId);
             if (content is {Status: ContentStatus.Active} && (content.Bill == null || content.Bill.Status == BillStatus.Paid))
             {
-                content.Status = ContentStatus.Archived;
-                content.UpdatedAt = DateTime.UtcNow;
-                await unitOfWork.Content.UpdateAsync(content);
+                await unitOfWork.Content.FullArchiveAsync(content);
             }
         }
 
         public async Task UnarchiveAsync(Guid contentId)
         {
-            var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            var content = await unitOfWork.Content.GetFullByIdAsync(contentId);
             if (content is {Status: ContentStatus.Archived})
             {
                 content.Status = ContentStatus.Active;
