@@ -4,6 +4,7 @@
 @using Pds.Api.Contracts.Cost
 @using Pds.Core.Extensions
 @using Pds.Web.Common
+@using Pds.Web.Models.Cost
 @using static Pds.Web.Common.TitleExtension 
 
 @inject IApiClient ApiClient
@@ -11,10 +12,7 @@
 
 <Title>@WithSuffix("Расходы")</Title>
 
-<h4 class="card-header d-flex justify-content-between align-items-center">
-    Список расходов
-    <a href="/costs/add" class="btn btn-success" >Добавить</a>
-</h4>
+
 @if (costsInfo == null)
 {
     <p>
@@ -23,6 +21,18 @@
 }
 else
 {
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+        Список расходов
+            <span class="title-overall-info">
+                @costsInfo.Items.Count(i => i.IsVisible)шт
+                / 
+                $@costsInfo.Items.Where(i => i.IsVisible).Sum(i => i.Value).ToString("N0")
+            </span> 
+        </span>
+        <a href="/costs/add" class="btn btn-success" >Добавить</a>
+    </h4>
+    <Filter OnFilterUpdate="@FilterUpdated"></Filter>
     <table class="table">
         <thead>
         <tr>
@@ -36,7 +46,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var cost in costsInfo.Items)
+        @foreach (var cost in costsInfo.Items.Where(i => i.IsVisible))
         {
             <tr>
                 <td class="paid-date-row">
@@ -45,16 +55,20 @@ else
                     </span>
                 </td>
                 <td>
-                    @{
-                        var title = string.Empty;
-                        if (cost.Content != null)
-                        {
-                            title = cost.Content.Title;
-                        }
+                    @if (cost.Content != null)
+                    {
+                        <a class="custom-link" href="content/@cost.Content.Id" title="@cost.Content.Title">
+                            <span class="id-row">
+                                @cost.Id.ToShortString()
+                            </span>
+                        </a> 
                     }
-                    <span class="id-row" title="@title">
-                        @cost.Id.ToShortString()
-                    </span>
+                    else
+                    {
+                        <span class="id-row">
+                            @cost.Id.ToShortString()
+                        </span>
+                    }
                 </td>
                 <td class="cost-value-row">
                     <span>@cost.Value.ToString("N0")</span>
@@ -89,5 +103,38 @@ else
     private async Task<GetCostsResponse> GetCostsInfo()
     {
         return await ApiClient.Get<GetCostsResponse>(TokenProvider, "costs");
+    }
+
+    private void FilterUpdated(FilterSettings filterSettings)
+    {
+        var selectedCostTypes = filterSettings.CostTypeFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.CostType)
+            .ToList();
+        var selectedBrandsIds = filterSettings.BrandFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i=>i.Id)
+            .ToList();
+        var totalSelectedFiltersCount = 
+            selectedCostTypes.Count + 
+            selectedBrandsIds.Count;
+
+        var itemsToShow = costsInfo.Items
+            .Where(i =>
+                (selectedCostTypes.Contains(i.Type) || selectedCostTypes.Count == 0) &&
+                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
+                (filterSettings.From != null && i.PaidAt.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
+                (filterSettings.To != null && i.PaidAt.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
+
+        foreach (var item in costsInfo.Items)
+        {
+            if (totalSelectedFiltersCount == 0)
+            {
+                item.IsVisible = true;
+                continue;
+            }
+
+            item.IsVisible = itemsToShow.Contains(item);
+        }
     }
 }

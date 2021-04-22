@@ -1,32 +1,29 @@
 ﻿using System;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Pds.Core.Enums;
 
-namespace Pds.Data.Entities
+namespace Pds.Api.Contracts.Cost
 {
-    public class Cost : EntityBase
+    public class EditCostRequest
     {
         [Required]
-        [Column(TypeName = "decimal(18,2)")]
+        public Guid Id { get; set; }
+
+        [Required]
+        [Range(10.00, Double.MaxValue, ErrorMessage = "Значение поля {0} должно быть больше чем {1}.")]
         public decimal Value { get; set; }
 
         public string Comment { get; set; }
-        
+
+        [Required]
         public DateTime PaidAt { get; set; }
-        
+
+        [Required, EnumDataType(typeof(CostType))]
         public CostType Type { get; set; }
 
         [Required]
-        public CostStatus Status { get; set; }
-
         public Guid BrandId { get; set; }
-        
-        public virtual Brand Brand { get; set; }
 
         public Guid? ContentId { get; set; }
-
-        public virtual Content Content { get; set; }
     }
 }

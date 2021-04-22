@@ -13,10 +13,14 @@ namespace Pds.Api.Contracts.Cost
 
         public CostType Type { get; set; }
 
+        public CostStatus Status { get; set; }
+
         public string Comment { get; set; }
 
         public CostContentDto Content { get; set; }
 
         public BrandDto Brand { get; set; }
+        
+        public bool IsVisible { get; set; }
     }
 }
