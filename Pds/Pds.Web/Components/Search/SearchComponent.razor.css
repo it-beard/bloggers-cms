@@ -1,9 +1,17 @@
-﻿.search-btn {
+﻿.search-position {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-button-show{
+    display:none;
+}
+.search-btn {
     margin-left: 10px;
     color: #fff;
     background-color: #1b6ec2;
     height: 38px;
-    position:relative
+    position: relative;
 }
 
 .searchcleaner{

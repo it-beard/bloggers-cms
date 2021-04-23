@@ -1,0 +1,87 @@
+﻿@page "/persons/{personId}"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Person
+@using Pds.Core.Enums
+@using Pds.Core.Exceptions
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+@if (person == null)
+{
+    <p>
+        <em>
+            Подождите, идет загрузка...
+        </em>
+    </p>
+}
+else
+{
+    <Title>@WithSuffix($"Персона \"{person.FullName}\"")</Title>
+
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Персона "@person.FullName"
+        <button @onclick="GoBack" class="btn btn-primary">Назад</button>
+    </h4>
+
+    <div class="page-container">
+
+        <div class="info-item">
+            <div class="info-title">Имя и Фамилия</div>
+            <div class="info-body">
+                @person.FullName
+            </div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-title">Место</div>
+            <div class="info-body">
+                @person.Location
+            </div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-title">Рейтинг</div>
+            <div class="info-body">
+                @person.Rate
+            </div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-title">Информация</div>
+            <div class="info-body">
+                @person.Info
+            </div>
+        </div>
+
+        <div class="info-item">
+            <Actions OnPersonUpdate="@ContentInfoUpdate" CurrentPerson="@person"></Actions>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string PersonId { get; set; }
+    private GetPersonResponse person { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        person = await GetPerson();
+    }
+
+    private async Task<GetPersonResponse> GetPerson()
+    {
+        return await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
+    }
+
+    private async Task ContentInfoUpdate()
+    {
+        person = await GetPerson();
+    }
+
+}

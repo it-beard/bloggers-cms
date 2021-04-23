@@ -61,13 +61,6 @@
     background-color: lightcoral;
     color: white;
 }
-.title-row a {
-    color: #212529;
-    text-decoration: none;
-}
-.title-row a:hover {
-    border-bottom: 2px dotted black;
-}
 
 .actions-row {
     border-left: 2px dotted white;

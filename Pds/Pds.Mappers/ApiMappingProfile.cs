@@ -12,8 +12,8 @@ using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
+using Pds.Services.Models.Cost;
 using Pds.Web.Models.Content;
-using BrandForRadioboxGroupDto = Pds.Api.Contracts.Content.BrandForRadioboxGroupDto;
 using ClientForLookupDto = Pds.Api.Contracts.Content.ClientForLookupDto;
 
 namespace Pds.Mappers
@@ -70,8 +70,7 @@ namespace Pds.Mappers
             CreateMap<Content, GetContentResponse>();
             CreateMap<Content, GetContentForPayResponse>();
 
-            CreateMap<Brand, BrandForRadioboxGroupDto>();
-            CreateMap<Brand, Api.Contracts.Cost.BrandForRadioboxGroupDto>();
+            CreateMap<Brand, Pds.Api.Contracts.BrandDto>();
             CreateMap<Brand, BrandForCheckboxesDto>();
 
             CreateMap<Client, ClientDto>();
@@ -97,10 +96,10 @@ namespace Pds.Mappers
             CreateMap<Bill, GetContentBillForPayResponse>();
 
             CreateMap<Cost, CostDto>();
+            CreateMap<Cost, GetCostResponse>();
             CreateMap<Cost, GetContentCostDto>();
 
             CreateMap<Brand, BrandDto>();
-            CreateMap<Brand, ContentListBrandDto>();
 
             CreateMap<Topic, GetTopicDto>();
 
@@ -136,24 +135,34 @@ namespace Pds.Mappers
 
             #region Contracts to Models
 
+            CreateMap<EditContentBillDto, EditContentBillModel>();
+            CreateMap<EditContentRequest, EditContentModel>();
+            CreateMap<EditClientRequest, EditClientModel>();
+            CreateMap<EditCostRequest, EditCostModel>();
             CreateMap<CreateContentBillDto, CreateContentBillModel>();
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
                     dest => dest.BrandId,
                     opt => opt
                         .MapFrom(p => p.BrandId.Value));
-            CreateMap<EditContentBillDto, EditContentBillModel>();
-            CreateMap<EditContentRequest, EditContentModel>();
-            CreateMap<EditClientRequest, EditClientModel>();
 
             #endregion
 
-            #region Blazor WebAssembly
+            #region Contract to Contract
 
             CreateMap<GetContentResponse, EditContentRequest>();
             CreateMap<GetContentBillDto, EditContentBillDto>();
-            CreateMap<BrandForRadioboxGroupDto, BrandFilterItem>();
+            CreateMap<GetCostResponse, EditCostRequest>();
             CreateMap<GetClientResponse, EditClientRequest>();
+            CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
+            CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
+            CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
+
+            #endregion
+            
+            #region Models to Entities
+
+            CreateMap<EditContentBillModel, Bill>();
 
             #endregion
         }

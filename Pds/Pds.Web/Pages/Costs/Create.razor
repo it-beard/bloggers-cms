@@ -1,6 +1,7 @@
 ﻿@page "/costs/add"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts
 @using Pds.Api.Contracts.Cost
 @using Pds.Core.Enums
 @using Pds.Web.Common
@@ -12,7 +13,7 @@
 
 <Title>@WithSuffix("Добавление клиента")</Title>
 
-@if (cost == null || contents == null)
+@if (brands == null || contents == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -87,7 +88,7 @@ else
     private CreateCostRequest cost = new();
     private EditContext editContext;
     private bool isCreateButtonDisabled;
-    private List<BrandForRadioboxGroupDto> brands;
+    private List<BrandDto> brands;
     private List<ContentForLookupDto> contents;
     
     protected override async Task OnInitializedAsync()
@@ -108,9 +109,9 @@ else
         }
     }
 
-    private async Task<List<BrandForRadioboxGroupDto>> GetBrandsAsync()
+    private async Task<List<BrandDto>> GetBrandsAsync()
     {
-        return await ApiClient.Get<List<BrandForRadioboxGroupDto>>(TokenProvider, "content/get-brands");
+        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
     }
 
     private async Task<List<ContentForLookupDto>> GetContentsAsync()

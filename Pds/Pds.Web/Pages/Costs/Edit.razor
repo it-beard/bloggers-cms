@@ -1,0 +1,152 @@
+﻿@page "/costs/{costId}/edit"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts
+@using Pds.Api.Contracts.Cost
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+@using AutoMapper
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IMapper Mapper
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Редактирование расхода")</Title>
+
+@if (cost == null || brands == null || contents == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Редактирование расхода
+        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+    </h4>
+
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
+        <div class="form-group">
+            <InputRadioGroup Name="brand" @bind-Value="cost.BrandId">
+                @foreach (var brand in brands)
+                {
+                    var id = $"brand_{brand.Id.ToString()}";
+                    <InputRadio Name="brand" class="btn-check" Value="brand.Id" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@brand.Name</label>
+                }
+            </InputRadioGroup>
+        </div>
+        
+        <div class="form-group">
+            <InputRadioGroup Name="cost-type" @bind-Value="cost.Type">
+                @foreach (var costType in (CostType[])Enum
+                    .GetValues(typeof(CostType)))
+                {
+                    var id = $"cost_type_{costType.ToString()}";
+                    <InputRadio Name="cost-type" class="btn-check" Value="costType" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.CostTypeToRu(costType)
+                    </label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <label for="cost_value" class="form-label  label-required">Сумма USD:</label>
+            <InputNumber class="form-control cost-value" id="cost_value" @bind-Value="cost.Value"/>
+
+            <label for="cost_date" class="form-label  label-required">Дата:</label>
+            <InputDate class="form-control cost-date" id="cost_date" @bind-Value="cost.PaidAt"/>
+        </div>
+
+        <div class="form-group">
+            <label for="comment" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="cost.Comment" rows="3"/>
+        </div>
+
+        <div class="form-group">
+            <label for="contents" class="form-label">Контент</label>
+            <InputSelect class="form-control" id="contents" @bind-Value="cost.ContentId">
+                @foreach (var content in contents)
+                {
+                    if (content.Id == cost.ContentId)
+                    {
+                        <option value="@content.Id" selected>@content.Title</option>
+                    }
+                    else
+                    {
+                        <option value="@content.Id">@content.Title</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isSaveButtonDisabled">Сохранить</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string CostId { get; set; }
+    private EditCostRequest cost;
+    private EditContext editContext;
+    private ValidationMessageStore msgStore;
+    private bool isSaveButtonDisabled;
+    private List<BrandDto> brands;
+    private List<ContentForLookupDto> contents;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        isSaveButtonDisabled = false;
+        cost = await GetCost();
+        brands = await GetBrandsAsync();
+        contents = await GetContentsAsync();
+        editContext = new EditContext(cost);
+        msgStore = new ValidationMessageStore(editContext);
+    }
+    
+    private async Task HandleSubmitAsync()
+    {
+        msgStore.Clear();
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isSaveButtonDisabled = true;
+            var result = await ApiClient.Put<object, EditCostRequest>(TokenProvider, "costs", cost);
+            isSaveButtonDisabled = false;
+            if (result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/costs");
+            }
+            else
+            {
+                result.AddErrors(msgStore, editContext);
+            }
+        }
+    }
+
+    private async Task<List<BrandDto>> GetBrandsAsync()
+    {
+        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
+    }
+
+    private async Task<List<ContentForLookupDto>> GetContentsAsync()
+    {
+        return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, "costs/get-contents");
+    }
+
+    private async Task<EditCostRequest> GetCost()
+    {
+        var clientResponse = await ApiClient.Get<GetCostResponse>(TokenProvider, $"costs/{CostId}");
+        return Mapper.Map<EditCostRequest>(clientResponse);
+    }
+}

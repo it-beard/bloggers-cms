@@ -25,6 +25,11 @@ namespace Pds.Api.Contracts.Content
 
         public DateTime? EndDate { get; set; }
 
+        public bool IsFree { get; set; }
+
+        
+        public Guid? BillId { get; set; }
+
         [ValidateComplexType]
         public EditContentBillDto Bill { get; set; }
 

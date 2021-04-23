@@ -1,11 +1,13 @@
 ﻿using System;
 
-namespace Pds.Api.Contracts.Cost
+namespace Pds.Web.Models.Bill
 {
-    public class BrandForRadioboxGroupDto
+    public class BrandFilterItem
     {
         public Guid Id { get; set; }
 
         public string Name { get; set; }
+
+        public bool IsSelected { get; set; }
     }
 }

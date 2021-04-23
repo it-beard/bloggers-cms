@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Core.Enums;
+using Pds.Core.Exceptions;
 using Pds.Core.Exceptions.Person;
 using Pds.Data;
 using Pds.Data.Entities;
@@ -18,6 +19,11 @@ namespace Pds.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
+        public async Task<Person> GetAsync(Guid personId)
+        {
+            return await unitOfWork.Persons.GetFullByIdAsync(personId);
+        }
+
         public async Task<List<Person>> GetAllAsync()
         {
             return await unitOfWork.Persons.GetAllFullAsync();
@@ -25,9 +31,15 @@ namespace Pds.Services.Services
 
         public async Task<Guid> CreateAsync(Person person)
         {
-            if (person == null) throw new ArgumentNullException(nameof(person));
+            if (person == null)
+            {
+                throw new ArgumentNullException(nameof(person));
+            }
 
-            if (person.Brands.Count == 0) throw new PersonCreateException("Персону нельзя создать без бренда.");
+            if (person.Brands.Count == 0)
+            {
+                throw new PersonCreateException("Персону нельзя создать без бренда.");
+            }
 
             // Restore brands from DB
             var brandsFromApi = person.Brands;
@@ -35,7 +47,10 @@ namespace Pds.Services.Services
             foreach (var brandFromApi in brandsFromApi)
             {
                 var brandFromDb = await unitOfWork.Brands.GetFirstWhereAsync(c => c.Id == brandFromApi.Id);
-                if (brandFromDb != null) brandsFromBd.Add(brandFromDb);
+                if (brandFromDb != null)
+                {
+                    brandsFromBd.Add(brandFromDb);
+                }
             }
 
             person.Brands = brandsFromBd;
@@ -59,7 +74,7 @@ namespace Pds.Services.Services
         public async Task UnarchiveAsync(Guid personId)
         {
             var person = await unitOfWork.Persons.GetFirstWhereAsync(p => p.Id == personId);
-            if (person != null && person.Status == PersonStatus.Archived)
+            if (person is {Status: PersonStatus.Archived})
             {
                 person.Status = PersonStatus.Active;
                 person.UnarchivedAt = DateTime.UtcNow;
@@ -70,20 +85,27 @@ namespace Pds.Services.Services
         public async Task DeleteAsync(Guid personId)
         {
             var person = await unitOfWork.Persons.GetFullByIdAsync(personId);
-            if (person == null) throw new PersonDeleteException("Персона не найдена");
+            if (person == null)
+            {
+                throw new PersonDeleteException("Персона не найдена");
+            }
 
             if (person.Status == PersonStatus.Archived)
+            {
                 throw new PersonDeleteException("Нельзя заархивированную персону.");
+            }
 
-            if (person.Contents is {Count: > 0})
+            if (person.Contents is { Count: > 0 })
+            {
                 throw new PersonDeleteException("Нельзя удалить персону с привязанным контентом.");
+            }
 
             await unitOfWork.Persons.Delete(person);
         }
 
         public async Task<List<Person>> GetPersonsForListsAsync()
         {
-            var persons = new List<Person> {new() {Id = Guid.Empty}};
+            var persons = new List<Person> { new() { Id = Guid.Empty } };
             var personsFromDb = await unitOfWork.Persons.GetForListsAsync();
             persons.AddRange(personsFromDb);
 

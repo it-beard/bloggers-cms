@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
+using Pds.Api.Contracts;
 using Pds.Api.Contracts.Content;
 using Pds.Services.Interfaces;
 using Pds.Services.Models;
@@ -76,7 +77,7 @@ namespace Pds.Api.Controllers
             try
             {
                 var brands = await brandService.GetBrandsForListsAsync();
-                var response = mapper.Map<List<BrandForRadioboxGroupDto>>(brands);
+                var response = mapper.Map<List<BrandDto>>(brands);
 
                 return Ok(response);
             }
@@ -207,7 +208,7 @@ namespace Pds.Api.Controllers
         /// <returns></returns>
         [HttpGet("{contentId}")]
         [ProducesResponseType(typeof(GetContentResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetContent(Guid contentId)
+        public async Task<IActionResult> Get(Guid contentId)
         {
             try
             {

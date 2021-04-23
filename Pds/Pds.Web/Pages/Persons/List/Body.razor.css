@@ -27,6 +27,7 @@
     margin-left: 5px;
     color: #888;
     font-weight: bold;
+    text-decoration: none;
 }
 
 .active {
@@ -41,9 +42,9 @@
     color: #bbb !important;
 }
 
-.archived:hover,
-.archived:hover a,
-.archived:hover span,
-.archived:hover .rate-row {
-    color: black !important;
-}
+    .archived:hover,
+    .archived:hover a,
+    .archived:hover span,
+    .archived:hover .rate-row {
+        color: black !important;
+    }

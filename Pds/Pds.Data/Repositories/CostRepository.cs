@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,20 @@ namespace Pds.Data.Repositories
         {
             this.context = context;
         }
-        
+
+        public async Task<Cost> GetFullByIdAsync(Guid costId)
+        {
+            return await context.Costs
+                .Include(c => c.Brand)
+                .Include(c => c.Content)
+                .FirstOrDefaultAsync(c => c.Id == costId);
+        }
+
         public async Task<List<Cost>> GetAllOrderByDateDescAsync()
         {
             return await context.Costs
                 .Include(b=>b.Content)
+                .Include(b=>b.Brand)
                 .OrderByDescending(p =>p.PaidAt)
                 .ToListAsync();
         }

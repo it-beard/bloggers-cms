@@ -5,17 +5,13 @@
 @using Pds.Core.Enums
 @using Pds.Core.Extensions
 @using Pds.Web.Common
+@using Pds.Web.Models.Bill
 @using static Pds.Web.Common.TitleExtension 
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
 <Title>@WithSuffix("Доходы")</Title>
-
-<h4 class="card-header d-flex justify-content-between align-items-center">
-    Список доходов
-    <a href="/bills/add" class="btn btn-success" >Добавить</a>
-</h4>
 @if (billsInfo == null)
 {
     <p>
@@ -24,6 +20,18 @@
 }
 else
 {
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+        Список доходов 
+            <span class="title-overall-info">
+                @billsInfo.Items.Count(i => i.IsVisible)шт
+                / 
+                $@billsInfo.Items.Where(i => i.IsVisible).Sum(i => i.Value).ToString("N0")
+            </span> 
+        </span>
+        <a href="/bills/add" class="btn btn-success" >Добавить</a>
+    </h4>
+    <Filter OnFilterUpdate="@FilterUpdated"></Filter>
     <table class="table">
         <thead>
         <tr>
@@ -31,12 +39,13 @@ else
             <th class="id-header">ID</th>
             <th class="bill-cost-header">Сколько</th>
             <th>Тип</th>
+            <th>Бренд</th>
             <th>Комментарий</th>
             <th class="text-center actions-header">Действия</th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var bill in billsInfo.Items)
+        @foreach (var bill in billsInfo.Items.Where(i => i.IsVisible))
         {
             <tr>
                 <td class="paid-date-row">
@@ -45,14 +54,7 @@ else
                     </span>
                 </td>
                 <td>
-                    @{
-                        var title = string.Empty;
-                        if (bill.Content != null)
-                        {
-                            title = bill.Content.Title;
-                        }
-                    }
-                    <span class="id-row" title="@title">
+                    <span class="id-row">
                         @bill.Id.ToShortString()
                     </span>
                 </td>
@@ -63,8 +65,18 @@ else
                     </i>
                 </td>
                 <td>
-                    @EnumsTranslator.BillTypeToRu(bill.Type)
+                    @if (bill.Content != null)
+                    {
+                        <a class="custom-link" href="content/@bill.Content.Id" title="@bill.Content.Title">
+                            @EnumsTranslator.BillTypeToRu(bill.Type)
+                        </a> 
+                    }
+                    else
+                    {
+                        @EnumsTranslator.BillTypeToRu(bill.Type)
+                    }
                 </td>
+                <td>@bill.Brand.Name</td>
                 <td>@bill.Comment</td>
                 <td class="text-center">
                     <Actions OnClientUpdate="@BillsInfoUpdate" CurrentBill="@bill"></Actions>
@@ -96,5 +108,50 @@ else
     private string GetPaymentTypeClass(PaymentType? type)
     {
         return type == PaymentType.BankAccount ? "yellow" : "red";
+    }
+
+    private void FilterUpdated(FilterSettings filterSettings)
+    {
+        var selectedSocialMediaTypes = filterSettings.SocialMediaFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.SocialMediaType)
+            .ToList();
+        var selectedBillTypes = filterSettings.BillTypeFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.BillType)
+            .ToList();
+        var selectedPaymentTypes = filterSettings.PaymentTypeFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.PaymentType)
+            .ToList();
+        var selectedBrandsIds = filterSettings.BrandFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i=>i.Id)
+            .ToList();
+        var totalSelectedFiltersCount = 
+            selectedSocialMediaTypes.Count + 
+            selectedBrandsIds.Count + 
+            selectedPaymentTypes.Count +
+            selectedBillTypes.Count;
+
+        var itemsToShow = billsInfo.Items
+            .Where(i => 
+                (i.Content != null && selectedSocialMediaTypes.Contains(i.Content.SocialMediaType) || selectedSocialMediaTypes.Count == 0) &&
+                (selectedPaymentTypes.Contains(i.PaymentType) || selectedPaymentTypes.Count == 0) &&
+                (selectedBillTypes.Contains(i.Type) || selectedBillTypes.Count == 0) &&
+                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
+                (filterSettings.From != null && i.PaidAt.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
+                (filterSettings.To != null && i.PaidAt.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
+
+        foreach (var item in billsInfo.Items)
+        {
+            if (totalSelectedFiltersCount == 0)
+            {
+                item.IsVisible = true;
+                continue;
+            }
+
+            item.IsVisible = itemsToShow.Contains(item);
+        }
     }
 }

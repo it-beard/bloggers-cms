@@ -80,3 +80,12 @@ a, .btn-link {
     right: 0.75rem;
     top: 0.5rem;
 }
+
+a.custom-link {
+    color: #212529;
+    text-decoration: none;
+}
+
+a.custom-link:hover {
+    border-bottom: 2px dotted black;
+}

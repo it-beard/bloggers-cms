@@ -18,6 +18,9 @@ namespace Pds.Data.Entities
         
         public CostType Type { get; set; }
 
+        [Required]
+        public CostStatus Status { get; set; }
+
         public Guid BrandId { get; set; }
         
         public virtual Brand Brand { get; set; }

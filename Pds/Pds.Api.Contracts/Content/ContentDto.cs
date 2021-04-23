@@ -25,6 +25,6 @@ namespace Pds.Api.Contracts.Content
 
         public ContentListBillDto Bill { get; set; }
 
-        public ContentListBrandDto Brand { get; set; }
+        public BrandDto Brand { get; set; }
     }
 }

@@ -62,11 +62,14 @@ else
         </div>
 
         <div class="form-group">
-            @if (content.Bill != null)
+            @if (!content.IsFree)
             {
                 <label for="bill_cost" class="form-label label-required">Стоимость USD:</label>
                 <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.Bill.Value"/>
             }
+            
+            <InputCheckbox name="isFree" class="btn-check" @bind-Value="content.IsFree" Id="content_is_free"/>
+            <label class="btn btn-secondary btn-free btn-sm" for="content_is_free">Бесплатно</label>
 
             <label for="release_date" class="form-label label-required">Когда:</label>
             <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
@@ -75,48 +78,48 @@ else
             <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDate"/>
         </div>
 
-        @if (content.Bill != null)
-                {
-                    <div class="form-group">
-                        <label for="clients" class="form-label label-required">Клиент</label>
-                        <InputSelect class="form-control" id="clients" @bind-Value="content.Bill.ClientId" se>
-                            @foreach (var client in clients)
-                            {
-                                if (client.Id == content.Bill.ClientId)
-                                {
-                                    <option value="@client.Id" selected>@client.Name</option>
-                                }
-                                else
-                                {
-                                    <option value="@client.Id">@client.Name</option>
-                                }
-                            }
-                        </InputSelect>
-                    </div>
-        
-                    <div class="form-group">
-                        <label for="bill_contact_name" class="form-label label-required">ФИО представителя</label>
-                        <InputText class="form-control" id="bill_contact_name" @bind-Value="content.Bill.ContactName"/>
-                    </div>
-        
-                    <div class="form-group">
-                        <label for="bill_contact" class="form-label label-required">Контакт представителя</label>
-                        <InputText class="form-control" id="bill_contact" @bind-Value="content.Bill.Contact"/>
-                        <div class="contact-type">
-                            <InputRadioGroup Name="contact-type" @bind-Value="content.Bill.ContactType">
-                                @foreach (var type in (ContactType[])Enum
-                                    .GetValues(typeof(ContactType)))
-                                {
-                                    var id = $"contact-type{type.ToString()}";
-                                    <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
-                                    <label class="btn btn-secondary btn-sm" for="@id">
-                                        @EnumsTranslator.ContactTypeToRu(type)
-                                    </label>
-                                }
-                            </InputRadioGroup>
-                        </div>
-                    </div>
-                }
+        @if (!content.IsFree)
+        {
+            <div class="form-group">
+                <label for="clients" class="form-label label-required">Клиент</label>
+                <InputSelect class="form-control" id="clients" @bind-Value="content.Bill.ClientId" se>
+                    @foreach (var client in clients)
+                    {
+                        if (client.Id == content.Bill.ClientId)
+                        {
+                            <option value="@client.Id" selected>@client.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@client.Id">@client.Name</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="form-group">
+                <label for="bill_contact_name" class="form-label label-required">ФИО представителя</label>
+                <InputText class="form-control" id="bill_contact_name" @bind-Value="content.Bill.ContactName"/>
+            </div>
+
+            <div class="form-group">
+                <label for="bill_contact" class="form-label label-required">Контакт представителя</label>
+                <InputText class="form-control" id="bill_contact" @bind-Value="content.Bill.Contact"/>
+                <div class="contact-type">
+                    <InputRadioGroup Name="contact-type" @bind-Value="content.Bill.ContactType">
+                        @foreach (var type in (ContactType[])Enum
+                            .GetValues(typeof(ContactType)))
+                        {
+                            var id = $"contact-type{type.ToString()}";
+                            <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
+                            <label class="btn btn-secondary btn-sm" for="@id">
+                                @EnumsTranslator.ContactTypeToRu(type)
+                            </label>
+                        }
+                    </InputRadioGroup>
+                </div>
+            </div>
+        }
 
         <div class="form-group">
             <label for="comment" class="form-label">Комментарий</label>
@@ -169,6 +172,7 @@ else
 
     private async Task HandleSubmitAsync()
     {
+        content.Bill = content.IsFree ? null : content.Bill;
         var isValid = editContext.Validate();
 
         if (isValid)
@@ -182,7 +186,10 @@ else
     private async Task<EditContentRequest> GetContent()
     {
         var contentResponse = await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{ContentId}");
-        return Mapper.Map<EditContentRequest>(contentResponse);
+        var content = Mapper.Map<EditContentRequest>(contentResponse);
+        content.IsFree = content.BillId == null;
+        content.Bill ??= new EditContentBillDto();
+        return content;
     }
 
     private async Task<List<ClientForLookupDto>> GetClients()

@@ -5,6 +5,7 @@
 @using Pds.Web.Models.Content
 @using Microsoft.AspNetCore.Components
 @using AutoMapper
+@using Pds.Api.Contracts
 
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
@@ -64,7 +65,7 @@ else
 
     private EditContext editContext;
     private FilterSettings filterSettings { get; set; }
-    private List<BrandForRadioboxGroupDto> brands { get; set; }
+    private List<BrandDto> brands { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -80,7 +81,7 @@ else
         OnFilterUpdate.InvokeAsync(filterSettings);
     }
 
-    private FilterSettings GetFilterSettings(List<BrandForRadioboxGroupDto> brands)
+    private FilterSettings GetFilterSettings(List<BrandDto> brands)
     {
         var filter = new FilterSettings
         {
@@ -112,8 +113,8 @@ else
         filter.BrandFilterItems.First(b => b.Name == "АйТиБорода").IsSelected = true;
     }
 
-    private async Task<List<BrandForRadioboxGroupDto>> GetBrands()
+    private async Task<List<BrandDto>> GetBrands()
     {
-        return await ApiClient.Get<List<BrandForRadioboxGroupDto>>(TokenProvider, "content/get-brands");
+        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
     }
 }

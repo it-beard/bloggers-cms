@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Pds.Core.Enums;
 using Pds.Core.Exceptions.Content;
 using Pds.Data;
@@ -13,10 +14,12 @@ namespace Pds.Services.Services
     public class ContentService : IContentService
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public ContentService(IUnitOfWork unitOfWork)
+        public ContentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<List<Content>> GetAllAsync()
@@ -31,7 +34,10 @@ namespace Pds.Services.Services
 
         public async Task<Guid> CreateAsync(CreateContentModel model)
         {
-            if (model == null) throw new ArgumentNullException(nameof(model));
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
 
             var content = new Content
             {
@@ -77,14 +83,22 @@ namespace Pds.Services.Services
 
         public async Task<Guid> EditAsync(EditContentModel model)
         {
-            if (model == null) throw new ContentEditException("Модель запроса пуста.");
+            if (model == null)
+            {
+                throw new ContentEditException($"Модель запроса пуста.");
+            }
 
             var content = await unitOfWork.Content.GetByIdWithBillAsync(model.Id);
-
-            if (content == null) throw new ContentEditException($"Контент с id {model.Id} не найден.");
+            
+            if (content == null)
+            {
+                throw new ContentEditException($"Контент с id {model.Id} не найден.");
+            }
 
             if (content.Status == ContentStatus.Archived)
-                throw new ContentEditException("Нельзя редактировать архивный контент.");
+            {
+                throw new ContentEditException($"Нельзя редактировать архивный контент.");
+            }
 
             content.UpdatedAt = DateTime.UtcNow;
             content.Title = model.Title;
@@ -94,13 +108,26 @@ namespace Pds.Services.Services
             content.ReleaseDate = model.ReleaseDate.Date;
             content.EndDate = model.EndDate?.Date;
             content.PersonId = model.PersonId != null && model.PersonId.Value == Guid.Empty ? null : model.PersonId;
-            if (model.Bill != null && content.Bill != null)
+            if (model.Bill != null && content.Bill != null) // Just update existed bill
             {
-                content.Bill.ClientId = model.Bill.ClientId;
-                content.Bill.Contact = model.Bill.Contact;
-                content.Bill.ContactName = model.Bill.ContactName;
-                content.Bill.ContactType = model.Bill.ContactType;
-                content.Bill.Value = model.Bill.Value;
+                content.Bill.ClientId =  model.Bill.ClientId;
+                content.Bill.Contact =  model.Bill.Contact;
+                content.Bill.ContactName =  model.Bill.ContactName;
+                content.Bill.ContactType =  model.Bill.ContactType;
+                content.Bill.Value =  model.Bill.Value;
+                content.Bill.UpdatedAt = DateTime.UtcNow;
+            }
+            else if(model.Bill != null && content.Bill == null) // Create new bill
+            {
+                content.Bill = mapper.Map<Bill>(model.Bill);
+                content.Bill.Id = Guid.NewGuid();
+                content.Bill.Type = BillType.Content;
+                content.Bill.BrandId = content.BrandId;
+                content.Bill.CreatedAt = DateTime.UtcNow;
+            }
+            else if(model.Bill == null && content.Bill != null) // Delete bill
+            {
+                content.Bill = null;
             }
 
             var result = await unitOfWork.Content.FullUpdateAsync(content);
@@ -111,36 +138,35 @@ namespace Pds.Services.Services
         public async Task DeleteAsync(Guid clientId)
         {
             var content = await unitOfWork.Content.GetByIdWithBillWithCostsAsync(clientId);
-            var bill = content?.BillId != null
-                ? await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == content.BillId)
-                : null;
+            var bill = content?.BillId != null ? 
+                await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == content.BillId) : 
+                null;
 
-            if (content == null) throw new ContentDeleteException("Контент не найден.");
+            if (content == null)
+            {
+                throw new ContentDeleteException("Контент не найден.");
+            }
 
             if (content.Status == ContentStatus.Archived)
+            {
                 throw new ContentDeleteException("Нельзя удалить заархивированый контент.");
-
-            if (bill != null && content.Bill.Status == BillStatus.Paid)
-                throw new ContentDeleteException("Нельзя удалить оплаченный контент.");
+            }
 
             await unitOfWork.Content.FullDeleteAsync(content);
         }
 
         public async Task ArchiveAsync(Guid contentId)
         {
-            var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
-            if (content is {Status: ContentStatus.Active} &&
-                (content.Bill == null || content.Bill.Status == BillStatus.Paid))
+            var content = await unitOfWork.Content.GetFullByIdAsync(contentId);
+            if (content is {Status: ContentStatus.Active} && (content.Bill == null || content.Bill.Status == BillStatus.Paid))
             {
-                content.Status = ContentStatus.Archived;
-                content.UpdatedAt = DateTime.UtcNow;
-                await unitOfWork.Content.UpdateAsync(content);
+                await unitOfWork.Content.FullArchiveAsync(content);
             }
         }
 
         public async Task UnarchiveAsync(Guid contentId)
         {
-            var content = await unitOfWork.Content.GetByIdWithBillAsync(contentId);
+            var content = await unitOfWork.Content.GetFullByIdAsync(contentId);
             if (content is {Status: ContentStatus.Archived})
             {
                 content.Status = ContentStatus.Active;

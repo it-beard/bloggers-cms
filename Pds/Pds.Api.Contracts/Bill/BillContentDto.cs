@@ -8,5 +8,7 @@ namespace Pds.Api.Contracts.Bill
         public Guid Id { get; set; }
 
         public string Title { get; set; }
+
+        public SocialMediaType SocialMediaType { get; set; }
     }
 }
