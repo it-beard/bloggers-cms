@@ -34,6 +34,10 @@ namespace Pds.Mappers
                     dest => dest.Location,
                     opt => opt
                         .MapFrom(p => $"{p.Country} {p.City}"));
+                //.ForMember(
+                //    dest => dest.Brands,
+                //    opt => opt.MapFrom(p => p.Brands)
+                //);
             CreateMap<Person, PersonForLookupDto>()
                 .ForMember(
                     dest => dest.FullName,
@@ -144,9 +148,10 @@ namespace Pds.Mappers
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
+            CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Person.BrandFilterItem>();
 
             #endregion
-            
+
             #region Models to Entities
 
             CreateMap<EditContentBillModel, Bill>();

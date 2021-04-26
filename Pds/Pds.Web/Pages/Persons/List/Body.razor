@@ -9,6 +9,9 @@
 @using Web.Components.Sorting.QueryCreators
 @using Pds.Web.Components.Sorting.QueryCreators.Person
 @using Pds.Web.Components.Search.Person
+@using Pds.Web.Models.Person
+@using System.Collections.Generic
+@using Calabonga.PredicatesBuilder
 @using static Pds.Web.Common.TitleExtension
 
 @inject IApiClient ApiClient
@@ -28,6 +31,7 @@
 }
 else
 {
+    <Pds.Web.Pages.Persons.List.Filter OnFilterUpdate="@FilterUpdated" />
     <Pds.Web.Components.Search.SearchComponent Search="SearchPerson" />
 
     <table class="table">
@@ -54,7 +58,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var person in personsList)
+            @foreach (var person in personsList.Where(p=>p.IsVisible))
             {
                 <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
                     <td class="person-row">
@@ -97,6 +101,7 @@ else
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
     private OrderSetting<PersonsFieldName>[] orderSettings;
+    private SearchSettings searchSettings;
     private FilterSettings filterSettings;
 
     protected override async Task OnInitializedAsync()
@@ -112,7 +117,7 @@ else
             new OrderSetting<PersonsFieldName>()
         };
 
-        filterSettings = new FilterSettings
+        searchSettings = new SearchSettings
         {
             Search = string.Empty
         };
@@ -125,7 +130,16 @@ else
         personsInfo = await GetPersonsInfo();
         totalElements = personsInfo.Total;
         SetDefaultPaging();
-        GetPersonsList();
+
+        if (filterSettings is  not null)
+        {
+            FilterUpdated(filterSettings);
+        }
+        else
+        {
+
+            GetPersonsList();
+        }
     }
 
     private async Task<GetPersonsResponse> GetPersonsInfo()
@@ -157,7 +171,7 @@ else
                 .ThenBy(p => p.FullName);
         }
 
-        var searchLine = filterSettings.Search?.ToLower();
+        var searchLine = searchSettings.Search?.ToLower();
         if(!string.IsNullOrWhiteSpace(searchLine))
         {
             var searchPredicate = new PersonsSearch().GetSearchPredicate(searchLine);
@@ -168,8 +182,9 @@ else
             personsList = query.ToArray();
         }
 
-        totalElements = personsList.Length;
+        totalElements = personsList.Where(p=>p.IsVisible).ToArray().Length;
         personsList = personsList
+            .Where(p=>p.IsVisible)
             .Skip(pageSettings.Offset)
             .Take(pageSettings.Limit)
             .ToArray();
@@ -201,7 +216,39 @@ else
     private void SearchPerson(string searchText)
     {
         SetDefaultPaging();
-        filterSettings.Search = searchText;
+        searchSettings.Search = searchText;
+        GetPersonsList();
+    }
+
+    private void FilterUpdated(FilterSettings filterSettings)
+    {
+        this.filterSettings = filterSettings;
+        var predicate = PredicateBuilder.False<PersonDto>();
+
+        foreach (var brand in filterSettings.BrandFilterItems.Where(i => i.IsSelected))
+        {
+            predicate = predicate.Or(r => r.Brands.Exists(s => s.Id == brand.Id));
+        }
+
+        var itemsToShow = personsInfo.Items.AsQueryable<PersonDto>().Where(predicate).ToList();
+
+        var totalSelectedFiltersCount = filterSettings.BrandFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.Id)
+            .Count();
+
+        foreach (var item in personsInfo.Items)
+        {
+            if (totalSelectedFiltersCount == 0)
+            {
+                item.IsVisible = true;
+                continue;
+            }
+
+            item.IsVisible = itemsToShow.Contains(item);
+        }
+
+        SetDefaultPaging();
         GetPersonsList();
     }
 
@@ -224,5 +271,4 @@ else
     {
         person = await Getperson();
     }
-
 }
