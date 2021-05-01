@@ -20,14 +20,14 @@ namespace Pds.Services.Services
         public async Task<Guid> ArchiveAsync(Guid topicId)
         {
             var topicFromDb = await unitOfWork.Topics.GetFirstWhereAsync(t => topicId == t.Id);
-            topicFromDb.Archive();
+            topicFromDb.Status = TopicStatus.Archived;
             return await UpdateAsync(topicFromDb);
         }
 
         public async Task<Guid> UnarchiveAsync(Guid topicId)
         {
             var topicFromDb = await unitOfWork.Topics.GetFirstWhereAsync(t => topicId == t.Id);
-            topicFromDb.Unarchive();
+            topicFromDb.Status = TopicStatus.Active;
             return await UpdateAsync(topicFromDb);
         }
 
@@ -73,10 +73,10 @@ namespace Pds.Services.Services
             switch (oldTopic.Status)
             {
                 case TopicStatus.Active when topic.Status == TopicStatus.Archived:
-                    topic.Archive();
+                    topic.Status = TopicStatus.Archived;
                     break;
                 case TopicStatus.Archived when topic.Status == TopicStatus.Active:
-                    topic.Unarchive();
+                    topic.Status = TopicStatus.Active;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(
