@@ -22,7 +22,7 @@ namespace Pds.Data.Repositories
                 .AsNoTracking()
                 .Include(t => t.People);
 
-        public async Task<Topic> GetFirstWithPeople(Expression<Func<Topic, bool>> match)
+        public async Task<Topic> GetFirstWithPeopleAsync(Expression<Func<Topic, bool>> match)
         {
             return await IncludeQueryable
                 .FirstOrDefaultAsync(match);

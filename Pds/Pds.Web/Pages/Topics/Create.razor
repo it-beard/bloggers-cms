@@ -23,7 +23,7 @@
 }
 else
 {
-    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
             <label for="name" class="form-label">Имя</label>
             <InputText class="form-control" id="name" @bind-Value="request.Name"/>
@@ -62,13 +62,13 @@ else
     protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
-        var getPersonsResponse = await GetPersonResponse();
+        var getPersonsResponse = await GetPersonResponseAsync();
         checkBoxPeople = getPersonsResponse.Items.Select(p => new CheckBoxPersonDto(p)).ToList();
         request = new CreateTopicRequest();
         editContext = new EditContext(request);
     }
 
-    private async Task HandleSubmit()
+    private async Task HandleSubmitAsync()
     {
         var isValid = editContext.Validate();
 
@@ -81,7 +81,7 @@ else
         }
     }
 
-    private async Task<GetPersonsResponse> GetPersonResponse()
+    private async Task<GetPersonsResponse> GetPersonResponseAsync()
     {
         return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons/");
     }

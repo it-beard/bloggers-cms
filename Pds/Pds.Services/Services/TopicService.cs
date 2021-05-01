@@ -34,7 +34,7 @@ namespace Pds.Services.Services
         public async Task<Guid> CreateAsync(Topic topic)
         {
             topic.CreatedAt = DateTime.UtcNow;
-            topic.People = await AssignPeopleFromDb(topic.People);
+            topic.People = await AssignPeopleFromDbAsync(topic.People);
             var createdTopic = await unitOfWork.Topics.InsertAsync(topic);
             return createdTopic.Id;
         }
@@ -44,9 +44,9 @@ namespace Pds.Services.Services
             return unitOfWork.Topics.GetAllAsync();
         }
 
-        public Task<Topic> FindById(Guid id)
+        public Task<Topic> FindByIdAsync(Guid id)
         {
-            return unitOfWork.Topics.GetFirstWithPeople(t => t.Id == id);
+            return unitOfWork.Topics.GetFirstWithPeopleAsync(t => t.Id == id);
         }
 
         public async Task<Guid> UpdateAsync(Topic topic)
@@ -56,7 +56,7 @@ namespace Pds.Services.Services
                 throw new InvalidOperationException("Topic not found");
             HandleCreatedAtAndUpdatedAtChanges(topic, oldTopic);
             HandleStatusChanges(topic, oldTopic);
-            topic.People = await AssignPeopleFromDb(topic.People);
+            topic.People = await AssignPeopleFromDbAsync(topic.People);
             var updatedTopic = await unitOfWork.Topics.UpdateAsync(topic);
             return updatedTopic.Id;
         }
@@ -86,7 +86,7 @@ namespace Pds.Services.Services
             }
         }
 
-        private async Task<ICollection<Person>> AssignPeopleFromDb(IEnumerable<Person> people)
+        private async Task<ICollection<Person>> AssignPeopleFromDbAsync(IEnumerable<Person> people)
         {
             var peopleFromDb = new List<Person>();
 

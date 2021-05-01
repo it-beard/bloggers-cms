@@ -27,7 +27,7 @@ namespace Pds.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(CreateTopicResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateTopic(CreateTopicRequest request)
+        public async Task<IActionResult> CreateTopicAsync(CreateTopicRequest request)
         {
             try
             {
@@ -43,11 +43,11 @@ namespace Pds.Api.Controllers
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(UpdateTopicResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateTopic([FromRoute] Guid id, UpdateTopicRequest request)
+        public async Task<IActionResult> UpdateTopicAsync([FromRoute] Guid id, UpdateTopicRequest request)
         {
             try
             {
-                var topic = await topicService.FindById(id);
+                var topic = await topicService.FindByIdAsync(id);
                 var mappedTopic = mapper.Map(request, topic);
                 var result = await topicService.UpdateAsync(mappedTopic);
                 return Ok(new UpdateTopicResponse(result));
@@ -60,7 +60,7 @@ namespace Pds.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(GetTopicCollectionResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetTopics()
+        public async Task<IActionResult> GetTopicsAsync()
         {
             try
             {
@@ -76,11 +76,11 @@ namespace Pds.Api.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(GetTopicResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> FindById([FromRoute] Guid id)
+        public async Task<IActionResult> FindByIdAsync([FromRoute] Guid id)
         {
             try
             {
-                var result = await topicService.FindById(id);
+                var result = await topicService.FindByIdAsync(id);
                 var response = mapper.Map<GetTopicResponse>(result);
                 return Ok(response);
             }
@@ -92,7 +92,7 @@ namespace Pds.Api.Controllers
 
         [HttpPost("archive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Archive([FromBody] Guid id)
+        public async Task<IActionResult> ArchiveAsync([FromBody] Guid id)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace Pds.Api.Controllers
 
         [HttpPost("unarchive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Unarchive([FromBody] Guid id)
+        public async Task<IActionResult> UnarchiveAsync([FromBody] Guid id)
         {
             try
             {

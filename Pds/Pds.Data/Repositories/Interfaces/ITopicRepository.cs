@@ -7,6 +7,6 @@ namespace Pds.Data.Repositories.Interfaces
 {
     public interface ITopicRepository : IRepositoryBase<Topic>
     {
-        Task<Topic> GetFirstWithPeople(Expression<Func<Topic, bool>> match);
+        Task<Topic> GetFirstWithPeopleAsync(Expression<Func<Topic, bool>> match);
     }
 }
