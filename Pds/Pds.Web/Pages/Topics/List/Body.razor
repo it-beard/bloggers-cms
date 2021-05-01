@@ -61,7 +61,7 @@ else
                 <td>@topic.Name</td>
                 <td>@EnumsTranslator.TopicStatusToRu(topic.Status)</td>
                 <td>
-                    <Actions CurrentTopic="topic" OnTopicUpdate="FetchTopics"/>
+                    <Actions CurrentTopic="topic" OnTopicUpdate="() => FetchTopicsAsync()"/>
                 </td>
             </tr>
         }
@@ -117,12 +117,12 @@ else
             Search = string.Empty
         };
 
-        await FetchTopics();
+        await FetchTopicsAsync();
     }
 
-    private async Task FetchTopics()
+    private async Task FetchTopicsAsync()
     {
-        response = await GetTopicsInfo();
+        response = await GetTopicsInfoAsync();
         totalElements = response.Items.Count;
         ApplySettings();
     }
@@ -190,7 +190,7 @@ else
         ApplySettings();
     }
 
-    private async Task<GetTopicCollectionResponse> GetTopicsInfo()
+    private async Task<GetTopicCollectionResponse> GetTopicsInfoAsync()
     {
         return await ApiClient.Get<GetTopicCollectionResponse>(TokenProvider, "topics");
     }

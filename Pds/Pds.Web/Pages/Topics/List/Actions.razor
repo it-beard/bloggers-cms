@@ -20,13 +20,13 @@
 
     @if (CurrentTopic.Status == TopicStatus.Archived)
     {
-        <button title="Разархивировать" class="btn btn-secondary btn-sm" @onclick="OnUnarchive">
+        <button title="Разархивировать" class="btn btn-secondary btn-sm" @onclick="OnUnarchiveAsync">
             <i class="bi bi-trash"></i>
         </button>
     }
     else
     {
-        <button title="Архивировать" class="btn btn-danger btn-sm" @onclick="OnArchive">
+        <button title="Архивировать" class="btn btn-danger btn-sm" @onclick="OnArchiveAsync">
             <i class="bi bi-trash-fill"></i>
         </button>
     }
@@ -51,7 +51,7 @@
         NavigationManager.NavigateTo($"topics/edit/{CurrentTopic.Id}");
     }
 
-    private async Task OnArchive()
+    private async Task OnArchiveAsync()
     {
         var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать тему {CurrentTopic.Name}?");
         if (confirmed)
@@ -61,7 +61,7 @@
         }
     }
 
-    private async Task OnUnarchive()
+    private async Task OnUnarchiveAsync()
     {
         var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите разархивировать тему {CurrentTopic.Name}?");
         if (confirmed)

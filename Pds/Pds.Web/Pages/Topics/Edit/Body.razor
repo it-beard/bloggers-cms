@@ -26,7 +26,7 @@
 }
 else
 {
-    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
             <label for="name" class="form-label">Имя</label>
             <InputText class="form-control" id="name" @bind-Value="request.Name"/>
@@ -70,7 +70,7 @@ else
         
         <div class="form-group" id="people">
             <label class="form-label topic-links">Персоны:</label>
-            <PersonTopicSelectTable OnPersonUpdate="RefreshPeopleCheckBox" People="@checkBoxPeople"></PersonTopicSelectTable>
+            <PersonTopicSelectTable OnPersonUpdate="() => RefreshPeopleCheckBoxAsync()" People="@checkBoxPeople"></PersonTopicSelectTable>
         </div>
 
         <DataAnnotationsValidator/>
@@ -95,7 +95,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
-        topicResponse = await GetTopicResponse();
+        topicResponse = await GetTopicResponseAsync();
         if (topicResponse is null)
         {
             NavigationManager.NavigateTo("/topics");
@@ -107,15 +107,15 @@ else
             Status = topicResponse.Status
         };
         editContext = new EditContext(request);
-        await RefreshPeopleCheckBox();
+        await RefreshPeopleCheckBoxAsync();
     }
 
-    private async Task RefreshPeopleCheckBox()
+    private async Task RefreshPeopleCheckBoxAsync()
     {
-        checkBoxPeople = await GetPersonResponse();
+        checkBoxPeople = await GetPersonResponseAsync();
     }
     
-    private async Task HandleSubmit()
+    private async Task HandleSubmitAsync()
     {
         var isValid = editContext.Validate();
 
@@ -133,12 +133,12 @@ else
         }
     }
 
-    private async Task<GetTopicResponse> GetTopicResponse()
+    private async Task<GetTopicResponse> GetTopicResponseAsync()
     {
         return await ApiClient.Get<GetTopicResponse>(TokenProvider, $"topics/{{{Id}}}");
     }
 
-    private async Task<List<CheckBoxPersonDto>> GetPersonResponse()
+    private async Task<List<CheckBoxPersonDto>> GetPersonResponseAsync()
     {
         var response =  await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons/");
         return response.Items
@@ -150,6 +150,4 @@ else
                 })
             .ToList();
     }
-
-    
 }
