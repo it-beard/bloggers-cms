@@ -22,6 +22,10 @@
     font-weight: bold;
 }
 
+.location-row {
+    min-width: 80px;
+}
+
 .person-row .contents {
     font-size: 0.75rem;
     margin-left: 5px;
@@ -42,9 +46,18 @@
     color: #bbb !important;
 }
 
-    .archived:hover,
-    .archived:hover a,
-    .archived:hover span,
-    .archived:hover .rate-row {
-        color: black !important;
-    }
+.archived:hover,
+.archived:hover a,
+.archived:hover span,
+.archived:hover .rate-row {
+    color: black !important;
+}
+
+.title-overall-info{
+    font-style: italic;
+    font-size: 1rem;
+    background-color: green;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #eee;
+}

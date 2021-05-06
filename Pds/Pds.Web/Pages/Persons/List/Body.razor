@@ -20,10 +20,7 @@
 
 <Title>@WithSuffix("Персоны")</Title>
 
-<h4 class="card-header d-flex justify-content-between align-items-center">
-    Список персон
-    <a href="/persons/add" class="btn btn-success">Добавить</a>
-</h4>
+
 @if (personsInfo == null)
 {
     <p>
@@ -32,8 +29,18 @@
 }
 else
 {
-    <Filter OnFilterUpdate="@FilterUpdated" />
-    <SearchComponent Search="SearchPerson" />
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            Список персон
+            <span class="title-overall-info">
+                @{ var overallCount = $"{personsList.Length}шт";}
+                @overallCount
+            </span> 
+        </span>
+        <a href="/persons/add" class="btn btn-success">Добавить</a>
+    </h4>
+
+    <Filter OnFilterUpdate="@FilterUpdated" OnSearch="@OnSearch" />
 
     <table class="table">
         <thead>
@@ -63,13 +70,13 @@ else
             {
                 <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
                     <td class="person-row">
-                        <a href="persons/@person.Id">@person.FullName</a>
+                        <a class="custom-link" href="persons/@person.Id">@person.FullName</a>
                         <span class="contents">
                             (@person.Contents.Count)
                         </span>
                     </td>
                     <td class="rate-row">@person.Rate</td>
-                    <td>@person.Location</td>
+                    <td class="location-row">@person.Location</td>
                     <td>@person.Info</td>
                     <td>
                         @foreach (var resource in person.Resources)
@@ -87,7 +94,8 @@ else
         </tbody>
     </table>
     <CascadingValue Value="isPagingStateHasChanged">
-        <PagingComponent PageSizeList="pageSizesList"
+        <PagingComponent PageSizeList="@pageSizesList"
+                         DefaultPageSize="@defaultPageSize"
                          TotalItems="totalElements"
                          Radius="2"
                          Pagination="Pagination" />
@@ -97,7 +105,8 @@ else
 @code {
     private GetPersonsResponse personsInfo;
     private PersonDto[] personsList;
-    private readonly int[] pageSizesList = { 10, 30, 50, 100 };
+    private static readonly int[] pageSizesList = { 10, 30, 50, 100 };
+    private readonly int defaultPageSize = pageSizesList[1];
     private int totalElements;
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
@@ -109,7 +118,7 @@ else
     {
         pageSettings = new PageSettings
         {
-            Limit = pageSizesList[0],
+            Limit = defaultPageSize,
             Offset = 0
         };
 
@@ -228,7 +237,7 @@ else
         GetPersonsList();
     }
 
-    private void SearchPerson(string searchText)
+    private void OnSearch(string searchText)
     {
         SetDefaultPaging();
         searchSettings.Search = searchText;
@@ -247,5 +256,6 @@ else
     {
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
+        pageSettings.Limit = defaultPageSize;
     }
 }

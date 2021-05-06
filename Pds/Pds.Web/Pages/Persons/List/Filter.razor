@@ -19,9 +19,10 @@
 }
 else
 {
-    <div class="">
+    <div class="filter">
         <EditForm EditContext="@editContext">
             <div class="form-group no-wrap">
+                <span class="filter-row-title">Бренд:</span>
                 @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
                 {
                     var id = $"sm_type_{brandFilterItem.Id.ToString()}";
@@ -30,16 +31,17 @@ else
                         @brandFilterItem.Name
                     </label>
                 }
+                <SearchComponent Search="SearchOnChanged" />
             </div>
         </EditForm>
-
     </div>
 }
 
 @code {
-
     [Parameter]
     public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
 
     private EditContext editContext;
     private FilterSettings filterSettings { get; set; }
@@ -57,6 +59,11 @@ else
     private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
     {
         OnFilterUpdate.InvokeAsync(filterSettings);
+    }
+    
+    private void SearchOnChanged(string searchText)
+    {
+        OnSearch.InvokeAsync(searchText);
     }
 
     private FilterSettings GetFilterSettings(List<BrandDto> brands)
