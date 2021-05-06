@@ -16,48 +16,54 @@
         <AccessControl/>
     </div>
 
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door" aria-hidden="true"></span> Главная
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="content">
-                <span class="bi bi-camera-video" aria-hidden="true"></span> Контент
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="clients">
-                <span class="bi bi-building" aria-hidden="true"></span> Клиенты
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="persons">
-                <span class="bi bi-people" aria-hidden="true"></span> Персоны
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="map">
-                <span class="bi bi-map" aria-hidden="true"></span> Карта
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="bills">
-                <span class="bi bi-cash" aria-hidden="true"></span> Доходы
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="costs">
-                <span class="bi bi-basket" aria-hidden="true"></span> Расходы
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <a class="nav-link" href="https://s.itbeard.com/" target="_blank">
-                <span class="bi bi-link-45deg" aria-hidden="true"></span> Сокращатель ссылок
-            </a>
-        </li>
-    </ul>
+    <AuthorizeView>
+        <Authorized>
+            <ul class="nav flex-column">
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="bi bi-house-door" aria-hidden="true"></span> Главная
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="content">
+                        <span class="bi bi-camera-video" aria-hidden="true"></span> Контент
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="clients">
+                        <span class="bi bi-building" aria-hidden="true"></span> Клиенты
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="persons">
+                        <span class="bi bi-people" aria-hidden="true"></span> Персоны
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="map">
+                        <span class="bi bi-map" aria-hidden="true"></span> Карта
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="bills">
+                        <span class="bi bi-cash" aria-hidden="true"></span> Доходы
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="costs">
+                        <span class="bi bi-basket" aria-hidden="true"></span> Расходы
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <a class="nav-link" href="https://s.itbeard.com/" target="_blank">
+                        <span class="bi bi-link-45deg" aria-hidden="true"></span> Сокращатель ссылок
+                    </a>
+                </li>
+            </ul>
+        </Authorized>
+        <NotAuthorized>
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
 
 @code {
