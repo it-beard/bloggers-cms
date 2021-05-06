@@ -55,20 +55,11 @@ else
                     </span>
                 </td>
                 <td>
-                    @if (cost.Content != null)
-                    {
-                        <a class="custom-link" href="content/@cost.Content.Id" title="@cost.Content.Title">
-                            <span class="id-row">
-                                @cost.Id.ToShortString()
-                            </span>
-                        </a> 
-                    }
-                    else
-                    {
+                    <a class="custom-link" href="costs/@cost.Id">
                         <span class="id-row">
                             @cost.Id.ToShortString()
                         </span>
-                    }
+                    </a>
                 </td>
                 <td class="cost-value-row">
                     <span>@cost.Value.ToString("N0")</span>
@@ -77,7 +68,15 @@ else
                     @EnumsTranslator.CostTypeToRu(cost.Type)
                 </td>
                 <td>@cost.Brand.Name</td>
-                <td>@cost.Comment</td>
+                <td>
+                    @if (cost.Content != null)
+                    {
+                        <div>
+                            Контент: <a class="custom-link" href="content/@cost.Content.Id">@cost.Content.Title</a>
+                        </div>
+                    }
+                    @cost.Comment
+                </td>
                 <td class="text-center">
                     <Actions OnCostUpdate="@CostsInfoUpdate" CurrentCost="@cost"></Actions>
                 </td>
