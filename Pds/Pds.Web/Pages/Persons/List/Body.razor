@@ -135,7 +135,6 @@ else
     {
         personsInfo = await GetPersonsInfo();
         SetDefaultPaging();
-
         GetPersonsList();
     }
 
@@ -144,7 +143,7 @@ else
         return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
     }
 
-    public void GetPersonsList()
+    private void GetPersonsList()
     {
         var query = personsInfo.Items
             .AsQueryable();
@@ -155,7 +154,7 @@ else
             .Select(i => i.Id)
             .Count();
 
-        if (filterSettings is not null && totalSelectedFiltersCount > 0)
+        if (totalSelectedFiltersCount > 0)
         {
             var filteringPredicate = PredicateBuilder.False<PersonDto>();
             foreach (var brand in filterSettings.BrandFilterItems.Where(i => i.IsSelected))
@@ -170,7 +169,7 @@ else
         if (orderSettings?.Length > 0)
         {
             var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<PersonDto, PersonDto>>
-{
+            {
                 {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
                 {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
                 {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
@@ -248,19 +247,5 @@ else
     {
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
-    }
-
-    [Parameter]
-    public string PersonId { get; set; }
-    private GetPersonResponse person { get; set; }
-
-    private async Task<GetPersonResponse> Getperson()
-    {
-        return await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
-    }
-
-    private async Task ContentInfoUpdate()
-    {
-        person = await Getperson();
     }
 }
