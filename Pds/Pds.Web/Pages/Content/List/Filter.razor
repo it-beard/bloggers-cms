@@ -21,9 +21,10 @@
 }
 else
 {
-    <div class="">
+    <div class="filter">
         <EditForm EditContext="@editContext">
             <div class="form-group no-wrap">
+                <span class="filter-row-title">Бренд:</span>
                 @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
                 {
                     var id = $"sm_type_{brandFilterItem.Id.ToString()}";
@@ -34,6 +35,7 @@ else
                 }
             </div>
             <div class="form-group no-wrap">
+                <span class="filter-row-title">Соцсеть:</span>
                 @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
                 {
                     var id = $"sm_type_{smFilterItem.SocialMediaType.ToString()}";
@@ -44,6 +46,7 @@ else
                 }
             </div>
             <div class="form-group no-wrap">
+                <span class="filter-row-title">Тип контента:</span>
                 @foreach (var contentTypeFilterItem in filterSettings.ContentTypeFilterItems)
                 {
                     var id = $"ct_type_{contentTypeFilterItem.ContentType.ToString()}";

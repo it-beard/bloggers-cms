@@ -24,7 +24,7 @@ else
         <span>
         Список доходов 
             <span class="title-overall-info">
-                @billsInfo.Items.Count(i => i.IsVisible)шт
+                @billsInfo.Items.Count(i => i.IsVisible) шт.
                 / 
                 $@billsInfo.Items.Where(i => i.IsVisible).Sum(i => i.Value).ToString("N0")
             </span> 
