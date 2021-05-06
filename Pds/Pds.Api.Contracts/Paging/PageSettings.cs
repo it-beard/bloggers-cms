@@ -14,15 +14,8 @@ namespace Pds.Api.Contracts.Paging
         public T FieldName { get; set; }
     }
 
-    public class FilterSettings
+    public class SearchSettings
     {
         public string Search { get; set; }
-    }
-
-    public abstract class SearchSettings<T> where T : Enum
-    {
-        public PageSettings PageSettings { get; set; }
-        public OrderSetting<T>[] OrderSettings { get; set; }
-        public FilterSettings FilterSettings { get; set; }
     }
 }

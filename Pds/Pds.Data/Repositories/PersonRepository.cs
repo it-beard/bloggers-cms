@@ -41,7 +41,6 @@ namespace Pds.Data.Repositories
         public async Task<List<Person>> GetForListsAsync()
         {
             return await context.Persons
-                .Where(p => p.Status == PersonStatus.Active)
                 .OrderBy(p =>p.FirstName)
                 .ThenBy(p=>p.LastName)
                 .ToListAsync();

@@ -1,5 +1,6 @@
 ﻿.paging-position{
     justify-content: center;
+    margin-bottom: 0rem;
 }
 
 .btn-paging {
@@ -10,7 +11,7 @@
     margin-left: 10px;
     color: #fff;
     background-color: #1b6ec2;
-    height: 38px;
+    height: 31px;
     padding-left: 10px;
 }
 
@@ -24,4 +25,14 @@
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1b6ec2;
+}
+
+.col{
+    text-align: center;
+}
+
+.paging-info {
+    font-style: italic;
+    font-size: 0.8rem;
+    color: gray;
 }
