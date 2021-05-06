@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Web.Common
+@using Pds.Web.Models.Person
+@using Microsoft.AspNetCore.Components
+@using AutoMapper
+@using Pds.Api.Contracts
+
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject IAccessTokenProvider TokenProvider
+@inject IApiClient ApiClient
+@inject IMapper Mapper
+
+@if (brands == null)
+{
+    <p>
+        <em>Загрузка фильтр...</em>
+    </p>
+}
+else
+{
+    <div class="">
+        <EditForm EditContext="@editContext">
+            <div class="form-group no-wrap">
+                @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
+                {
+                    var id = $"sm_type_{brandFilterItem.Id.ToString()}";
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id" />
+                    <label class="btn btn-secondary" for="@id">
+                        @brandFilterItem.Name
+                    </label>
+                }
+            </div>
+        </EditForm>
+
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+
+    private EditContext editContext;
+    private FilterSettings filterSettings { get; set; }
+    private List<BrandDto> brands { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await GetBrands();
+        filterSettings = GetFilterSettings(brands);
+        editContext = new EditContext(filterSettings);
+        editContext.OnFieldChanged += EditContext_OnFieldChanged;
+        await OnFilterUpdate.InvokeAsync(filterSettings); //trigger filter initialize
+    }
+
+    private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        OnFilterUpdate.InvokeAsync(filterSettings);
+    }
+
+    private FilterSettings GetFilterSettings(List<BrandDto> brands)
+    {
+        var filter = new FilterSettings
+        {
+            BrandFilterItems = Mapper.Map<List<BrandFilterItem>>(brands)
+        };
+        SetDefaultFilterValues(filter);
+
+        return filter;
+    }
+
+    private void SetDefaultFilterValues(FilterSettings filter)
+    {
+        filter.BrandFilterItems.First(b => b.Name == "АйТиБорода").IsSelected = true;
+    }
+
+    private async Task<List<BrandDto>> GetBrands()
+    {
+        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
+    }
+}
