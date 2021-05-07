@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -10,11 +11,11 @@ using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
+using Pds.Services.Models;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Services.Models.Cost;
 using Pds.Web.Models.Content;
-using ClientForLookupDto = Pds.Api.Contracts.Content.ClientForLookupDto;
 
 namespace Pds.Mappers
 {
@@ -25,7 +26,6 @@ namespace Pds.Mappers
             #region Entities to Contracts
 
             CreateMap<Person, GetContentPersonDto>();
-
             CreateMap<Person, PersonDto>()
                 .ForMember(
                     dest => dest.FullName,
@@ -39,14 +39,14 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.FullName,
                     opt => opt
-                        .MapFrom((p, s) =>
-                            s.FullName = string.IsNullOrEmpty(p.FirstName)
-                                ? "Не выбрано"
-                                : $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+                        .MapFrom((p,s) => 
+                            s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
+                                "Не выбрано" : 
+                                $"{p.FirstName} {p.ThirdName} {p.LastName}"));
 
             CreateMap<Resource, ResourceDto>();
             CreateMap<Resource, GetContentPersonResourceDto>();
-
+            
             CreateMap<Content, BillContentDto>();
             CreateMap<Content, CostContentDto>();
             CreateMap<Content, PersonContentDto>();
@@ -55,9 +55,9 @@ namespace Pds.Mappers
                     dest => dest.Title,
                     opt => opt
                         .MapFrom((p, s) =>
-                            s.Title = string.IsNullOrEmpty(p.Title)
-                                ? "Не выбрано"
-                                : $"{p.ReleaseDate:dd.MM} / {p.Title}"));
+                            s.Title = string.IsNullOrEmpty(p.Title) ? 
+                                "Не выбрано" : 
+                                $"{p.ReleaseDate:dd.MM} / {p.Title}"));
             CreateMap<Content, ContentDto>()
                 .ForMember(
                     dest => dest.ClientName,
@@ -76,13 +76,13 @@ namespace Pds.Mappers
             CreateMap<Client, ClientDto>();
             CreateMap<Client, GetClientResponse>();
             CreateMap<Client, GetContentBillClientDto>();
-            CreateMap<Client, ClientForLookupDto>()
+            CreateMap<Client, Pds.Api.Contracts.Content.ClientForLookupDto>()
                 .ForMember(
                     dest => dest.Name,
                     opt => opt
                         .MapFrom((p, s) =>
                             s.Name = p.Name ?? "Не выбрано"));
-            CreateMap<Client, Api.Contracts.Bill.ClientForLookupDto>()
+            CreateMap<Client, Pds.Api.Contracts.Bill.ClientForLookupDto>()
                 .ForMember(
                     dest => dest.Name,
                     opt => opt
@@ -102,7 +102,6 @@ namespace Pds.Mappers
             CreateMap<Brand, BrandDto>();
 
             CreateMap<Topic, GetTopicDto>();
-
             CreateMap<Topic, GetTopicResponse>();
 
             #endregion
@@ -121,18 +120,21 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.Brands,
                     opt => opt
-                        .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where(c => c.IsSelected).ToList())));
+                        .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
+            
             CreateMap<CreateTopicRequest, Topic>()
                 .ForMember(dest => dest.People,
                     opt =>
-                        opt.MapFrom(ctr => ctr.People.Select(guid => new Person {Id = guid})));
+                        opt.MapFrom(ctr => 
+                            ctr.People.Select(guid => new Person {Id = guid})));
             CreateMap<UpdateTopicRequest, Topic>()
                 .ForMember(dest => dest.People,
                     opt =>
-                        opt.MapFrom((ctr, _) => ctr.People.Select(guid => new Person {Id = guid})));
+                        opt.MapFrom((ctr, _) => 
+                            ctr.People.Select(guid => new Person {Id = guid})));
 
             #endregion
-
+            
             #region Contracts to Models
 
             CreateMap<EditContentBillDto, EditContentBillModel>();
