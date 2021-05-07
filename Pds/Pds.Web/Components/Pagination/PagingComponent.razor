@@ -4,7 +4,7 @@
         @foreach (var page in pages)
         {
             <li class="page-item">
-                <button class="btn btn-paging
+                <button class="btn btn-sm btn-paging 
                     @(page.Active ? "btn-primary" : "btn-outline-primary")
                     @(page.Enabled ? null : "disabled")"
                         @onclick="@(() => OnChangePage(page))">
@@ -13,23 +13,34 @@
             </li>
         }
         <li>
-            <select class="btn page-size-selector" @onchange="@OnChangePageSize">
+            <select class="btn btn-sm page-size-selector" @onchange="@OnChangePageSize">
                 @foreach (var pageSize in PageSizeList)
                 {
-                    <option class="paging-item" value="@pageSize">@pageSize</option>
+                    if (pageSize == DefaultPageSize.Value)
+                    {
+                        <option class="paging-item" value="@pageSize" selected>@pageSize</option>
+                    }
+                    else
+                    {
+                        <option class="paging-item" value="@pageSize">@pageSize</option>
+                    }
                 }
             </select>
         </li>
     </ul>
+    @{ var pagesCount = pages.Count - 2;}
+    <span class="paging-info" >всего страниц: <b>@pagesCount</b> шт.</span>
 </nav>
 
 @code{
     private int[] _pageSizeList;
     private int _totalItems;
+    private int _defaultPageSize;
     private int _radius;
 
     [Parameter]
     public EventCallback<PagingEventArgs> Pagination { get; set; }
+
     [Parameter]
     public int[] PageSizeList
     {
@@ -37,13 +48,23 @@
         set
         {
             var array = value.Where(item => item >= 1).ToArray();
-
-            if (array.Length == 0)
-                _pageSizeList = new int[] { 10 };
-            else
-                _pageSizeList = array;
+            _pageSizeList = array.Length == 0 ? new [] { 10 } : array;
         }
     }
+
+    [Parameter]
+    public int? DefaultPageSize
+    {
+        get => _defaultPageSize;
+        set
+        {
+            if (value < 10)
+                _defaultPageSize = 10;
+            else
+                _defaultPageSize = value ?? 10;
+        }
+    }
+
     [Parameter]
     public int? TotalItems
     {
@@ -56,6 +77,7 @@
                 _totalItems = value ?? 0;
         }
     }
+
     [Parameter]
     public int? Radius
     {
@@ -81,7 +103,7 @@
 
     protected override void OnInitialized()
     {
-        currentPageSize = PageSizeList[0];
+        currentPageSize = DefaultPageSize.Value;
         SetDefaultPagination();
     }
 
@@ -97,7 +119,7 @@
     {
         var isPageSizeChanged = int.TryParse(e.Value.ToString(), out currentPageSize);
         if (!isPageSizeChanged)
-            currentPageSize = PageSizeList[0];
+            currentPageSize = DefaultPageSize.Value;
 
         SetDefaultPagination();
         PaginationInvoke();
@@ -138,7 +160,7 @@
         var isPreviousPageLinkEnabled = currentPage > 1 && totalPages > 0;
 
         var previousPage = currentPage - 1;
-        pages.Add(new PageModel(previousPage, isPreviousPageLinkEnabled, "Previous"));
+        pages.Add(new PageModel(previousPage, isPreviousPageLinkEnabled, "← сюда"));
 
         for (int i = 1; i <= totalPages; i++)
         {
@@ -150,6 +172,6 @@
 
         var isNextPageLinkEnabled = currentPage < totalPages && totalPages > 0;
         var nextPage = currentPage + 1;
-        pages.Add(new PageModel(nextPage, isNextPageLinkEnabled, "Next"));
+        pages.Add(new PageModel(nextPage, isNextPageLinkEnabled, "туда →"));
     }
 }

@@ -21,5 +21,7 @@ namespace Pds.Api.Contracts.Person
         public List<ResourceDto> Resources { get; set; }
         
         public List<PersonContentDto> Contents { get; set; }
+
+        public List<BrandDto> Brands { get; set; }
     }
 }

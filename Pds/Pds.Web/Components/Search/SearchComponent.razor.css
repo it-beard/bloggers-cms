@@ -1,6 +1,7 @@
 ﻿.search-position {
     display: flex;
     justify-content: flex-end;
+    float: right;
 }
 
 .search-button-show{

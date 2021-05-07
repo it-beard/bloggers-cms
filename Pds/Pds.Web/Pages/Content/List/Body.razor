@@ -23,9 +23,15 @@
 else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
-         Лента контента (@content.Items.Count(i => i.IsVisible))
-         <a href="/content/add" class="btn btn-success" >Добавить</a>
-     </h4>
+        <span>
+            Лента контента 
+            <span class="title-overall-info">
+                @{ var overallCount = $"{content.Items.Count(c => c.IsVisible) } шт.";}
+                @overallCount
+            </span> 
+        </span>
+        <a href="/content/add" class="btn btn-success">Добавить</a>
+    </h4>
     <Filter OnFilterUpdate="@FilterUpdated"></Filter>
     <table class="table">
         <thead>

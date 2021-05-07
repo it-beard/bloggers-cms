@@ -1,8 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Content
-@using Pds.Core.Enums
 @using Pds.Web.Common
-@using Pds.Web.Models.Content
+@using Pds.Web.Models.Person
 @using Microsoft.AspNetCore.Components
 @using AutoMapper
 @using Pds.Api.Contracts
@@ -28,43 +26,22 @@ else
                 @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
                 {
                     var id = $"sm_type_{brandFilterItem.Id.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id"/>
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id" />
                     <label class="btn btn-secondary" for="@id">
                         @brandFilterItem.Name
                     </label>
                 }
-            </div>
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Соцсеть:</span>
-                @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
-                {
-                    var id = $"sm_type_{smFilterItem.SocialMediaType.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="smFilterItem.IsSelected" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">
-                        @EnumsTranslator.SocialMediaTypeToRu(smFilterItem.SocialMediaType)
-                    </label>
-                }
-            </div>
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Тип контента:</span>
-                @foreach (var contentTypeFilterItem in filterSettings.ContentTypeFilterItems)
-                {
-                    var id = $"ct_type_{contentTypeFilterItem.ContentType.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="contentTypeFilterItem.IsSelected" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">
-                        @EnumsTranslator.ContentTypeToRu(contentTypeFilterItem.ContentType)
-                    </label>
-                }
+                <SearchComponent Search="SearchOnChanged" />
             </div>
         </EditForm>
-
     </div>
 }
 
 @code {
-
     [Parameter]
     public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
 
     private EditContext editContext;
     private FilterSettings filterSettings { get; set; }
@@ -83,27 +60,16 @@ else
     {
         OnFilterUpdate.InvokeAsync(filterSettings);
     }
+    
+    private void SearchOnChanged(string searchText)
+    {
+        OnSearch.InvokeAsync(searchText);
+    }
 
     private FilterSettings GetFilterSettings(List<BrandDto> brands)
     {
         var filter = new FilterSettings
         {
-            SocialMediaFilterItems = ((SocialMediaType[]) Enum.GetValues(typeof(SocialMediaType)))
-                .Select(smType =>
-                    new SocialMediaFilterItem
-                    {
-                        SocialMediaType = smType,
-                        IsSelected = false
-                    })
-                .ToList(),
-            ContentTypeFilterItems = ((ContentType[]) Enum.GetValues(typeof(ContentType)))
-                .Select(ctType =>
-                    new ContentTypeFilterItem
-                    {
-                        ContentType = ctType,
-                        IsSelected = false
-                    })
-                .ToList(),
             BrandFilterItems = Mapper.Map<List<BrandFilterItem>>(brands)
         };
         SetDefaultFilterValues(filter);

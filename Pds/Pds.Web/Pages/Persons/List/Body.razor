@@ -8,7 +8,11 @@
 @using Api.Contracts.Paging
 @using Web.Components.Sorting.QueryCreators
 @using Pds.Web.Components.Sorting.QueryCreators.Person
+@using Pds.Web.Components.Search
 @using Pds.Web.Components.Search.Person
+@using Pds.Web.Models.Person
+@using System.Collections.Generic
+@using Calabonga.PredicatesBuilder
 @using static Pds.Web.Common.TitleExtension
 
 @inject IApiClient ApiClient
@@ -16,10 +20,7 @@
 
 <Title>@WithSuffix("Персоны")</Title>
 
-<h4 class="card-header d-flex justify-content-between align-items-center">
-    Список персон
-    <a href="/persons/add" class="btn btn-success">Добавить</a>
-</h4>
+
 @if (personsInfo == null)
 {
     <p>
@@ -28,7 +29,18 @@
 }
 else
 {
-    <Pds.Web.Components.Search.SearchComponent Search="SearchPerson" />
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            Список персон
+            <span class="title-overall-info">
+                @{ var overallCount = $"{personsList.Length} шт.";}
+                @overallCount
+            </span> 
+        </span>
+        <a href="/persons/add" class="btn btn-success">Добавить</a>
+    </h4>
+
+    <Filter OnFilterUpdate="@FilterUpdated" OnSearch="@OnSearch" />
 
     <table class="table">
         <thead>
@@ -58,13 +70,13 @@ else
             {
                 <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
                     <td class="person-row">
-                        <a href="persons/@person.Id">@person.FullName</a>
+                        <a class="custom-link" href="persons/@person.Id">@person.FullName</a>
                         <span class="contents">
                             (@person.Contents.Count)
                         </span>
                     </td>
                     <td class="rate-row">@person.Rate</td>
-                    <td>@person.Location</td>
+                    <td class="location-row">@person.Location</td>
                     <td>@person.Info</td>
                     <td>
                         @foreach (var resource in person.Resources)
@@ -82,7 +94,8 @@ else
         </tbody>
     </table>
     <CascadingValue Value="isPagingStateHasChanged">
-        <PagingComponent PageSizeList="pageSizesList"
+        <PagingComponent PageSizeList="@pageSizesList"
+                         DefaultPageSize="@defaultPageSize"
                          TotalItems="totalElements"
                          Radius="2"
                          Pagination="Pagination" />
@@ -92,18 +105,20 @@ else
 @code {
     private GetPersonsResponse personsInfo;
     private PersonDto[] personsList;
-    private readonly int[] pageSizesList = { 10, 30, 50, 100 };
+    private static readonly int[] pageSizesList = { 10, 30, 50, 100 };
+    private readonly int defaultPageSize = pageSizesList[1];
     private int totalElements;
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
     private OrderSetting<PersonsFieldName>[] orderSettings;
+    private SearchSettings searchSettings;
     private FilterSettings filterSettings;
 
     protected override async Task OnInitializedAsync()
     {
         pageSettings = new PageSettings
         {
-            Limit = pageSizesList[0],
+            Limit = defaultPageSize,
             Offset = 0
         };
 
@@ -112,9 +127,14 @@ else
             new OrderSetting<PersonsFieldName>()
         };
 
-        filterSettings = new FilterSettings
+        searchSettings = new SearchSettings
         {
             Search = string.Empty
+        };
+
+        filterSettings = new FilterSettings
+        {
+            BrandFilterItems = new List<BrandFilterItem>()
         };
 
         await PersonsInfoUpdate();
@@ -123,7 +143,6 @@ else
     private async Task PersonsInfoUpdate()
     {
         personsInfo = await GetPersonsInfo();
-        totalElements = personsInfo.Total;
         SetDefaultPaging();
         GetPersonsList();
     }
@@ -133,15 +152,33 @@ else
         return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
     }
 
-    public void GetPersonsList()
+    private void GetPersonsList()
     {
         var query = personsInfo.Items
             .AsQueryable();
 
+        //Filtering
+        var totalSelectedFiltersCount = filterSettings.BrandFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.Id)
+            .Count();
+
+        if (totalSelectedFiltersCount > 0)
+        {
+            var filteringPredicate = PredicateBuilder.False<PersonDto>();
+            foreach (var brand in filterSettings.BrandFilterItems.Where(i => i.IsSelected))
+            {
+                filteringPredicate = filteringPredicate.Or(r => r.Brands.Exists(s => s.Id == brand.Id));
+            }
+
+            query = query.Where(filteringPredicate);
+        }
+
+        //Sorting
         if (orderSettings?.Length > 0)
         {
             var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<PersonDto, PersonDto>>
-{
+            {
                 {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
                 {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
                 {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
@@ -157,8 +194,9 @@ else
                 .ThenBy(p => p.FullName);
         }
 
-        var searchLine = filterSettings.Search?.ToLower();
-        if(!string.IsNullOrWhiteSpace(searchLine))
+        //Search
+        var searchLine = searchSettings.Search?.ToLower();
+        if (!string.IsNullOrWhiteSpace(searchLine))
         {
             var searchPredicate = new PersonsSearch().GetSearchPredicate(searchLine);
             personsList = query.Where(searchPredicate).ToArray();
@@ -168,7 +206,8 @@ else
             personsList = query.ToArray();
         }
 
-        totalElements = personsList.Length;
+        //Paging
+        totalElements = personsList.ToArray().Length;
         personsList = personsList
             .Skip(pageSettings.Offset)
             .Take(pageSettings.Limit)
@@ -198,10 +237,18 @@ else
         GetPersonsList();
     }
 
-    private void SearchPerson(string searchText)
+    private void OnSearch(string searchText)
     {
         SetDefaultPaging();
-        filterSettings.Search = searchText;
+        searchSettings.Search = searchText;
+        GetPersonsList();
+    }
+
+    private void FilterUpdated(FilterSettings filterSettings)
+    {
+        this.filterSettings = filterSettings;
+
+        SetDefaultPaging();
         GetPersonsList();
     }
 
@@ -209,20 +256,6 @@ else
     {
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
+        pageSettings.Limit = defaultPageSize;
     }
-
-    [Parameter]
-    public string PersonId { get; set; }
-    private GetPersonResponse person { get; set; }
-
-    private async Task<GetPersonResponse> Getperson()
-    {
-        return await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
-    }
-
-    private async Task ContentInfoUpdate()
-    {
-        person = await Getperson();
-    }
-
 }
