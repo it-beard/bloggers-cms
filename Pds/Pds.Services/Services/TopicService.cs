@@ -53,7 +53,9 @@ namespace Pds.Services.Services
         {
             var oldTopic = await unitOfWork.Topics.GetFirstWhereAsync(t => topic.Id == t.Id);
             if (oldTopic is null)
+            {
                 throw new InvalidOperationException("Topic not found");
+            }
             HandleCreatedAtAndUpdatedAtChanges(topic, oldTopic);
             HandleStatusChanges(topic, oldTopic);
             topic.People = await AssignPeopleFromDbAsync(topic.People);
@@ -69,7 +71,10 @@ namespace Pds.Services.Services
 
         private static void HandleStatusChanges(Topic topic, Topic oldTopic)
         {
-            if (oldTopic.Status == topic.Status) return;
+            if (oldTopic.Status == topic.Status)
+            {
+                return;
+            }
             switch (oldTopic.Status)
             {
                 case TopicStatus.Active when topic.Status == TopicStatus.Archived:
@@ -95,7 +100,9 @@ namespace Pds.Services.Services
                 var personFromDb = await unitOfWork.Persons
                     .GetFirstWhereAsync(person => assignedPerson.Id == person.Id);
                 if (personFromDb is not null)
+                {
                     peopleFromDb.Add(personFromDb);
+                }
             }
 
             return peopleFromDb;
