@@ -101,7 +101,7 @@
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
     private OrderSetting<PersonsFieldName>[] orderSettings;
-    private FilterSettings filterSettings;
+    private string searchString;
 
 
     protected override void OnInitialized()
@@ -117,10 +117,7 @@
             new OrderSetting<PersonsFieldName>()
         };
 
-        filterSettings = new FilterSettings
-        {
-            Search = string.Empty
-        };
+        searchString = "";
 
         ApplySettings();
     }
@@ -137,7 +134,33 @@
         var query = People
             .AsQueryable();
 
-        var searchLine = filterSettings.Search.ToLower();
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            var searchLine = searchString.ToLower();
+            query = ApplySearch(query, searchLine);
+        }
+
+        query = ApplyOrdering(query, orderSettings);
+
+        totalElements = query.Count();
+        
+        Result = query.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
+    }
+    
+    private static IQueryable<PersonDto> ApplyOrdering(IQueryable<PersonDto> query, OrderSetting<PersonsFieldName>[] settings) =>
+        settings?.Length > 0 ? new OrderQueryCreator<PersonDto, PersonsFieldName>(
+            new()
+            {
+                [PersonsFieldName.FullName] = new PersonFullNameOrderQueryCreator(),
+                [PersonsFieldName.Rating] = new PersonRatingOrderQueryCreator(),
+                [PersonsFieldName.Location] = new PersonLocationOrderQueryCreator()
+            })
+            .Create(settings, query) :
+            query
+                .OrderByDescending(p => p.Rate)
+                .ThenBy(p => p.FullName);
+    private static IQueryable<PersonDto> ApplySearch(IQueryable<PersonDto> query, string searchLine)
+    {
 
         if (query.Any(x => x.Location.ToLower().Contains(searchLine)))
             query = query.Where(x => x.Location.ToLower().Contains(searchLine));
@@ -145,30 +168,7 @@
             query = query.Where(x => x.FullName.ToLower().Contains(searchLine));
         else if (query.Any(x => x.Info.ToLower().Contains(searchLine)))
             query = query.Where(x => x.Info.ToLower().Contains(searchLine));
-
-        if (orderSettings?.Length > 0)
-        {
-            var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<PersonDto, PersonDto>>
-            {
-                {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
-                {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
-                {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
-            };
-
-            var queryCreator = new OrderQueryCreator<PersonDto, PersonsFieldName>(dictionary);
-            query = queryCreator.Create(orderSettings, query);
-        }
-        else
-        {
-            query = query
-                .OrderByDescending(p => p.Rate)
-                .ThenBy(p => p.FullName);
-        }
-
-        var resultCollection = query.ToArray();
-        totalElements = resultCollection.Length;
-
-        Result = resultCollection.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
+        return query;
     }
 
     private void Pagination(PagingEventArgs settings)
@@ -201,7 +201,7 @@
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
 
-        filterSettings.Search = searchText;
+        searchString = searchText;
 
         ApplySettings();
     }
