@@ -7,6 +7,7 @@
 @using Pds.Core.Enums
 @using Pds.Web.Components.Sorting.QueryCreators.Topic
 @using Pds.Web.Components.Sorting.QueryCreators
+@using System.Linq
 @inherits BasePageComponent
 
 @inject IApiClient ApiClient
@@ -28,7 +29,7 @@ else
 {
     <div class="row">
         <div class="col-5">
-            <SearchComponent Search="FilterTopics"/>
+            <SearchComponent Search="SearchTopics"/>
         </div>
     </div>
 
@@ -38,14 +39,14 @@ else
         <tr>
             <th>
                 <SortingComponent TField="TopicSortingType"
-                                  OnSortPersons="SortTopics"
+                                  OnSortTopics="SortTopics"
                                   FieldName="TopicSortingType.Name">
                     Название
                 </SortingComponent>
             </th>
             <th>
                 <SortingComponent TField="TopicSortingType"
-                                  OnSortPersons="SortTopics"
+                                  OnSortTopics="SortTopics"
                                   FieldName="TopicSortingType.Status">
                     Статус
                 </SortingComponent>
@@ -56,12 +57,11 @@ else
         <tbody>
         @foreach (var topic in Result)
         {
-            var elementId = $"topic{topic.Id:N}";
             <tr>
                 <td>@topic.Name</td>
                 <td>@EnumsTranslator.TopicStatusToRu(topic.Status)</td>
                 <td>
-                    <Actions CurrentTopic="topic" OnTopicUpdate="() => FetchTopicsAsync()"/>
+                    <Actions CurrentTopic="topic" OnTopicUpdate="FetchTopicsAsync"/>
                 </td>
             </tr>
         }
@@ -73,7 +73,7 @@ else
                         <PagingComponent PageSizeList="pageSizesList"
                                          TotalItems="totalElements"
                                          Radius="2"
-                                         Pagination="PaginateTopics"/>
+                                         Pagination="Pagination"/>
                     </CascadingValue>
                 </div>
     </div>
@@ -85,7 +85,7 @@ else
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
     private OrderSetting<TopicSortingType>[] orderSettings;
-    private FilterSettings filterSettings;
+    private string searchString;
     private GetTopicCollectionResponse response;
 
     private static OrderQueryCreator<GetTopicDto, TopicSortingType> _topicOrderQueryCreator;
@@ -112,10 +112,7 @@ else
             new OrderSetting<TopicSortingType>()
         };
 
-        filterSettings = new FilterSettings
-        {
-            Search = string.Empty
-        };
+        searchString = "";
 
         await FetchTopicsAsync();
     }
@@ -128,34 +125,45 @@ else
     }
 
 
-    public void ApplySettings()
+   private void ApplySettings()
     {
-        var query = response.Items.AsQueryable();
+        var query = response.Items
+            .AsQueryable();
 
-        var searchLine = filterSettings.Search.ToLower();
-
-        if (query.Any(topic => topic.Name
-            .Contains(searchLine, StringComparison.InvariantCultureIgnoreCase)))
-            query = query.Where(topic => topic.Name
-                .Contains(searchLine, StringComparison.InvariantCultureIgnoreCase));
-
-        if (orderSettings?.Length > 0)
+        if (!string.IsNullOrEmpty(searchString))
         {
-            var queryCreator = TopicsOrderQueryCreator;
-            query = queryCreator.Create(orderSettings, query);
-        }
-        else
-        {
-            query = query
-                .OrderBy(topic => topic.Name);
+            var searchLine = searchString.ToLower();
+            query = ApplySearch(query, searchLine);
         }
 
-        var resultCollection = (IReadOnlyCollection<GetTopicDto>) query.ToArray();
-        totalElements = resultCollection.Count;
-        Result = resultCollection.Skip(pageSettings.Offset).Take(pageSettings.Limit);
+        query = ApplyOrdering(query, orderSettings);
+
+        totalElements = query.Count();
+        
+        Result = query.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
+    }
+    
+    private static IQueryable<GetTopicDto> ApplyOrdering(IQueryable<GetTopicDto> query, OrderSetting<TopicSortingType>[] settings) =>
+        settings?.Length > 0 ? new OrderQueryCreator<GetTopicDto, TopicSortingType>(
+            new()
+            {
+                [TopicSortingType.Name] = new TopicNameOrderQueryCreator(),
+                [TopicSortingType.Status] = new TopicStatusOrderQueryCreator()
+            })
+            .Create(settings, query)
+            .Cast<GetTopicDto>() :
+            query
+                .OrderBy(p => p.Name)
+                .ThenBy(p => p.Id);
+    private static IQueryable<GetTopicDto> ApplySearch(IQueryable<GetTopicDto> query, string searchLine)
+    {
+
+        if (query.Any(x => x.Name.ToLower().Contains(searchLine)))
+            query = query.Where(x => x.Name.ToLower().Contains(searchLine));
+        return query;
     }
 
-    private void PaginateTopics(PagingEventArgs settings)
+    private void Pagination(PagingEventArgs settings)
     {
         isPagingStateHasChanged = default;
         pageSettings = new PageSettings
@@ -180,12 +188,12 @@ else
         ApplySettings();
     }
 
-    private void FilterTopics(string searchText)
+    private void SearchTopics(string searchText)
     {
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
 
-        filterSettings.Search = searchText;
+        searchString = searchText;
 
         ApplySettings();
     }
