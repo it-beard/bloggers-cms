@@ -13,6 +13,6 @@ namespace Pds.Data.Entities
 
         public TopicStatus Status { get; set; }
 
-        public virtual ICollection<Person> People { get; set; }
+        public virtual ICollection<Person> Persons { get; set; }
     }
 }

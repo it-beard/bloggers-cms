@@ -8,26 +8,24 @@
 @inject IAccessTokenProvider TokenProvider
 
 <div class="actions-panel panel panel-default">
-
-    <button title="Просмотреть детальную информацию" class="btn btn-primary btn-sm" @onclick="OnInfo">
-        <i class="bi bi-eye"></i>
-    </button>
-
-    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
-        <i class="bi bi-pencil-fill"></i>
-    </button>
-
+    @if (CurrentTopic.Status == TopicStatus.Active)
+    {
+        <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+            <i class="bi bi-pencil-fill"></i>
+        </button>
+    }
 
     @if (CurrentTopic.Status == TopicStatus.Archived)
     {
-        <button title="Разархивировать" class="btn btn-secondary btn-sm" @onclick="OnUnarchiveAsync">
-            <i class="bi bi-trash"></i>
+        <button title="Разархивировать" class="btn btn-success btn-sm" @onclick="OnUnarchiveAsync">
+            <i class="bi bi-patch-plus-fill"></i>
         </button>
     }
-    else
+
+    @if (CurrentTopic.Status == TopicStatus.Active)
     {
-        <button title="Архивировать" class="btn btn-danger btn-sm" @onclick="OnArchiveAsync">
-            <i class="bi bi-trash-fill"></i>
+        <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchiveAsync">
+            <i class="bi bi-archive-fill"></i>
         </button>
     }
 </div>
@@ -35,16 +33,10 @@
 @code {
 
     [Parameter]
-    public GetTopicDto CurrentTopic { get; set; }
+    public TopicDto CurrentTopic { get; set; }
 
     [Parameter]
     public EventCallback OnTopicUpdate { get; set; }
-
-    private void OnInfo()
-    {
-        NavigationManager.NavigateTo($"topics/{CurrentTopic.Id}");
-    }
-
 
     private void OnEdit()
     {

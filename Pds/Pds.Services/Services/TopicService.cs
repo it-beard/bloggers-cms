@@ -34,14 +34,14 @@ namespace Pds.Services.Services
         public async Task<Guid> CreateAsync(Topic topic)
         {
             topic.CreatedAt = DateTime.UtcNow;
-            topic.People = await AssignPeopleFromDbAsync(topic.People);
+            topic.Persons = await AssignPeopleFromDbAsync(topic.Persons);
             var createdTopic = await unitOfWork.Topics.InsertAsync(topic);
             return createdTopic.Id;
         }
 
         public Task<List<Topic>> GetAllAsync()
         {
-            return unitOfWork.Topics.GetAllAsync();
+            return unitOfWork.Topics.GetAllFullAsync();
         }
 
         public Task<Topic> FindByIdAsync(Guid id)
@@ -58,7 +58,7 @@ namespace Pds.Services.Services
             }
             HandleCreatedAtAndUpdatedAtChanges(topic, oldTopic);
             HandleStatusChanges(topic, oldTopic);
-            topic.People = await AssignPeopleFromDbAsync(topic.People);
+            topic.Persons = await AssignPeopleFromDbAsync(topic.Persons);
             var updatedTopic = await unitOfWork.Topics.UpdateAsync(topic);
             return updatedTopic.Id;
         }
@@ -75,20 +75,14 @@ namespace Pds.Services.Services
             {
                 return;
             }
-            switch (oldTopic.Status)
+
+            topic.Status = oldTopic.Status switch
             {
-                case TopicStatus.Active when topic.Status == TopicStatus.Archived:
-                    topic.Status = TopicStatus.Archived;
-                    break;
-                case TopicStatus.Archived when topic.Status == TopicStatus.Active:
-                    topic.Status = TopicStatus.Active;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(oldTopic.Status),
-                        oldTopic.Status,
-                        "Cannot handle this status kind.");
-            }
+                TopicStatus.Active when topic.Status == TopicStatus.Archived => TopicStatus.Archived,
+                TopicStatus.Archived when topic.Status == TopicStatus.Active => TopicStatus.Active,
+                _ => throw new ArgumentOutOfRangeException(nameof(oldTopic.Status), oldTopic.Status,
+                    "Cannot handle this status kind.")
+            };
         }
 
         private async Task<ICollection<Person>> AssignPeopleFromDbAsync(IEnumerable<Person> people)

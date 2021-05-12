@@ -8,6 +8,8 @@
 @using Pds.Web.Components.Sorting.QueryCreators.Topic
 @using Pds.Web.Components.Sorting.QueryCreators
 @using System.Linq
+@using Pds.Web.Components.Search.Person
+@using Pds.Web.Pages.Content
 @inherits BasePageComponent
 
 @inject IApiClient ApiClient
@@ -15,11 +17,7 @@
 
 <Title>@WithSuffix("Темы")</Title>
 
-<h3 class="card-header d-flex justify-content-between align-items-center">
-    Список тем
-    <a href="/topics/add" class="btn btn-success">Добавить</a>
-</h3>
-@if (response is null)
+@if (topicsInfo is null)
 {
     <p>
         <em>Загрузка...</em>
@@ -27,77 +25,74 @@
 }
 else
 {
-    <div class="row">
-        <div class="col-5">
-            <SearchComponent Search="SearchTopics"/>
-        </div>
-    </div>
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            Список тем
+            <span class="title-overall-info">
+                @{ var overallCount = $"{topicsList.Length} шт.";}
+                @overallCount
+            </span> 
+        </span>
+        <a href="/topics/add" class="btn btn-success">Добавить</a>
+    </h4>
 
+    <Filter OnSearch="@OnSearch" />
 
     <table class="table">
         <thead>
-        <tr>
-            <th>
-                <SortingComponent TField="TopicSortingType"
-                                  OnSortTopics="SortTopics"
-                                  FieldName="TopicSortingType.Name">
-                    Название
-                </SortingComponent>
-            </th>
-            <th>
-                <SortingComponent TField="TopicSortingType"
-                                  OnSortTopics="SortTopics"
-                                  FieldName="TopicSortingType.Status">
-                    Статус
-                </SortingComponent>
-            </th>
-            <th>Действия</th>
-        </tr>
+            <tr>
+                <th>
+                    <SortingComponent TField="TopicsFieldName"
+                                      OnSortColumn="SortTopics"
+                                      FieldName="TopicsFieldName.Name"> Название </SortingComponent>
+                </th>
+                <th>
+                    <SortingComponent TField="TopicsFieldName"
+                                      OnSortColumn="SortTopics"
+                                      FieldName="TopicsFieldName.Status"> Статус </SortingComponent>
+                </th>
+                <th class="text-center actions-header">Действия</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var topic in Result)
-        {
-            <tr>
-                <td>@topic.Name</td>
-                <td>@EnumsTranslator.TopicStatusToRu(topic.Status)</td>
-                <td>
-                    <Actions CurrentTopic="topic" OnTopicUpdate="FetchTopicsAsync"/>
-                </td>
-            </tr>
-        }
+            @foreach (var topic in topicsList)
+            {
+                <tr class="@TopicsHelper.GetBgColorClass(topic.Status)">
+                    <td>
+                        <td class="topic-row">
+                            <a class="custom-link" href="topics/@topic.Id">@topic.Name</a>
+                            <span class="contents">
+                                (@topic.Persons.Count)
+                            </span>
+                        </td>
+                    </td>
+                    <td>@EnumsTranslator.TopicStatusToRu(topic.Status)</td>
+                    <td class="text-center">
+                        <Actions OnTopicUpdate="@TopicsInfoUpdate" CurrentTopic="@topic" />
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
-    <div class="row">
-        <div class="col-7">
-                    <CascadingValue Value="isPagingStateHasChanged">
-                        <PagingComponent PageSizeList="pageSizesList"
-                                         TotalItems="totalElements"
-                                         Radius="2"
-                                         Pagination="Pagination"/>
-                    </CascadingValue>
-                </div>
-    </div>
+    <CascadingValue Value="isPagingStateHasChanged">
+        <PagingComponent PageSizeList="@pageSizesList"
+                         DefaultPageSize="@defaultPageSize"
+                         TotalItems="totalElements"
+                         Radius="2"
+                         Pagination="Pagination" />
+    </CascadingValue>
 }
 
 @code {
-    private readonly int[] pageSizesList = {5, 10, 25, 50};
+    private GetTopicsResponse topicsInfo;
+    private TopicDto[] topicsList;
+    private static readonly int[] pageSizesList = { 10, 30, 50, 100 };
+    private readonly int defaultPageSize = pageSizesList[1];
     private int totalElements;
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
-    private OrderSetting<TopicSortingType>[] orderSettings;
-    private string searchString;
-    private GetTopicCollectionResponse response;
-
-    private static OrderQueryCreator<GetTopicDto, TopicSortingType> _topicOrderQueryCreator;
-
-    private static OrderQueryCreator<GetTopicDto, TopicSortingType> TopicsOrderQueryCreator => _topicOrderQueryCreator ??=
-        new OrderQueryCreator<GetTopicDto, TopicSortingType>(new Dictionary<TopicSortingType, IOrderQuery<GetTopicDto, GetTopicDto>>
-        {
-            {TopicSortingType.Name, new TopicNameOrderQueryCreator()},
-            {TopicSortingType.Status, new TopicStatusOrderQueryCreator()}
-        });
-
-    private IEnumerable<GetTopicDto> Result { get; set; }
+    private OrderSetting<TopicsFieldName>[] orderSettings;
+    private SearchSettings searchSettings;
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,58 +104,70 @@ else
 
         orderSettings = new[]
         {
-            new OrderSetting<TopicSortingType>()
+            new OrderSetting<TopicsFieldName>()
         };
 
-        searchString = "";
+        searchSettings = new SearchSettings
+        {
+            Search = string.Empty
+        };
 
-        await FetchTopicsAsync();
+        await TopicsInfoUpdate();
     }
 
-    private async Task FetchTopicsAsync()
+    private async Task TopicsInfoUpdate()
     {
-        response = await GetTopicsInfoAsync();
-        totalElements = response.Items.Count;
-        ApplySettings();
+        topicsInfo = await GetTopicsInfoAsync();
+        SetDefaultPaging();
+        GetTopicsList();
     }
 
-
-   private void ApplySettings()
+    private async Task<GetTopicsResponse> GetTopicsInfoAsync()
     {
-        var query = response.Items
+        return await ApiClient.Get<GetTopicsResponse>(TokenProvider, "topics");
+    }
+
+    private void GetTopicsList()
+    {
+        var query = topicsInfo.Items
             .AsQueryable();
 
-        if (!string.IsNullOrEmpty(searchString))
+        //Sorting
+        if (orderSettings?.Length > 0)
         {
-            var searchLine = searchString.ToLower();
-            query = ApplySearch(query, searchLine);
+            var dictionary = new Dictionary<TopicsFieldName, IOrderQuery<TopicDto, TopicDto>>
+            {
+                {TopicsFieldName.Name, new TopicNameOrderQueryCreator()},
+                {TopicsFieldName.Status, new TopicStatusOrderQueryCreator()}
+            };
+
+            var queryCreator = new OrderQueryCreator<TopicDto, TopicsFieldName>(dictionary);
+            query = queryCreator.Create(orderSettings, query);
+        }
+        else
+        {
+            query = query
+                .OrderBy(p => p.Name);
         }
 
-        query = ApplyOrdering(query, orderSettings);
+        //Search
+        var searchLine = searchSettings.Search?.ToLower();
+        if (!string.IsNullOrWhiteSpace(searchLine))
+        {
+            var searchPredicate = new TopicsSearch().GetSearchPredicate(searchLine);
+            topicsList = query.Where(searchPredicate).ToArray();
+        }
+        else
+        {
+            topicsList = query.ToArray();
+        }
 
-        totalElements = query.Count();
-        
-        Result = query.Skip(pageSettings.Offset).Take(pageSettings.Limit).ToArray();
-    }
-    
-    private static IQueryable<GetTopicDto> ApplyOrdering(IQueryable<GetTopicDto> query, OrderSetting<TopicSortingType>[] settings) =>
-        settings?.Length > 0 ? new OrderQueryCreator<GetTopicDto, TopicSortingType>(
-            new()
-            {
-                [TopicSortingType.Name] = new TopicNameOrderQueryCreator(),
-                [TopicSortingType.Status] = new TopicStatusOrderQueryCreator()
-            })
-            .Create(settings, query)
-            .Cast<GetTopicDto>() :
-            query
-                .OrderBy(p => p.Name)
-                .ThenBy(p => p.Id);
-    private static IQueryable<GetTopicDto> ApplySearch(IQueryable<GetTopicDto> query, string searchLine)
-    {
-
-        if (query.Any(x => x.Name.ToLower().Contains(searchLine)))
-            query = query.Where(x => x.Name.ToLower().Contains(searchLine));
-        return query;
+        //Paging
+        totalElements = topicsList.ToArray().Length;
+        topicsList = topicsList
+            .Skip(pageSettings.Offset)
+            .Take(pageSettings.Limit)
+            .ToArray();
     }
 
     private void Pagination(PagingEventArgs settings)
@@ -172,35 +179,31 @@ else
             Offset = settings.PageOffSet
         };
 
-        ApplySettings();
+        GetTopicsList();
     }
 
-    private void SortTopics(OrderSetting<TopicSortingType> settings)
+    private void SortTopics(OrderSetting<TopicsFieldName> settings)
     {
-        isPagingStateHasChanged = true;
-        pageSettings.Offset = 0;
-
+        SetDefaultPaging();
         orderSettings = new[]
         {
             settings
         };
 
-        ApplySettings();
+        GetTopicsList();
     }
 
-    private void SearchTopics(string searchText)
+    private void OnSearch(string searchText)
+    {
+        SetDefaultPaging();
+        searchSettings.Search = searchText;
+        GetTopicsList();
+    }
+
+    private void SetDefaultPaging()
     {
         isPagingStateHasChanged = true;
         pageSettings.Offset = 0;
-
-        searchString = searchText;
-
-        ApplySettings();
+        pageSettings.Limit = defaultPageSize;
     }
-
-    private async Task<GetTopicCollectionResponse> GetTopicsInfoAsync()
-    {
-        return await ApiClient.Get<GetTopicCollectionResponse>(TokenProvider, "topics");
-    }
-
 }

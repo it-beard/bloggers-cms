@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
+using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -59,14 +60,19 @@ namespace Pds.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(GetTopicCollectionResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetTopicsAsync()
+        [ProducesResponseType(typeof(GetTopicsResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll([FromQuery] GetTopicsRequest request)
         {
             try
             {
-                var result = await topicService.GetAllAsync();
-                var topics = mapper.Map<IReadOnlyList<GetTopicDto>>(result);
-                return Ok(new GetTopicCollectionResponse(topics));
+                var topics = await topicService.GetAllAsync();
+                var response = new GetTopicsResponse
+                {
+                    Items = mapper.Map<List<TopicDto>>(topics),
+                    Total = topics.Count
+                };
+
+                return Ok(response);
             }
             catch (Exception exception)
             {

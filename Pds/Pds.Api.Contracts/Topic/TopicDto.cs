@@ -5,7 +5,7 @@ using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Topic
 {
-    public class GetTopicDto
+    public class TopicDto
     {
         public Guid Id { get; set; }
 
@@ -15,7 +15,7 @@ namespace Pds.Api.Contracts.Topic
 
         public string Name { get; set; }
 
-        public ICollection<PersonDto> People { get; set; }
+        public ICollection<PersonDto> Persons { get; set; }
         
         public TopicStatus Status { get; set; }
     }

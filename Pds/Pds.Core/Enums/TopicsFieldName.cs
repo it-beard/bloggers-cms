@@ -1,6 +1,6 @@
 ﻿namespace Pds.Core.Enums
 {
-    public enum TopicSortingType
+    public enum TopicsFieldName
     {
         Name,
         Status

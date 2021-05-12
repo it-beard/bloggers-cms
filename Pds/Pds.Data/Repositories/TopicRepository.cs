@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -20,12 +21,19 @@ namespace Pds.Data.Repositories
         private IQueryable<Topic> IncludeQueryable =>
             context.Topics
                 .AsNoTracking()
-                .Include(t => t.People);
+                .Include(t => t.Persons);
 
         public async Task<Topic> GetFirstWithPeopleAsync(Expression<Func<Topic, bool>> match)
         {
             return await IncludeQueryable
                 .FirstOrDefaultAsync(match);
+        }
+        
+        public async Task<List<Topic>> GetAllFullAsync()
+        {
+            return await context.Topics
+                .Include(p=>p.Persons)
+                .ToListAsync();
         }
     }
 }

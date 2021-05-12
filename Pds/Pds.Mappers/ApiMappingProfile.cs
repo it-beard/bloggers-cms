@@ -101,7 +101,7 @@ namespace Pds.Mappers
 
             CreateMap<Brand, BrandDto>();
 
-            CreateMap<Topic, GetTopicDto>();
+            CreateMap<Topic, TopicDto>();
             CreateMap<Topic, GetTopicResponse>();
 
             #endregion
@@ -123,12 +123,12 @@ namespace Pds.Mappers
                         .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
             
             CreateMap<CreateTopicRequest, Topic>()
-                .ForMember(dest => dest.People,
+                .ForMember(dest => dest.Persons,
                     opt =>
                         opt.MapFrom(ctr => 
                             ctr.People.Select(guid => new Person {Id = guid})));
             CreateMap<UpdateTopicRequest, Topic>()
-                .ForMember(dest => dest.People,
+                .ForMember(dest => dest.Persons,
                     opt =>
                         opt.MapFrom((ctr, _) => 
                             ctr.People.Select(guid => new Person {Id = guid})));

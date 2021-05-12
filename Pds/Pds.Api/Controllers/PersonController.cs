@@ -46,7 +46,6 @@ namespace Pds.Api.Controllers
             try
             {
                 var persons = await personService.GetAllAsync();
-
                 var response = new GetPersonsResponse
                 {
                     Items = mapper.Map<List<PersonDto>>(persons),

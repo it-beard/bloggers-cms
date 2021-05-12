@@ -3,14 +3,14 @@
 @using Pds.Api.Contracts.Paging
 @using Pds.Api.Contracts.Person
 
-<a @onclick="@(() => OnSortColumn())">
+<a @onclick="@(() => SortColumn())">
     @ChildContent
     <i class="bi @(ascending ? "bi-sort-alpha-down" : "bi-sort-alpha-up") "></i>
 </a>
 
 @code {
     [Parameter]
-    public EventCallback<OrderSetting<TField>> OnSortPersons { get; set; }
+    public EventCallback<OrderSetting<TField>> OnSortColumn { get; set; }
 
     [Parameter]
     public TField FieldName { get; set; }
@@ -19,7 +19,7 @@
 
     private bool ascending;
 
-    private void OnSortColumn()
+    private void SortColumn()
     {
         ascending = !ascending;
         var orderSettings = new OrderSetting<TField>
@@ -28,6 +28,6 @@
             FieldName = FieldName
         };
 
-        OnSortPersons.InvokeAsync(orderSettings);
+        OnSortColumn.InvokeAsync(orderSettings);
     }
 }
