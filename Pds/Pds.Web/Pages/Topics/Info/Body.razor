@@ -1,0 +1,74 @@
+﻿@page "/topics/{Id}"
+@using static Common.TitleExtension
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Topic
+@inherits BasePageComponent
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Просмотр темы")</Title>
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Просмотр темы
+    <a class="btn btn-primary" @onclick="GoBack"> Назад </a>
+</h3>
+@if (topicResponse is null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <div class="info-item">
+        <p class="info-title">Имя</p>
+        <p class="info-body">
+            @topicResponse.Name
+        </p>
+    </div>
+
+    <div class="info-item">
+        <p class="info-title">Статуc</p>
+        <p class="info-body">
+            @EnumsTranslator.TopicStatusToRu(topicResponse.Status)
+        </p>
+    </div>
+
+    <div class="info-item">
+        <div class="info-title">
+            Действия
+        </div>
+        <div class="info-body">
+            <InfoActions CurrentTopic="topicResponse" OnTopicUpdate="RefreshTopicAsync"></InfoActions>
+        </div>
+    </div>
+
+    <div class="info-item" id="people">
+        <p class="info-title">Персоны:</p>
+        <div class="table info-body">
+            <PersonTopicTable People="@topicResponse.People" OnPersonUpdate="RefreshTopicAsync"></PersonTopicTable>
+        </div>
+    </div>
+}
+
+@code {
+    private GetTopicResponse topicResponse;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshTopicAsync();
+    }
+
+    private async Task RefreshTopicAsync()
+    {
+        topicResponse = await ApiClient.Get<GetTopicResponse>(TokenProvider, $"topics/{{{Id}}}");
+        if (topicResponse is null)
+            NavigationManager.NavigateTo("/topics");
+    }
+
+}

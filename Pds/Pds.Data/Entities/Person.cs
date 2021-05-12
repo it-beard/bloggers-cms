@@ -43,5 +43,7 @@ namespace Pds.Data.Entities
         public virtual ICollection<Content> Contents { get; set; }
 
         public virtual ICollection<Brand> Brands { get; set; }
+        
+        public virtual ICollection<Topic> Topics { get; set; }
     }
 }

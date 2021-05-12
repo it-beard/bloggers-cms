@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pds.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Pds.Core.Enums;
+using Pds.Data.Entities;
 
 namespace Pds.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options){}
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
 
         public DbSet<Person> Persons { get; set; }
         public DbSet<Resource> Resources { get; set; }
@@ -17,6 +19,7 @@ namespace Pds.Data
         public DbSet<Cost> Costs { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Brand> Brands { get; set; }
+        public DbSet<Topic> Topics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -33,7 +36,7 @@ namespace Pds.Data
 
             modelBuilder.Entity<Content>()
                 .Property(b => b.SocialMediaType);
-            
+
             modelBuilder.Entity<Content>()
                 .HasOne(a => a.Bill)
                 .WithOne(a => a.Content)

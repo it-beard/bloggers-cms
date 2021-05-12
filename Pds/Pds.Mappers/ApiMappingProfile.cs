@@ -9,6 +9,7 @@ using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
+using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
 using Pds.Services.Models;
 using Pds.Services.Models.Client;
@@ -100,6 +101,9 @@ namespace Pds.Mappers
 
             CreateMap<Brand, BrandDto>();
 
+            CreateMap<Topic, GetTopicDto>();
+            CreateMap<Topic, GetTopicResponse>();
+
             #endregion
 
             #region Contracts to Entities
@@ -118,6 +122,17 @@ namespace Pds.Mappers
                     opt => opt
                         .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
             
+            CreateMap<CreateTopicRequest, Topic>()
+                .ForMember(dest => dest.People,
+                    opt =>
+                        opt.MapFrom(ctr => 
+                            ctr.People.Select(guid => new Person {Id = guid})));
+            CreateMap<UpdateTopicRequest, Topic>()
+                .ForMember(dest => dest.People,
+                    opt =>
+                        opt.MapFrom((ctr, _) => 
+                            ctr.People.Select(guid => new Person {Id = guid})));
+
             #endregion
             
             #region Contracts to Models

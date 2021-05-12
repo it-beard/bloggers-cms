@@ -102,5 +102,15 @@ namespace Pds.Web.Common
                 _ => string.Empty
             };
         }
+
+        public static string TopicStatusToRu(TopicStatus status)
+        {
+            return status switch
+            {
+                TopicStatus.Active => "Активна",
+                TopicStatus.Archived => "Архивирована",
+                _ => status.ToString()
+            };
+        }
     }
 }

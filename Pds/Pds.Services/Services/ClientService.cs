@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pds.Core.Enums;
 using Pds.Core.Exceptions.Client;
-using Pds.Core.Extensions;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -53,11 +51,11 @@ namespace Pds.Services.Services
         {
             if (model == null)
             {
-                throw new ClientEditException($"Модель запроса пуста.");
+                throw new ClientEditException("Модель запроса пуста.");
             }
 
             var client = await unitOfWork.Clients.GetFullByIdAsync(model.Id);
-            
+
             if (client == null)
             {
                 throw new ClientEditException($"Клиент с id {model.Id} не найден.");

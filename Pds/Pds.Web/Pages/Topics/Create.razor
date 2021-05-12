@@ -1,0 +1,87 @@
+﻿@page "/topics/add"
+@using static Common.TitleExtension
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Topic
+@using Pds.Api.Contracts.Person
+@inherits BasePageComponent
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление темы")</Title>
+<h3 class="card-header d-flex justify-content-between align-items-center">
+    Добавление темы
+    <a class="btn btn-primary" @onclick="GoBack"> Назад </a>
+</h3>
+@if (request is null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
+        <div class="form-group">
+            <label for="name" class="form-label">Имя</label>
+            <InputText class="form-control" id="name" @bind-Value="request.Name"/>
+        </div>
+
+        <div class="form-group" id="people">
+            <label class="form-label topic-links">Персоны:</label>
+            <div class="form-row align-items-center">
+                @foreach (var checkBoxPersonDto in checkBoxPeople)
+                {
+                    var elementId = $"person_{checkBoxPersonDto.Id}";
+                    <InputCheckbox id="@elementId" class="btn-check" name="@elementId" @bind-Value="@checkBoxPersonDto.IsSelected"/>
+                    <label for="@elementId" class="btn btn-outline-primary ml-2">
+                        @checkBoxPersonDto.FullName (@checkBoxPersonDto.Rate)
+                    </label>
+                }
+            </div>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+        </div>
+    </EditForm>
+}
+
+@code
+{
+    List<CheckBoxPersonDto> checkBoxPeople;
+    private CreateTopicRequest request;
+    private EditContext editContext;
+    private bool isCreateButtonDisabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isCreateButtonDisabled = false;
+        var getPersonsResponse = await GetPersonResponseAsync();
+        checkBoxPeople = getPersonsResponse.Items.Select(p => new CheckBoxPersonDto(p)).ToList();
+        request = new CreateTopicRequest();
+        editContext = new EditContext(request);
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isCreateButtonDisabled = true;
+            request.People = checkBoxPeople.Where(p => p.IsSelected).Select(cbp => cbp.Id).ToList();
+            await ApiClient.Post<object, CreateTopicRequest>(TokenProvider, "topics/", request);
+            NavigationManager.NavigateTo("/topics");
+        }
+    }
+
+    private async Task<GetPersonsResponse> GetPersonResponseAsync()
+    {
+        return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons/");
+    }
+}
