@@ -3,7 +3,7 @@ using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Content
 {
-    public class GetContentBillDto : IBillStatus
+    public class GetContentBillDto : IPaymentStatus
     {
         public Guid Id { get; set; }
 
@@ -17,7 +17,7 @@ namespace Pds.Api.Contracts.Content
 
         public ContactType ContactType { get; set; }
 
-        public BillStatus Status { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
 
         public PaymentType? PaymentType { get; set; }
 

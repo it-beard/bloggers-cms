@@ -27,7 +27,7 @@ namespace Pds.Services.Services
                 bill.Value = model.Value;
                 bill.PaymentType = model.PaymentType;
                 bill.Comment = model.Comment;
-                bill.Status = BillStatus.Paid;
+                bill.PaymentStatus = PaymentStatus.Paid;
                 bill.UpdatedAt = DateTime.UtcNow;
                 bill.PaidAt = model.PaidAt;
                 bill.IsNeedPayNds = model.IsNeedPayNds;
@@ -56,7 +56,8 @@ namespace Pds.Services.Services
             }
 
             bill.CreatedAt = DateTime.UtcNow;
-            bill.Status = BillStatus.Paid;
+            bill.PaymentStatus = PaymentStatus.Paid;
+            bill.Status = BillStatus.Active;
             if (bill.ClientId == Guid.Empty)
             {
                 bill.ClientId = null;

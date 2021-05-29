@@ -20,7 +20,7 @@ namespace Pds.Data.Repositories
         public async Task<List<Bill>> GetAllPaidOrderByDateDescAsync()
         {
             return await context.Bills
-                .Where(b => b.Status == BillStatus.Paid)
+                .Where(b => b.PaymentStatus == PaymentStatus.Paid)
                 .Include(b=>b.Content)
                 .Include(b=>b.Brand)
                 .OrderByDescending(p =>p.PaidAt)

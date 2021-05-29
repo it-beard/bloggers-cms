@@ -5,7 +5,7 @@ namespace Pds.Web.Pages.Content
 {
     public static class ContentHelper
     {
-        public static string GetContentBgColorClass(ContentStatus contentStatus, IBillStatus bill)
+        public static string GetContentBgColorClass(ContentStatus contentStatus, IPaymentStatus bill)
         {
             if (bill == null)
             {
@@ -20,10 +20,10 @@ namespace Pds.Web.Pages.Content
 
             return contentStatus switch
             {
-                ContentStatus.Active when bill.Status == BillStatus.Active => "active-not-paid",
-                ContentStatus.Active when bill.Status == BillStatus.Paid => "active-paid",
-                ContentStatus.Archived when bill.Status == BillStatus.Paid => "archived-paid",
-                ContentStatus.Archived when bill.Status == BillStatus.Active => "archived-not-paid",
+                ContentStatus.Active when bill.PaymentStatus == PaymentStatus.NotPaid => "active-not-paid",
+                ContentStatus.Active when bill.PaymentStatus == PaymentStatus.Paid => "active-paid",
+                ContentStatus.Archived when bill.PaymentStatus == PaymentStatus.Paid => "archived-paid",
+                ContentStatus.Archived when bill.PaymentStatus == PaymentStatus.NotPaid => "archived-not-paid",
                 _ => string.Empty
             };
         }

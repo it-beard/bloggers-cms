@@ -3,6 +3,6 @@
     public enum BillStatus
     {
         Active = 0,
-        Paid = 1
+        Archived = 1
     }
 }

@@ -65,7 +65,7 @@ namespace Pds.Services.Services
                     Contact = model.Bill.Contact,
                     ContactName = model.Bill.ContactName,
                     ContactType = model.Bill.ContactType,
-                    Status = model.Bill.Value == 0 ? BillStatus.Paid : BillStatus.Active,
+                    PaymentStatus = model.Bill.Value == 0 ? PaymentStatus.Paid : PaymentStatus.NotPaid,
                     Type = BillType.Content,
                     BrandId = model.BrandId,
                     ClientId = model.Bill.ClientId,
@@ -158,7 +158,7 @@ namespace Pds.Services.Services
         public async Task ArchiveAsync(Guid contentId)
         {
             var content = await unitOfWork.Content.GetFullByIdAsync(contentId);
-            if (content is {Status: ContentStatus.Active} && (content.Bill == null || content.Bill.Status == BillStatus.Paid))
+            if (content is {Status: ContentStatus.Active} && (content.Bill == null || content.Bill.PaymentStatus == PaymentStatus.Paid))
             {
                 await unitOfWork.Content.FullArchiveAsync(content);
             }

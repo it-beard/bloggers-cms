@@ -13,6 +13,10 @@ namespace Pds.Api.Contracts.Bill
 
         public BillType Type { get; set; }
 
+        public PaymentStatus PaymentStatus { get; set; }
+
+        public BillStatus Status { get; set; }
+
         public PaymentType PaymentType { get; set; }
 
         public string Comment { get; set; }

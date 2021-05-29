@@ -16,7 +16,9 @@
         </button>
     }
 
-    @if (CurrentContent.Bill != null && CurrentContent.Status == ContentStatus.Active && CurrentContent.Bill.Status == BillStatus.Active)
+    @if (CurrentContent.Bill != null && 
+         CurrentContent.Status == ContentStatus.Active && 
+         CurrentContent.Bill.PaymentStatus == PaymentStatus.NotPaid)
     {
         <button title="Оплатить" class="btn btn btn-dark btn-sm" @onclick="OnPay">
             <i class="bi bi-credit-card-2-back"></i>
@@ -30,7 +32,8 @@
         </button>
     }
 
-    @if (CurrentContent.Status == ContentStatus.Active && (CurrentContent.Bill == null || CurrentContent.Bill.Status == BillStatus.Paid))
+    @if (CurrentContent.Status == ContentStatus.Active && 
+         (CurrentContent.Bill == null || CurrentContent.Bill.PaymentStatus == PaymentStatus.Paid))
     {
         <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchiveAsync">
             <i class="bi bi-archive-fill"></i>

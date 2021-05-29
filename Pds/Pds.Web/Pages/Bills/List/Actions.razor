@@ -2,6 +2,7 @@
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Bill
+@using Pds.Core.Extensions
 
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
@@ -10,9 +11,26 @@
 
 <div class="panel panel-default actions-panel">
 
-    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
-        <i class="bi bi-pencil-fill"></i>
-    </button>
+    @if (CurrentBill.Status == BillStatus.Active)
+    {
+        <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+            <i class="bi bi-pencil-fill"></i>
+        </button>
+    }
+
+    @if (CurrentBill.Status == BillStatus.Archived)
+    {
+        <button title="Разархивировать" class="btn btn-success btn-sm" @onclick="OnUnarchiveAsync">
+            <i class="bi bi-patch-plus-fill"></i>
+        </button>
+    }
+
+    @if (CurrentBill.Status == BillStatus.Active)
+    {
+        <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchiveAsync">
+            <i class="bi bi-archive-fill"></i>
+        </button>
+    }
 
     @if (CurrentBill.Type != BillType.Content)
     {
@@ -24,7 +42,7 @@
 
 @code {
     [Parameter]
-    public EventCallback OnClientUpdate { get; set; }
+    public EventCallback OnBillUpdate { get; set; }
     [Parameter]
     public BillDto CurrentBill { get; set; }
 
@@ -42,7 +60,23 @@
         if (confirmed)
         {
             await ApiClient.Delete<object>(TokenProvider, $"bills/{CurrentBill.Id}");
-            await OnClientUpdate.InvokeAsync(); // Update UI
+            await OnBillUpdate.InvokeAsync(); // Update UI
         }
+    }
+    
+    private async Task OnArchiveAsync()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать {CurrentBill.Id.ToShortString()}?");
+        if (confirmed)
+        {
+            await ApiClient.Put<object, object>(TokenProvider, $"bills/{CurrentBill.Id}/archive", null);
+            await OnBillUpdate.InvokeAsync(); // Update UI
+        }
+    }
+
+    private async Task OnUnarchiveAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"bills/{CurrentBill.Id}/unarchive", null);
+        await OnBillUpdate.InvokeAsync(); // Update UI
     }
 }

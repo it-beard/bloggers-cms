@@ -11,7 +11,7 @@ namespace Pds.Api.Contracts.Content
 
         public string Comment { get; set; }
 
-        public BillStatus Status { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
 
         public PaymentType? PaymentType { get; set; }
 
