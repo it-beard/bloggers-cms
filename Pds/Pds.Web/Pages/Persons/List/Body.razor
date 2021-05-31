@@ -190,8 +190,8 @@ else
         else
         {
             query = query
-                .OrderByDescending(p => p.Rate)
-                .ThenBy(p => p.FullName);
+                .OrderBy(p => p.FullName)
+                .ThenBy(p => p.Rate);
         }
 
         //Search

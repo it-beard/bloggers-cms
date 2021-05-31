@@ -10,7 +10,7 @@ namespace Pds.Api.Contracts.Paging
 
     public class OrderSetting<T> where T : Enum
     {
-        public bool Ascending { get; set; }
+        public bool Ascending { get; set; } = true;
         public T FieldName { get; set; }
     }
 
