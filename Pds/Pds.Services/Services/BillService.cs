@@ -69,5 +69,49 @@ namespace Pds.Services.Services
 
             return result.Id;
         }
+
+        public async Task ArchiveAsync(Guid billId)
+        {
+            var bill = await unitOfWork.Bills.GetFirstWhereAsync(p => p.Id == billId);
+            if (bill != null)
+            {
+                bill.Status = BillStatus.Archived;
+                bill.UpdatedAt = DateTime.UtcNow;
+                await unitOfWork.Bills.UpdateAsync(bill);
+            }
+        }
+
+        public async Task UnarchiveAsync(Guid billId)
+        {
+            var bill = await unitOfWork.Bills.GetFirstWhereAsync(p => p.Id == billId);
+            if (bill is {Status: BillStatus.Archived})
+            {
+                bill.Status = BillStatus.Active;
+                bill.UpdatedAt = DateTime.UtcNow;
+                await unitOfWork.Bills.UpdateAsync(bill);
+            }
+        }
+
+        public async Task DeleteAsync(Guid billId)
+        {
+            var bill = await unitOfWork.Bills.GetFirstWhereAsync(p => p.Id == billId);
+            
+            if (bill == null)
+            {
+                throw new BillDeleteException($"Доход с id {billId} не найден.");
+            }
+            
+            if (bill.Status == BillStatus.Archived)
+            {
+                throw new BillDeleteException($"Нельзя удалить архивный доход.");
+            }
+            
+            if (bill.Content != null)
+            {
+                throw new BillDeleteException($"Доход, привязанный к контенту, удаляется только через контент.");
+            }
+
+            await unitOfWork.Bills.Delete(bill);
+        }
     }
 }

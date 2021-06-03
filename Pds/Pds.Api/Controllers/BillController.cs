@@ -137,5 +137,65 @@ namespace Pds.Api.Controllers
                 return ExceptionResult(e);
             }
         }
+
+        /// <summary>
+        /// Archive specified bill
+        /// </summary>
+        /// <param name="billId"></param>
+        /// <returns></returns>
+        [HttpPut("{billId}/archive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Archive(Guid billId)
+        {
+            try
+            {
+                await billService.ArchiveAsync(billId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Unarchive specified bill
+        /// </summary>
+        /// <param name="billId"></param>
+        /// <returns></returns>
+        [HttpPut("{billId}/unarchive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Unarchive(Guid billId)
+        {
+            try
+            {
+                await billService.UnarchiveAsync(billId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Delete specified bill
+        /// </summary>
+        /// <param name="billId"></param>
+        /// <returns></returns>
+        [HttpDelete("{billId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Delete(Guid billId)
+        {
+            try
+            {
+                await billService.DeleteAsync(billId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
     }
 }

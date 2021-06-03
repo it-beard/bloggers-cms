@@ -88,6 +88,7 @@ else
 
 @code {
     private GetBillsResponse billsInfo;
+    private FilterSettings lastFilterSettings;
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,6 +98,7 @@ else
     private async Task BillsInfoUpdate()
     {
         billsInfo = await GetBillsInfo();
+        FilterUpdated(lastFilterSettings);
     }
 
     private async Task<GetBillsResponse> GetBillsInfo()
@@ -111,6 +113,7 @@ else
 
     private void FilterUpdated(FilterSettings filterSettings)
     {
+        lastFilterSettings = filterSettings;
         var selectedSocialMediaTypes = filterSettings.SocialMediaFilterItems
             .Where(i => i.IsSelected)
             .Select(i => i.SocialMediaType)

@@ -32,7 +32,7 @@
         </button>
     }
 
-    @if (CurrentBill.Type != BillType.Content)
+    @if (CurrentBill.Type != BillType.Content && CurrentBill.Status == BillStatus.Active)
     {
         <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
             <i class="bi bi-trash-fill"></i>

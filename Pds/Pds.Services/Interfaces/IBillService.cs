@@ -11,5 +11,8 @@ namespace Pds.Services.Interfaces
         Task PayBillAsync(PayBillModel model);
         Task<List<Bill>> GetAllPaidAsync();
         Task<Guid> CreateAsync(Bill bill);
+        Task ArchiveAsync(Guid billId);
+        Task UnarchiveAsync(Guid billId);
+        Task DeleteAsync(Guid billId);
     }
 }
