@@ -41,8 +41,8 @@ namespace Pds.Data.Repositories
         public async Task<List<Person>> GetForListsAsync()
         {
             return await context.Persons
-                .OrderBy(p =>p.FirstName)
-                .ThenBy(p=>p.LastName)
+                .OrderBy(p =>p.LastName)
+                .ThenBy(p=>p.FirstName)
                 .ToListAsync();
         }
     }

@@ -42,7 +42,7 @@ namespace Pds.Mappers
                         .MapFrom((p,s) => 
                             s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
                                 "Не выбрано" : 
-                                $"{p.FirstName} {p.ThirdName} {p.LastName}"));
+                                $"{p.LastName} {p.FirstName} {p.ThirdName}"));
 
             CreateMap<Resource, ResourceDto>();
             CreateMap<Resource, GetContentPersonResourceDto>();
