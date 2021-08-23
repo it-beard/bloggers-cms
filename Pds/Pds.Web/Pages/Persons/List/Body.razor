@@ -60,6 +60,7 @@ else
                                       OnSortColumn="SortPersons"
                                       FieldName="PersonsFieldName.Location">Где</SortingComponent>
                 </th>
+                <th class="topics-header">Темы</th>
                 <th>Информация</th>
                 <th>Ссылки</th>
                 <th class="text-center actions-header">Действия</th>
@@ -75,9 +76,18 @@ else
                             (@person.Contents.Count)
                         </span>
                     </td>
-                    <td class="rate-row">@person.Rate</td>
-                    <td class="location-row">@person.Location</td>
-                    <td>@person.Info</td>
+                    <td class="rate-row">
+                        @person.Rate
+                    </td>
+                    <td class="location-row">
+                        @person.Location
+                    </td>
+                    <td class="topics-row">
+                        @person.Topics
+                    </td>
+                    <td class="info-row">
+                        @person.Info
+                    </td>
                     <td>
                         @foreach (var resource in person.Resources)
                         {

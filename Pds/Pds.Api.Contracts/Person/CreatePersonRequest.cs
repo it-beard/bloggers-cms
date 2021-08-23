@@ -17,6 +17,8 @@ namespace Pds.Api.Contracts.Person
 
         public string City { get; set; }
         
+        public string Topics { get; set; }
+        
         /// <summary>
         /// General information about person
         /// </summary>
@@ -26,6 +28,8 @@ namespace Pds.Api.Contracts.Person
         /// Rate (int) - can be from 0 to 100 and used to understanding how attractable/hot user for the show
         /// </summary>
         public int? Rate { get; set; }
+        
+        public bool IsUnknown  { get; set; }
         
         [Required]
         public List<ResourceDto> Resources { get; set; }

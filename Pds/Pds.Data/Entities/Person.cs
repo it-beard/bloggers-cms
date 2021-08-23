@@ -32,6 +32,8 @@ namespace Pds.Data.Entities
 
         public string Longitude { get; set; }
 
+        public string Topics { get; set; }
+
         public PersonStatus Status { get; set; }
 
         public DateTime? ArchivedAt { get; set; }
