@@ -18,8 +18,8 @@ namespace Pds.Data
         public DbSet<Bill> Bills { get; set; }
         public DbSet<Cost> Costs { get; set; }
         public DbSet<Client> Clients { get; set; }
+
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<Topic> Topics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
