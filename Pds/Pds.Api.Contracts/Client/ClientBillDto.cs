@@ -9,7 +9,7 @@ namespace Pds.Api.Contracts.Client
 
         public decimal Value { get; set; }
 
-        public BillStatus Status { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
 
         public BillType Type { get; set; }
 

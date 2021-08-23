@@ -11,9 +11,12 @@ namespace Pds.Data.Entities
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Value { get; set; }
-        
+
         [Required]
         public BillStatus Status { get; set; }
+        
+        [Required]
+        public PaymentStatus PaymentStatus { get; set; }
         
         [Required]
         public BillType Type { get; set; }

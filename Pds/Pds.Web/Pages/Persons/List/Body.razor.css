@@ -11,6 +11,11 @@
     text-align: center;
 }
 
+.topics-header {
+    width: 100px;
+    text-align: center;
+}
+
 .actions-header {
     width: 100px;
 }
@@ -24,6 +29,14 @@
 
 .location-row {
     min-width: 80px;
+}
+
+.topics-row {
+    text-align: center;
+ }
+
+.info-row {
+    white-space: pre-line;
 }
 
 .person-row .contents {

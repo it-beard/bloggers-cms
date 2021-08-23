@@ -27,7 +27,7 @@ namespace Pds.Services.Services
                 bill.Value = model.Value;
                 bill.PaymentType = model.PaymentType;
                 bill.Comment = model.Comment;
-                bill.Status = BillStatus.Paid;
+                bill.PaymentStatus = PaymentStatus.Paid;
                 bill.UpdatedAt = DateTime.UtcNow;
                 bill.PaidAt = model.PaidAt;
                 bill.IsNeedPayNds = model.IsNeedPayNds;
@@ -56,7 +56,8 @@ namespace Pds.Services.Services
             }
 
             bill.CreatedAt = DateTime.UtcNow;
-            bill.Status = BillStatus.Paid;
+            bill.PaymentStatus = PaymentStatus.Paid;
+            bill.Status = BillStatus.Active;
             if (bill.ClientId == Guid.Empty)
             {
                 bill.ClientId = null;
@@ -67,6 +68,50 @@ namespace Pds.Services.Services
             var result = await unitOfWork.Bills.InsertAsync(bill);
 
             return result.Id;
+        }
+
+        public async Task ArchiveAsync(Guid billId)
+        {
+            var bill = await unitOfWork.Bills.GetFirstWhereAsync(p => p.Id == billId);
+            if (bill != null)
+            {
+                bill.Status = BillStatus.Archived;
+                bill.UpdatedAt = DateTime.UtcNow;
+                await unitOfWork.Bills.UpdateAsync(bill);
+            }
+        }
+
+        public async Task UnarchiveAsync(Guid billId)
+        {
+            var bill = await unitOfWork.Bills.GetFirstWhereAsync(p => p.Id == billId);
+            if (bill is {Status: BillStatus.Archived})
+            {
+                bill.Status = BillStatus.Active;
+                bill.UpdatedAt = DateTime.UtcNow;
+                await unitOfWork.Bills.UpdateAsync(bill);
+            }
+        }
+
+        public async Task DeleteAsync(Guid billId)
+        {
+            var bill = await unitOfWork.Bills.GetFirstWhereAsync(p => p.Id == billId);
+            
+            if (bill == null)
+            {
+                throw new BillDeleteException($"Доход с id {billId} не найден.");
+            }
+            
+            if (bill.Status == BillStatus.Archived)
+            {
+                throw new BillDeleteException($"Нельзя удалить архивный доход.");
+            }
+            
+            if (bill.Content != null)
+            {
+                throw new BillDeleteException($"Доход, привязанный к контенту, удаляется только через контент.");
+            }
+
+            await unitOfWork.Bills.Delete(bill);
         }
     }
 }

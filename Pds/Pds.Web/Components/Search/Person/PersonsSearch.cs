@@ -14,6 +14,7 @@ namespace Pds.Web.Components.Search.Person
             predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.Location) && c.Location.ToLower().Contains(searchLine));
             predicate = predicate.Or(c => c.FullName.ToLower().Contains(searchLine));
             predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.Info) && c.Info.ToLower().Contains(searchLine));
+            predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.Topics) && c.Topics.ToLower().Contains(searchLine));
             predicate = predicate.Or(c => c.Rate.ToString().Contains(searchLine));
 
             predicate = predicate.Or(r => r.Resources.Exists(s => s.Name.Contains(searchLine)));

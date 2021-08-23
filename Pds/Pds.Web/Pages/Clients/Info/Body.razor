@@ -33,9 +33,9 @@ else
         </div>
         
         @{
-            var notPaidBills = client.Bills.Where(b => b.Status == BillStatus.Active);
+            var notPaidBills = client.Bills.Where(b => b.PaymentStatus == PaymentStatus.NotPaid);
             var notPaidBillsCost = notPaidBills.Sum(npb => npb.Value);
-            var paidBills = client.Bills.Where(b => b.Status == BillStatus.Paid);
+            var paidBills = client.Bills.Where(b => b.PaymentStatus == PaymentStatus.Paid);
             var paidBillsCost = paidBills.Sum(npb => npb.Value);
         }
 

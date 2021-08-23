@@ -9,6 +9,7 @@ using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Person;
+using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
 using Pds.Services.Models;
 using Pds.Services.Models.Client;
@@ -117,7 +118,7 @@ namespace Pds.Mappers
                     dest => dest.Brands,
                     opt => opt
                         .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
-            
+
             #endregion
             
             #region Contracts to Models

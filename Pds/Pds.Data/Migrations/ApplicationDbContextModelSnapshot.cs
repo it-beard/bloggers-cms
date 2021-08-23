@@ -76,6 +76,9 @@ namespace Pds.Data.Migrations
                     b.Property<DateTime?>("PaidAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PaymentType")
                         .HasColumnType("int");
 
@@ -308,6 +311,9 @@ namespace Pds.Data.Migrations
 
                     b.Property<string>("ThirdName")
                         .HasColumnType("varchar(300)");
+
+                    b.Property<string>("Topics")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UnarchivedAt")
                         .HasColumnType("datetime2");

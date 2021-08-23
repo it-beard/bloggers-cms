@@ -33,7 +33,7 @@ else
                 <label class="btn btn-secondary" for="@id">@brand.Name</label>
             }
         </div>
-
+        
         <div class="form-group">
             <label for="first_name" class="form-label label-required">Имя</label>
             <InputText class="form-control" id="first_name" @bind-Value="person.FirstName" />
@@ -50,9 +50,20 @@ else
         </div>
 
         <div class="form-group">
+            <InputCheckbox name="isUnknown" class="btn-check" @bind-Value="person.IsUnknown" id="person_isUnknown" 
+                           @onclick="@(_ => ToggleUnknownPerson())"/>
+            <label class="btn btn-secondary btn-sm" for="person_isUnknown">Неизвестная персона</label>
+        </div>
+
+        <div class="form-group">
             <label class="form-label">Адрес: </label>
             <InputText class="form-control person-country" id="country" @bind-Value="person.Country" placeholder="Страна" />
             <InputText class="form-control person-city" id="city" @bind-Value="person.City" placeholder="Город" />
+        </div>
+
+        <div class="form-group">
+            <label for="third_name" class="form-label">Темы</label>
+            <InputText class="form-control" id="third_name" @bind-Value="person.Topics" />
         </div>
 
         <div class="form-group">
@@ -130,6 +141,19 @@ else
             {
                 result.AddErrors(msgStore, editContext);
             }
+        }
+    }
+    
+    private void ToggleUnknownPerson()
+    {
+        person.IsUnknown = !person.IsUnknown;
+        if (person.IsUnknown)
+        {
+            person.FirstName = person.LastName = "Неизвестно";
+        }
+        else
+        {
+            person.FirstName = person.LastName = string.Empty;
         }
     }
 

@@ -16,3 +16,7 @@
     color: #888;
     font-weight: bold;
 }
+
+.comment-row {
+    white-space: pre-line;
+}
