@@ -183,6 +183,14 @@ namespace Pds.Data.Repositories
                         await context.SaveChangesAsync();
                     }
                 }
+                
+                if (content.Bill != null)
+                {
+                    content.Bill.Status = BillStatus.Archived;
+                    content.Bill.UpdatedAt = DateTime.UtcNow;
+                    context.Bills.Update(content.Bill);
+                    await context.SaveChangesAsync();
+                }
 
                 await transaction.CommitAsync();
             }
