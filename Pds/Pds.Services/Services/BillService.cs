@@ -38,6 +38,11 @@ namespace Pds.Services.Services
             }
         }
 
+        public async Task<Bill> GetAsync(Guid billId)
+        {
+            return await unitOfWork.Bills.GetFullByIdAsync(billId);
+        }
+
         public async Task<List<Bill>> GetAllPaidAsync()
         {
             return await unitOfWork.Bills.GetAllPaidOrderByDateDescAsync();
@@ -66,6 +71,43 @@ namespace Pds.Services.Services
                 bill.ContactType = null;
             }
             var result = await unitOfWork.Bills.InsertAsync(bill);
+
+            return result.Id;
+        }
+        
+        public async Task<Guid> EditAsync(EditBillModel model)
+        {
+            if (model == null)
+            {
+                throw new BillEditException($"Модель запроса пуста.");
+            }
+
+            var bill = await unitOfWork.Bills.GetFullByIdAsync(model.Id);
+            
+            if (bill == null)
+            {
+                throw new BillEditException($"Доход с id {model.Id} не найден.");
+            }
+
+            if (bill.Status == BillStatus.Archived)
+            {
+                throw new BillEditException($"Нельзя редактировать архивный доход.");
+            }
+
+            bill.UpdatedAt = DateTime.UtcNow;
+            bill.Value = model.Value;
+            bill.Comment = model.Comment;
+            bill.PaidAt = model.PaidAt;
+            bill.Comment = model.Comment;
+            bill.Type = model.Type;
+            bill.PaymentType = model.PaymentType;
+            bill.IsNeedPayNds = model.IsNeedPayNds;
+            bill.ContractNumber = model.ContractNumber;
+            bill.ContractDate = model.ContractDate;
+            bill.BrandId = model.BrandId;
+            bill.UpdatedAt = DateTime.UtcNow;
+
+            var result = await unitOfWork.Bills.UpdateAsync(bill);
 
             return result.Id;
         }

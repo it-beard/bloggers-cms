@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
+using Pds.Api.Contracts;
 using Pds.Api.Contracts.Cost;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -21,17 +22,20 @@ namespace Pds.Api.Controllers
         private readonly IMapper mapper;
         private readonly ICostService costService;
         private readonly IContentService contentService;
+        private readonly IBrandService brandService;
 
         public CostController(
             ILogger<PersonController> logger,
             IMapper mapper,
             ICostService costService,
-            IContentService contentService)
+            IContentService contentService,
+            IBrandService brandService)
         {
             this.logger = logger;
             this.mapper = mapper;
             this.costService = costService;
             this.contentService = contentService;
+            this.brandService = brandService;
         }
 
         /// <summary>
@@ -74,6 +78,26 @@ namespace Pds.Api.Controllers
                     Items = mapper.Map<List<CostDto>>(costs),
                     Total = costs.Count
                 };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Return list of brands for checkboxes group
+        /// </summary>
+        [HttpGet]
+        [Route("get-brands")]
+        public async Task<IActionResult> GetListOfBrands()
+        {
+            try
+            {
+                var brands = await brandService.GetBrandsForListsAsync();
+                var response = mapper.Map<List<BrandDto>>(brands);
 
                 return Ok(response);
             }

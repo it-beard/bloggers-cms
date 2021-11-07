@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
+using Pds.Api.Contracts;
 using Pds.Api.Contracts.Bill;
-using Pds.Api.Contracts.Cost;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Bill;
@@ -21,17 +21,20 @@ namespace Pds.Api.Controllers
         private readonly ILogger<PersonController> logger;
         private readonly IMapper mapper;
         private readonly IBillService billService;
+        private readonly IBrandService brandService;
         private readonly IClientService clientService;
 
         public BillController(
             ILogger<PersonController> logger,
             IMapper mapper,
             IBillService billService,
+            IBrandService brandService,
             IClientService clientService)
         {
             this.logger = logger;
             this.mapper = mapper;
             this.billService = billService;
+            this.brandService = brandService;
             this.clientService = clientService;
         }
         
@@ -65,6 +68,28 @@ namespace Pds.Api.Controllers
                 return ExceptionResult(e);
             }
         }
+        
+        /// <summary>
+        /// Get bill by id
+        /// </summary>
+        /// <param name="billId"></param>
+        /// <returns></returns>
+        [HttpGet("{billId}")]
+        [ProducesResponseType(typeof(GetBillResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(Guid billId)
+        {
+            try
+            {
+                var bill = await billService.GetAsync(billId);
+                var response = mapper.Map<GetBillResponse>(bill);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
 
         /// <summary>
         /// Return list of bills
@@ -84,6 +109,26 @@ namespace Pds.Api.Controllers
                     Items = mapper.Map<List<BillDto>>(paidBills),
                     Total = paidBills.Count
                 };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Return list of brands for checkboxes group
+        /// </summary>
+        [HttpGet]
+        [Route("get-brands")]
+        public async Task<IActionResult> GetListOfBrands()
+        {
+            try
+            {
+                var brands = await brandService.GetBrandsForListsAsync();
+                var response = mapper.Map<List<BrandDto>>(brands);
 
                 return Ok(response);
             }
@@ -127,7 +172,33 @@ namespace Pds.Api.Controllers
                 {
                     var newBill = mapper.Map<Bill>(request);
                     var billId = await billService.CreateAsync(newBill);
-                    return Ok(new CreateCostResponse{Id = billId});
+                    return Ok(new CreateBillResponse{Id = billId});
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Edit bill
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(EditBillResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Edit(EditBillRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var editBillModel = mapper.Map<EditBillModel>(request);
+                    var billId = await billService.EditAsync(editBillModel);
+                    return Ok(new EditBillResponse{Id = billId});
                 }
 
                 return BadRequest();

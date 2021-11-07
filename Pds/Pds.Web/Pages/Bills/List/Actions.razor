@@ -48,10 +48,7 @@
 
     private void OnEdit()
     {
-        NavigationManager.NavigateTo(
-            CurrentBill.Content != null ? 
-                $"/content/{CurrentBill.Content.Id}/edit" : 
-                $"/bills/{CurrentBill.Id}");
+        NavigationManager.NavigateTo($"/bills/{CurrentBill.Id}/edit");
     }
 
     private async Task OnDelete()
