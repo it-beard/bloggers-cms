@@ -181,7 +181,7 @@ namespace Pds.Data.Repositories
                         cost.UpdatedAt = DateTime.UtcNow;
                         context.Costs.Update(cost);
                         await context.SaveChangesAsync();
-                    }
+                    } 
                 }
                 
                 if (content.Bill != null)
