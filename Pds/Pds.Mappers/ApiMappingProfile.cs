@@ -12,6 +12,7 @@ using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Topic;
 using Pds.Data.Entities;
 using Pds.Services.Models;
+using Pds.Services.Models.Bill;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Services.Models.Cost;
@@ -91,6 +92,7 @@ namespace Pds.Mappers
 
             CreateMap<Bill, BillDto>();
             CreateMap<Bill, ClientBillDto>();
+            CreateMap<Bill, GetBillResponse>();
             CreateMap<Bill, GetContentBillDto>();
             CreateMap<Bill, ContentListBillDto>();
             CreateMap<Bill, GetContentBillForPayResponse>();
@@ -127,6 +129,7 @@ namespace Pds.Mappers
             CreateMap<EditContentRequest, EditContentModel>();
             CreateMap<EditClientRequest, EditClientModel>();
             CreateMap<EditCostRequest, EditCostModel>();
+            CreateMap<EditBillRequest, EditBillModel>();
             CreateMap<CreateContentBillDto, CreateContentBillModel>();
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
@@ -141,6 +144,7 @@ namespace Pds.Mappers
             CreateMap<GetContentResponse, EditContentRequest>();
             CreateMap<GetContentBillDto, EditContentBillDto>();
             CreateMap<GetCostResponse, EditCostRequest>();
+            CreateMap<GetBillResponse, EditBillRequest>();
             CreateMap<GetClientResponse, EditClientRequest>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();

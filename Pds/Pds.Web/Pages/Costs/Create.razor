@@ -111,7 +111,7 @@ else
 
     private async Task<List<BrandDto>> GetBrandsAsync()
     {
-        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
+        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "costs/get-brands");
     }
 
     private async Task<List<ContentForLookupDto>> GetContentsAsync()

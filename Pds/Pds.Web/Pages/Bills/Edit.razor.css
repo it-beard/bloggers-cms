@@ -6,16 +6,23 @@
      margin-bottom: 15px;
  }
 
-::deep input.bill-cost{
-    width: 120px;
+::deep input.bill-value{
+    width: 100px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+::deep input.bill-date{
+    width: 150px;
     display: inline-block;
     margin-left: 10px;
     margin-right: 10px;
 }
 
 ::deep input.pay-date{
-    width: 150px;
-    display: inline-block;
-    margin-left: 10px;
-    margin-right: 10px;
+     width: 150px;
+     display: inline-block;
+     margin-left: 10px;
+     margin-right: 10px;
  }
