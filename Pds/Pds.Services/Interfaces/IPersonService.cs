@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pds.Data.Entities;
+using Pds.Services.Models.Person;
 
 namespace Pds.Services.Interfaces
 {
@@ -12,6 +13,8 @@ namespace Pds.Services.Interfaces
         Task<List<Person>> GetAllAsync();
 
         Task<Guid> CreateAsync(Person person);
+
+        Task<Guid> EditAsync(EditPersonModel model);
 
         Task ArchiveAsync(Guid personId);
 

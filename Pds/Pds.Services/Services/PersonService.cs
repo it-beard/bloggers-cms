@@ -7,6 +7,7 @@ using Pds.Core.Exceptions.Person;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Person;
 
 namespace Pds.Services.Services
 {
@@ -56,6 +57,52 @@ namespace Pds.Services.Services
             person.Brands = brandsFromBd;
             person.CreatedAt = DateTime.UtcNow;
             var result = await unitOfWork.Persons.InsertAsync(person);
+
+            return result.Id;
+        }
+
+        public async Task<Guid> EditAsync(EditPersonModel model)
+        {
+            if (model == null)
+            {
+                throw new PersonEditException($"Модель запроса пуста.");
+            }
+            
+            if (model.BrandsIds.Count == 0)
+            {
+                throw new PersonEditException("Персону нельзя создать без бренда.");
+            }
+
+            var person = await unitOfWork.Persons.GetFullByIdAsync(model.Id);
+            
+            if (person == null)
+            {
+                throw new PersonEditException($"Персона с id {model.Id} не найдена.");
+            }
+
+            if (person.Status == PersonStatus.Archived)
+            {
+                throw new PersonEditException($"Нельзя редактировать архивную персону.");
+            }
+
+            person.UpdatedAt = DateTime.UtcNow;
+            person.FirstName = model.FirstName;
+            person.LastName = model.LastName;
+            person.ThirdName = model.ThirdName;
+            person.Country = model.Country;
+            person.City = model.City;
+            person.Rate = model.Rate;
+            person.Topics = model.Topics;
+            person.Info = model.Info;
+
+            person.Brands = new List<Brand>();
+            foreach (var brandId in model.BrandsIds)
+            {
+                var brand = await unitOfWork.Brands.GetFirstWhereAsync(b => b.Id == brandId);
+                person.Brands.Add(brand);
+            }
+
+            var result = await unitOfWork.Persons.UpdateAsync(person);
 
             return result.Id;
         }

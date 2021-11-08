@@ -146,6 +146,7 @@ else
 @code {
     private CreateBillRequest bill = new();
     private EditContext editContext;
+    private ValidationMessageStore msgStore;
     private bool isCreateButtonDisabled;
     private List<BrandDto> brands;
     private List<ClientForLookupDto> clients;
@@ -154,17 +155,28 @@ else
     {
         await SetDefaultValues();
         editContext = new EditContext(bill);
+        msgStore = new ValidationMessageStore(editContext);
     }
     
     private async Task HandleSubmitAsync()
     {
+        msgStore.Clear();
         var isValid = editContext.Validate();
 
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            await ApiClient.Post<object, CreateBillRequest>(TokenProvider, "bills", bill);
-            NavigationManager.NavigateTo("/bills");
+            var result = 
+                await ApiClient.Post<object, CreateBillRequest>(TokenProvider, "bills", bill);
+            isCreateButtonDisabled = false;
+            if (result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/bills");
+            }
+            else
+            {
+                result.AddErrors(msgStore, editContext);
+            }
         }
     }
 

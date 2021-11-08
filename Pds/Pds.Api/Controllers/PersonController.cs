@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
+using Pds.Api.Contracts;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Person;
 
 namespace Pds.Api.Controllers
 {
@@ -66,7 +68,7 @@ namespace Pds.Api.Controllers
         /// <param name="personId"></param>
         /// <returns></returns>
         [HttpGet("{personId}")]
-        [ProducesResponseType(typeof(PersonDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetPersonResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPerson(Guid personId)
         {
             try
@@ -98,6 +100,32 @@ namespace Pds.Api.Controllers
                     var newPerson = mapper.Map<Person>(request);
                     var personId = await personService.CreateAsync(newPerson);
                     return Ok(new CreatePersonResponse { Id = personId });
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Edit person
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(EditPersonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Edit(EditPersonRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var editCostModel = mapper.Map<EditPersonModel>(request);
+                    var costId = await personService.EditAsync(editCostModel);
+                    return Ok(new EditPersonResponse{Id = costId});
                 }
 
                 return BadRequest();
@@ -169,7 +197,7 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Return list of brands for checkboxes group.
+        /// Return list of brands for checkboxes group
         /// </summary>
         [HttpGet]
         [Route("get-brands")]
@@ -178,7 +206,7 @@ namespace Pds.Api.Controllers
             try
             {
                 var brands = await brandService.GetBrandsForListsAsync();
-                var response = mapper.Map<List<BrandForCheckboxesDto>>(brands);
+                var response = mapper.Map<List<BrandDto>>(brands);
 
                 return Ok(response);
             }

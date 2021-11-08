@@ -16,6 +16,7 @@ using Pds.Services.Models.Bill;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Services.Models.Cost;
+using Pds.Services.Models.Person;
 using Pds.Web.Models.Content;
 
 namespace Pds.Mappers
@@ -119,7 +120,10 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.Brands,
                     opt => opt
-                        .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
+                        .MapFrom(p => 
+                            BrandsForCheckboxesDtoToBrandsCollection(
+                                p.Brands.Where( 
+                                    c => c.IsSelected).ToList())));
 
             #endregion
             
@@ -130,6 +134,11 @@ namespace Pds.Mappers
             CreateMap<EditClientRequest, EditClientModel>();
             CreateMap<EditCostRequest, EditCostModel>();
             CreateMap<EditBillRequest, EditBillModel>();
+            CreateMap<EditPersonRequest, EditPersonModel>()
+                .ForMember(
+                    dest => dest.BrandsIds,
+                    opt => opt
+                        .MapFrom(p => p.Brands.Where(b=>b.IsSelected).Select(b=>b.Id)));
             CreateMap<CreateContentBillDto, CreateContentBillModel>();
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
@@ -146,6 +155,11 @@ namespace Pds.Mappers
             CreateMap<GetCostResponse, EditCostRequest>();
             CreateMap<GetBillResponse, EditBillRequest>();
             CreateMap<GetClientResponse, EditClientRequest>();
+            CreateMap<GetPersonResponse, EditPersonRequest>()
+                .ForMember(
+                    dest => dest.Brands,
+                    opt => opt.MapFrom(p => BrandsDtoToBrandsForCheckboxesDto(p.Brands)));
+            CreateMap<PersonDto, GetPersonResponse>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
@@ -160,9 +174,22 @@ namespace Pds.Mappers
             #endregion
         }
 
-        private ICollection<Brand> BrandsDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
+        private ICollection<Brand> BrandsForCheckboxesDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
         {
             return brands.Select(b => new Brand {Id = b.Id}).ToList();
+        }
+        
+        private List<BrandForCheckboxesDto> BrandsDtoToBrandsForCheckboxesDto(List<BrandDto> brands)
+        {
+            return brands
+                .Select(b => 
+                    new BrandForCheckboxesDto
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                        IsSelected = true
+                    })
+                .ToList();
         }
     }
 }
