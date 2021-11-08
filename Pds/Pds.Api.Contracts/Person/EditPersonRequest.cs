@@ -1,17 +1,19 @@
-﻿using Pds.Core.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Pds.Api.Contracts.Person;
 
-namespace Pds.Api.Contracts.Person
+namespace Pds.Api.Contracts.Cost
 {
-    public class GetPersonResponse
+    public class EditPersonRequest
     {
+        [Required]
         public Guid Id { get; set; }
 
-        public string FullName { get; set; }
-
+        [Required]
         public string FirstName { get; set; }
 
+        [Required]
         public string LastName { get; set; }
 
         public string ThirdName { get; set; }
@@ -20,20 +22,14 @@ namespace Pds.Api.Contracts.Person
 
         public string City { get; set; }
         
-        public string Location { get; set; }
-        
         public string Topics { get; set; }
 
         public string Info { get; set; }
 
         public int? Rate { get; set; }
 
-        public PersonStatus Status { get; set; }
-
-        public List<BrandDto> Brands { get; set; }
+        public List<BrandForCheckboxesDto> Brands { get; set; }
 
         public List<ResourceDto> Resources { get; set; }
-
-        public List<PersonContentDto> Contents { get; set; }
     }
 }

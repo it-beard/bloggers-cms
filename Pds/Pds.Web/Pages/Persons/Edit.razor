@@ -1,19 +1,23 @@
-﻿@page "/persons/add"
+﻿@page "/persons/{personId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts
+@using Pds.Api.Contracts.Cost
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
+@using AutoMapper
 @using Microsoft.AspNetCore.Components
+@using System.Linq
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
+@inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
 
-<Title>@WithSuffix("Добавление персоны")</Title>
+<Title>@WithSuffix("Редактирование персоны")</Title>
 
-@if (person.Brands == null)
+@if (brands == null || person == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -22,25 +26,28 @@
 else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
-        Добавление персоны
+        Редактирование персоны
         <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
     </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
-             @foreach (var brand in person.Brands)
+             @foreach (var brand in brands)
              {
                  var id = $"brand_{brand.Id.ToString()}";
-                 <InputCheckbox name="@brand.Id" class="btn-check" @bind-Value="brand.IsSelected" Id="@id" />
+                 brand.IsSelected = person.Brands.Select(b=>b.Id).Contains(brand.Id);
+                 <InputCheckbox name="@brand.Id" 
+                                class="btn-check" @bind-Value="brand.IsSelected" 
+                                Id="@id" />
                  <label class="btn btn-secondary" for="@id">@brand.Name</label>
              }
-         </div>
+        </div>
 
         <div class="form-group">
             <label for="last_name" class="form-label label-required">Фамилия</label>
             <InputText class="form-control" id="last_name" @bind-Value="person.LastName" />
         </div>
-        
+
         <div class="form-group">
             <label for="first_name" class="form-label label-required">Имя</label>
             <InputText class="form-control" id="first_name" @bind-Value="person.FirstName" />
@@ -49,12 +56,6 @@ else
         <div class="form-group">
             <label for="third_name" class="form-label">Отчество</label>
             <InputText class="form-control" id="third_name" @bind-Value="person.ThirdName" />
-        </div>
-
-        <div class="form-group">
-            <InputCheckbox name="isUnknown" class="btn-check" @bind-Value="person.IsUnknown" id="person_isUnknown" 
-                           @onclick="@(_ => ToggleUnknownPerson())"/>
-            <label class="btn btn-secondary btn-sm" for="person_isUnknown">Неизвестная персона</label>
         </div>
 
         <div class="form-group">
@@ -78,48 +79,33 @@ else
             <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг" />
         </div>
 
-        <div class="form-group">
-            <label class="form-label person-links">Ссылки:</label>
-            @foreach (var resource in person.Resources)
-            {
-                <div class="form-row align-items-center">
-                    <div class="col-auto">
-                        <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название" />
-                    </div>
-                    <div class="col-auto">
-                        <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка" />
-                    </div>
-                    <div class="col-auto">
-                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
-                    </div>
-                </div>
-            }
-
-            <div @onclick="AddResource" class="btn btn-primary btn-sm">Добавить ещё</div>
-        </div>
-
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+            <button type="submit" class="btn btn-success" disabled="@isSaveButtonDisabled">Сохранить</button>
         </div>
     </EditForm>
 }
 
 @code {
-    private CreatePersonRequest person = new();
+    [Parameter]
+    public string PersonId { get; set; }
+    private EditPersonRequest person;
+    private List<BrandForCheckboxesDto> brands;
     private EditContext editContext;
-    private bool isCreateButtonDisabled;
     private ValidationMessageStore msgStore;
-
+    private bool isSaveButtonDisabled;
+    
     protected override async Task OnInitializedAsync()
     {
-        await SetDefaultValues();
+        isSaveButtonDisabled = false;
+        person = await GetPerson();
+        brands = await GetBrandsAsync();
         editContext = new EditContext(person);
         msgStore = new ValidationMessageStore(editContext);
     }
-    
+
     private async Task HandleSubmitAsync()
     {
         msgStore.Clear();
@@ -127,9 +113,10 @@ else
 
         if (isValid)
         {
-            isCreateButtonDisabled = true;
-            var result = await ApiClient.Post<object, CreatePersonRequest>(TokenProvider, "persons", person);
-            isCreateButtonDisabled = false;
+            isSaveButtonDisabled = true;
+            var result = 
+                await ApiClient.Put<object, EditPersonRequest>(TokenProvider, "persons", person);
+            isSaveButtonDisabled = false;
             if (result.IsSuccessStatusCode)
             {
                 NavigationManager.NavigateTo("/persons");
@@ -141,40 +128,14 @@ else
         }
     }
 
-    private async Task SetDefaultValues()
-    {
-        isCreateButtonDisabled = false;
-        person.Rate = 0;
-        person.Resources = new List<ResourceDto>();
-        person.Brands = await GetBrandsAsync();
-    }
-    
-    private void ToggleUnknownPerson()
-    {
-        person.IsUnknown = !person.IsUnknown;
-        if (person.IsUnknown)
-        {
-            person.FirstName = person.LastName = "Неизвестно";
-        }
-        else
-        {
-            person.FirstName = person.LastName = string.Empty;
-        }
-    }
-
-    private void AddResource()
-    {
-        var resource = new ResourceDto();
-        person.Resources.Add(resource);
-    }
-
-    private void RemoveResource(ResourceDto resource)
-    {
-        person.Resources.Remove(resource);
-    }
-
     private async Task<List<BrandForCheckboxesDto>> GetBrandsAsync()
     {
         return await ApiClient.Get<List<BrandForCheckboxesDto>>(TokenProvider, "persons/get-brands");
+    }
+
+    private async Task<EditPersonRequest> GetPerson()
+    {
+        var personResponse = await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
+        return Mapper.Map<EditPersonRequest>(personResponse);
     }
 }

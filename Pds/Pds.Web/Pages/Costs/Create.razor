@@ -87,6 +87,7 @@ else
 @code {
     private CreateCostRequest cost = new();
     private EditContext editContext;
+    private ValidationMessageStore msgStore;
     private bool isCreateButtonDisabled;
     private List<BrandDto> brands;
     private List<ContentForLookupDto> contents;
@@ -95,17 +96,28 @@ else
     {
         await SetDefaultValues();
         editContext = new EditContext(cost);
+        msgStore = new ValidationMessageStore(editContext);
     }
     
     private async Task HandleSubmitAsync()
     {
+        msgStore.Clear();
         var isValid = editContext.Validate();
 
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            await ApiClient.Post<object, CreateCostRequest>(TokenProvider, "costs", cost);
-            NavigationManager.NavigateTo("/costs");
+            var result = 
+                await ApiClient.Post<object, CreateCostRequest>(TokenProvider, "costs", cost);
+            isCreateButtonDisabled = false;
+            if (result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/costs");
+            }
+            else
+            {
+                result.AddErrors(msgStore, editContext);
+            }
         }
     }
 

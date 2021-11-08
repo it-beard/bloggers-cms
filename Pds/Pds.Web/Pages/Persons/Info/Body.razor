@@ -2,13 +2,13 @@
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Person
-@using Pds.Core.Enums
-@using Pds.Core.Exceptions
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
+@using AutoMapper
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
+@inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
 
 @if (person == null)
@@ -40,7 +40,7 @@ else
         <div class="info-item">
             <div class="info-title">Место</div>
             <div class="info-body">
-                @person.Location
+                @person.Country, @person.City
             </div>
         </div>
 
@@ -71,17 +71,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        person = await GetPerson();
+        person = await GetPersonAsync();
     }
 
-    private async Task<GetPersonResponse> GetPerson()
+    private async Task<GetPersonResponse> GetPersonAsync()
     {
-        return await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
+        var result = await ApiClient.Get<PersonDto>(TokenProvider, $"persons/{PersonId}");
+        return Mapper.Map<GetPersonResponse>(result);
     }
 
     private async Task ContentInfoUpdate()
     {
-        person = await GetPerson();
+        person = await GetPersonAsync();
     }
 
 }

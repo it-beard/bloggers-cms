@@ -119,7 +119,10 @@ namespace Pds.Mappers
                 .ForMember(
                     dest => dest.Brands,
                     opt => opt
-                        .MapFrom(p => BrandsDtoToBrandsCollection(p.Brands.Where( c => c.IsSelected).ToList())));
+                        .MapFrom(p => 
+                            BrandsForCheckboxesDtoToBrandsCollection(
+                                p.Brands.Where( 
+                                    c => c.IsSelected).ToList())));
 
             #endregion
             
@@ -146,6 +149,11 @@ namespace Pds.Mappers
             CreateMap<GetCostResponse, EditCostRequest>();
             CreateMap<GetBillResponse, EditBillRequest>();
             CreateMap<GetClientResponse, EditClientRequest>();
+            CreateMap<GetPersonResponse, EditPersonRequest>()
+                .ForMember(
+                    dest => dest.Brands,
+                    opt => opt.MapFrom(p => BrandsDtoToBrandsForCheckboxesDto(p.Brands)));
+            CreateMap<PersonDto, GetPersonResponse>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
             CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
@@ -160,9 +168,22 @@ namespace Pds.Mappers
             #endregion
         }
 
-        private ICollection<Brand> BrandsDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
+        private ICollection<Brand> BrandsForCheckboxesDtoToBrandsCollection(List<BrandForCheckboxesDto> brands)
         {
             return brands.Select(b => new Brand {Id = b.Id}).ToList();
+        }
+        
+        private List<BrandForCheckboxesDto> BrandsDtoToBrandsForCheckboxesDto(List<BrandDto> brands)
+        {
+            return brands
+                .Select(b => 
+                    new BrandForCheckboxesDto
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                        IsSelected = true
+                    })
+                .ToList();
         }
     }
 }

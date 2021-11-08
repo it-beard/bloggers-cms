@@ -7,8 +7,16 @@ namespace Pds.Api.Contracts.Person
     public class PersonDto
     {
         public Guid Id { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string ThirdName { get; set; }
         
         public string FullName { get; set; }
+
+        public string City { get; set; }
         
         public string Location { get; set; }
         
@@ -16,7 +24,7 @@ namespace Pds.Api.Contracts.Person
         
         public string Info { get; set; }
         
-        public int Rate { get; set; }
+        public int? Rate { get; set; }
 
         public PersonStatus Status { get; set; }
         

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
+using Pds.Api.Contracts;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -66,7 +67,7 @@ namespace Pds.Api.Controllers
         /// <param name="personId"></param>
         /// <returns></returns>
         [HttpGet("{personId}")]
-        [ProducesResponseType(typeof(PersonDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetPersonResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPerson(Guid personId)
         {
             try
@@ -169,7 +170,7 @@ namespace Pds.Api.Controllers
         }
 
         /// <summary>
-        /// Return list of brands for checkboxes group.
+        /// Return list of brands for checkboxes group
         /// </summary>
         [HttpGet]
         [Route("get-brands")]
@@ -178,7 +179,7 @@ namespace Pds.Api.Controllers
             try
             {
                 var brands = await brandService.GetBrandsForListsAsync();
-                var response = mapper.Map<List<BrandForCheckboxesDto>>(brands);
+                var response = mapper.Map<List<BrandDto>>(brands);
 
                 return Ok(response);
             }
