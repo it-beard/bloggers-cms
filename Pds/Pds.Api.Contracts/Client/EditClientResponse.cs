@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Client
 {
