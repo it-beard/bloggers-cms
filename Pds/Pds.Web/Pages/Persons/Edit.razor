@@ -1,8 +1,6 @@
 ﻿@page "/persons/{personId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts
-@using Pds.Api.Contracts.Cost
 @using Pds.Api.Contracts.Person
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
@@ -35,10 +33,7 @@ else
              @foreach (var brand in brands)
              {
                  var id = $"brand_{brand.Id.ToString()}";
-                 brand.IsSelected = person.Brands.Select(b=>b.Id).Contains(brand.Id);
-                 <InputCheckbox name="@brand.Id" 
-                                class="btn-check" @bind-Value="brand.IsSelected" 
-                                Id="@id" />
+                 <InputCheckbox name="@brand.Id" class="btn-check" @bind-Value="brand.IsSelected" Id="@id" />
                  <label class="btn btn-secondary" for="@id">@brand.Name</label>
              }
         </div>
@@ -101,7 +96,7 @@ else
     {
         isSaveButtonDisabled = false;
         person = await GetPerson();
-        brands = await GetBrandsAsync();
+        brands = await GetBrandsAsync(person.Brands);
         editContext = new EditContext(person);
         msgStore = new ValidationMessageStore(editContext);
     }
@@ -114,6 +109,7 @@ else
         if (isValid)
         {
             isSaveButtonDisabled = true;
+            person.Brands = brands; // save new state of brands
             var result = 
                 await ApiClient.Put<object, EditPersonRequest>(TokenProvider, "persons", person);
             isSaveButtonDisabled = false;
@@ -128,9 +124,15 @@ else
         }
     }
 
-    private async Task<List<BrandForCheckboxesDto>> GetBrandsAsync()
+    private async Task<List<BrandForCheckboxesDto>> GetBrandsAsync(List<BrandForCheckboxesDto> personBrands)
     {
-        return await ApiClient.Get<List<BrandForCheckboxesDto>>(TokenProvider, "persons/get-brands");
+        var allBrands = await ApiClient.Get<List<BrandForCheckboxesDto>>(TokenProvider, "persons/get-brands");
+        foreach (var brand in allBrands)
+        {
+            brand.IsSelected = personBrands.Select(b => b.Id).Contains(brand.Id);
+        }
+        
+        return allBrands;
     }
 
     private async Task<EditPersonRequest> GetPerson()

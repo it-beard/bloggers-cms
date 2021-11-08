@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Pds.Api.Contracts.Person;
 
-namespace Pds.Api.Contracts.Person
+namespace Pds.Services.Models.Person
 {
-    public class EditPersonRequest
+    public class EditPersonModel
     {
-        [Required]
         public Guid Id { get; set; }
-
-        [Required]
         public string FirstName { get; set; }
 
-        [Required]
         public string LastName { get; set; }
 
         public string ThirdName { get; set; }
@@ -28,8 +22,6 @@ namespace Pds.Api.Contracts.Person
 
         public int? Rate { get; set; }
 
-        public List<BrandForCheckboxesDto> Brands { get; set; }
-
-        public List<ResourceDto> Resources { get; set; }
+        public List<Guid> BrandsIds { get; set; }
     }
 }

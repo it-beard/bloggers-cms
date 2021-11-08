@@ -11,6 +11,7 @@ using Pds.Api.Contracts;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Person;
 
 namespace Pds.Api.Controllers
 {
@@ -99,6 +100,32 @@ namespace Pds.Api.Controllers
                     var newPerson = mapper.Map<Person>(request);
                     var personId = await personService.CreateAsync(newPerson);
                     return Ok(new CreatePersonResponse { Id = personId });
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return ExceptionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Edit person
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(EditPersonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Edit(EditPersonRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var editCostModel = mapper.Map<EditPersonModel>(request);
+                    var costId = await personService.EditAsync(editCostModel);
+                    return Ok(new EditPersonResponse{Id = costId});
                 }
 
                 return BadRequest();

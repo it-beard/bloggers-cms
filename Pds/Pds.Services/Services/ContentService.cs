@@ -108,6 +108,7 @@ namespace Pds.Services.Services
             content.ReleaseDate = model.ReleaseDate.Date;
             content.EndDate = model.EndDate?.Date;
             content.PersonId = model.PersonId != null && model.PersonId.Value == Guid.Empty ? null : model.PersonId;
+
             if (model.Bill != null && content.Bill != null) // Just update existed bill
             {
                 content.Bill.ClientId =  model.Bill.ClientId;

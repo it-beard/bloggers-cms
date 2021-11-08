@@ -16,6 +16,7 @@ using Pds.Services.Models.Bill;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Services.Models.Cost;
+using Pds.Services.Models.Person;
 using Pds.Web.Models.Content;
 
 namespace Pds.Mappers
@@ -133,6 +134,11 @@ namespace Pds.Mappers
             CreateMap<EditClientRequest, EditClientModel>();
             CreateMap<EditCostRequest, EditCostModel>();
             CreateMap<EditBillRequest, EditBillModel>();
+            CreateMap<EditPersonRequest, EditPersonModel>()
+                .ForMember(
+                    dest => dest.BrandsIds,
+                    opt => opt
+                        .MapFrom(p => p.Brands.Where(b=>b.IsSelected).Select(b=>b.Id)));
             CreateMap<CreateContentBillDto, CreateContentBillModel>();
             CreateMap<CreateContentRequest, CreateContentModel>()
                 .ForMember(
