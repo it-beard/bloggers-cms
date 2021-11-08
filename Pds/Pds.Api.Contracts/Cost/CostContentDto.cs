@@ -1,5 +1,4 @@
 ﻿using System;
-using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Cost
 {

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Pds.Api.Contracts.Person;
-using Pds.Api.Contracts.Topic;
 
 namespace Pds.Api.Contracts.Paging
 {

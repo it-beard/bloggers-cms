@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Content
 {
