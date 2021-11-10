@@ -1,4 +1,5 @@
 [![Deploy apps to Production](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml/badge.svg?branch=main)](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml)
+[![License](https://img.shields.io/github/license/it-beard/bloggers-cms)](https://github.com/it-beard/bloggers-cms/blob/develop/LICENSE)
 
 **Bloggers CMS** (старое название "People Discovery System") - это система управления контентом, разрабатываемая специально под задачи блогеров. Платформа создается как часть экосистемы вокруг проекта ["АйТиБорода"](https://itbeard.com).   
 Разрабатывается на базе **.NET 5** и **Blazor**
