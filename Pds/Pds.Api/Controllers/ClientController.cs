@@ -1,156 +1,148 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts.Client;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Client;
+namespace Pds.Api.Controllers;
 
-namespace Pds.Api.Controllers
+[Route("api/clients")]
+[CustomAuthorize]
+public class ClientController : ApiControllerBase
 {
-    [Route("api/clients")]
-    [CustomAuthorize]
-    public class ClientController : ApiControllerBase
+    private readonly ILogger<ClientController> logger;
+    private readonly IMapper mapper;
+    private readonly IClientService clientService;
+
+    public ClientController(
+        ILogger<ClientController> logger,
+        IMapper mapper,
+        IClientService clientService)
     {
-        private readonly ILogger<ClientController> logger;
-        private readonly IMapper mapper;
-        private readonly IClientService clientService;
+        this.logger = logger;
+        this.mapper = mapper;
+        this.clientService = clientService;
+    }
 
-        public ClientController(
-            ILogger<ClientController> logger,
-            IMapper mapper,
-            IClientService clientService)
+    /// <summary>
+    /// Return list of clients
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(GetClientsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll([FromQuery] GetClientsRequest request)
+    {
+        try
         {
-            this.logger = logger;
-            this.mapper = mapper;
-            this.clientService = clientService;
+            var clients = await clientService.GetAllAsync();
+
+            var response = new GetClientsResponse
+            {
+                Items = mapper.Map<List<ClientDto>>(clients),
+                Total = clients.Count
+            };
+
+            return Ok(response);
         }
-
-        /// <summary>
-        /// Return list of clients
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [ProducesResponseType(typeof(GetClientsResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll([FromQuery] GetClientsRequest request)
+        catch (Exception e)
         {
-            try
-            {
-                var clients = await clientService.GetAllAsync();
-
-                var response = new GetClientsResponse
-                {
-                    Items = mapper.Map<List<ClientDto>>(clients),
-                    Total = clients.Count
-                };
-
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return ExceptionResult(e);
         }
+    }
 
-        /// <summary>
-        /// Create a client
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [ProducesResponseType(typeof(CreateClientResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(CreateClientRequest request)
+    /// <summary>
+    /// Create a client
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateClientResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create(CreateClientRequest request)
+    {
+        try
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    var newClient = mapper.Map<Client>(request);
-                    var clientId = await clientService.CreateAsync(newClient);
-                    return Ok(new CreateClientResponse{Id = clientId});
-                }
+                var newClient = mapper.Map<Client>(request);
+                var clientId = await clientService.CreateAsync(newClient);
+                return Ok(new CreateClientResponse{Id = clientId});
+            }
 
-                return BadRequest();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return BadRequest();
         }
-
-        /// <summary>
-        /// Delete specified client
-        /// </summary>
-        /// <param name="clientId"></param>
-        /// <returns></returns>
-        [HttpDelete("{clientId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Delete(Guid clientId)
+        catch (Exception e)
         {
-            try
-            {
-                await clientService.DeleteAsync(clientId);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return ExceptionResult(e);
         }
+    }
 
-        /// <summary>
-        /// Get client by id
-        /// </summary>
-        /// <param name="clientId"></param>
-        /// <returns></returns>
-        [HttpGet("{clientId}")]
-        [ProducesResponseType(typeof(GetClientResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetClient(Guid clientId)
+    /// <summary>
+    /// Delete specified client
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    [HttpDelete("{clientId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete(Guid clientId)
+    {
+        try
         {
-            try
-            {
-                var client = await clientService.GetAsync(clientId);
-                var response = mapper.Map<GetClientResponse>(client);
-
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            await clientService.DeleteAsync(clientId);
+            return Ok();
         }
-
-        /// <summary>
-        /// Edit client
-        /// </summary>
-        /// <returns></returns>
-        [HttpPut]
-        [ProducesResponseType(typeof(EditClientResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Edit(EditClientRequest request)
+        catch (Exception e)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var editClientModel = mapper.Map<EditClientModel>(request);
-                    var clientId = await clientService.EditAsync(editClientModel);
-                    return Ok(new EditClientResponse{Id = clientId});
-                }
+            return ExceptionResult(e);
+        }
+    }
 
-                return BadRequest();
-            }
-            catch (Exception e)
+    /// <summary>
+    /// Get client by id
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    [HttpGet("{clientId}")]
+    [ProducesResponseType(typeof(GetClientResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetClient(Guid clientId)
+    {
+        try
+        {
+            var client = await clientService.GetAsync(clientId);
+            var response = mapper.Map<GetClientResponse>(client);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
+    /// <summary>
+    /// Edit client
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [ProducesResponseType(typeof(EditClientResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Edit(EditClientRequest request)
+    {
+        try
+        {
+            if (ModelState.IsValid)
             {
-                return ExceptionResult(e);
+                var editClientModel = mapper.Map<EditClientModel>(request);
+                var clientId = await clientService.EditAsync(editClientModel);
+                return Ok(new EditClientResponse{Id = clientId});
             }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
         }
     }
 }

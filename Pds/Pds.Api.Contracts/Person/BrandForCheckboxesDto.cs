@@ -1,13 +1,10 @@
-using System;
+namespace Pds.Api.Contracts.Person;
 
-namespace Pds.Api.Contracts.Person
+public class BrandForCheckboxesDto
 {
-    public class BrandForCheckboxesDto
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public bool IsSelected { get; set; }
-    }
+    public bool IsSelected { get; set; }
 }

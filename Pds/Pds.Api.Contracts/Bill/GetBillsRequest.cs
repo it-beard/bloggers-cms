@@ -1,9 +1,8 @@
 ﻿using Pds.Api.Contracts.Paging;
 
-namespace Pds.Api.Contracts.Bill
+namespace Pds.Api.Contracts.Bill;
+
+public class GetBillsRequest : PageSettings
 {
-    public class GetBillsRequest : PageSettings
-    {
         
-    }
 }

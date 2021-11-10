@@ -1,8 +1,7 @@
-﻿namespace Pds.Core.Enums
+﻿namespace Pds.Core.Enums;
+
+public enum PaymentStatus
 {
-    public enum PaymentStatus
-    {
-        NotPaid = 0,
-        Paid = 1
-    }
+    NotPaid = 0,
+    Paid = 1
 }

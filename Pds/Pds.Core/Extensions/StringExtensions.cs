@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace Pds.Core.Extensions;
 
-namespace Pds.Core.Extensions
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static string ToCompare(this string value)
     {
-        public static string ToCompare(this string value)
-        {
-            return value.ToLower().Trim();
-        }
+        return value.ToLower().Trim();
     }
 }

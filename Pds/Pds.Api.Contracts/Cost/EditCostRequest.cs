@@ -1,29 +1,27 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Pds.Core.Enums;
 
-namespace Pds.Api.Contracts.Cost
+namespace Pds.Api.Contracts.Cost;
+
+public class EditCostRequest
 {
-    public class EditCostRequest
-    {
-        [Required]
-        public Guid Id { get; set; }
+    [Required]
+    public Guid Id { get; set; }
 
-        [Required]
-        [Range(10.00, Double.MaxValue, ErrorMessage = "Значение поля {0} должно быть больше чем {1}.")]
-        public decimal Value { get; set; }
+    [Required]
+    [Range(10.00, Double.MaxValue, ErrorMessage = "Значение поля {0} должно быть больше чем {1}.")]
+    public decimal Value { get; set; }
 
-        public string Comment { get; set; }
+    public string Comment { get; set; }
 
-        [Required]
-        public DateTime PaidAt { get; set; }
+    [Required]
+    public DateTime PaidAt { get; set; }
 
-        [Required, EnumDataType(typeof(CostType))]
-        public CostType Type { get; set; }
+    [Required, EnumDataType(typeof(CostType))]
+    public CostType Type { get; set; }
 
-        [Required]
-        public Guid BrandId { get; set; }
+    [Required]
+    public Guid BrandId { get; set; }
 
-        public Guid? ContentId { get; set; }
-    }
+    public Guid? ContentId { get; set; }
 }

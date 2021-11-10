@@ -1,8 +1,7 @@
-﻿namespace Pds.Core.Enums
+﻿namespace Pds.Core.Enums;
+
+public enum TopicsFieldName
 {
-    public enum TopicsFieldName
-    {
-        Name,
-        Status
-    }
+    Name,
+    Status
 }

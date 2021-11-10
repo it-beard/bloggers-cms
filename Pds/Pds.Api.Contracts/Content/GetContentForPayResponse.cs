@@ -1,11 +1,10 @@
-﻿namespace Pds.Api.Contracts.Content
+﻿namespace Pds.Api.Contracts.Content;
+
+public class GetContentForPayResponse
 {
-    public class GetContentForPayResponse
-    {
-        public string Id { get; set; }
+    public string Id { get; set; }
 
-        public string Title { get; set; }
+    public string Title { get; set; }
 
-        public GetContentBillForPayResponse Bill { get; set; }
-    }
+    public GetContentBillForPayResponse Bill { get; set; }
 }

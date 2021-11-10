@@ -1,10 +1,9 @@
-﻿namespace Pds.Services
+﻿namespace Pds.Services;
+
+public static class AssemblyRunner
 {
-    public static class AssemblyRunner
+    public static void Run()
     {
-        public static void Run()
-        {
             
-        }
     }
 }

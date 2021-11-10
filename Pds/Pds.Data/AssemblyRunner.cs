@@ -1,10 +1,9 @@
-﻿namespace Pds.Data
+﻿namespace Pds.Data;
+
+public static class AssemblyRunner
 {
-    public static class AssemblyRunner
+    public static void Run()
     {
-        public static void Run()
-        {
             
-        }
     }
 }

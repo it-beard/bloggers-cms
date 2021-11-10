@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Pds.Api.Contracts.Person
-{
-    public class ResourceDto
-    {
-        [Required]
-        public string Name { get; set; }
+namespace Pds.Api.Contracts.Person;
 
-        [Required]
-        public string Url { get; set; }
-    }
+public class ResourceDto
+{
+    [Required]
+    public string Name { get; set; }
+
+    [Required]
+    public string Url { get; set; }
 }

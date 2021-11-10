@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace Pds.Core.Exceptions;
 
-namespace Pds.Core.Exceptions
+public interface IApiException
 {
-    public interface IApiException
-    {
-        List<string> Errors { get; }
-    }
+    List<string> Errors { get; }
 }

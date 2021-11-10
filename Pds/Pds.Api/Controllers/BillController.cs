@@ -1,272 +1,265 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
 using Pds.Api.Contracts.Bill;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Bill;
+namespace Pds.Api.Controllers;
 
-namespace Pds.Api.Controllers
+[Route("api/bills")]
+[CustomAuthorize]
+public class BillController : ApiControllerBase
 {
-    [Route("api/bills")]
-    [CustomAuthorize]
-    public class BillController : ApiControllerBase
+    private readonly ILogger<PersonController> logger;
+    private readonly IMapper mapper;
+    private readonly IBillService billService;
+    private readonly IBrandService brandService;
+    private readonly IClientService clientService;
+
+    public BillController(
+        ILogger<PersonController> logger,
+        IMapper mapper,
+        IBillService billService,
+        IBrandService brandService,
+        IClientService clientService)
     {
-        private readonly ILogger<PersonController> logger;
-        private readonly IMapper mapper;
-        private readonly IBillService billService;
-        private readonly IBrandService brandService;
-        private readonly IClientService clientService;
-
-        public BillController(
-            ILogger<PersonController> logger,
-            IMapper mapper,
-            IBillService billService,
-            IBrandService brandService,
-            IClientService clientService)
-        {
-            this.logger = logger;
-            this.mapper = mapper;
-            this.billService = billService;
-            this.brandService = brandService;
-            this.clientService = clientService;
-        }
+        this.logger = logger;
+        this.mapper = mapper;
+        this.billService = billService;
+        this.brandService = brandService;
+        this.clientService = clientService;
+    }
         
-        /// <summary>
-        /// Pay bill
-        /// </summary>
-        /// <returns></returns>
-        [HttpPut("{billId}/pay")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> PayBill(Guid billId, PayBillPayload payload)
+    /// <summary>
+    /// Pay bill
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut("{billId}/pay")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> PayBill(Guid billId, PayBillPayload payload)
+    {
+        try
         {
-            try
+            var model = new PayBillModel
             {
-                var model = new PayBillModel
-                {
-                    BillId = billId,
-                    Value = payload.Value,
-                    Comment = payload.Comment,
-                    PaymentType = payload.PaymentType,
-                    PaidAt = payload.PaidAt,
-                    IsNeedPayNds = payload.IsNeedPayNds,
-                    ContractDate = payload.ContractDate,
-                    ContractNumber = payload.ContractNumber
-                };
-                await billService.PayBillAsync(model);
+                BillId = billId,
+                Value = payload.Value,
+                Comment = payload.Comment,
+                PaymentType = payload.PaymentType,
+                PaidAt = payload.PaidAt,
+                IsNeedPayNds = payload.IsNeedPayNds,
+                ContractDate = payload.ContractDate,
+                ContractNumber = payload.ContractNumber
+            };
+            await billService.PayBillAsync(model);
                 
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return Ok();
         }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
         
-        /// <summary>
-        /// Get bill by id
-        /// </summary>
-        /// <param name="billId"></param>
-        /// <returns></returns>
-        [HttpGet("{billId}")]
-        [ProducesResponseType(typeof(GetBillResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(Guid billId)
+    /// <summary>
+    /// Get bill by id
+    /// </summary>
+    /// <param name="billId"></param>
+    /// <returns></returns>
+    [HttpGet("{billId}")]
+    [ProducesResponseType(typeof(GetBillResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get(Guid billId)
+    {
+        try
         {
-            try
-            {
-                var bill = await billService.GetAsync(billId);
-                var response = mapper.Map<GetBillResponse>(bill);
+            var bill = await billService.GetAsync(billId);
+            var response = mapper.Map<GetBillResponse>(bill);
 
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return Ok(response);
         }
-
-        /// <summary>
-        /// Return list of bills
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpGet("paid")]
-        [ProducesResponseType(typeof(GetBillsResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllPaid([FromQuery] GetBillsRequest request)
+        catch (Exception e)
         {
-            try
-            {
-                var paidBills = await billService.GetAllPaidAsync();
-
-                var response = new GetBillsResponse
-                {
-                    Items = mapper.Map<List<BillDto>>(paidBills),
-                    Total = paidBills.Count
-                };
-
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return ExceptionResult(e);
         }
+    }
 
-        /// <summary>
-        /// Return list of brands for checkboxes group
-        /// </summary>
-        [HttpGet]
-        [Route("get-brands")]
-        public async Task<IActionResult> GetListOfBrands()
+    /// <summary>
+    /// Return list of bills
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpGet("paid")]
+    [ProducesResponseType(typeof(GetBillsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllPaid([FromQuery] GetBillsRequest request)
+    {
+        try
         {
-            try
-            {
-                var brands = await brandService.GetBrandsForListsAsync();
-                var response = mapper.Map<List<BrandDto>>(brands);
+            var paidBills = await billService.GetAllPaidAsync();
 
-                return Ok(response);
-            }
-            catch (Exception e)
+            var response = new GetBillsResponse
             {
-                return ExceptionResult(e);
-            }
+                Items = mapper.Map<List<BillDto>>(paidBills),
+                Total = paidBills.Count
+            };
+
+            return Ok(response);
         }
-
-        /// <summary>
-        /// Return list of clients for lookup box
-        /// </summary>
-        [HttpGet]
-        [Route("get-clients")]
-        public async Task<IActionResult> GetListOfClients()
+        catch (Exception e)
         {
-            try
-            {
-                var clients = await clientService.GetClientsForListsAsync();
-                var response = mapper.Map<List<ClientForLookupDto>>(clients);
-
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return ExceptionResult(e);
         }
+    }
 
-        /// <summary>
-        /// Add bill
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [ProducesResponseType(typeof(CreateBillResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(CreateBillRequest request)
+    /// <summary>
+    /// Return list of brands for checkboxes group
+    /// </summary>
+    [HttpGet]
+    [Route("get-brands")]
+    public async Task<IActionResult> GetListOfBrands()
+    {
+        try
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var newBill = mapper.Map<Bill>(request);
-                    var billId = await billService.CreateAsync(newBill);
-                    return Ok(new CreateBillResponse{Id = billId});
-                }
+            var brands = await brandService.GetBrandsForListsAsync();
+            var response = mapper.Map<List<BrandDto>>(brands);
 
-                return BadRequest();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return Ok(response);
         }
-
-        /// <summary>
-        /// Edit bill
-        /// </summary>
-        /// <returns></returns>
-        [HttpPut]
-        [ProducesResponseType(typeof(EditBillResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Edit(EditBillRequest request)
+        catch (Exception e)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var editBillModel = mapper.Map<EditBillModel>(request);
-                    var billId = await billService.EditAsync(editBillModel);
-                    return Ok(new EditBillResponse{Id = billId});
-                }
-
-                return BadRequest();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return ExceptionResult(e);
         }
+    }
 
-        /// <summary>
-        /// Archive specified bill
-        /// </summary>
-        /// <param name="billId"></param>
-        /// <returns></returns>
-        [HttpPut("{billId}/archive")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Archive(Guid billId)
+    /// <summary>
+    /// Return list of clients for lookup box
+    /// </summary>
+    [HttpGet]
+    [Route("get-clients")]
+    public async Task<IActionResult> GetListOfClients()
+    {
+        try
         {
-            try
-            {
-                await billService.ArchiveAsync(billId);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            var clients = await clientService.GetClientsForListsAsync();
+            var response = mapper.Map<List<ClientForLookupDto>>(clients);
+
+            return Ok(response);
         }
-
-        /// <summary>
-        /// Unarchive specified bill
-        /// </summary>
-        /// <param name="billId"></param>
-        /// <returns></returns>
-        [HttpPut("{billId}/unarchive")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Unarchive(Guid billId)
+        catch (Exception e)
         {
-            try
-            {
-                await billService.UnarchiveAsync(billId);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return ExceptionResult(e);
-            }
+            return ExceptionResult(e);
         }
+    }
 
-        /// <summary>
-        /// Delete specified bill
-        /// </summary>
-        /// <param name="billId"></param>
-        /// <returns></returns>
-        [HttpDelete("{billId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Delete(Guid billId)
+    /// <summary>
+    /// Add bill
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateBillResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Create(CreateBillRequest request)
+    {
+        try
         {
-            try
+            if (ModelState.IsValid)
             {
-                await billService.DeleteAsync(billId);
-                return Ok();
+                var newBill = mapper.Map<Bill>(request);
+                var billId = await billService.CreateAsync(newBill);
+                return Ok(new CreateBillResponse{Id = billId});
             }
-            catch (Exception e)
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
+    /// <summary>
+    /// Edit bill
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [ProducesResponseType(typeof(EditBillResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Edit(EditBillRequest request)
+    {
+        try
+        {
+            if (ModelState.IsValid)
             {
-                return ExceptionResult(e);
+                var editBillModel = mapper.Map<EditBillModel>(request);
+                var billId = await billService.EditAsync(editBillModel);
+                return Ok(new EditBillResponse{Id = billId});
             }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
+    /// <summary>
+    /// Archive specified bill
+    /// </summary>
+    /// <param name="billId"></param>
+    /// <returns></returns>
+    [HttpPut("{billId}/archive")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Archive(Guid billId)
+    {
+        try
+        {
+            await billService.ArchiveAsync(billId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
+    /// <summary>
+    /// Unarchive specified bill
+    /// </summary>
+    /// <param name="billId"></param>
+    /// <returns></returns>
+    [HttpPut("{billId}/unarchive")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Unarchive(Guid billId)
+    {
+        try
+        {
+            await billService.UnarchiveAsync(billId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
+    /// <summary>
+    /// Delete specified bill
+    /// </summary>
+    /// <param name="billId"></param>
+    /// <returns></returns>
+    [HttpDelete("{billId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete(Guid billId)
+    {
+        try
+        {
+            await billService.DeleteAsync(billId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
         }
     }
 }

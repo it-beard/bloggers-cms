@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Content;
 
-namespace Pds.Api.Contracts.Content
+public class PersonForLookupDto 
 {
-    public class PersonForLookupDto 
-    {
-        public Guid? Id { get; set; }
+    public Guid? Id { get; set; }
 
-        public string FullName { get; set; }
-    }
+    public string FullName { get; set; }
 }

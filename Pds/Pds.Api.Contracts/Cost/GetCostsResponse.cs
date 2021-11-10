@@ -1,8 +1,7 @@
 ﻿using Pds.Api.Contracts.Paging;
 
-namespace Pds.Api.Contracts.Cost
+namespace Pds.Api.Contracts.Cost;
+
+public class GetCostsResponse : PageResult<CostDto>
 {
-    public class GetCostsResponse : PageResult<CostDto>
-    {
-    }
 }

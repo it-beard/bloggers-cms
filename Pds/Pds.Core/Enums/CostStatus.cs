@@ -1,8 +1,7 @@
-﻿namespace Pds.Core.Enums
+﻿namespace Pds.Core.Enums;
+
+public enum CostStatus
 {
-    public enum CostStatus
-    {
-        Active = 0,
-        Archived = 1
-    }
+    Active = 0,
+    Archived = 1
 }

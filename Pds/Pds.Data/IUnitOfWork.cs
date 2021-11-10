@@ -1,18 +1,16 @@
-﻿using System;
-using Pds.Data.Repositories.Interfaces;
+﻿using Pds.Data.Repositories.Interfaces;
 
-namespace Pds.Data
+namespace Pds.Data;
+
+public interface IUnitOfWork : IDisposable
 {
-    public interface IUnitOfWork : IDisposable
-    {
-        IPersonRepository Persons { get; }
-        IResourceRepository Resources { get; }
-        IContentRepository Content { get; }
-        IBrandRepository Brands { get; }
-        IClientRepository Clients { get; }
-        IBillRepository Bills { get; }
-        ICostRepository Costs { get; }
+    IPersonRepository Persons { get; }
+    IResourceRepository Resources { get; }
+    IContentRepository Content { get; }
+    IBrandRepository Brands { get; }
+    IClientRepository Clients { get; }
+    IBillRepository Bills { get; }
+    ICostRepository Costs { get; }
 
-        void Save();
-    }
+    void Save();
 }

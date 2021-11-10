@@ -1,9 +1,8 @@
-﻿namespace Pds.Web.Components.Sorting.QueryCreators.Person
+﻿namespace Pds.Web.Components.Sorting.QueryCreators.Person;
+
+public enum PersonsFieldName
 {
-    public enum PersonsFieldName
-    {
-        FullName,
-        Rating,
-        Location
-    }
+    FullName,
+    Rating,
+    Location
 }

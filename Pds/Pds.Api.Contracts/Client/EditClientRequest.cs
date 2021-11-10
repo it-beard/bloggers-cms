@@ -1,16 +1,14 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Pds.Api.Contracts.Client
+namespace Pds.Api.Contracts.Client;
+
+public class EditClientRequest
 {
-    public class EditClientRequest
-    {
-        [Required]
-        public Guid Id { get; set; }
+    [Required]
+    public Guid Id { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+    [Required]
+    public string Name { get; set; }
 
-        public string Comment { get; set; }
-    }
+    public string Comment { get; set; }
 }

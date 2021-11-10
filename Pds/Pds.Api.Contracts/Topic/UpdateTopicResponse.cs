@@ -1,14 +1,11 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Topic;
 
-namespace Pds.Api.Contracts.Topic
+public class UpdateTopicResponse
 {
-    public class UpdateTopicResponse
+    public UpdateTopicResponse(Guid id)
     {
-        public UpdateTopicResponse(Guid id)
-        {
-            Id = id;
-        }
-
-        public Guid Id { get; set; }
+        Id = id;
     }
+
+    public Guid Id { get; set; }
 }

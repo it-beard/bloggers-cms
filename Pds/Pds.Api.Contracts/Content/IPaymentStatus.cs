@@ -1,9 +1,8 @@
 ﻿using Pds.Core.Enums;
 
-namespace Pds.Api.Contracts.Content
+namespace Pds.Api.Contracts.Content;
+
+public interface IPaymentStatus
 {
-    public interface IPaymentStatus
-    {
-        PaymentStatus PaymentStatus { get; set; }
-    }
+    PaymentStatus PaymentStatus { get; set; }
 }

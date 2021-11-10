@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Pds.Core.Exceptions;
 
-namespace Pds.Core.Exceptions
+public class TokenException : Exception
 {
-    public class TokenException : Exception
-    {
         
-    }
 }

@@ -1,8 +1,7 @@
 ﻿using Pds.Api.Contracts.Paging;
 
-namespace Pds.Api.Contracts.Bill
+namespace Pds.Api.Contracts.Bill;
+
+public class GetBillsResponse : PageResult<BillDto>
 {
-    public class GetBillsResponse : PageResult<BillDto>
-    {
-    }
 }
