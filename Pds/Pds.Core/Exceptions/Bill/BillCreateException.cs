@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Pds.Core.Exceptions.Bill;
 
-namespace Pds.Core.Exceptions.Bill
+public class BillCreateException : Exception, IApiException
 {
-    public class BillCreateException : Exception, IApiException
+    public List<string> Errors { get; }
+
+    public BillCreateException(List<string> errors)
     {
-        public List<string> Errors { get; }
+        Errors = errors;
+    }
 
-        public BillCreateException(List<string> errors)
-        {
-            Errors = errors;
-        }
+    public BillCreateException(string message)
+        : base(message)
+    {
+        Errors = new List<string> { message };
+    }
 
-        public BillCreateException(string message)
-            : base(message)
-        {
-            Errors = new List<string> { message };
-        }
-
-        public BillCreateException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
+    public BillCreateException(string message, Exception inner)
+        : base(message, inner)
+    {
     }
 }

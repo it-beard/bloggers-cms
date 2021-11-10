@@ -1,11 +1,10 @@
 ﻿using Pds.Core.Enums;
 
-namespace Pds.Web.Models.Content
-{
-    public class SocialMediaFilterItem
-    {
-        public SocialMediaType SocialMediaType { get; set; }
+namespace Pds.Web.Models.Content;
 
-        public bool IsSelected { get; set; }
-    }
+public class SocialMediaFilterItem
+{
+    public SocialMediaType SocialMediaType { get; set; }
+
+    public bool IsSelected { get; set; }
 }

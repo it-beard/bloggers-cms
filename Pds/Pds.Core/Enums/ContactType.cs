@@ -1,12 +1,11 @@
-﻿namespace Pds.Core.Enums
+﻿namespace Pds.Core.Enums;
+
+public enum ContactType
 {
-    public enum ContactType
-    {
-        Other = 0,
-        Telegram = 1,
-        Instagram = 2,
-        WhatsApp = 3,
-        Email = 4, 
-        Phone = 5
-    }
+    Other = 0,
+    Telegram = 1,
+    Instagram = 2,
+    WhatsApp = 3,
+    Email = 4, 
+    Phone = 5
 }

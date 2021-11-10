@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Cost;
 
-namespace Pds.Api.Contracts.Cost
+public class CostContentDto
 {
-    public class CostContentDto
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public string Title { get; set; }
-    }
+    public string Title { get; set; }
 }

@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Pds.Core.Exceptions.Content;
 
-namespace Pds.Core.Exceptions.Content
+public class ContentEditException : Exception, IApiException
 {
-    public class ContentEditException : Exception, IApiException
+    public List<string> Errors { get; }
+
+    public ContentEditException(List<string> errors)
     {
-        public List<string> Errors { get; }
+        Errors = errors;
+    }
 
-        public ContentEditException(List<string> errors)
-        {
-            Errors = errors;
-        }
+    public ContentEditException(string message)
+        : base(message)
+    {
+        Errors = new List<string> { message };
+    }
 
-        public ContentEditException(string message)
-            : base(message)
-        {
-            Errors = new List<string> { message };
-        }
-
-        public ContentEditException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
+    public ContentEditException(string message, Exception inner)
+        : base(message, inner)
+    {
     }
 }

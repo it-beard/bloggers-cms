@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Bill;
 
-namespace Pds.Api.Contracts.Bill
+public class ClientForLookupDto 
 {
-    public class ClientForLookupDto 
-    {
-        public Guid? Id { get; set; }
+    public Guid? Id { get; set; }
 
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

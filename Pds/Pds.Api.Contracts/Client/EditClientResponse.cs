@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Client;
 
-namespace Pds.Api.Contracts.Client
+public class EditClientResponse
 {
-    public class EditClientResponse
-    {
-        public Guid Id { get; set; }
-    }
+    public Guid Id { get; set; }
 }

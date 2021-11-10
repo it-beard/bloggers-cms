@@ -1,11 +1,10 @@
 ﻿using Pds.Core.Enums;
 
-namespace Pds.Web.Models.Content
-{
-    public class ContentTypeFilterItem
-    {
-        public ContentType ContentType { get; set; }
+namespace Pds.Web.Models.Content;
 
-        public bool IsSelected { get; set; }
-    }
+public class ContentTypeFilterItem
+{
+    public ContentType ContentType { get; set; }
+
+    public bool IsSelected { get; set; }
 }

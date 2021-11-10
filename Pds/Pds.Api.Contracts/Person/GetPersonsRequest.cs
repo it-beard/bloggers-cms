@@ -1,9 +1,8 @@
 ﻿using Pds.Api.Contracts.Paging;
 
-namespace Pds.Api.Contracts.Person
+namespace Pds.Api.Contracts.Person;
+
+public class GetPersonsRequest : PageSettings
 {
-    public class GetPersonsRequest : PageSettings
-    {
         
-    }
 }

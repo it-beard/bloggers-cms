@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
+﻿namespace Pds.Api.Contracts.Paging;
 
-namespace Pds.Api.Contracts.Paging
+public class PageResult<T>
 {
-    public class PageResult<T>
-    {
-        public List<T> Items { get; set; }
-        public int Total { get; set; }
-    }
+    public List<T> Items { get; set; }
+    public int Total { get; set; }
 }

@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Person;
 
-namespace Pds.Api.Contracts.Person
+public class PersonContentDto
 {
-    public class PersonContentDto
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
         
-        public string Title { get; set; }
-    }
+    public string Title { get; set; }
 }

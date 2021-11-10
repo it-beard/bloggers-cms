@@ -1,13 +1,10 @@
-﻿using System;
+﻿namespace Pds.Web.Models.Bill;
 
-namespace Pds.Web.Models.Bill
+public class BrandFilterItem
 {
-    public class BrandFilterItem
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public bool IsSelected { get; set; }
-    }
+    public bool IsSelected { get; set; }
 }

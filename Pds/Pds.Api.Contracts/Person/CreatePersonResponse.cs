@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Person;
 
-namespace Pds.Api.Contracts.Person
+public class CreatePersonResponse
 {
-    public class CreatePersonResponse
-    {
-        public Guid Id { get; set; }
-    }
+    public Guid Id { get; set; }
 }

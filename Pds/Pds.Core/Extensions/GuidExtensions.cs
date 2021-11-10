@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace Pds.Core.Extensions;
 
-namespace Pds.Core.Extensions
+public static class GuidExtensions
 {
-    public static class GuidExtensions
+    public static string ToShortString(this Guid guid)
     {
-        public static string ToShortString(this Guid guid)
-        {
-            return guid.ToString().Substring(0, 7);
-        }
+        return guid.ToString().Substring(0, 7);
     }
 }

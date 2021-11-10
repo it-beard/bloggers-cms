@@ -1,27 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Pds.Data.Entities;
+﻿using Pds.Data.Entities;
 using Pds.Services.Models.Person;
 
-namespace Pds.Services.Interfaces
+namespace Pds.Services.Interfaces;
+
+public interface IPersonService
 {
-    public interface IPersonService
-    {
-        Task<Person> GetAsync(Guid personId);
+    Task<Person> GetAsync(Guid personId);
 
-        Task<List<Person>> GetAllAsync();
+    Task<List<Person>> GetAllAsync();
 
-        Task<Guid> CreateAsync(Person person);
+    Task<Guid> CreateAsync(Person person);
 
-        Task<Guid> EditAsync(EditPersonModel model);
+    Task<Guid> EditAsync(EditPersonModel model);
 
-        Task ArchiveAsync(Guid personId);
+    Task ArchiveAsync(Guid personId);
 
-        Task UnarchiveAsync(Guid personId);
+    Task UnarchiveAsync(Guid personId);
 
-        Task DeleteAsync(Guid personId);
+    Task DeleteAsync(Guid personId);
 
-        Task<List<Person>> GetPersonsForListsAsync();
-    }
+    Task<List<Person>> GetPersonsForListsAsync();
 }

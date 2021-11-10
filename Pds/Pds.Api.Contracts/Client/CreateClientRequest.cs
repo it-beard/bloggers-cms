@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Pds.Api.Contracts.Client
-{
-    public class CreateClientRequest
-    {
-        [Required]
-        public string Name { get; set; }
+namespace Pds.Api.Contracts.Client;
 
-        public string Comment { get; set; }
-    }
+public class CreateClientRequest
+{
+    [Required]
+    public string Name { get; set; }
+
+    public string Comment { get; set; }
 }

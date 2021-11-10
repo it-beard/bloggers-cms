@@ -1,15 +1,12 @@
-﻿using System;
+﻿namespace Pds.Core.Exceptions;
 
-namespace Pds.Core.Exceptions
+public class RepositoryException : Exception
 {
-    public class RepositoryException : Exception
-    {
-        public string EntityName { get; }
+    public string EntityName { get; }
 
-        public RepositoryException(string message, Exception inner, string entityName)
-            : base(message, inner)
-        {
-            EntityName = entityName;
-        }
+    public RepositoryException(string message, Exception inner, string entityName)
+        : base(message, inner)
+    {
+        EntityName = entityName;
     }
 }

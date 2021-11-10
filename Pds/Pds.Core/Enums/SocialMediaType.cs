@@ -1,11 +1,10 @@
-﻿namespace Pds.Core.Enums
+﻿namespace Pds.Core.Enums;
+
+public enum SocialMediaType
 {
-    public enum SocialMediaType
-    {
-        Other = 0,
-        YouTube = 1,
-        Telegram = 2,
-        Instagram = 3,
-        Clubhouse = 4
-    }
+    Other = 0,
+    YouTube = 1,
+    Telegram = 2,
+    Instagram = 3,
+    Clubhouse = 4
 }

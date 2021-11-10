@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Pds.Core.Exceptions.Person;
 
-namespace Pds.Core.Exceptions.Person
+public class PersonDeleteException : Exception, IApiException
 {
-    public class PersonDeleteException : Exception, IApiException
+    public List<string> Errors { get; }
+
+    public PersonDeleteException(List<string> errors)
     {
-        public List<string> Errors { get; }
+        Errors = errors;
+    }
 
-        public PersonDeleteException(List<string> errors)
-        {
-            Errors = errors;
-        }
+    public PersonDeleteException(string message)
+        : base(message)
+    {
+        Errors = new List<string> { message };
+    }
 
-        public PersonDeleteException(string message)
-            : base(message)
-        {
-            Errors = new List<string> { message };
-        }
-
-        public PersonDeleteException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
+    public PersonDeleteException(string message, Exception inner)
+        : base(message, inner)
+    {
     }
 }

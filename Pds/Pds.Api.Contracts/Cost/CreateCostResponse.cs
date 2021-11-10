@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Cost;
 
-namespace Pds.Api.Contracts.Cost
+public class CreateCostResponse
 {
-    public class CreateCostResponse
-    {
-        public Guid Id { get; set; }
-    }
+    public Guid Id { get; set; }
 }

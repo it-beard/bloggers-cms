@@ -1,57 +1,55 @@
-﻿using System;
-using Pds.Data.Repositories;
+﻿using Pds.Data.Repositories;
 using Pds.Data.Repositories.Interfaces;
 
-namespace Pds.Data
+namespace Pds.Data;
+
+public sealed class UnitOfWork : IUnitOfWork
 {
-    public sealed class UnitOfWork : IUnitOfWork
+    private readonly ApplicationDbContext context;
+    private IPersonRepository personRepository;
+    private IResourceRepository resourceRepository;
+    private IContentRepository contentRepository;
+    private IBrandRepository brandRepository;
+    private IClientRepository clientRepository;
+    private IBillRepository billRepository;
+    private ICostRepository costRepository;
+
+    public UnitOfWork(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext context;
-        private IPersonRepository personRepository;
-        private IResourceRepository resourceRepository;
-        private IContentRepository contentRepository;
-        private IBrandRepository brandRepository;
-        private IClientRepository clientRepository;
-        private IBillRepository billRepository;
-        private ICostRepository costRepository;
+        this.context = context;
+    }
 
-        public UnitOfWork(ApplicationDbContext context)
+    public IPersonRepository Persons => personRepository ??= new PersonRepository(context);
+    public IResourceRepository Resources => resourceRepository ??= new ResourceRepository(context);
+    public IContentRepository Content => contentRepository ??= new ContentRepository(context);
+    public IBrandRepository Brands => brandRepository ??= new BrandRepository(context);
+    public IClientRepository Clients => clientRepository ??= new ClientRepository(context);
+    public IBillRepository Bills => billRepository ??= new BillRepository(context);
+    public ICostRepository Costs => costRepository ??= new CostRepository(context);
+
+    public void Save()
+    {
+        context.SaveChanges();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private bool disposed = false;
+
+    private void Dispose(bool disposing)
+    {
+        if (!this.disposed)
         {
-            this.context = context;
-        }
-
-        public IPersonRepository Persons => personRepository ??= new PersonRepository(context);
-        public IResourceRepository Resources => resourceRepository ??= new ResourceRepository(context);
-        public IContentRepository Content => contentRepository ??= new ContentRepository(context);
-        public IBrandRepository Brands => brandRepository ??= new BrandRepository(context);
-        public IClientRepository Clients => clientRepository ??= new ClientRepository(context);
-        public IBillRepository Bills => billRepository ??= new BillRepository(context);
-        public ICostRepository Costs => costRepository ??= new CostRepository(context);
-
-        public void Save()
-        {
-            context.SaveChanges();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private bool disposed = false;
-
-        private void Dispose(bool disposing)
-        {
-            if (!this.disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    context.Dispose();
-                }
+                context.Dispose();
             }
-
-            this.disposed = true;
         }
+
+        this.disposed = true;
     }
 }

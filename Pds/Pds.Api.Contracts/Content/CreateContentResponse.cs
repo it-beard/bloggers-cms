@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Pds.Api.Contracts.Content;
 
-namespace Pds.Api.Contracts.Content
+public class CreateContentResponse
 {
-    public class CreateContentResponse
-    {
-        public Guid Id { get; set; }
-    }
+    public Guid Id { get; set; }
 }
