@@ -17,38 +17,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Common\" />
-    <None Remove="Components\" />
-    <None Remove="Pages\" />
-    <None Remove="Shared\" />
-    <None Remove="Newtonsoft.Json" />
-    <None Remove="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
-    <None Remove="AutoMapper" />
-    <None Remove="Calabonga.PredicatesBuilder" />
-    <None Remove="Toolbelt.Blazor.HeadElement" />
+    <Content Update="web.config">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Components\" />
-    <Folder Include="Pages\" />
-    <Folder Include="Shared\" />
-    <Folder Include="wwwroot\" />
+    <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj" />
+    <ProjectReference Include="..\Pds.Mappers\Pds.Mappers.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Content Remove="wwwroot\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
-    <ProjectReference Include="..\Pds.Mappers\Pds.Mappers.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
-    <ProjectReference Include="..\Pds.Web.Models\Pds.Web.Models.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
-    <ProjectReference Include="..\Pds.Core\Pds.Core.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\FONT-LICENSE" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
   </ItemGroup>
 </Project>
