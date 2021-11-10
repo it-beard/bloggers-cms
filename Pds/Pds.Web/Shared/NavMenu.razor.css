@@ -1,4 +1,4 @@
-.access-control{
+.access-control {
     padding: 15px 0;
     overflow: auto;
     background-color: lightseagreen;
@@ -18,7 +18,7 @@
      color: white;
  }
 
-.nav-link span.bi{
+.nav-link span.bi {
     width: 2rem;
     font-size: 1.1rem;
     vertical-align: text-top;
