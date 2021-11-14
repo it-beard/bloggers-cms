@@ -1,5 +1,5 @@
 ﻿Add migration: 
-    dotnet ef migrations add Initial --project Pds.Data --startup-project Pds.Api
+    dotnet tool run dotnet-ef
     
 Update database:
     dotnet ef database update --project Pds.Data --startup-project Pds.Api
