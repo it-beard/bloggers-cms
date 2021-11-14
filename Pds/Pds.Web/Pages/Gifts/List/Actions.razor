@@ -1,0 +1,82 @@
+﻿@using Pds.Core.Enums
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Gift
+@using Pds.Core.Extensions
+
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<div class="panel panel-default actions-panel">
+    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+        <i class="bi bi-pencil-fill"></i>
+    </button>
+
+    <button title="Разыгран" class="btn btn-warning btn-sm" @onclick="OnRaffledAsync">
+        <i class="bi bi-archive-fill"></i>
+    </button>
+    
+    <button title="Утерян адресат" class="btn btn-success btn-sm" @onclick="OnLostAsync">
+        <i class="bi bi-patch-plus-fill"></i>
+    </button>
+    
+    <button title="Готов к отправке" class="btn btn-success btn-sm" @onclick="OnWaitingAsync">
+        <i class="bi bi-patch-plus-fill"></i>
+    </button>
+    
+    <button title="Отправлен" class="btn btn-success btn-sm" @onclick="OnSentAsync">
+        <i class="bi bi-patch-plus-fill"></i>
+    </button>
+
+    <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
+        <i class="bi bi-trash-fill"></i>
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnGiftUpdate { get; set; }
+    [Parameter]
+    public GiftDto CurrentGift { get; set; }
+
+    private void OnEdit()
+    {
+        NavigationManager.NavigateTo($"/gifts/{CurrentGift.Id}/edit");
+    }
+
+    private async Task OnDelete()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите удалить {CurrentGift.Id}?");
+        if (confirmed)
+        {
+            await ApiClient.Delete<object>(TokenProvider, $"gifts/{CurrentGift.Id}");
+            await OnGiftUpdate.InvokeAsync(); // Update UI
+        }
+    }
+    
+    private async Task OnLostAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/lost", null);
+        await OnGiftUpdate.InvokeAsync(); // Update UI
+    }
+    
+    private async Task OnRaffledAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/raffled", null);
+        await OnGiftUpdate.InvokeAsync(); // Update UI
+    }
+    
+    private async Task OnWaitingAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/waiting", null);
+        await OnGiftUpdate.InvokeAsync(); // Update UI
+    }
+
+    private async Task OnSentAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/sent", null);
+        await OnGiftUpdate.InvokeAsync(); // Update UI
+    }
+}

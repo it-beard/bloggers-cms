@@ -28,6 +28,10 @@ public class Gift : EntityBase
     
     public string PostalAddress { get; set; }
 
+    public DateTime? RaffledAt { get; set; }
+
+    public DateTime? CompletedAt { get; set; }
+
     public Guid BrandId { get; set; }
 
     public Guid? ContentId { get; set; }

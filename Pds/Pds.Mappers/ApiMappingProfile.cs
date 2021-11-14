@@ -4,6 +4,7 @@ using Pds.Api.Contracts.Bill;
 using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Cost;
+using Pds.Api.Contracts.Gift;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Models.Bill;
@@ -64,7 +65,7 @@ public class ApiMappingProfile : Profile
         CreateMap<Content, GetContentResponse>();
         CreateMap<Content, GetContentForPayResponse>();
 
-        CreateMap<Brand, Pds.Api.Contracts.BrandDto>();
+        CreateMap<Brand, BrandDto>();
         CreateMap<Brand, BrandForCheckboxesDto>();
 
         CreateMap<Client, ClientDto>();
@@ -95,6 +96,8 @@ public class ApiMappingProfile : Profile
         CreateMap<Cost, GetContentCostDto>();
 
         CreateMap<Brand, BrandDto>();
+        
+        CreateMap<Gift, GiftDto>();
 
         #endregion
 
@@ -156,6 +159,7 @@ public class ApiMappingProfile : Profile
         CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
         CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
         CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Person.BrandFilterItem>();
+        CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Gift.BrandFilterItem>();
 
         #endregion
 

@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Pds.Core\Pds.Core.csproj" />
+      <ProjectReference Include="..\Pds.Data\Pds.Data.csproj" />
     </ItemGroup>
 
     <ItemGroup>
