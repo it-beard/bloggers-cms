@@ -45,7 +45,15 @@ public class ApiMappingProfile : Profile
         CreateMap<Content, BillContentDto>();
         CreateMap<Content, CostContentDto>();
         CreateMap<Content, PersonContentDto>();
-        CreateMap<Content, ContentForLookupDto>()
+        CreateMap<Content, Pds.Api.Contracts.Cost.ContentForLookupDto>()
+            .ForMember(
+                dest => dest.Title,
+                opt => opt
+                    .MapFrom((p, s) =>
+                        s.Title = string.IsNullOrEmpty(p.Title) ? 
+                            "Не выбрано" : 
+                            $"{p.ReleaseDate:dd.MM} / {p.Title}"));
+        CreateMap<Content, Pds.Api.Contracts.Gift.ContentForLookupDto>()
             .ForMember(
                 dest => dest.Title,
                 opt => opt

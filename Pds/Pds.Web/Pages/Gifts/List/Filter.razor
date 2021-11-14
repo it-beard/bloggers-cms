@@ -42,7 +42,7 @@ else
                     var id = $"gift_type_{giftStatusFilterItem.GiftStatus.ToString()}";
                     <InputCheckbox name="@id" class="btn-check" @bind-Value="giftStatusFilterItem.IsSelected" Id="@id"/>
                     <label class="btn btn-secondary" for="@id">
-                        @giftStatusFilterItem.GiftStatus
+                        @EnumsTranslator.GiftStatusToRu(giftStatusFilterItem.GiftStatus)
                     </label>
                 }
             </div>
@@ -54,7 +54,7 @@ else
                     var id = $"gift_type_{giftTypeFilterItem.GiftType.ToString()}";
                     <InputCheckbox name="@id" class="btn-check" @bind-Value="giftTypeFilterItem.IsSelected" Id="@id"/>
                     <label class="btn btn-secondary" for="@id">
-                        @giftTypeFilterItem.GiftType
+                        @EnumsTranslator.GiftTypeToRu(giftTypeFilterItem.GiftType)
                     </label>
                 }
             </div>

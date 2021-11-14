@@ -1,0 +1,175 @@
+﻿@page "/gifts/add"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension 
+@using Microsoft.AspNetCore.Components
+@using Pds.Api.Contracts
+@using Pds.Api.Contracts.Gift
+
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Добавление подарка")</Title>
+
+@if (brands == null || contents == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Добавление подарка
+        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+    </h4>
+
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
+        <div class="form-group">
+            <InputRadioGroup Name="brand" @bind-Value="gift.BrandId">
+                @foreach (var brand in brands)
+                {
+                    var id = $"brand_{brand.Id.ToString()}";
+                    <InputRadio Name="brand" class="btn-check" Value="brand.Id" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">@brand.Name</label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <InputRadioGroup Name="gift-status" @bind-Value="gift.Status">
+                @foreach (var giftStatus in ((GiftStatus[])Enum.GetValues(typeof(GiftStatus))))
+                {
+                    var id = $"gift_status_{giftStatus.ToString()}";
+                    <InputRadio Name="gift-status" class="btn-check" Value="giftStatus" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.GiftStatusToRu(giftStatus)
+                    </label>
+                }
+            </InputRadioGroup>
+        </div>
+        
+        <div class="form-group">
+            <InputRadioGroup Name="gift-type" @bind-Value="gift.Type">
+                @foreach (var giftType in ((GiftType[])Enum.GetValues(typeof(GiftType))))
+                {
+                    var id = $"gift_type_{giftType.ToString()}";
+                    <InputRadio Name="gift-type" class="btn-check" Value="giftType" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.GiftTypeToRu(giftType)
+                    </label>
+                }
+            </InputRadioGroup>
+        </div>
+
+        <div class="form-group">
+            <label for="title" class="form-label label-required">Название подарка</label>
+            <InputText class="form-control" id="title" @bind-Value="gift.Title"/>
+        </div>
+
+        <div class="form-group">
+            <label for="comment" class="form-label">Комментарий</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="gift.Comment" rows="3"/>
+        </div>
+
+        <div class="form-group">
+            <label for="contents" class="form-label">Контент</label>
+            <InputSelect class="form-control" id="contents" @bind-Value="gift.ContentId">
+                @foreach (var content in contents)
+                {
+                    <option value="@content.Id">@content.Title</option>
+                }
+            </InputSelect>
+        </div>
+
+        <h4>Победитель</h4>
+        <div class="form-group">
+            <label for="last_name" class="form-label">Фамилия</label>
+            <InputText class="form-control" id="last_name" @bind-Value="gift.LastName"/>
+        </div>
+
+        <div class="form-group">
+            <label for="first_name" class="form-label">Имя</label>
+            <InputText class="form-control" id="first_name" @bind-Value="gift.FirstName"/>
+        </div>
+
+        <div class="form-group">
+            <label for="third_name" class="form-label">Отчество</label>
+            <InputText class="form-control" id="third_name" @bind-Value="gift.ThirdName"/>
+        </div>
+
+        <div class="form-group">
+            <label for="postal_address" class="form-label">Почтовый адрес</label>
+            <InputTextArea class="form-control" id="postal_address" @bind-Value="gift.PostalAddress" rows="3"/>
+        </div>
+
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private CreateGiftRequest gift = new();
+    private EditContext editContext;
+    private ValidationMessageStore msgStore;
+    private bool isCreateButtonDisabled;
+    private List<BrandDto> brands;
+    private List<ContentForLookupDto> contents;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await SetDefaultValues();
+        editContext = new EditContext(gift);
+        msgStore = new ValidationMessageStore(editContext);
+    }
+    
+    private async Task HandleSubmitAsync()
+    {
+        msgStore.Clear();
+        var isValid = editContext.Validate();
+
+        if (isValid)
+        {
+            isCreateButtonDisabled = true;
+            var result = 
+                await ApiClient.Post<object, CreateGiftRequest>(TokenProvider, "gifts", gift);
+            isCreateButtonDisabled = false;
+            if (result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/gifts");
+            }
+            else
+            {
+                result.AddErrors(msgStore, editContext);
+            }
+        }
+    }
+
+    private async Task<List<BrandDto>> GetBrandsAsync()
+    {
+        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "gifts/get-brands");
+    }
+
+    private async Task<List<ContentForLookupDto>> GetContentsAsync()
+    {
+        return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, "gifts/get-contents");
+    }
+
+    private async Task SetDefaultValues()
+    {
+        isCreateButtonDisabled = false;
+        gift.BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"); //Default АйТиБорода
+        gift.ContentId = Guid.Empty;
+        gift.Type = GiftType.Book;
+        gift.Status = GiftStatus.New;
+        brands = await GetBrandsAsync();
+        contents = await GetContentsAsync();
+    }
+}
