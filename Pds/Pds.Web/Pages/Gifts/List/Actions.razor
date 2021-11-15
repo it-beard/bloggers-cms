@@ -19,14 +19,14 @@
 
     @if (CurrentGift.Status != GiftStatus.Completed)
     {
-        <button title="Отправлен" class="btn btn-success btn-sm" @onclick="OnSentAsync">
+        <button title="Отправлен" class="btn btn-success btn-sm" @onclick="OnCompleteAsync">
             <i class="bi bi-send-check"></i>
         </button>
     }
     
     @if (CurrentGift.Status == GiftStatus.Completed)
     {
-        <button title="Откатить статус Отправлен" class="btn btn-warning btn-sm" @onclick="OnSentAsync">
+        <button title="Откатить статус Отправлен" class="btn btn-warning btn-sm" @onclick="OnUncompleteAsync">
             <i class="bi bi-send-x"></i>
         </button>
     }
@@ -60,9 +60,15 @@
         }
     }
 
-    private async Task OnSentAsync()
+    private async Task OnCompleteAsync()
     {
-        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/sent", null);
+        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/complete", null);
+        await OnGiftUpdate.InvokeAsync(); // Update UI
+    }
+
+    private async Task OnUncompleteAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/uncomplete", null);
         await OnGiftUpdate.InvokeAsync(); // Update UI
     }
 }

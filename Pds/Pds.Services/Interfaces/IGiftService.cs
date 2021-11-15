@@ -8,5 +8,9 @@ public interface IGiftService
 
     Task<Guid> CreateAsync(Gift gift);
 
+    Task CompleteAsync(Guid giftId);
+    
+    Task UncompleteAsync(Guid giftId);
+
     Task DeleteAsync(Guid giftId);
 }

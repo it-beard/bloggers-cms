@@ -56,6 +56,30 @@ public class GiftService : IGiftService
         return result.Id;
     }
     
+    public async Task CompleteAsync(Guid giftId)
+    {
+        var gift = await unitOfWork.Gifts.GetFirstWhereAsync(p => p.Id == giftId);
+        if (gift != null)
+        {
+            gift.PreviousStatus = gift.Status;
+            gift.Status = GiftStatus.Completed;
+            gift.CompletedAt = DateTime.UtcNow;
+            gift.UpdatedAt = DateTime.UtcNow;
+            await unitOfWork.Gifts.UpdateAsync(gift);
+        }
+    }
+
+    public async Task UncompleteAsync(Guid giftId)
+    {
+        var gift = await unitOfWork.Gifts.GetFirstWhereAsync(p => p.Id == giftId);
+        if (gift != null)
+        {
+            gift.Status = gift.PreviousStatus ?? GiftStatus.New;
+            gift.UpdatedAt = DateTime.UtcNow;
+            await unitOfWork.Gifts.UpdateAsync(gift);
+        }
+    }
+    
     public async Task DeleteAsync(Guid giftId)
     {
         var gift = await unitOfWork.Gifts.GetFirstWhereAsync(p => p.Id == giftId);

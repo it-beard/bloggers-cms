@@ -125,6 +125,46 @@ public class GiftController : ApiControllerBase
     }
     
     /// <summary>
+    /// Complete specified gift
+    /// </summary>
+    /// <param name="giftId"></param>
+    /// <returns></returns>
+    [HttpPut("{giftId}/complete")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Complete(Guid giftId)
+    {
+        try
+        {
+            await giftService.CompleteAsync(giftId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
+    /// <summary>
+    /// Uncomplete specified gift
+    /// </summary>
+    /// <param name="giftId"></param>
+    /// <returns></returns>
+    [HttpPut("{giftId}/uncomplete")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Uncomplete(Guid giftId)
+    {
+        try
+        {
+            await giftService.UncompleteAsync(giftId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
     /// Delete specified gift
     /// </summary>
     /// <param name="giftId"></param>
