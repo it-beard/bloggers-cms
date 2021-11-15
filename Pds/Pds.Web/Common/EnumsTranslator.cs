@@ -36,9 +36,8 @@ public static class EnumsTranslator
         {
             GiftStatus.New => "Новый",
             GiftStatus.Raffled => "Разыгран",
-            GiftStatus.WaitingForDelivery => "Ожидает доставку",
-            GiftStatus.Lost => "Потеряшка",
-            GiftStatus.Postponed => "Перенесен",
+            GiftStatus.Waiting => "Готов к отправке",
+            GiftStatus.Strange => "Странный",
             GiftStatus.Completed => "Завершен",
             _ => string.Empty
         };

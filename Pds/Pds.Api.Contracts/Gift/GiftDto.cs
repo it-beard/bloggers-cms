@@ -23,6 +23,8 @@ public class GiftDto
     
     public string PostalAddress { get; set; }
 
+    public DateTime SortDate { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime? RaffledAt { get; set; }

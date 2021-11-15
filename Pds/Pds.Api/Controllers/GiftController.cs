@@ -2,8 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
-using Pds.Api.Contracts.Bill;
 using Pds.Api.Contracts.Gift;
+using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 
 namespace Pds.Api.Controllers;
@@ -33,25 +33,50 @@ public class GiftController : ApiControllerBase
     }
 
     /// <summary>
-    /// Return list of bills
+    /// Return list of gifts
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpGet("")]
-    [ProducesResponseType(typeof(GetBillsResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll([FromQuery] GetBillsRequest request)
+    [ProducesResponseType(typeof(GetGiftsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll([FromQuery] GetGiftsRequest request)
     {
         try
         {
-            var paidBills = await giftService.GetAllAsync();
+            var gifts = await giftService.GetAllAsync();
 
             var response = new GetGiftsResponse
             {
-                Items = mapper.Map<List<GiftDto>>(paidBills),
-                Total = paidBills.Count
+                Items = mapper.Map<List<GiftDto>>(gifts),
+                Total = gifts.Count
             };
 
             return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Create gift
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateGiftResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Create(CreateGiftRequest request)
+    {
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                var gift = mapper.Map<Gift>(request);
+                var giftId = await giftService.CreateAsync(gift);
+                return Ok(new CreateGiftResponse{Id = giftId});
+            }
+
+            return BadRequest();
         }
         catch (Exception e)
         {
@@ -92,6 +117,26 @@ public class GiftController : ApiControllerBase
             var response = mapper.Map<List<ContentForLookupDto>>(contents);
 
             return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Delete specified gift
+    /// </summary>
+    /// <param name="giftId"></param>
+    /// <returns></returns>
+    [HttpDelete("{giftId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete(Guid giftId)
+    {
+        try
+        {
+            await giftService.DeleteAsync(giftId);
+            return Ok();
         }
         catch (Exception e)
         {

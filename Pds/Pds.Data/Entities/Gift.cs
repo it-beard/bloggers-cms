@@ -13,6 +13,8 @@ public class Gift : EntityBase
 
     [Required]
     public GiftStatus Status { get; set; }
+    
+    public GiftStatus? PreviousStatus { get; set; }
         
     [Required]
     public GiftType Type { get; set; }

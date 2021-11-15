@@ -45,6 +45,7 @@ public class ApiMappingProfile : Profile
         CreateMap<Content, BillContentDto>();
         CreateMap<Content, CostContentDto>();
         CreateMap<Content, PersonContentDto>();
+        CreateMap<Content, GiftContentDto>();
         CreateMap<Content, Pds.Api.Contracts.Cost.ContentForLookupDto>()
             .ForMember(
                 dest => dest.Title,
@@ -105,7 +106,11 @@ public class ApiMappingProfile : Profile
 
         CreateMap<Brand, BrandDto>();
         
-        CreateMap<Gift, GiftDto>();
+        CreateMap<Gift, GiftDto>() 
+            .ForMember(
+                dest => dest.SortDate,
+                opt => opt
+                    .MapFrom(p => GetSortDateForGiftDto(p)));
 
         #endregion
 
@@ -114,6 +119,7 @@ public class ApiMappingProfile : Profile
         CreateMap<CreateClientRequest, Client>();
         CreateMap<CreateCostRequest, Cost>();
         CreateMap<CreateBillRequest, Bill>();
+        CreateMap<CreateGiftRequest, Gift>();
         CreateMap<ResourceDto, Resource>()
             .ForMember(
                 dest => dest.CreatedAt,
@@ -194,5 +200,15 @@ public class ApiMappingProfile : Profile
                     IsSelected = true
                 })
             .ToList();
+    }
+
+    private DateTime GetSortDateForGiftDto(Gift gift)
+    {
+        var sortDate = gift.CreatedAt;
+        if (gift.Content != null)
+        {
+            sortDate = gift.Content.ReleaseDate;
+        }
+        return sortDate;
     }
 }

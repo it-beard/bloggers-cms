@@ -10,29 +10,33 @@
 @inject IAccessTokenProvider TokenProvider
 
 <div class="panel panel-default actions-panel">
-    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
-        <i class="bi bi-pencil-fill"></i>
-    </button>
+    @if (CurrentGift.Status != GiftStatus.Completed)
+    {
+        <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+            <i class="bi bi-pencil-fill"></i>
+        </button>
+    }
 
-    <button title="Разыгран" class="btn btn-warning btn-sm" @onclick="OnRaffledAsync">
-        <i class="bi bi-archive-fill"></i>
-    </button>
+    @if (CurrentGift.Status != GiftStatus.Completed)
+    {
+        <button title="Отправлен" class="btn btn-success btn-sm" @onclick="OnSentAsync">
+            <i class="bi bi-send-check"></i>
+        </button>
+    }
     
-    <button title="Утерян адресат" class="btn btn-success btn-sm" @onclick="OnLostAsync">
-        <i class="bi bi-patch-plus-fill"></i>
-    </button>
-    
-    <button title="Готов к отправке" class="btn btn-success btn-sm" @onclick="OnWaitingAsync">
-        <i class="bi bi-patch-plus-fill"></i>
-    </button>
-    
-    <button title="Отправлен" class="btn btn-success btn-sm" @onclick="OnSentAsync">
-        <i class="bi bi-patch-plus-fill"></i>
-    </button>
+    @if (CurrentGift.Status == GiftStatus.Completed)
+    {
+        <button title="Откатить статус Отправлен" class="btn btn-warning btn-sm" @onclick="OnSentAsync">
+            <i class="bi bi-send-x"></i>
+        </button>
+    }
 
-    <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
-        <i class="bi bi-trash-fill"></i>
-    </button>
+    @if (CurrentGift.Status != GiftStatus.Completed)
+    {
+        <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
+            <i class="bi bi-trash-fill"></i>
+        </button>
+    }
 </div>
 
 @code {
@@ -54,24 +58,6 @@
             await ApiClient.Delete<object>(TokenProvider, $"gifts/{CurrentGift.Id}");
             await OnGiftUpdate.InvokeAsync(); // Update UI
         }
-    }
-    
-    private async Task OnLostAsync()
-    {
-        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/lost", null);
-        await OnGiftUpdate.InvokeAsync(); // Update UI
-    }
-    
-    private async Task OnRaffledAsync()
-    {
-        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/raffled", null);
-        await OnGiftUpdate.InvokeAsync(); // Update UI
-    }
-    
-    private async Task OnWaitingAsync()
-    {
-        await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/waiting", null);
-        await OnGiftUpdate.InvokeAsync(); // Update UI
     }
 
     private async Task OnSentAsync()
