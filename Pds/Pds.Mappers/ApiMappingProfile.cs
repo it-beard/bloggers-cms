@@ -4,12 +4,14 @@ using Pds.Api.Contracts.Bill;
 using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Cost;
+using Pds.Api.Contracts.Gift;
 using Pds.Api.Contracts.Person;
 using Pds.Data.Entities;
 using Pds.Services.Models.Bill;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Services.Models.Cost;
+using Pds.Services.Models.Gift;
 using Pds.Services.Models.Person;
 namespace Pds.Mappers;
 
@@ -44,7 +46,16 @@ public class ApiMappingProfile : Profile
         CreateMap<Content, BillContentDto>();
         CreateMap<Content, CostContentDto>();
         CreateMap<Content, PersonContentDto>();
-        CreateMap<Content, ContentForLookupDto>()
+        CreateMap<Content, GiftContentDto>();
+        CreateMap<Content, Pds.Api.Contracts.Cost.ContentForLookupDto>()
+            .ForMember(
+                dest => dest.Title,
+                opt => opt
+                    .MapFrom((p, s) =>
+                        s.Title = string.IsNullOrEmpty(p.Title) ? 
+                            "Не выбрано" : 
+                            $"{p.ReleaseDate:dd.MM} / {p.Title}"));
+        CreateMap<Content, Pds.Api.Contracts.Gift.ContentForLookupDto>()
             .ForMember(
                 dest => dest.Title,
                 opt => opt
@@ -64,7 +75,7 @@ public class ApiMappingProfile : Profile
         CreateMap<Content, GetContentResponse>();
         CreateMap<Content, GetContentForPayResponse>();
 
-        CreateMap<Brand, Pds.Api.Contracts.BrandDto>();
+        CreateMap<Brand, BrandDto>();
         CreateMap<Brand, BrandForCheckboxesDto>();
 
         CreateMap<Client, ClientDto>();
@@ -95,6 +106,13 @@ public class ApiMappingProfile : Profile
         CreateMap<Cost, GetContentCostDto>();
 
         CreateMap<Brand, BrandDto>();
+        
+        CreateMap<Gift, GetGiftResponse>();
+        CreateMap<Gift, GiftDto>() 
+            .ForMember(
+                dest => dest.SortDate,
+                opt => opt
+                    .MapFrom(p => GetSortDateForGiftDto(p)));
 
         #endregion
 
@@ -103,6 +121,7 @@ public class ApiMappingProfile : Profile
         CreateMap<CreateClientRequest, Client>();
         CreateMap<CreateCostRequest, Cost>();
         CreateMap<CreateBillRequest, Bill>();
+        CreateMap<CreateGiftRequest, Gift>();
         CreateMap<ResourceDto, Resource>()
             .ForMember(
                 dest => dest.CreatedAt,
@@ -125,6 +144,7 @@ public class ApiMappingProfile : Profile
         CreateMap<EditContentRequest, EditContentModel>();
         CreateMap<EditClientRequest, EditClientModel>();
         CreateMap<EditCostRequest, EditCostModel>();
+        CreateMap<EditGiftRequest, EditGiftModel>();
         CreateMap<EditBillRequest, EditBillModel>();
         CreateMap<EditPersonRequest, EditPersonModel>()
             .ForMember(
@@ -147,6 +167,7 @@ public class ApiMappingProfile : Profile
         CreateMap<GetCostResponse, EditCostRequest>();
         CreateMap<GetBillResponse, EditBillRequest>();
         CreateMap<GetClientResponse, EditClientRequest>();
+        CreateMap<GetGiftResponse, EditGiftRequest>();
         CreateMap<GetPersonResponse, EditPersonRequest>()
             .ForMember(
                 dest => dest.Brands,
@@ -156,6 +177,7 @@ public class ApiMappingProfile : Profile
         CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
         CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
         CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Person.BrandFilterItem>();
+        CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Gift.BrandFilterItem>();
 
         #endregion
 
@@ -182,5 +204,15 @@ public class ApiMappingProfile : Profile
                     IsSelected = true
                 })
             .ToList();
+    }
+
+    private DateTime GetSortDateForGiftDto(Gift gift)
+    {
+        var sortDate = gift.CreatedAt;
+        if (gift.Content != null)
+        {
+            sortDate = gift.Content.ReleaseDate;
+        }
+        return sortDate;
     }
 }

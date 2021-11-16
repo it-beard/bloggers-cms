@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pds.Data;
 
@@ -11,9 +12,10 @@ using Pds.Data;
 namespace Pds.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211114120230_AddGiftEntity")]
+    partial class AddGiftEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,9 +283,6 @@ namespace Pds.Data.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid?>("ContentId")
                         .HasColumnType("uniqueidentifier");
 
@@ -298,12 +297,6 @@ namespace Pds.Data.Migrations
 
                     b.Property<string>("PostalAddress")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PreviousStatus")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("RaffledAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");

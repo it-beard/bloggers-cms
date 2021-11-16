@@ -11,6 +11,7 @@ public interface IUnitOfWork : IDisposable
     IClientRepository Clients { get; }
     IBillRepository Bills { get; }
     ICostRepository Costs { get; }
+    IGiftRepository Gifts { get; }
 
     void Save();
 }

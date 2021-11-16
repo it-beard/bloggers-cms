@@ -13,6 +13,7 @@ public sealed class UnitOfWork : IUnitOfWork
     private IClientRepository clientRepository;
     private IBillRepository billRepository;
     private ICostRepository costRepository;
+    private IGiftRepository giftRepository;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -26,6 +27,7 @@ public sealed class UnitOfWork : IUnitOfWork
     public IClientRepository Clients => clientRepository ??= new ClientRepository(context);
     public IBillRepository Bills => billRepository ??= new BillRepository(context);
     public ICostRepository Costs => costRepository ??= new CostRepository(context);
+    public IGiftRepository Gifts => giftRepository ??= new GiftRepository(context);
 
     public void Save()
     {

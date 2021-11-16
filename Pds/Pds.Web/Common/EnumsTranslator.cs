@@ -18,6 +18,30 @@ public static class EnumsTranslator
             _ => string.Empty
         };
     }
+    
+    public static string GiftTypeToRu(GiftType type)
+    {
+        return type switch
+        {
+            GiftType.Other => "Прочее",
+            GiftType.Stickers => "Стикера",
+            GiftType.Book => "Книга",
+            _ => string.Empty
+        };
+    }
+
+    public static string GiftStatusToRu(GiftStatus type)
+    {
+        return type switch
+        {
+            GiftStatus.New => "Новый",
+            GiftStatus.Raffled => "Разыгран",
+            GiftStatus.Waiting => "Готов к отправке",
+            GiftStatus.Strange => "Странный",
+            GiftStatus.Completed => "Завершен",
+            _ => string.Empty
+        };
+    }
 
     public static string SocialMediaTypeToRu(SocialMediaType type)
     {

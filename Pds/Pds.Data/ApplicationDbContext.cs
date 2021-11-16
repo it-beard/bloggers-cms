@@ -18,6 +18,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Brand> Brands { get; set; }
 
+    public DbSet<Gift> Gifts { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         UpdateStructure(builder);

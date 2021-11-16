@@ -1,0 +1,96 @@
+﻿.card-header {
+    margin-bottom: 15px;
+}
+
+.actions-header {
+    width: 100px;
+}
+
+.id-header,
+.paid-date-header {
+    width: 70px;
+    text-align: center;
+}
+
+.paid-date-row {
+    text-align: center;
+}
+
+.release-date-row {
+    text-align: center;
+}
+
+.release-date-row span {
+    font-size: 0.89rem;
+    background-color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.gift-type {
+    font-size: 0.77rem;
+    background-color: darkgray;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
+}
+
+.gift-cost-row span {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-right: 5px;
+}
+
+.title-overall-info{
+    font-style: italic;
+    font-size: 1rem;
+    background-color: green;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #eee;
+}
+
+.status-new {
+    background-color: lightpink;
+}
+
+.status-raffled{
+    background-color: lightblue;
+}
+
+.status-waiting{
+    background-color: lightgreen;
+}
+
+.status-lost{
+    background-color: #ffc555;
+}
+
+.status-completed,
+.status-completed a {
+    background-color: gainsboro;
+    color: #bbb !important;
+}
+
+.create-date {
+    font-size: 0.7rem;
+    background-color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.raffle-date {
+    font-size: 0.7rem;
+    background-color: dodgerblue;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
+}
+
+.complete-date {
+    font-size: 0.7rem;
+    background-color: gray;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
+}
