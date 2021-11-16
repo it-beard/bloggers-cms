@@ -100,10 +100,10 @@ else
             <label for="third_name" class="form-label">Отчество</label>
             <InputText class="form-control" id="third_name" @bind-Value="gift.ThirdName"/>
         </div>
-
+        
         <div class="form-group">
             <label for="postal_address" class="form-label">Почтовый адрес</label>
-            <InputTextArea class="form-control" id="postal_address" @bind-Value="gift.PostalAddress" rows="3"/>
+            <InputText class="form-control" id="postal_address" @bind-Value="gift.PostalAddress"/>
         </div>
 
         <DataAnnotationsValidator/>

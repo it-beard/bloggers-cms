@@ -33,10 +33,15 @@ public class GiftService : IGiftService
             throw new GiftCreateException("Запрос был пуст.");
         }
 
-        if ((gift.Status == GiftStatus.Raffled || gift.Status == GiftStatus.Waiting) && 
-                (string.IsNullOrWhiteSpace(gift.FirstName) 
-                 || string.IsNullOrWhiteSpace(gift.LastName) 
-                 || string.IsNullOrWhiteSpace(gift.PostalAddress)))
+        if (gift.Status == GiftStatus.Raffled && string.IsNullOrWhiteSpace(gift.Comment))
+        {
+            throw new GiftCreateException("Не указан адрес доставки или ФИО победителя");
+        }
+        
+        if (gift.Status == GiftStatus.Waiting && 
+            (string.IsNullOrWhiteSpace(gift.FirstName) 
+             || string.IsNullOrWhiteSpace(gift.LastName) 
+             || string.IsNullOrWhiteSpace(gift.PostalAddress)))
         {
             throw new GiftCreateException("Не указан адрес доставки или ФИО победителя");
         }
@@ -67,6 +72,19 @@ public class GiftService : IGiftService
         if (model == null)
         {
             throw new GiftEditException($"Модель запроса пуста.");
+        }
+
+        if (model.Status == GiftStatus.Raffled && string.IsNullOrWhiteSpace(model.Comment))
+        {
+            throw new GiftEditException("Не указан адрес доставки или ФИО победителя");
+        }
+        
+        if (model.Status == GiftStatus.Waiting && 
+            (string.IsNullOrWhiteSpace(model.FirstName) 
+             || string.IsNullOrWhiteSpace(model.LastName) 
+             || string.IsNullOrWhiteSpace(model.PostalAddress)))
+        {
+            throw new GiftEditException("Не указан адрес доставки или ФИО победителя");
         }
 
         var gift = await unitOfWork.Gifts.GetFullByIdAsync(model.Id);

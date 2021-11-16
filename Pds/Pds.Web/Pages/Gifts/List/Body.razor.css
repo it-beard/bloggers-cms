@@ -35,38 +35,10 @@
     color: white;
 }
 
-.gift-cost-header {
-    width: 120px;
-    text-align: left;
-    padding-right: 15px;
-}
-
-.gift-cost-row {
-    text-align: left;
-    padding-right: 15px;
-}
-
 .gift-cost-row span {
     font-weight: bold;
     font-size: 1rem;
     margin-right: 5px;
-}
-
-.gift-cost-row i {
-    font-size: 0.8rem;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-style: normal;
-}
-
-.gift-cost-row i.yellow{
-    background-color: yellowgreen;
-    color: black;
-}
-
-.gift-cost-row i.red{
-    background-color: lightcoral;
-    color: white;
 }
 
 .title-overall-info{
@@ -94,7 +66,31 @@
     background-color: #ffc555;
 }
 
-.status-completed {
+.status-completed,
+.status-completed a {
     background-color: gainsboro;
     color: #bbb !important;
+}
+
+.create-date {
+    font-size: 0.7rem;
+    background-color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.raffle-date {
+    font-size: 0.7rem;
+    background-color: dodgerblue;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
+}
+
+.complete-date {
+    font-size: 0.7rem;
+    background-color: gray;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
 }

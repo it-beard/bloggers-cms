@@ -2,7 +2,6 @@
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Gift
-@using Pds.Core.Extensions
 @using Pds.Web.Common
 @using Pds.Web.Models.Gift
 @using static Pds.Web.Common.TitleExtension 
@@ -33,6 +32,7 @@ else
         <thead>
         <tr>
             <th class="paid-date-header">Когда</th>
+            <th class="paid-date-header">Даты</th>
             <th>Название</th>
             <th>Бренд</th>
             <th>Комментарий</th>
@@ -48,6 +48,29 @@ else
                     <span>
                         @gift.SortDate.ToString("dd.MM.yyyy")
                     </span>
+                </td>
+                <td>
+                    <div>
+                        <span class="create-date">
+                            @gift.CreatedAt.ToString("dd.MM.yyyy")
+                        </span>
+                    </div>
+                    @if (gift.RaffledAt != null)
+                    {
+                        <div>
+                            <span class="raffle-date">
+                                @gift.RaffledAt.Value.ToString("dd.MM.yyyy")
+                            </span>
+                        </div>
+                    }
+                    @if (gift.CompletedAt != null)
+                    {
+                        <div>
+                            <span class="complete-date">
+                                @gift.CompletedAt.Value.ToString("dd.MM.yyyy")
+                            </span>
+                        </div>
+                    }
                 </td>
                 <td>
                     <span class="gift-type">
@@ -138,14 +161,25 @@ else
                 (selectedGiftStatuses.Contains(i.Status) || selectedGiftStatuses.Count == 0) &&
                 (selectedGiftTypes.Contains(i.Type) || selectedGiftTypes.Count == 0) &&
                 (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
-                (filterSettings.CompletedFrom != null && i.CompletedAt.Value.Date >= filterSettings.CompletedFrom.Value.Date 
+                
+                (filterSettings.CompletedFrom != null && 
+                    i.CompletedAt != null && 
+                    i.CompletedAt.Value.Date >= filterSettings.CompletedFrom.Value.Date 
                             || filterSettings.CompletedFrom == null) &&
-                (filterSettings.CompletedTo != null && i.CompletedAt.Value.Date <= filterSettings.CompletedTo.Value.Date 
+                (filterSettings.CompletedTo != null && 
+                    i.CompletedAt != null && 
+                    i.CompletedAt.Value.Date <= filterSettings.CompletedTo.Value.Date 
                             || filterSettings.CompletedTo == null) &&
-                (filterSettings.RaffledFrom != null && i.RaffledAt.Value.Date >= filterSettings.RaffledFrom.Value.Date 
+                
+                (filterSettings.RaffledFrom != null && 
+                    i.RaffledAt != null && 
+                    i.RaffledAt.Value.Date >= filterSettings.RaffledFrom.Value.Date 
                             || filterSettings.RaffledFrom == null) &&
-                (filterSettings.RaffledTo != null && i.RaffledAt.Value.Date <= filterSettings.RaffledTo.Value.Date 
+                (filterSettings.RaffledTo != null && 
+                    i.RaffledAt != null && 
+                    i.RaffledAt.Value.Date <= filterSettings.RaffledTo.Value.Date 
                             || filterSettings.RaffledTo == null) &&
+                
                 (filterSettings.CreatedFrom != null && i.CreatedAt.Date >= filterSettings.CreatedFrom.Value.Date 
                             || filterSettings.CreatedFrom == null) &&
                 (filterSettings.CreatedTo != null && i.CreatedAt.Date <= filterSettings.CreatedTo.Value.Date 
