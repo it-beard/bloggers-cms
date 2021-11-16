@@ -188,14 +188,11 @@ public class BillController : ApiControllerBase
     {
         try
         {
-            if (ModelState.IsValid)
-            {
-                var editBillModel = mapper.Map<EditBillModel>(request);
-                var billId = await billService.EditAsync(editBillModel);
-                return Ok(new EditBillResponse{Id = billId});
-            }
+            if (!ModelState.IsValid) return BadRequest();
+            var editBillModel = mapper.Map<EditBillModel>(request);
+            var billId = await billService.EditAsync(editBillModel);
+            return Ok(new EditBillResponse{Id = billId});
 
-            return BadRequest();
         }
         catch (Exception e)
         {

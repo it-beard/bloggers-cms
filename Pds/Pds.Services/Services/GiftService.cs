@@ -3,6 +3,7 @@ using Pds.Core.Exceptions.Gift;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Gift;
 
 namespace Pds.Services.Services;
 
@@ -13,6 +14,11 @@ public class GiftService : IGiftService
     public GiftService(IUnitOfWork unitOfWork)
     {
         this.unitOfWork = unitOfWork;
+    }
+
+    public async Task<Gift> GetAsync(Guid giftId)
+    {
+        return await unitOfWork.Gifts.GetFullByIdAsync(giftId);
     }
 
     public async Task<List<Gift>> GetAllAsync()
@@ -52,6 +58,52 @@ public class GiftService : IGiftService
         }
 
         var result = await unitOfWork.Gifts.InsertAsync(gift);
+
+        return result.Id;
+    }
+    
+    public async Task<Guid> EditAsync(EditGiftModel model)
+    {
+        if (model == null)
+        {
+            throw new GiftEditException($"Модель запроса пуста.");
+        }
+
+        var gift = await unitOfWork.Gifts.GetFullByIdAsync(model.Id);
+            
+        if (gift == null)
+        {
+            throw new GiftEditException($"Подарок с id {model.Id} не найден.");
+        }
+
+        if (gift.Status == GiftStatus.Completed)
+        {
+            throw new GiftEditException($"Нельзя редактировать отправленный подарок.");
+        }
+
+        gift.UpdatedAt = DateTime.UtcNow;
+        gift.PreviousStatus = gift.Status;
+        switch (model.Status)
+        {
+            case GiftStatus.Raffled:
+                gift.RaffledAt = DateTime.UtcNow;
+                break;
+            case GiftStatus.Completed:
+                gift.CompletedAt = DateTime.UtcNow;
+                break;
+        }
+        gift.Title = model.Title;
+        gift.Type = model.Type;
+        gift.Status = model.Status;
+        gift.Comment = model.Comment;
+        gift.FirstName = model.FirstName;
+        gift.LastName = model.LastName;
+        gift.ThirdName = model.ThirdName;
+        gift.PostalAddress = model.PostalAddress;
+        gift.BrandId = model.BrandId;
+        gift.ContentId = model.ContentId != null && model.ContentId.Value == Guid.Empty ? null : model.ContentId;
+
+        var result = await unitOfWork.Gifts.UpdateAsync(gift);
 
         return result.Id;
     }

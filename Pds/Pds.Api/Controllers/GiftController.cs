@@ -5,6 +5,7 @@ using Pds.Api.Contracts;
 using Pds.Api.Contracts.Gift;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Gift;
 
 namespace Pds.Api.Controllers;
 
@@ -30,6 +31,28 @@ public class GiftController : ApiControllerBase
         this.giftService = giftService;
         this.brandService = brandService;
         this.contentService = contentService;
+    }
+
+    /// <summary>
+    /// Get gift by id
+    /// </summary>
+    /// <param name="giftId"></param>
+    /// <returns></returns>
+    [HttpGet("{giftId}")]
+    [ProducesResponseType(typeof(GetGiftResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get(Guid giftId)
+    {
+        try
+        {
+            var bill = await giftService.GetAsync(giftId);
+            var response = mapper.Map<GetGiftResponse>(bill);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
     }
 
     /// <summary>
@@ -77,6 +100,29 @@ public class GiftController : ApiControllerBase
             }
 
             return BadRequest();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Edit gift
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [ProducesResponseType(typeof(EditGiftResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Edit(EditGiftRequest request)
+    {
+        try
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            var editGiftModel = mapper.Map<EditGiftModel>(request);
+            var billId = await giftService.EditAsync(editGiftModel);
+            return Ok(new EditGiftResponse{Id = billId});
+
         }
         catch (Exception e)
         {

@@ -11,6 +11,7 @@ using Pds.Services.Models.Bill;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Services.Models.Cost;
+using Pds.Services.Models.Gift;
 using Pds.Services.Models.Person;
 namespace Pds.Mappers;
 
@@ -106,6 +107,7 @@ public class ApiMappingProfile : Profile
 
         CreateMap<Brand, BrandDto>();
         
+        CreateMap<Gift, GetGiftResponse>();
         CreateMap<Gift, GiftDto>() 
             .ForMember(
                 dest => dest.SortDate,
@@ -142,6 +144,7 @@ public class ApiMappingProfile : Profile
         CreateMap<EditContentRequest, EditContentModel>();
         CreateMap<EditClientRequest, EditClientModel>();
         CreateMap<EditCostRequest, EditCostModel>();
+        CreateMap<EditGiftRequest, EditGiftModel>();
         CreateMap<EditBillRequest, EditBillModel>();
         CreateMap<EditPersonRequest, EditPersonModel>()
             .ForMember(
@@ -164,6 +167,7 @@ public class ApiMappingProfile : Profile
         CreateMap<GetCostResponse, EditCostRequest>();
         CreateMap<GetBillResponse, EditBillRequest>();
         CreateMap<GetClientResponse, EditClientRequest>();
+        CreateMap<GetGiftResponse, EditGiftRequest>();
         CreateMap<GetPersonResponse, EditPersonRequest>()
             .ForMember(
                 dest => dest.Brands,
