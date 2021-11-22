@@ -43,7 +43,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var gift in giftsInfo.Items)
+        @foreach (var gift in giftsList)
         {
             <tr class="@GiftHelper.GetGiftBgColorClass(gift.Status)">
                 <td class="release-date-row">
@@ -120,6 +120,7 @@ else
 
 @code {
     private GetGiftsResponse giftsInfo;
+    private GiftDto[] giftsList;
     private GiftsPageSearchSettings searchSettings;
     private FilterSettings filterSettings;    
     private int totalElements;
@@ -137,6 +138,7 @@ else
     private async Task GiftsInfoUpdate()
     {
         giftsInfo = await GetGiftsInfoAsync();
+        //SetDefaultPaging();
         FilterUpdated(filterSettings);
     }
 
@@ -145,9 +147,10 @@ else
         return await ApiClient.Get<GetGiftsResponse>(TokenProvider, "gifts");
     }
     
-    private void UpdateGiftsList()
+    private void GetGiftsList()
     {
-        var query = giftsInfo.Items.AsQueryable();
+        var query = giftsInfo.Items
+            .AsQueryable();
         
         //Filtering
         var selectedGiftTypes = filterSettings.GiftTypeFilterItems
@@ -220,21 +223,21 @@ else
             query.Where(searchPredicate);
         }
 
-        giftsInfo.Items = query.ToList();
-        totalElements = giftsInfo.Items.Count;
+        giftsList = query.ToArray();
+        totalElements = giftsList.Length;
     }
     
     private void OnSearch(string searchText)
     {
         //SetDefaultPaging();
         searchSettings.Search = searchText;
-        UpdateGiftsList();
+        GetGiftsList();
     }
 
     private void FilterUpdated(FilterSettings filterSettings)
     {
         this.filterSettings = filterSettings;
         // SetDefaultPaging();
-        UpdateGiftsList();
+        GetGiftsList();
     }
 }
