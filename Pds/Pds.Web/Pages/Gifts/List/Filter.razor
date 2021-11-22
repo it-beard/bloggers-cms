@@ -84,7 +84,6 @@ else
 }
 
 @code {
-
     [Parameter]
     public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
     [Parameter]
@@ -103,14 +102,14 @@ else
         await OnFilterUpdate.InvokeAsync(filterSettings); //trigger filter initialize
     }
 
-    private void SearchOnChanged(string searchText)
-    {
-        OnSearch.InvokeAsync(searchText);
-    }
-
     private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
     {
         OnFilterUpdate.InvokeAsync(filterSettings);
+    }
+
+    private void SearchOnChanged(string searchText)
+    {
+        OnSearch.InvokeAsync(searchText);
     }
 
     private FilterSettings GetFilterSettings(List<BrandDto> brands)

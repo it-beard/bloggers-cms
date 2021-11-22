@@ -132,7 +132,14 @@ else
             Search = string.Empty
         };
 
-        giftsInfo = await GetGiftsInfoAsync();
+        filterSettings = new FilterSettings
+        {
+            BrandFilterItems = new List<BrandFilterItem>(),
+            GiftStatusFilterItems = new List<GiftStatusFilterItem>(),
+            GiftTypeFilterItems = new List<GiftTypeFilterItem>()
+        };
+
+        await GiftsInfoUpdate();
     }
 
     private async Task GiftsInfoUpdate()
@@ -210,10 +217,13 @@ else
         if (!string.IsNullOrWhiteSpace(searchLine))
         {
             var searchPredicate = new GiftsSearch().GetSearchPredicate(searchLine);
-            query.Where(searchPredicate);
+            giftsList = query.Where(searchPredicate).ToArray();
+        }
+        else
+        {
+            giftsList = query.ToArray();
         }
 
-        giftsList = query.ToArray();
         totalElements = giftsList.Length;
     }
     
