@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Gift
 @using Pds.Web.Common
+@using Pds.Web.Components.Search.Gift
 @using Pds.Web.Models.Gift
 @using static Pds.Web.Common.TitleExtension 
 
@@ -27,7 +28,7 @@ else
         </span>
         <a href="/gifts/add" class="btn btn-success" >Добавить</a>
     </h4>
-    <Filter OnFilterUpdate="@FilterUpdated"></Filter>
+    <Filter OnFilterUpdate="@FilterUpdated" OnSearch="@OnSearch" ></Filter>
     <table class="table">
         <thead>
         <tr>
@@ -97,7 +98,7 @@ else
                     @if (!string.IsNullOrWhiteSpace(gift.FirstName))
                     {
                         <div>
-                            <i>ФИО:</i> @gift.FirstName @gift.LastName @gift.ThirdName
+                            <i>ФИО:</i> @gift.LastName @gift.FirstName @gift.ThirdName
                         </div>
                     }
                     @if (!string.IsNullOrWhiteSpace(gift.PostalAddress))
@@ -118,27 +119,33 @@ else
 
 @code {
     private GetGiftsResponse giftsInfo;
-    private FilterSettings lastFilterSettings;
+    private GiftsPageSearchSettings searchSettings;
+    private FilterSettings filterSettings;
 
     protected override async Task OnInitializedAsync()
     {
-        giftsInfo = await GetGiftsInfo();
+        giftsInfo = await GetGiftsInfoAsync();
+
+        searchSettings = new GiftsPageSearchSettings
+        {
+            Search = string.Empty
+        };
     }
 
     private async Task GiftsInfoUpdate()
     {
-        giftsInfo = await GetGiftsInfo();
-        FilterUpdated(lastFilterSettings);
+        giftsInfo = await GetGiftsInfoAsync();
+        FilterUpdated(filterSettings);
     }
 
-    private async Task<GetGiftsResponse> GetGiftsInfo()
+    private async Task<GetGiftsResponse> GetGiftsInfoAsync()
     {
         return await ApiClient.Get<GetGiftsResponse>(TokenProvider, "gifts");
     }
-
-    private void FilterUpdated(FilterSettings filterSettings)
+    
+    private void UpdateGiftsList()
     {
-        lastFilterSettings = filterSettings;
+        //Filtering
         var selectedGiftTypes = filterSettings.GiftTypeFilterItems
             .Where(i => i.IsSelected)
             .Select(i => i.GiftType)
@@ -195,5 +202,28 @@ else
 
             item.IsVisible = itemsToShow.Contains(item);
         }
+        
+        //Search
+        var searchLine = searchSettings.Search?.ToLower();
+        if (!string.IsNullOrWhiteSpace(searchLine))
+        {
+            var query = giftsInfo.Items.AsQueryable();
+            var searchPredicate = new GiftsSearch().GetSearchPredicate(searchLine);
+            giftsInfo.Items = query.Where(searchPredicate).ToList();
+        }
+    }
+    
+    private void OnSearch(string searchText)
+    {
+        //SetDefaultPaging();
+        searchSettings.Search = searchText;
+        UpdateGiftsList();
+    }
+
+    private void FilterUpdated(FilterSettings filterSettings)
+    {
+        this.filterSettings = filterSettings;
+        // SetDefaultPaging();
+        UpdateGiftsList();
     }
 }

@@ -119,7 +119,7 @@ else
     private bool isPagingStateHasChanged;
     private PageSettings pageSettings;
     private OrderSetting<PersonsFieldName>[] orderSettings;
-    private SearchSettings searchSettings;
+    private PersonsPageSearchSettings searchSettings;
     private FilterSettings filterSettings;
 
     protected override async Task OnInitializedAsync()
@@ -135,7 +135,7 @@ else
             new OrderSetting<PersonsFieldName>()
         };
 
-        searchSettings = new SearchSettings
+        searchSettings = new PersonsPageSearchSettings
         {
             Search = string.Empty
         };
