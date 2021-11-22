@@ -23,7 +23,8 @@ else
         <span>
         Список подарков 
             <span class="title-overall-info">
-                @giftsInfo.Items.Count(i => i.IsVisible) шт.
+                @{ var overallCount = $"{totalElements} шт.";}
+                @overallCount
             </span> 
         </span>
         <a href="/gifts/add" class="btn btn-success" >Добавить</a>
@@ -42,7 +43,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var gift in giftsInfo.Items.OrderByDescending(g => g.SortDate).Where(i => i.IsVisible))
+        @foreach (var gift in giftsInfo.Items)
         {
             <tr class="@GiftHelper.GetGiftBgColorClass(gift.Status)">
                 <td class="release-date-row">
@@ -120,16 +121,17 @@ else
 @code {
     private GetGiftsResponse giftsInfo;
     private GiftsPageSearchSettings searchSettings;
-    private FilterSettings filterSettings;
+    private FilterSettings filterSettings;    
+    private int totalElements;
 
     protected override async Task OnInitializedAsync()
     {
-        giftsInfo = await GetGiftsInfoAsync();
-
         searchSettings = new GiftsPageSearchSettings
         {
             Search = string.Empty
         };
+
+        giftsInfo = await GetGiftsInfoAsync();
     }
 
     private async Task GiftsInfoUpdate()
@@ -145,6 +147,8 @@ else
     
     private void UpdateGiftsList()
     {
+        var query = giftsInfo.Items.AsQueryable();
+        
         //Filtering
         var selectedGiftTypes = filterSettings.GiftTypeFilterItems
             .Where(i => i.IsSelected)
@@ -203,14 +207,21 @@ else
             item.IsVisible = itemsToShow.Contains(item);
         }
         
+        //Sorting
+        query
+            .OrderByDescending(g => g.SortDate)
+            .Where(i => i.IsVisible);
+        
         //Search
         var searchLine = searchSettings.Search?.ToLower();
         if (!string.IsNullOrWhiteSpace(searchLine))
         {
-            var query = giftsInfo.Items.AsQueryable();
             var searchPredicate = new GiftsSearch().GetSearchPredicate(searchLine);
-            giftsInfo.Items = query.Where(searchPredicate).ToList();
+            query.Where(searchPredicate);
         }
+
+        giftsInfo.Items = query.ToList();
+        totalElements = giftsInfo.Items.Count;
     }
     
     private void OnSearch(string searchText)
