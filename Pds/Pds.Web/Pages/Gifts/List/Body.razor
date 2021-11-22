@@ -149,9 +149,6 @@ else
     
     private void GetGiftsList()
     {
-        var query = giftsInfo.Items
-            .AsQueryable();
-        
         //Filtering
         var selectedGiftTypes = filterSettings.GiftTypeFilterItems
             .Where(i => i.IsSelected)
@@ -199,16 +196,9 @@ else
                 (filterSettings.CreatedTo != null && i.CreatedAt.Date <= filterSettings.CreatedTo.Value.Date 
                             || filterSettings.CreatedTo == null));
 
-        foreach (var item in giftsInfo.Items)
-        {
-            if (totalSelectedFiltersCount == 0)
-            {
-                item.IsVisible = true;
-                continue;
-            }
-
-            item.IsVisible = itemsToShow.Contains(item);
-        }
+        
+        var query = itemsToShow
+            .AsQueryable();
         
         //Sorting
         query
