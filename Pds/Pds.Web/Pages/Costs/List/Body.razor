@@ -25,9 +25,8 @@ else
         <span>
         Список расходов
             <span class="title-overall-info">
-                @costsInfo.Items.Count(i => i.IsVisible) шт.
-                / 
-                $@costsInfo.Items.Where(i => i.IsVisible).Sum(i => i.Value).ToString("N0")
+                @($"{costsInfo.Items.Count(i => i.IsVisible)} шт. /  $" +
+                  $"{costsInfo.Items.Where(i => i.IsVisible).Sum(i => i.Value):N0}")
             </span> 
         </span>
         <a href="/costs/add" class="btn btn-success" >Добавить</a>

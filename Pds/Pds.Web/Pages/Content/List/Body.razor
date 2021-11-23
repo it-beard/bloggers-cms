@@ -30,10 +30,9 @@ else
     <h4 class="card-header d-flex justify-content-between align-items-center">
         <span>
             Лента контента 
-            <span class="title-overall-info">
-                            @{ var overallCount = $"{totalElements} шт.";}
-                            @overallCount
-                        </span> 
+                <span class="title-overall-info">
+                    @($"{totalElements} шт. / ${totalCost:N0}")
+                </span> 
         </span>
         <a href="/content/add" class="btn btn-success">Добавить</a>
     </h4>
@@ -115,7 +114,8 @@ else
     private GetContentsContentDto[] contentsList;
     private ContentsPageSearchSettings searchSettings;
     private FilterSettings filterSettings;    
-    private int totalElements;
+    private int totalElements; 
+    private decimal totalCost;
 
     protected override async Task OnInitializedAsync()
     {
@@ -185,6 +185,7 @@ else
         
         contentsList = query.ToArray();
         totalElements = contentsList.Length;
+        totalCost = contentsList.Sum(i => i.Bill?.Value) ?? totalCost;
     }
     
     private void OnSearch(string searchText)
