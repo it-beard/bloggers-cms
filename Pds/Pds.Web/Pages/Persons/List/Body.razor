@@ -207,15 +207,12 @@ else
         if (!string.IsNullOrWhiteSpace(searchLine))
         {
             var searchPredicate = new PersonsSearch().GetSearchPredicate(searchLine);
-            personsList = query.Where(searchPredicate).ToArray();
-        }
-        else
-        {
-            personsList = query.ToArray();
+            query = query.Where(searchPredicate);
         }
 
         //Paging
-        totalElements = personsList.ToArray().Length;
+        personsList = query.ToArray();
+        totalElements = personsList.Length;
         personsList = personsList
             .Skip(pageSettings.Offset)
             .Take(pageSettings.Limit)
