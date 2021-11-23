@@ -17,21 +17,17 @@ public class GiftsSearch
         predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.ThirdName) && c.ThirdName.ToLower().Contains(searchLine));
         predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.PostalAddress) && c.PostalAddress.ToLower().Contains(searchLine));
         predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.Comment) && c.Comment.ToLower().Contains(searchLine));
-        predicate = predicate.Or(c => 
-            c.CompletedAt != null &&
-            !string.IsNullOrWhiteSpace(c.CompletedAt.Value.ToString("dd.MM.yyyy")) && 
-            c.CompletedAt.Value.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
-        predicate = predicate.Or(c => 
-            c.CompletedAt != null &&
-            !string.IsNullOrWhiteSpace(c.CompletedAt.Value.ToString("dd.MM.yyyy")) && 
-            c.CompletedAt.Value.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
-        predicate = predicate.Or(c => 
-            c.RaffledAt != null &&
-            !string.IsNullOrWhiteSpace(c.RaffledAt.Value.ToString("dd.MM.yyyy")) && 
-            c.RaffledAt.Value.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
-        predicate = predicate.Or(c => 
-            !string.IsNullOrWhiteSpace(c.CreatedAt.ToString("dd.MM.yyyy")) && 
-            c.CreatedAt.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
+        predicate = predicate.Or(c => c.CompletedAt != null 
+                                      && !string.IsNullOrWhiteSpace(c.CompletedAt.Value.ToString("dd.MM.yyyy")) 
+                                      && c.CompletedAt.Value.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
+        predicate = predicate.Or(c => c.CompletedAt != null 
+                                      && !string.IsNullOrWhiteSpace(c.CompletedAt.Value.ToString("dd.MM.yyyy")) 
+                                      && c.CompletedAt.Value.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
+        predicate = predicate.Or(c => c.RaffledAt != null 
+                                      && !string.IsNullOrWhiteSpace(c.RaffledAt.Value.ToString("dd.MM.yyyy")) 
+                                      && c.RaffledAt.Value.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
+        predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.CreatedAt.ToString("dd.MM.yyyy")) 
+                                      && c.CreatedAt.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
 
         predicate = predicate.Or(r => r.Content != null && r.Content.Title.ToLower().Contains(searchLine));
 

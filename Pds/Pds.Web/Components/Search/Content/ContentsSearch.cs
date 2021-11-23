@@ -25,9 +25,15 @@ public class ContentsSearch
         predicate = predicate.Or(r => r.Brand != null && r.Brand.Name.ToLower().Contains(searchLine));
         predicate = predicate.Or(r => r.Person != null && r.Person.FirstName.ToLower().Contains(searchLine));
         predicate = predicate.Or(r => r.Person != null && r.Person.LastName.ToLower().Contains(searchLine));
-        predicate = predicate.Or(r => r.Person != null && r.Person.ThirdName.ToLower().Contains(searchLine));
-        predicate = predicate.Or(r => r.Bill != null && r.Bill.Contact.ToLower().Contains(searchLine));
-        predicate = predicate.Or(r => r.Bill != null && r.Bill.ContactName.ToLower().Contains(searchLine));
+        predicate = predicate.Or(r => r.Person != null 
+                                      && r.Person.ThirdName != null 
+                                      && r.Person.ThirdName.ToLower().Contains(searchLine));
+        predicate = predicate.Or(r => r.Bill != null 
+                                      && r.Bill.Contact != null
+                                      && r.Bill.Contact.ToLower().Contains(searchLine));
+        predicate = predicate.Or(r => r.Bill != null 
+                                      && r.Bill.ContactName != null
+                                      && r.Bill.ContactName.ToLower().Contains(searchLine));
         predicate = predicate.Or(r => r.Bill != null && r.Bill.Value.ToString("N0").Contains(searchLine));
 
         return predicate;
