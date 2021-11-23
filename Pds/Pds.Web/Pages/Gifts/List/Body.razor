@@ -208,22 +208,18 @@ else
             .AsQueryable();
         
         //Sorting
-        query
-            .OrderByDescending(g => g.SortDate)
-            .Where(i => i.IsVisible);
+        query = query
+            .OrderByDescending(g => g.SortDate);
         
         //Search
         var searchLine = searchSettings.Search?.ToLower();
         if (!string.IsNullOrWhiteSpace(searchLine))
         {
             var searchPredicate = new GiftsSearch().GetSearchPredicate(searchLine);
-            giftsList = query.Where(searchPredicate).ToArray();
+            query = query.Where(searchPredicate);
         }
-        else
-        {
-            giftsList = query.ToArray();
-        }
-
+        
+        giftsList = query.ToArray();
         totalElements = giftsList.Length;
     }
     

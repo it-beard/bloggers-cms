@@ -3,6 +3,10 @@ using Pds.Api.Contracts;
 using Pds.Api.Contracts.Bill;
 using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
+using Pds.Api.Contracts.Content.CreateContent;
+using Pds.Api.Contracts.Content.EditContent;
+using Pds.Api.Contracts.Content.GetContent;
+using Pds.Api.Contracts.Content.GetContents;
 using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Gift;
 using Pds.Api.Contracts.Person;
@@ -22,6 +26,7 @@ public class ApiMappingProfile : Profile
         #region Entities to Contracts
 
         CreateMap<Person, GetContentPersonDto>();
+        CreateMap<Person, GetContentsPersonDto>();
         CreateMap<Person, PersonDto>()
             .ForMember(
                 dest => dest.FullName,
@@ -63,15 +68,11 @@ public class ApiMappingProfile : Profile
                         s.Title = string.IsNullOrEmpty(p.Title) ? 
                             "Не выбрано" : 
                             $"{p.ReleaseDate:dd.MM} / {p.Title}"));
-        CreateMap<Content, ContentDto>()
+        CreateMap<Content, GetContentsContentDto>()
             .ForMember(
                 dest => dest.ClientName,
                 opt => opt
-                    .MapFrom(p => p.Bill.Client.Name))
-            .ForMember(
-                dest => dest.IsVisible,
-                opt => opt
-                    .MapFrom(p => true));
+                    .MapFrom(p => p.Bill.Client.Name));
         CreateMap<Content, GetContentResponse>();
         CreateMap<Content, GetContentForPayResponse>();
 
@@ -98,7 +99,7 @@ public class ApiMappingProfile : Profile
         CreateMap<Bill, ClientBillDto>();
         CreateMap<Bill, GetBillResponse>();
         CreateMap<Bill, GetContentBillDto>();
-        CreateMap<Bill, ContentListBillDto>();
+        CreateMap<Bill, GetContentsBillDto>();
         CreateMap<Bill, GetContentBillForPayResponse>();
 
         CreateMap<Cost, CostDto>();

@@ -33,6 +33,7 @@ else
                         @brandFilterItem.Name
                     </label>
                 }
+                <SearchComponent Search="SearchOnChanged" />
             </div>
             <div class="form-group no-wrap">
                 <span class="filter-row-title">Соцсеть:</span>
@@ -62,9 +63,10 @@ else
 }
 
 @code {
-
     [Parameter]
     public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
 
     private EditContext editContext;
     private FilterSettings filterSettings { get; set; }
@@ -82,6 +84,11 @@ else
     private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
     {
         OnFilterUpdate.InvokeAsync(filterSettings);
+    }
+    
+    private void SearchOnChanged(string searchText)
+    {
+        OnSearch.InvokeAsync(searchText);
     }
 
     private FilterSettings GetFilterSettings(List<BrandDto> brands)

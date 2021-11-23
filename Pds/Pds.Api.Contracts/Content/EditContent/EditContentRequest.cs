@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Pds.Core.Enums;
 
-namespace Pds.Api.Contracts.Content;
+namespace Pds.Api.Contracts.Content.EditContent;
 
 public class EditContentRequest
 {

@@ -8,6 +8,7 @@ public class GiftsSearch
 {
     public Expression<Func<GiftDto, bool>> GetSearchPredicate(string searchLine)
     {
+        searchLine = searchLine.ToLower();
         var predicate = PredicateBuilder.False<GiftDto>();
 
         predicate = predicate.Or(c => c.Title.ToLower().Contains(searchLine));
@@ -31,10 +32,8 @@ public class GiftsSearch
         predicate = predicate.Or(c => 
             !string.IsNullOrWhiteSpace(c.CreatedAt.ToString("dd.MM.yyyy")) && 
             c.CreatedAt.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
-        predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.Comment) && c.Comment.ToLower().Contains(searchLine));
-        predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.Comment) && c.Comment.ToLower().Contains(searchLine));
 
-        predicate = predicate.Or(r => r.Content != null && r.Content.Title.Contains(searchLine));
+        predicate = predicate.Or(r => r.Content != null && r.Content.Title.ToLower().Contains(searchLine));
 
         return predicate;
     }

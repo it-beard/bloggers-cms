@@ -34,6 +34,4 @@ public class GiftDto
     public virtual BrandDto Brand { get; set; }
 
     public virtual GiftContentDto Content { get; set; }
-
-    public bool IsVisible { get; set; }
 }

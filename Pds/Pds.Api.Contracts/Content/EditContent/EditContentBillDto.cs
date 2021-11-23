@@ -2,7 +2,7 @@
 using Pds.Core.Attributes;
 using Pds.Core.Enums;
 
-namespace Pds.Api.Contracts.Content;
+namespace Pds.Api.Contracts.Content.EditContent;
 
 public class EditContentBillDto
 {

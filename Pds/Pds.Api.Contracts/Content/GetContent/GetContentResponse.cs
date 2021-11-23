@@ -1,6 +1,6 @@
 ﻿using Pds.Core.Enums;
 
-namespace Pds.Api.Contracts.Content;
+namespace Pds.Api.Contracts.Content.GetContent;
 
 public class GetContentResponse
 {

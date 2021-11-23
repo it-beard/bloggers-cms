@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
 using Pds.Api.Contracts.Content;
+using Pds.Api.Contracts.Content.CreateContent;
+using Pds.Api.Contracts.Content.EditContent;
+using Pds.Api.Contracts.Content.GetContent;
+using Pds.Api.Contracts.Content.GetContents;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Content;
 namespace Pds.Api.Controllers;
@@ -47,7 +51,7 @@ public class ContentController : ApiControllerBase
             var content = await contentService.GetAllAsync();
             var response = new GetContentsResponse
             {
-                Items = mapper.Map<List<ContentDto>>(content),
+                Items = mapper.Map<List<GetContentsContentDto>>(content),
                 Total = content.Count
             };
 

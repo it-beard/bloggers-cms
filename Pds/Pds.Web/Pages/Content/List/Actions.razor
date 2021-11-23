@@ -1,6 +1,7 @@
 ﻿@using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Content
+@using Pds.Api.Contracts.Content.GetContents
 @using Pds.Core.Enums
 
 @inject IJSRuntime JsRuntime
@@ -52,7 +53,7 @@
     [Parameter]
     public EventCallback OnContentUpdate { get; set; }
     [Parameter]
-    public ContentDto CurrentContent { get; set; }
+    public GetContentsContentDto CurrentContent { get; set; }
 
     private void OnEdit()
     {

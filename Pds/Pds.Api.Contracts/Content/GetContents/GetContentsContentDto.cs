@@ -1,12 +1,10 @@
 ﻿using Pds.Core.Enums;
 
-namespace Pds.Api.Contracts.Content;
+namespace Pds.Api.Contracts.Content.GetContents;
 
-public class ContentDto
+public class GetContentsContentDto
 {
     public string Id { get; set; }
-        
-    public bool IsVisible { get; set; }
         
     public string Title { get; set; }
         
@@ -22,7 +20,9 @@ public class ContentDto
 
     public ContentType Type { get; set; }
 
-    public ContentListBillDto Bill { get; set; }
+    public GetContentsBillDto Bill { get; set; }
+    
+    public GetContentsPersonDto Person { get; set; }
 
     public BrandDto Brand { get; set; }
 }
