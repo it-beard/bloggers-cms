@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
 using Pds.Api.Contracts.Bill;
+using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Settings;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Bill;
+using Pds.Services.Models.Setting;
+
 namespace Pds.Api.Controllers;
 
 [Route("api/settings")]
@@ -28,6 +31,28 @@ public class SettingController : ApiControllerBase
     }
     
     /// <summary>
+    /// Get setting by id
+    /// </summary>
+    /// <param name="settingId"></param>
+    /// <returns></returns>
+    [HttpGet("{settingId}")]
+    [ProducesResponseType(typeof(GetSettingResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get(Guid settingId)
+    {
+        try
+        {
+            var setting = await settingService.GetAsync(settingId);
+            var response = mapper.Map<GetSettingResponse>(setting);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
     /// Get settings
     /// </summary>
     /// <returns></returns>
@@ -37,9 +62,35 @@ public class SettingController : ApiControllerBase
     {
         try
         {
-            var settings = await settingService.GetSettingsAsync();
+            var settings = await settingService.GetAllAsync();
             var response = mapper.Map<List<SettingDto>>(settings);
             return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Edit setting
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [ProducesResponseType(typeof(EditSettingResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Edit(EditSettingRequest request)
+    {
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                var editSettingModel = mapper.Map<EditSettingModel>(request);
+                var settingId = await settingService.EditAsync(editSettingModel);
+                return Ok(new EditClientResponse{Id = settingId});
+            }
+
+            return BadRequest();
         }
         catch (Exception e)
         {

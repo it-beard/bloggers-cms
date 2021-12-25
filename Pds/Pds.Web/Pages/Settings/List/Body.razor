@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Web.Common
 @using Pds.Api.Contracts.Client
+@using Pds.Api.Contracts.Settings
 @using static Pds.Web.Common.TitleExtension
 
 @inject IApiClient ApiClient
@@ -12,9 +13,8 @@
 
 <h4 class="card-header d-flex justify-content-between align-items-center">
     Список настроек
-    <a href="/clients/add" class="btn btn-success">Добавить</a>
 </h4>
-@if (clientsInfo == null)
+@if (settings == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -25,27 +25,27 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th class="client-name-header">Наименование</th>
-                <th>Комментарий</th>
+                <th class="client-name-header">Клюс</th>
+                <th>Значение</th>
+                <th>Описание</th>
                 <th class="text-center actions-header">Действия</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var client in clientsInfo.Items)
+            @foreach (var setting in settings.OrderBy(s => s.Key))
             {
                 <tr>
                     <td class="client-name-row">
-                        <a class="custom-link" href="clients/@client.Id">@client.Name</a>
-                        @if (client.Bills is { Count: > 0 })
-                        {
-                            <span class="contents">
-                                (@client.Bills.Count)
-                            </span>
-                        }
+                        @setting.Key
                     </td>
-                    <td class="comment-row">@client.Comment</td>
+                    <td class="comment-row">
+                        @setting.Value
+                    </td>
+                    <td class="comment-row">
+                        @setting.Description
+                    </td>
                     <td class="text-center">
-                        <Actions OnClientUpdate="@ClientsInfoUpdate" CurrentClient="@client"></Actions>
+                        <Actions CurrentSetting="@setting"></Actions>
                     </td>
                 </tr>
             }
@@ -54,20 +54,20 @@ else
 }
 
 @code {
-    private GetClientsResponse clientsInfo;
+    private GetSettingsResponse settings;
 
     protected override async Task OnInitializedAsync()
     {
-        clientsInfo = await GetClientsInfo();
+        settings = await GetSettingsInfo();
     }
 
-    private async Task ClientsInfoUpdate()
+    private async Task SettingsUpdate()
     {
-        clientsInfo = await GetClientsInfo();
+        settings = await GetSettingsInfo();
     }
 
-    private async Task<GetClientsResponse> GetClientsInfo()
+    private async Task<GetSettingsResponse> GetSettingsInfo()
     {
-        return await ApiClient.Get<GetClientsResponse>(TokenProvider, "clients");
+        return await ApiClient.Get<GetSettingsResponse>(TokenProvider, "settings");
     }
 }

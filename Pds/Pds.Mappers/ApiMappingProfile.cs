@@ -18,6 +18,8 @@ using Pds.Services.Models.Content;
 using Pds.Services.Models.Cost;
 using Pds.Services.Models.Gift;
 using Pds.Services.Models.Person;
+using Pds.Services.Models.Setting;
+
 namespace Pds.Mappers;
 
 public class ApiMappingProfile : Profile
@@ -117,6 +119,7 @@ public class ApiMappingProfile : Profile
                     .MapFrom(p => GetSortDateForGiftDto(p)));
         
         CreateMap<Setting, SettingDto>();
+        CreateMap<Setting, GetSettingResponse>();
 
         #endregion
 
@@ -149,6 +152,7 @@ public class ApiMappingProfile : Profile
         CreateMap<EditClientRequest, EditClientModel>();
         CreateMap<EditCostRequest, EditCostModel>();
         CreateMap<EditGiftRequest, EditGiftModel>();
+        CreateMap<EditSettingRequest, EditSettingModel>();
         CreateMap<EditBillRequest, EditBillModel>();
         CreateMap<EditPersonRequest, EditPersonModel>()
             .ForMember(
@@ -171,6 +175,7 @@ public class ApiMappingProfile : Profile
         CreateMap<GetCostResponse, EditCostRequest>();
         CreateMap<GetBillResponse, EditBillRequest>();
         CreateMap<GetClientResponse, EditClientRequest>();
+        CreateMap<GetSettingResponse, EditSettingRequest>();
         CreateMap<GetGiftResponse, EditGiftRequest>();
         CreateMap<GetPersonResponse, EditPersonRequest>()
             .ForMember(

@@ -21,7 +21,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Gift> Gifts { get; set; }
 
-    public DbSet<Gift> Settings { get; set; }
+    public DbSet<Setting> Settings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -67,7 +67,7 @@ public class ApplicationDbContext : DbContext
             }
         };
 
-        var settins = new List<Setting>
+        var settings = new List<Setting>
         {
             new()
             {
@@ -100,6 +100,6 @@ public class ApplicationDbContext : DbContext
         };
 
         builder.Entity<Brand>().HasData(brands.ToArray());
-        builder.Entity<Setting>().HasData(settins.ToArray());
+        builder.Entity<Setting>().HasData(settings.ToArray());
     }
 }
