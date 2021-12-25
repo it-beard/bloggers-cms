@@ -43,6 +43,10 @@ public class ApplicationDbContext : DbContext
             .HasOne(a => a.Bill)
             .WithOne(a => a.Content)
             .HasForeignKey<Bill>(c => c.ContentId);
+        
+        modelBuilder.Entity<Setting>()
+            .HasIndex(u => u.Key)
+                .IsUnique();
     }
 
     private void SeedDate(ModelBuilder builder)

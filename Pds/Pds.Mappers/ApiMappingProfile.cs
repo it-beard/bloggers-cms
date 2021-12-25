@@ -10,6 +10,7 @@ using Pds.Api.Contracts.Content.GetContents;
 using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Gift;
 using Pds.Api.Contracts.Person;
+using Pds.Api.Contracts.Settings;
 using Pds.Data.Entities;
 using Pds.Services.Models.Bill;
 using Pds.Services.Models.Client;
@@ -114,6 +115,8 @@ public class ApiMappingProfile : Profile
                 dest => dest.SortDate,
                 opt => opt
                     .MapFrom(p => GetSortDateForGiftDto(p)));
+        
+        CreateMap<Setting, SettingDto>();
 
         #endregion
 

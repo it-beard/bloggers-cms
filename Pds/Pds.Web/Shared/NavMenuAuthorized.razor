@@ -1,0 +1,84 @@
+﻿@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Settings
+@using Pds.Core
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+@if (settings != null)
+{
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door" aria-hidden="true"></span> Главная
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="content">
+                <span class="bi bi-camera-video" aria-hidden="true"></span> Контент
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="bills">
+                <span class="bi bi-cash" aria-hidden="true"></span> Доходы
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="costs">
+                <span class="bi bi-basket" aria-hidden="true"></span> Расходы
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="clients">
+                <span class="bi bi-building" aria-hidden="true"></span> Клиенты
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="persons">
+                <span class="bi bi-people" aria-hidden="true"></span> Персоны
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="gifts">
+                <span class="bi bi-gift" aria-hidden="true"></span> Подарки
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="map">
+                <span class="bi bi-map" aria-hidden="true"></span> Карта
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <a
+                class="nav-link"
+                href="@settings.GetByKey(SettingsKeys.ExternalLink1Url)"
+                target="_blank">
+                <span class="bi bi-link-45deg" aria-hidden="true"></span>
+                @settings.GetByKey(SettingsKeys.ExternalLink1Title)
+            </a>
+        </li>
+        <li class="nav-item px-3">
+            <a
+                class="nav-link"
+                href="@settings.GetByKey(SettingsKeys.ExternalLink2Url)"
+                target="_blank">
+                <span class="bi bi-link-45deg" aria-hidden="true"></span>
+                @settings.GetByKey(SettingsKeys.ExternalLink2Title)
+            </a>
+        </li>
+    </ul>
+}
+
+@code {
+    private GetSettingsResponse settings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        settings = await GetSettingsAsync();
+    }
+    
+    private async Task<GetSettingsResponse> GetSettingsAsync()
+    {
+        return await ApiClient.Get<GetSettingsResponse>(TokenProvider, "settings");
+    }
+}
