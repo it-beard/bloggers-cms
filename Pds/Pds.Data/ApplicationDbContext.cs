@@ -73,25 +73,29 @@ public class ApplicationDbContext : DbContext
             {
                 Id = Guid.Parse("0BB23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
                 Key = SettingsKeys.ExternalLink1Title,
-                Value = "Link #1"
+                Value = "Link #1",
+                Description = "Название первой custom-ссылки в меню навигации"
             },
             new()
             {
                 Id = Guid.Parse("1BB23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
                 Key = SettingsKeys.ExternalLink1Url,
-                Value = "https://google.com"
+                Value = "https://google.com",
+                Description = "URL первой custom-ссылки в меню навигации"
             },
             new()
             {
                 Id = Guid.Parse("2BB23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
                 Key = SettingsKeys.ExternalLink2Title,
-                Value = "Link #2"
+                Value = "Link #2",
+                Description = "Название второй custom-ссылки в меню навигации"
             },
             new()
             {
                 Id = Guid.Parse("3BB23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
                 Key = SettingsKeys.ExternalLink2Url,
-                Value = "https://youtube.com"
+                Value = "https://youtube.com",
+                Description = "URL второй custom-ссылки в меню навигации"
             }
         };
 

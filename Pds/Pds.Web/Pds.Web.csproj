@@ -22,6 +22,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Include="Pages\Settings\Create.razor.css" />
+    <Content Include="Pages\Settings\Edit.razor.css" />
+    <Content Include="Pages\Settings\List\Actions.razor.css" />
+    <Content Include="Pages\Settings\List\Body.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,5 +43,15 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
     <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE" />
     <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
+    <_ContentIncludedByDefault Remove="Pages\Settings\Info\Actions.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Settings\Info\Bill.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Settings\Info\Body.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\Settings\Create.razor" />
+    <AdditionalFiles Include="Pages\Settings\Edit.razor" />
+    <AdditionalFiles Include="Pages\Settings\List\Actions.razor" />
+    <AdditionalFiles Include="Pages\Settings\List\Body.razor" />
   </ItemGroup>
 </Project>

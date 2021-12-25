@@ -327,7 +327,7 @@ namespace Pds.Data.Migrations
 
                     b.HasIndex("ContentId");
 
-                    b.ToTable("Gift");
+                    b.ToTable("Gifts");
                 });
 
             modelBuilder.Entity("Pds.Data.Entities.Person", b =>
@@ -418,61 +418,6 @@ namespace Pds.Data.Migrations
                     b.HasIndex("PersonId");
 
                     b.ToTable("Resources");
-                });
-
-            modelBuilder.Entity("Pds.Data.Entities.Setting", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Setting");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("0bb23fa2-4b73-4a3f-c3d4-08d8d2705c5f"),
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Key = "ExternalLink1_Title",
-                            Value = "Link #1"
-                        },
-                        new
-                        {
-                            Id = new Guid("1bb23fa2-4b73-4a3f-c3d4-08d8d2705c5f"),
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Key = "ExternalLink1_Url",
-                            Value = "https://google.com"
-                        },
-                        new
-                        {
-                            Id = new Guid("2bb23fa2-4b73-4a3f-c3d4-08d8d2705c5f"),
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Key = "ExternalLink2_Title",
-                            Value = "Link #2"
-                        },
-                        new
-                        {
-                            Id = new Guid("3bb23fa2-4b73-4a3f-c3d4-08d8d2705c5f"),
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Key = "ExternalLink2_Url",
-                            Value = "https://youtube.com"
-                        });
                 });
 
             modelBuilder.Entity("BrandPerson", b =>

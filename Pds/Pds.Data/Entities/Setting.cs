@@ -12,4 +12,7 @@ public class Setting : EntityBase
 
     [Required]
     public string Value { get; set; }
+
+    [Required]
+    public string Description { get; set; }
 }
