@@ -12,6 +12,7 @@ public interface IUnitOfWork : IDisposable
     IBillRepository Bills { get; }
     ICostRepository Costs { get; }
     IGiftRepository Gifts { get; }
+    ISettingRepository Settings { get; }
 
     void Save();
 }

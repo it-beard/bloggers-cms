@@ -14,6 +14,7 @@ public sealed class UnitOfWork : IUnitOfWork
     private IBillRepository billRepository;
     private ICostRepository costRepository;
     private IGiftRepository giftRepository;
+    private ISettingRepository settingRepository;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -28,6 +29,7 @@ public sealed class UnitOfWork : IUnitOfWork
     public IBillRepository Bills => billRepository ??= new BillRepository(context);
     public ICostRepository Costs => costRepository ??= new CostRepository(context);
     public IGiftRepository Gifts => giftRepository ??= new GiftRepository(context);
+    public ISettingRepository Settings => settingRepository ??= new SettingRepository(context);
 
     public void Save()
     {
