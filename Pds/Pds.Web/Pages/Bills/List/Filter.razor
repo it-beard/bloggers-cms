@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components
 @using AutoMapper
 @using Pds.Api.Contracts
+@using Pds.Core
 @using Pds.Web.Pages.Clients.Info
 
 @inject IJSRuntime JsRuntime
@@ -12,8 +13,9 @@
 @inject IAccessTokenProvider TokenProvider
 @inject IApiClient ApiClient
 @inject IMapper Mapper
+@inject StateContainer StateContainer
 
-@if (brands == null)
+@if (brands == null || StateContainer.Settings == null)
 {
     <p>
         <em>Загрузка фильтр...</em>
@@ -144,6 +146,13 @@ else
     private void SetDefaultFilterValues(FilterSettings filter)
     {
         filter.BrandFilterItems.First(b => b.Name == "АйТиБорода").IsSelected = true;
+        
+        // Set default "from" filter value
+        var fromFilterDateString = StateContainer.Settings.GetByKey(SettingsKeys.FilterBillsDateFrom);
+        if (DateTime.TryParse(fromFilterDateString, out var fromFilterDate))
+        {
+            filter.From = fromFilterDate;
+        }
     }
 
     private async Task<List<BrandDto>> GetBrands()

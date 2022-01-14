@@ -31,7 +31,7 @@ else
         </span>
         <a href="/bills/add" class="btn btn-success" >Добавить</a>
     </h4>
-    <Filter OnFilterUpdate="@FilterUpdated"></Filter>
+    <Filter OnFilterUpdate="@OnFilterUpdate"></Filter>
     <table class="table">
         <thead>
         <tr>
@@ -78,7 +78,7 @@ else
                     @bill.Comment
                 </td>
                 <td class="text-center">
-                    <Actions OnBillUpdate="@BillsInfoUpdate" CurrentBill="@bill"></Actions>
+                    <Actions OnBillUpdate="@OnBillUpdate" CurrentBill="@bill"></Actions>
                 </td>
             </tr>
         }
@@ -88,17 +88,17 @@ else
 
 @code {
     private GetBillsResponse billsInfo;
-    private FilterSettings lastFilterSettings;
+    private FilterSettings currentFilterSettings;
 
     protected override async Task OnInitializedAsync()
     {
         billsInfo = await GetBillsInfo();
     }
 
-    private async Task BillsInfoUpdate()
+    private async Task OnBillUpdate()
     {
         billsInfo = await GetBillsInfo();
-        FilterUpdated(lastFilterSettings);
+        OnFilterUpdate(currentFilterSettings);
     }
 
     private async Task<GetBillsResponse> GetBillsInfo()
@@ -111,9 +111,9 @@ else
         return type == PaymentType.BankAccount ? "yellow" : "red";
     }
 
-    private void FilterUpdated(FilterSettings filterSettings)
+    private void OnFilterUpdate(FilterSettings filterSettings)
     {
-        lastFilterSettings = filterSettings;
+        currentFilterSettings = filterSettings;
         var selectedSocialMediaTypes = filterSettings.SocialMediaFilterItems
             .Where(i => i.IsSelected)
             .Select(i => i.SocialMediaType)

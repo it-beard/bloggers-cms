@@ -7,10 +7,7 @@
 @using Pds.Api.Contracts.Content.GetContents
 @using Pds.Core.Extensions
 @using Pds.Web.Components.Search.Content
-@using Pds.Web.Components.Search.Gift
-@using Pds.Web.Models.Content
 @using FilterSettings = Pds.Web.Models.Content.FilterSettings
-@using BrandFilterItem = Pds.Web.Models.Content.BrandFilterItem
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -181,16 +178,18 @@ else
         UpdateStatistics(filteredContent);
     }
 
-    private void OnActionsUpdate()
+    private async Task OnActionsUpdate()
     {
+        isFilterLoaded = false;
+        content = await GetGiftsInfoAsync();
         OnFilterUpdate(currentFilterSettings);
     }
     private void OnFilterUpdate(FilterSettings filterSettings)
     {
-        isFilterLoaded = true;
         currentFilterSettings = filterSettings;
         filteredContent = GetFilteredContentsList(filterSettings, content);
         UpdateStatistics(filteredContent);
+        isFilterLoaded = true;
     }
 
     private void UpdateStatistics(GetContentsContentDto[] filteredContent)

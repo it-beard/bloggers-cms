@@ -24,25 +24,25 @@ else
 {
     <table class="table">
         <thead>
-            <tr>
-                <th class="client-name-header">Клюс</th>
-                <th>Значение</th>
-                <th>Описание</th>
-                <th class="text-center actions-header">Действия</th>
-            </tr>
+        <tr>
+            <th>Описание</th>
+            <th class="client-name-header">Ключ</th>
+            <th>Значение</th>
+            <th class="text-center actions-header">Действия</th>
+        </tr>
         </thead>
         <tbody>
             @foreach (var setting in settings.OrderBy(s => s.Key))
             {
                 <tr>
+                    <td class="comment-row">
+                        @setting.Description
+                    </td>
                     <td class="client-name-row">
                         @setting.Key
                     </td>
                     <td class="comment-row">
                         @setting.Value
-                    </td>
-                    <td class="comment-row">
-                        @setting.Description
                     </td>
                     <td class="text-center">
                         <Actions CurrentSetting="@setting"></Actions>

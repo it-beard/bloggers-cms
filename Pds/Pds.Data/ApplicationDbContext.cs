@@ -103,6 +103,20 @@ public class ApplicationDbContext : DbContext
                 Key = SettingsKeys.FilterContentReleaseDateFrom,
                 Value = string.Empty,
                 Description = "Значение по умолчанию для фильтра \"Контент -> Когда -> С\""
+            },
+            new()
+            {
+                Id = Guid.Parse("5BB23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
+                Key = SettingsKeys.FilterBillsDateFrom,
+                Value = string.Empty,
+                Description = "Значение по умолчанию для фильтра \"Доходы -> Когда -> С\""
+            },
+            new()
+            {
+                Id = Guid.Parse("6BB23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
+                Key = SettingsKeys.FilterCostsDateFrom,
+                Value = string.Empty,
+                Description = "Значение по умолчанию для фильтра \"Расходы -> Когда -> С\""
             }
         };
 
