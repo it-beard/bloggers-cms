@@ -96,6 +96,13 @@ public class ApplicationDbContext : DbContext
                 Key = SettingsKeys.ExternalLink2Url,
                 Value = "https://youtube.com",
                 Description = "URL второй custom-ссылки в меню навигации"
+            },
+            new()
+            {
+                Id = Guid.Parse("4BB23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
+                Key = SettingsKeys.FilterContentReleaseDateFrom,
+                Value = string.Empty,
+                Description = "Значение по умолчанию для фильтра \"Контент -> Когда -> С\""
             }
         };
 

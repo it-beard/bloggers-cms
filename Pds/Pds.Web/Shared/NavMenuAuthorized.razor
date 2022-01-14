@@ -4,8 +4,9 @@
 @using Pds.Core
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+@inject StateContainer StateContainer
 
-@if (settings != null)
+@if (StateContainer.Settings != null)
 {
     <ul class="nav flex-column">
         <li class="nav-item px-3">
@@ -51,34 +52,38 @@
         <li class="nav-item px-3">
             <a
                 class="nav-link"
-                href="@settings.GetByKey(SettingsKeys.ExternalLink1Url)"
+                href="@StateContainer.Settings.GetByKey(SettingsKeys.ExternalLink1Url)"
                 target="_blank">
                 <span class="bi bi-link-45deg" aria-hidden="true"></span>
-                @settings.GetByKey(SettingsKeys.ExternalLink1Title)
+                @StateContainer.Settings.GetByKey(SettingsKeys.ExternalLink1Title)
             </a>
         </li>
         <li class="nav-item px-3">
             <a
                 class="nav-link"
-                href="@settings.GetByKey(SettingsKeys.ExternalLink2Url)"
+                href="@StateContainer.Settings.GetByKey(SettingsKeys.ExternalLink2Url)"
                 target="_blank">
                 <span class="bi bi-link-45deg" aria-hidden="true"></span>
-                @settings.GetByKey(SettingsKeys.ExternalLink2Title)
+                @StateContainer.Settings.GetByKey(SettingsKeys.ExternalLink2Title)
             </a>
         </li>
     </ul>
 }
 
 @code {
-    private GetSettingsResponse settings;
-
     protected override async Task OnInitializedAsync()
     {
-        settings = await GetSettingsAsync();
+        StateContainer.OnChange += StateHasChanged;
+        SetSettingsToStateContainerAsync();
     }
     
-    private async Task<GetSettingsResponse> GetSettingsAsync()
+    private async Task SetSettingsToStateContainerAsync()
     {
-        return await ApiClient.Get<GetSettingsResponse>(TokenProvider, "settings");
+        StateContainer.Settings = await ApiClient.Get<GetSettingsResponse>(TokenProvider, "settings");
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnChange -= StateHasChanged;
     }
 }

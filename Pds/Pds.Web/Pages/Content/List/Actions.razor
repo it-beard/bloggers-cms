@@ -51,7 +51,7 @@
 
 @code {
     [Parameter]
-    public EventCallback OnContentUpdate { get; set; }
+    public EventCallback OnActionsUpdate { get; set; }
     [Parameter]
     public GetContentsContentDto CurrentContent { get; set; }
 
@@ -66,7 +66,7 @@
         if (confirmed)
         {
             await ApiClient.Delete<object>(TokenProvider, $"content/{CurrentContent.Id}");
-            await OnContentUpdate.InvokeAsync(); // Update UI
+            await OnActionsUpdate.InvokeAsync(); // Update UI
         }
     }
 
@@ -81,13 +81,13 @@
         if (confirmed)
         {
             await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentContent.Id}/archive", null);
-            await OnContentUpdate.InvokeAsync(); // Update UI
+            await OnActionsUpdate.InvokeAsync(); // Update UI
         }
     }
 
     private async Task OnUnarchiveAsync()
     {
         await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentContent.Id}/unarchive", null);
-        await OnContentUpdate.InvokeAsync(); // Update UI
+        await OnActionsUpdate.InvokeAsync(); // Update UI
     }
 }
