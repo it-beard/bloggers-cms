@@ -2,6 +2,12 @@
     margin-bottom: 5px;
 }
 
+::deep input.from-date,
+::deep input.to-date{
+    width: 150px;
+    display: inline-block;
+}
+
 .filter-row-title {
     font-size: 0.77rem;
     padding: 2px 4px;

@@ -1,6 +1,5 @@
 ﻿@page "/content"
 @inherits BasePageComponent
-@using Pds.Api.Contracts.Content
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using static Pds.Web.Common.TitleExtension 
@@ -10,7 +9,6 @@
 @using Pds.Web.Components.Search.Content
 @using Pds.Web.Components.Search.Gift
 @using Pds.Web.Models.Content
-@using Pds.Web.Models.Gift
 @using FilterSettings = Pds.Web.Models.Content.FilterSettings
 @using BrandFilterItem = Pds.Web.Models.Content.BrandFilterItem
 
@@ -166,7 +164,9 @@ else
             .Where(i => 
                 (selectedSocialMediaTypes.Contains(i.SocialMediaType) || selectedSocialMediaTypes.Count == 0) &&
                 (selectedContentTypes.Contains(i.Type) || selectedContentTypes.Count == 0) &&
-                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0));
+                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
+                (filterSettings.From != null && i.ReleaseDate.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
+                (filterSettings.To != null && i.ReleaseDate.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
 
         var query = itemsToShow
             .AsQueryable();

@@ -57,6 +57,13 @@ else
                     </label>
                 }
             </div>
+            
+            <div class="form-group no-wrap">
+                <span class="filter-row-title">Когда:</span>
+                <InputDate class="form-control from-date" id="from_date" @bind-Value="filterSettings.From"/>
+                <span class="filter-date-separator">&lt; с | по &gt; </span>
+                <InputDate class="form-control to-date" id="to_date" @bind-Value="filterSettings.To"/>
+            </div>
         </EditForm>
 
     </div>
