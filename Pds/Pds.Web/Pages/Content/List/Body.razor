@@ -119,7 +119,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        content = await GetGiftsInfoAsync();
+        content = await GetContentsAsync();
+    }
+
+    private async Task<GetContentsResponse> GetContentsAsync()
+    {
+        return await ApiClient.Get<GetContentsResponse>(TokenProvider, "content");
     }
 
     private GetContentsContentDto[] GetFilteredContentsList(
@@ -165,11 +170,6 @@ else
         
         return query.ToArray();
     }
-
-    private async Task<GetContentsResponse> GetGiftsInfoAsync()
-    {
-        return await ApiClient.Get<GetContentsResponse>(TokenProvider, "content");
-    }
     
     private void OnSearch(string searchText)
     {
@@ -181,9 +181,10 @@ else
     private async Task OnActionsUpdate()
     {
         isFilterLoaded = false;
-        content = await GetGiftsInfoAsync();
+        content = await GetContentsAsync();
         OnFilterUpdate(currentFilterSettings);
     }
+    
     private void OnFilterUpdate(FilterSettings filterSettings)
     {
         currentFilterSettings = filterSettings;

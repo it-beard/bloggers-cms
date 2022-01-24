@@ -29,8 +29,7 @@
             </select>
         </li>
     </ul>
-    @{ var pagesCount = pages.Count - 2;}
-    <span class="paging-info" >всего страниц: <b>@pagesCount</b> шт.</span>
+    <span class="paging-info" >всего страниц: <b>@totalPages</b> шт.</span>
 </nav>
 
 @code{
@@ -40,7 +39,7 @@
     private int _radius;
 
     [Parameter]
-    public EventCallback<PagingEventArgs> Pagination { get; set; }
+    public EventCallback<PagingEventArgs> OnPagination { get; set; }
 
     [Parameter]
     public int[] PageSizeList
@@ -59,8 +58,8 @@
         get => _defaultPageSize;
         set
         {
-            if (value < 10)
-                _defaultPageSize = 10;
+            if (value < 1)
+                _defaultPageSize = 1;
             else
                 _defaultPageSize = value ?? 10;
         }
@@ -145,7 +144,7 @@
     private void PaginationInvoke()
     {
         var settings = new PagingEventArgs(currentPageSize, pageOffset);
-        Pagination.InvokeAsync(settings);
+        OnPagination.InvokeAsync(settings);
     }
 
     private void SetDefaultPagination()

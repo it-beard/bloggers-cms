@@ -40,7 +40,7 @@
 
 @code {
     [Parameter]
-    public EventCallback OnPersonUpdate { get; set; }
+    public EventCallback OnActionsUpdate { get; set; }
     [Parameter]
     public PersonDto CurrentPerson { get; set; }
 
@@ -55,7 +55,7 @@
         if (confirmed)
         {
             await ApiClient.Delete<object>(TokenProvider, $"persons/{CurrentPerson.Id}");
-            await OnPersonUpdate.InvokeAsync(); // Update UI
+            await OnActionsUpdate.InvokeAsync(); // Update UI
         }
     }
 
@@ -65,13 +65,13 @@
         if (confirmed)
         {
             await ApiClient.Put<object, object>(TokenProvider, $"persons/{CurrentPerson.Id}/archive", null);
-            await OnPersonUpdate.InvokeAsync(); // Update UI
+            await OnActionsUpdate.InvokeAsync(); // Update UI
         }
     }
 
     private async Task OnUnarchiveAsync()
     {
         await ApiClient.Put<object, object>(TokenProvider, $"persons/{CurrentPerson.Id}/unarchive", null);
-        await OnPersonUpdate.InvokeAsync(); // Update UI
+        await OnActionsUpdate.InvokeAsync(); // Update UI
     }
 }

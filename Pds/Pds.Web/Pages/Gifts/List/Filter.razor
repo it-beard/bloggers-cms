@@ -37,10 +37,10 @@ else
             </div>
 
             <div class="form-group no-wrap">
-                <span class="filter-row-title">Статус подарка:</span>
+                <span class="filter-row-title">Статус:</span>
                 @foreach (var giftStatusFilterItem in filterSettings.GiftStatusFilterItems)
                 {
-                    var id = $"gift_type_{giftStatusFilterItem.GiftStatus.ToString()}";
+                    var id = $"gift_status_{giftStatusFilterItem.GiftStatus.ToString()}";
                     <InputCheckbox name="@id" class="btn-check" @bind-Value="giftStatusFilterItem.IsSelected" Id="@id"/>
                     <label class="btn btn-secondary" for="@id">
                         @EnumsTranslator.GiftStatusToRu(giftStatusFilterItem.GiftStatus)

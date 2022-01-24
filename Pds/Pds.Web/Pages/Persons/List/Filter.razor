@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Components
 @using AutoMapper
 @using Pds.Api.Contracts
+@using Pds.Core.Enums
 
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
@@ -32,6 +33,18 @@ else
                     </label>
                 }
                 <SearchComponent Search="SearchOnChanged" />
+            </div>
+            
+            <div class="form-group no-wrap">
+                <span class="filter-row-title">Статус:</span>
+                @foreach (var statusFilterItem in filterSettings.PersonStatusFilterItems)
+                {
+                    var id = $"status_{statusFilterItem.PersonStatus.ToString()}";
+                    <InputCheckbox name="@id" class="btn-check" @bind-Value="statusFilterItem.IsSelected" Id="@id"/>
+                    <label class="btn btn-secondary" for="@id">
+                        @EnumsTranslator.PersonStatusToRu(statusFilterItem.PersonStatus)
+                    </label>
+                }
             </div>
         </EditForm>
     </div>
@@ -70,7 +83,15 @@ else
     {
         var filter = new FilterSettings
         {
-            BrandFilterItems = Mapper.Map<List<BrandFilterItem>>(brands)
+            BrandFilterItems = Mapper.Map<List<BrandFilterItem>>(brands),
+            PersonStatusFilterItems = ((PersonStatus[]) Enum.GetValues(typeof(PersonStatus)))
+                .Select(gType =>
+                    new PersonStatusFilterItem()
+                    {
+                        PersonStatus = gType,
+                        IsSelected = false
+                    })
+                .ToList(),
         };
         SetDefaultFilterValues(filter);
 
@@ -80,6 +101,9 @@ else
     private void SetDefaultFilterValues(FilterSettings filter)
     {
         filter.BrandFilterItems.First(b => b.Name == "АйТиБорода").IsSelected = true;
+        filter.PersonStatusFilterItems
+            .First(u => u.PersonStatus == PersonStatus.Active)
+            .IsSelected = true;
     }
 
     private async Task<List<BrandDto>> GetBrands()

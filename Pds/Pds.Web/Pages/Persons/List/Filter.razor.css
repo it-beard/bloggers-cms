@@ -1,4 +1,8 @@
-﻿.filter {
+﻿.form-group {
+    margin-bottom: 5px;
+}
+
+.filter {
     padding: 15px 15px 15px 0;
     border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
     background-color: rgba(0,0,0,.03);
