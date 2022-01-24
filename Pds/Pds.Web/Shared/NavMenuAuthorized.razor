@@ -74,7 +74,7 @@
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
-        SetSettingsToStateContainerAsync();
+        await SetSettingsToStateContainerAsync();
     }
     
     private async Task SetSettingsToStateContainerAsync()

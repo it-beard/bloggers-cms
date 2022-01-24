@@ -47,10 +47,10 @@ public class GiftService : IGiftService
         }
 
         gift.CreatedAt = DateTime.UtcNow;
-        gift.FirstName = gift.FirstName.Trim();
-        gift.LastName = gift.LastName.Trim();
-        gift.ThirdName = gift.ThirdName.Trim();
-        gift.Title = gift.Title.Trim();
+        gift.FirstName = gift.FirstName?.Trim();
+        gift.LastName = gift.LastName?.Trim();
+        gift.ThirdName = gift.ThirdName?.Trim();
+        gift.Title = gift.Title?.Trim();
         
         switch (gift.Status)
         {
