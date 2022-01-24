@@ -78,13 +78,26 @@ else
                         @person.Rate
                     </td>
                     <td class="location-row">
-                        @person.Location
+                        <span class="no-wrap">
+                            @person.Location
+                        </span>
                     </td>
                     <td class="topics-row">
                         @person.Topics
                     </td>
                     <td class="info-row">
-                        @person.Info
+                        <div title="@person.Info">
+                            @{
+                                var shortPersonInfo = string.Empty;
+                                if (!string.IsNullOrWhiteSpace(person.Info))
+                                {
+                                    shortPersonInfo = person.Info.Length > 100 ? 
+                                        $"{person.Info[..99]}..." : 
+                                        person.Info;
+                                }
+                            }
+                            @shortPersonInfo
+                        </div>
                     </td>
                     <td>
                         @foreach (var resource in person.Resources)
@@ -113,7 +126,7 @@ else
 @code {
     private GetPersonsResponse personsInfo;
     private PersonDto[] personsList;
-    private static readonly int[] pageSizesList = { 10, 30, 50, 100 };
+    private static readonly int[] pageSizesList = { 100, 250, 500 };
     private readonly int defaultPageSize = pageSizesList[1];
     private int totalElements;
     private bool isPagingStateHasChanged;

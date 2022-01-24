@@ -38,7 +38,9 @@ public class ApiMappingProfile : Profile
             .ForMember(
                 dest => dest.Location,
                 opt => opt
-                    .MapFrom(p => $"{p.Country} {p.City}"));
+                    .MapFrom(p => string.IsNullOrEmpty(p.City) ? 
+                        $"{p.Country}" : 
+                        $"{p.Country}, {p.City}"));
         CreateMap<Person, PersonForLookupDto>()
             .ForMember(
                 dest => dest.FullName,
