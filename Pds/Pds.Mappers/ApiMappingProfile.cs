@@ -167,6 +167,8 @@ public class ApiMappingProfile : Profile
                 dest => dest.BrandId,
                 opt => opt
                     .MapFrom(p => p.BrandId.Value));
+        
+        CreateMap<ResourceDto, EditResourcePersonModel>();
 
         #endregion
 

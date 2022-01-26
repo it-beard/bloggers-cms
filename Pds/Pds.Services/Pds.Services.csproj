@@ -16,8 +16,4 @@
       <PackageReference Include="AutoMapper" Version="10.1.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Singletons" />
-    </ItemGroup>
-
 </Project>

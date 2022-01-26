@@ -1,4 +1,5 @@
-﻿using Pds.Data.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Pds.Data.Repositories.Interfaces;
 
 namespace Pds.Data;
 
@@ -15,4 +16,5 @@ public interface IUnitOfWork : IDisposable
     ISettingRepository Settings { get; }
 
     void Save();
+    EntityEntry GetContextEntry(object obj);
 }

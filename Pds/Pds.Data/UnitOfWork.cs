@@ -1,4 +1,5 @@
-﻿using Pds.Data.Repositories;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Pds.Data.Repositories;
 using Pds.Data.Repositories.Interfaces;
 
 namespace Pds.Data;
@@ -40,6 +41,11 @@ public sealed class UnitOfWork : IUnitOfWork
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    public EntityEntry GetContextEntry(object obj)
+    {
+        return context.Entry(obj);
     }
 
     private bool disposed = false;

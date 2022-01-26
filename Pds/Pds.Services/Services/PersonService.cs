@@ -1,4 +1,5 @@
-﻿using Pds.Core.Enums;
+﻿using Microsoft.EntityFrameworkCore;
+using Pds.Core.Enums;
 using Pds.Core.Exceptions.Person;
 using Pds.Data;
 using Pds.Data.Entities;
@@ -96,6 +97,37 @@ public class PersonService : IPersonService
         {
             var brand = await unitOfWork.Brands.GetFirstWhereAsync(b => b.Id == brandId);
             person.Brands.Add(brand);
+        }
+
+        // Delete and update old resources
+        foreach (var resource in person.Resources)
+        {
+            var resourceModel = model.Resources.FirstOrDefault(m=>m.Id == resource.Id);
+            if (resourceModel == null)
+            {
+                person.Resources.Remove(resource);
+            }
+            else
+            {
+                resource.Name = resourceModel.Name;
+                resource.Url = resourceModel.Url;
+                resource.UpdatedAt = DateTime.UtcNow;
+                unitOfWork.GetContextEntry(resource).State = EntityState.Modified;
+            }
+        }
+        
+        // Add new resources
+        foreach (var newResourceModel in model.Resources.Where(r => r.Id == Guid.Empty))
+        {
+            var newResource = new Resource
+            {
+                CreatedAt = DateTime.UtcNow,
+                Name = newResourceModel.Name,
+                Url = newResourceModel.Url,
+                PersonId = person.Id
+            };
+
+            person.Resources.Add(newResource);
         }
 
         var result = await unitOfWork.Persons.UpdateAsync(person);
