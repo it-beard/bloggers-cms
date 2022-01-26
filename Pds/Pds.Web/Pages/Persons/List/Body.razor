@@ -53,6 +53,10 @@ else
                                       OnSortColumn="OnSort"
                                       FieldName="PersonsFieldName.Rating">Рейтинг</SortingComponent>
                 </th>
+                @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                {
+                    <th>Бренд</th>
+                }
                 <th>
                     <SortingComponent TField="PersonsFieldName"
                                       OnSortColumn="OnSort"
@@ -77,6 +81,12 @@ else
                     <td class="rate-row">
                         @person.Rate
                     </td>
+                    @if(currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                    {
+                        <td>
+                            @((MarkupString)person.Brands.Select(b => b.Name).Aggregate("", (current, pp) => current + $"{pp}<br/>"))
+                        </td>
+                    }
                     <td class="location-row">
                         <span class="no-wrap">
                             @person.Location
