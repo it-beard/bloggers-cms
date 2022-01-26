@@ -78,20 +78,24 @@ else
             <label class="form-label person-links">Ссылки:</label>
             @foreach (var resource in person.Resources)
             {
-                <div class="form-row align-items-center">
+                <div class="margin-top form-row align-items-center">
                     <div class="col-auto">
                         <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название"/>
                     </div>
                     <div class="col-auto">
                         <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка"/>
                     </div>
-                    <div class="col-auto">
-                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm mb-2">Удалить ссылку</div>
+                    <div class="margin-top">
+                        <div @onclick="@(e => resource.Url = "https://t.me/")" class="btn btn-primary btn-sm">telegram</div>
+                        <div @onclick="@(e => resource.Url = "https://facebook.com/")" class="btn btn-primary btn-sm">facebook</div>
+                        <div @onclick="@(e => resource.Url = "https://instagram.com/")" class="btn btn-primary btn-sm">instagram</div>
+                        <div @onclick="@(e => resource.Url = "https://vk.com/")" class="btn btn-primary btn-sm">vk</div>
+                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm">Удалить ссылку</div>
                     </div>
                 </div>
             }
         
-            <div @onclick="AddResource" class="btn btn-primary btn-sm">Добавить ещё</div>
+            <div @onclick="AddResource" class="margin-top btn btn-primary btn-sm">Добавить ещё</div>
         </div>
         
         <DataAnnotationsValidator />
