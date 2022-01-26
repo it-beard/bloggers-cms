@@ -156,11 +156,6 @@ public class ApiMappingProfile : Profile
         CreateMap<EditGiftRequest, EditGiftModel>();
         CreateMap<EditSettingRequest, EditSettingModel>();
         CreateMap<EditBillRequest, EditBillModel>();
-        CreateMap<EditPersonRequest, EditPersonModel>()
-            .ForMember(
-                dest => dest.BrandsIds,
-                opt => opt
-                    .MapFrom(p => p.Brands.Where(b=>b.IsSelected).Select(b=>b.Id)));
         CreateMap<CreateContentBillDto, CreateContentBillModel>();
         CreateMap<CreateContentRequest, CreateContentModel>()
             .ForMember(
@@ -168,6 +163,8 @@ public class ApiMappingProfile : Profile
                 opt => opt
                     .MapFrom(p => p.BrandId.Value));
         
+        CreateMap<EditPersonRequest, EditPersonModel>();
+        CreateMap<BrandForCheckboxesDto, BrandForCheckboxesModel>();
         CreateMap<ResourceDto, EditResourcePersonModel>();
 
         #endregion

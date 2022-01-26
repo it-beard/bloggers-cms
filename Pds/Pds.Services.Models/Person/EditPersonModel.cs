@@ -19,7 +19,7 @@ public class EditPersonModel
 
     public int? Rate { get; set; }
 
-    public List<Guid> BrandsIds { get; set; }
+    public List<BrandForCheckboxesModel> Brands { get; set; }
     
     public List<EditResourcePersonModel> Resources { get; set; }
 }

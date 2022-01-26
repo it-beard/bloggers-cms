@@ -65,7 +65,7 @@ public class PersonService : IPersonService
             throw new PersonEditException($"Модель запроса пуста.");
         }
             
-        if (model.BrandsIds.Count == 0)
+        if (!model.Brands.Any(b =>b.IsSelected))
         {
             throw new PersonEditException("Персону нельзя создать без бренда.");
         }
@@ -93,7 +93,7 @@ public class PersonService : IPersonService
         person.Info = model.Info;
 
         person.Brands = new List<Brand>();
-        foreach (var brandId in model.BrandsIds)
+        foreach (var brandId in model.Brands.Where(b=>b.IsSelected).Select(b=>b.Id))
         {
             var brand = await unitOfWork.Brands.GetFirstWhereAsync(b => b.Id == brandId);
             person.Brands.Add(brand);
