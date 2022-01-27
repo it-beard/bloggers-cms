@@ -23,8 +23,7 @@ public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
     {
         return await context.Brands
             .Where(b => b.Id == brandId)
-            .Include(b => b.Persons)
-            .Select(b => b.Persons)
+            .SelectMany(b =>b.Persons)
             .CountAsync();
     }
     
@@ -54,5 +53,12 @@ public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
         return await context.Gifts
             .Where(b => b.BrandId == brandId)
             .CountAsync();
+    }
+    
+    public async Task<bool> IsExistsByNameAsync(string name)
+    {
+        var brand = await context.Brands
+            .FirstOrDefaultAsync(c => c.Name.ToLower().Trim() == name.ToLower().Trim());
+        return brand != null;
     }
 }

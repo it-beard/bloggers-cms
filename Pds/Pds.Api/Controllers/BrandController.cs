@@ -4,6 +4,8 @@ using Pds.Api.Authentication;
 using Pds.Api.Contracts.Brand;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Brand;
+
 namespace Pds.Api.Controllers;
 
 [Route("api/brands")]
@@ -77,4 +79,51 @@ public class BrandController : ApiControllerBase
         }
     }
 
+    /// <summary>
+    /// Get brand by id
+    /// </summary>
+    /// <param name="brandId"></param>
+    /// <returns></returns>
+    [HttpGet("{brandId}")]
+    [ProducesResponseType(typeof(GetBrandResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get(Guid brandId)
+    {
+        try
+        {
+            var brand = await brandService.GetAsync(brandId);
+            var response = mapper.Map<GetBrandResponse>(brand);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Edit brand
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [ProducesResponseType(typeof(EditBrandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Edit(EditBrandRequest request)
+    {
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                var editBrandModel = mapper.Map<EditBrandModel>(request);
+                var brandId = await brandService.EditAsync(editBrandModel);
+                return Ok(new EditBrandResponse{Id = brandId});
+            }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
 }

@@ -10,4 +10,5 @@ public interface IBrandRepository : IRepositoryBase<Brand>
     Task<int> GetContentsCountAsync(Guid brandId);
     Task<decimal> GetCostsSumAsync(Guid brandId);
     Task<decimal> GetBillsSumAsync(Guid brandId);
+    Task<bool> IsExistsByNameAsync(string name);
 }

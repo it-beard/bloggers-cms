@@ -85,6 +85,7 @@ public class ApiMappingProfile : Profile
 
         CreateMap<Brand, BrandDto>();
         CreateMap<Brand, BrandForCheckboxesDto>();
+        CreateMap<Brand, GetBrandResponse>();
 
         CreateMap<Client, ClientDto>();
         CreateMap<Client, GetClientResponse>();
@@ -155,6 +156,7 @@ public class ApiMappingProfile : Profile
         CreateMap<EditContentBillDto, EditContentBillModel>();
         CreateMap<EditContentRequest, EditContentModel>();
         CreateMap<EditClientRequest, EditClientModel>();
+        CreateMap<EditBrandRequest, EditBrandModel>();
         CreateMap<EditCostRequest, EditCostModel>();
         CreateMap<EditGiftRequest, EditGiftModel>();
         CreateMap<EditSettingRequest, EditSettingModel>();
@@ -186,6 +188,7 @@ public class ApiMappingProfile : Profile
                 dest => dest.Brands,
                 opt => opt.MapFrom(p => BrandsDtoToBrandsForCheckboxesDto(p.Brands)));
         CreateMap<PersonDto, GetPersonResponse>();
+        CreateMap<GetBrandResponse, EditBrandRequest>();
         CreateMap<BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
         CreateMap<BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
         CreateMap<BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();

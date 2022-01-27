@@ -105,7 +105,7 @@ public class ClientController : ApiControllerBase
     /// <returns></returns>
     [HttpGet("{clientId}")]
     [ProducesResponseType(typeof(GetClientResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetClient(Guid clientId)
+    public async Task<IActionResult> Get(Guid clientId)
     {
         try
         {

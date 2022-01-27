@@ -16,6 +16,11 @@ public class BrandService : IBrandService
     {
         this.unitOfWork = unitOfWork;
         this.mapper = mapper;
+    }    
+    
+    public async Task<Brand> GetAsync(Guid brandId)
+    {
+        return await unitOfWork.Brands.GetFirstWhereAsync(b => b.Id == brandId);
     }
 
     public async Task<List<Brand>> GetAllForListsAsync()
@@ -40,7 +45,7 @@ public class BrandService : IBrandService
                 brandModel.ContentsCount +
                 brandModel.CostsSum +
                 brandModel.BillsSum +
-                brandModel.GiftsCount > 0)
+                brandModel.GiftsCount <= 0)
             {
                 brandModel.IsDeletable = true;
             }
@@ -58,7 +63,7 @@ public class BrandService : IBrandService
             throw new ArgumentNullException(nameof(brand));
         }
 
-        if (await unitOfWork.Clients.IsExistsByNameAsync(brand.Name))
+        if (await unitOfWork.Brands.IsExistsByNameAsync(brand.Name))
         {
             throw new BrandCreateException("Бренд с таким именем существует в системе.");
         }
@@ -66,6 +71,33 @@ public class BrandService : IBrandService
         brand.CreatedAt = DateTime.UtcNow;
         brand.Name = brand.Name.Trim();
         var result = await unitOfWork.Brands.InsertAsync(brand);
+
+        return result.Id;
+    }
+    
+    public async Task<Guid> EditAsync(EditBrandModel model)
+    {
+        if (model == null)
+        {
+            throw new BrandEditException("Модель запроса пуста.");
+        }
+
+        var brand = await unitOfWork.Brands.GetFirstWhereAsync(b => b.Id == model.Id);
+
+        if (brand == null)
+        {
+            throw new BrandEditException($"Бренд с id {model.Id} не найден.");
+        }
+
+        if (brand.Name != model.Name && await unitOfWork.Brands.IsExistsByNameAsync(model.Name))
+        {
+            throw new BrandEditException("Бренд с таким именем существует в системе.");
+        }
+
+        brand.UpdatedAt = DateTime.UtcNow;
+        brand.Name = model.Name.Trim();
+        brand.Info = model.Info;
+        var result = await unitOfWork.Brands.UpdateAsync(brand);
 
         return result.Id;
     }

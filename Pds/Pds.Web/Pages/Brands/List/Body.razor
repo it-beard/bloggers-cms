@@ -71,12 +71,12 @@ else
                                     </span>
                                 }
                         </div>
-                        <div>  
+                        <div class="date-style">  
                             Создан: @brand.CreatedAt.ToLongStringDate()
                         </div>
                         @if (brand.UpdatedAt != null)
                         {
-                            <div>  
+                            <div class="date-style">  
                                 Изменен: @brand.UpdatedAt.Value.ToLongStringDate()
                             </div>
                         }
