@@ -57,24 +57,20 @@ else
         </div>
 
         <div class="form-group">
-            <label class="form-label">Адрес: </label>
-            <InputText class="form-control person-country" id="country" @bind-Value="person.Country" placeholder="Страна" />
-            <InputText class="form-control person-city" id="city" @bind-Value="person.City" placeholder="Город" />
+            <div class="location">
+                <label class="form-label">Адрес: </label>
+                <InputText class="form-control person-country" id="country" @bind-Value="person.Country" placeholder="Страна"/>
+                <InputText class="form-control person-city" id="city" @bind-Value="person.City" placeholder="Город"/>
+            </div>
+            <div class="rate">
+                <label for="person_rate" class="form-label">Рейтинг: </label>
+                <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
+            </div>
         </div>
 
         <div class="form-group">
             <label for="third_name" class="form-label">Темы</label>
             <InputText class="form-control" id="third_name" @bind-Value="person.Topics" />
-        </div>
-
-        <div class="form-group">
-            <label for="information" class="form-label">Дополнительная информация</label>
-            <InputTextArea class="form-control" id="information" @bind-Value="person.Info" rows="3" />
-        </div>
-
-        <div class="form-group">
-            <label for="person_rate" class="form-label">Рейтинг: </label>
-            <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг" />
         </div>
 
         <div class="form-group">
@@ -100,6 +96,11 @@ else
             }
 
             <div @onclick="AddResource" class="margin-top btn btn-primary btn-sm">Добавить ещё</div>
+        </div>
+
+        <div class="form-group">
+            <label for="information" class="form-label">Дополнительная информация</label>
+            <InputTextArea class="form-control" id="information" @bind-Value="person.Info" rows="3" />
         </div>
 
         <DataAnnotationsValidator />

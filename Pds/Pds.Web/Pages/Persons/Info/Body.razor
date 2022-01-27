@@ -5,6 +5,7 @@
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
 @using AutoMapper
+@using Pds.Core.Extensions
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
@@ -29,34 +30,70 @@ else
     </h4>
 
     <div class="page-container">
-
+        <div class="info-item">
+            <div class="info-title">Бренды</div>
+            <div class="info-body">
+                @((MarkupString)person.Brands.Select(b => b.Name).Aggregate("", (current, pp) => current + $"{pp}<br/>"))
+            </div>
+        </div>
+        
         <div class="info-item">
             <div class="info-title">Имя и Фамилия</div>
             <div class="info-body">
-                @person.FullName
+                <b>@person.FullName</b>
+                <ul>
+                    <li>Рейтинг: <b>@person.Rate</b></li>
+                    @if (!string.IsNullOrEmpty(person.Location))
+                    {
+                        <li>Откуда: <b>@person.Location</b></li>
+                    }
+                </ul>
             </div>
         </div>
-
-        <div class="info-item">
-            <div class="info-title">Место</div>
-            <div class="info-body">
-                @person.Country, @person.City
+        
+        @if (person.Contents.Any())
+        {
+            <div class="info-item">
+                <div class="info-title">Контент (@person.Contents.Count)</div>
+                <div class="info-body">
+                    <ul>
+                        @foreach (var content in person.Contents.OrderByDescending(p=>p.ReleaseDate))
+                        {
+                            <li>
+                                <a class="custom-link" href="content/@content.Id">
+                                    @($"{content.ReleaseDate.ToShortStringDate()} / {content.Title}")
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
             </div>
-        </div>
-
-        <div class="info-item">
-            <div class="info-title">Рейтинг</div>
-            <div class="info-body">
-                @person.Rate
+        }
+    
+        @if (!string.IsNullOrWhiteSpace(person.Info))
+        {
+            <div class="info-item">
+                <div class="info-title">Информация</div>
+                <div class="info-body">
+                    @person.Info
+                </div>
             </div>
-        </div>
-
-        <div class="info-item">
-            <div class="info-title">Информация</div>
-            <div class="info-body">
-                @person.Info
+        }
+        
+        @if (person.Resources.Any())
+        {
+            <div class="info-item">
+                <div class="info-title">Ссылки</div>
+                <div class="info-body">
+                    @foreach (var resource in person.Resources)
+                    {
+                        <div>
+                            <a class="custom-link" href="@resource.Url" target="_blank">@resource.Name</a>
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
+        }
 
         <div class="info-item">
             <Actions OnPersonUpdate="@ContentInfoUpdate" CurrentPerson="@person"></Actions>

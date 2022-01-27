@@ -26,3 +26,15 @@
 .margin-top {
     margin-top: 5px;
 }
+
+.location {
+    margin-right: 10px;
+    display: inline-block;
+    word-wrap: normal;
+}
+
+.rate {
+    margin-top: 10px;
+    display: inline-block;
+    word-wrap: normal;
+}

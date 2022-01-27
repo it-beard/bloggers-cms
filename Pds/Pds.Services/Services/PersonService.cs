@@ -51,8 +51,17 @@ public class PersonService : IPersonService
             }
         }
 
+        person.FirstName = person.FirstName.Trim();
+        person.LastName = person.LastName.Trim();
         person.Brands = brandsFromBd;
         person.CreatedAt = DateTime.UtcNow;
+        foreach (var resource in person.Resources)
+        {
+            if (!string.IsNullOrEmpty(resource.Url))
+            {
+                resource.Url = resource.Url.Replace("@", string.Empty);
+            }
+        }
         var result = await unitOfWork.Persons.InsertAsync(person);
 
         return result.Id;
@@ -83,8 +92,8 @@ public class PersonService : IPersonService
         }
 
         person.UpdatedAt = DateTime.UtcNow;
-        person.FirstName = model.FirstName;
-        person.LastName = model.LastName;
+        person.FirstName = model.FirstName.Trim();
+        person.LastName = model.LastName.Trim();
         person.ThirdName = model.ThirdName;
         person.Country = model.Country;
         person.City = model.City;
@@ -110,7 +119,7 @@ public class PersonService : IPersonService
             else
             {
                 resource.Name = resourceModel.Name;
-                resource.Url = resourceModel.Url;
+                resource.Url = resourceModel.Url.Replace("@", string.Empty);
                 resource.UpdatedAt = DateTime.UtcNow;
                 unitOfWork.GetContextEntry(resource).State = EntityState.Modified;
             }
@@ -123,7 +132,7 @@ public class PersonService : IPersonService
             {
                 CreatedAt = DateTime.UtcNow,
                 Name = newResourceModel.Name,
-                Url = newResourceModel.Url,
+                Url = newResourceModel.Url.Replace("@", string.Empty),
                 PersonId = person.Id
             };
 
