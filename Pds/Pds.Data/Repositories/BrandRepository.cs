@@ -25,8 +25,10 @@ public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
         var result = await context.Brands
             .Select(b => new BrandAdditionalInfoModel
             {
-                PersonsCount = context.Gifts
-                    .Count(b => b.BrandId == brandId),
+                PersonsCount = context.Brands
+                    .Where(b => b.Id == brandId)
+                    .SelectMany(b => b.Persons)
+                    .Count(),
                 ContentsCount = context.Contents
                     .Count(b => b.BrandId == brandId),
                 GiftsCount = context.Gifts
