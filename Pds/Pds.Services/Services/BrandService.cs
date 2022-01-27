@@ -1,17 +1,21 @@
-﻿using Pds.Core.Exceptions.Brand;
+﻿using AutoMapper;
+using Pds.Core.Exceptions.Brand;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
+using Pds.Services.Models.Brand;
 
 namespace Pds.Services.Services;
 
 public class BrandService : IBrandService
 {
     private readonly IUnitOfWork unitOfWork;
+    private readonly IMapper mapper;
 
-    public BrandService(IUnitOfWork unitOfWork)
+    public BrandService(IUnitOfWork unitOfWork, IMapper mapper)
     {
         this.unitOfWork = unitOfWork;
+        this.mapper = mapper;
     }
 
     public async Task<List<Brand>> GetAllForListsAsync()
@@ -19,9 +23,32 @@ public class BrandService : IBrandService
         return await unitOfWork.Brands.GetAllAsync();
     }
 
-    public async Task<List<Brand>> GetAllAsync()
+    public async Task<List<GetBrandModel>> GetAllAsync()
     {
-        return await unitOfWork.Brands.GetAllFullAsync();
+        var brandsModels = new List<GetBrandModel>();
+        var brands = await unitOfWork.Brands.GetAllAsync();
+        foreach (var brand in brands)
+        {
+            var brandModel = mapper.Map<GetBrandModel>(brand);
+            brandModel.PersonsCount = await unitOfWork.Brands.GetPersonsCountAsync(brand.Id);
+            brandModel.ContentsCount = await unitOfWork.Brands.GetContentsCountAsync(brand.Id);
+            brandModel.CostsSum = await unitOfWork.Brands.GetCostsSumAsync(brand.Id);
+            brandModel.BillsSum = await unitOfWork.Brands.GetBillsSumAsync(brand.Id);
+            brandModel.GiftsCount = await unitOfWork.Brands.GetGiftsCountAsync(brand.Id);
+
+            if (brandModel.PersonsCount +
+                brandModel.ContentsCount +
+                brandModel.CostsSum +
+                brandModel.BillsSum +
+                brandModel.GiftsCount > 0)
+            {
+                brandModel.IsDeletable = true;
+            }
+            
+            brandsModels.Add(brandModel);
+        }
+        
+        return brandsModels;
     }
     
     public async Task<Guid> CreateAsync(Brand brand)

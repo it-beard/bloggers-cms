@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Person> Persons { get; set; }
+    
     public DbSet<Resource> Resources { get; set; }
     public DbSet<Content> Contents { get; set; }
     public DbSet<Bill> Bills { get; set; }

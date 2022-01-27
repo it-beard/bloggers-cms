@@ -1,12 +1,6 @@
-﻿using Pds.Api.Contracts.Bill;
-using Pds.Api.Contracts.Content.GetContents;
-using Pds.Api.Contracts.Cost;
-using Pds.Api.Contracts.Gift;
-using Pds.Api.Contracts.Person;
+namespace Pds.Services.Models.Brand;
 
-namespace Pds.Api.Contracts.Brand;
-
-public class BrandFullDto
+public class GetBrandModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

@@ -13,14 +13,46 @@ public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
         this.context = context;
     }    
     
-    public async Task<List<Brand>> GetAllFullAsync()
+    public async Task<List<Brand>> GetAllAsync()
     {
         return await context.Brands
-            .Include(c => c.Bills)
-            .Include(c => c.Contents)
-            .Include(c => c.Persons)
-            .Include(c => c.Costs)
-            .Include(c => c.Gifts)
             .ToListAsync();
+    }
+    
+    public async Task<int> GetPersonsCountAsync(Guid brandId)
+    {
+        return await context.Brands
+            .Where(b => b.Id == brandId)
+            .Include(b => b.Persons)
+            .Select(b => b.Persons)
+            .CountAsync();
+    }
+    
+    public async Task<int> GetContentsCountAsync(Guid brandId)
+    {
+        return await context.Contents
+            .Where(b => b.BrandId == brandId)
+            .CountAsync();
+    }
+    
+    public async Task<decimal> GetCostsSumAsync(Guid brandId)
+    {
+        return await context.Costs
+            .Where(b => b.BrandId == brandId)
+            .SumAsync(b => b.Value);
+    }
+    
+    public async Task<decimal> GetBillsSumAsync(Guid brandId)
+    {
+        return await context.Bills
+            .Where(b => b.BrandId == brandId)
+            .SumAsync(b => b.Value);
+    }    
+    
+    public async Task<int> GetGiftsCountAsync(Guid brandId)
+    {
+        return await context.Gifts
+            .Where(b => b.BrandId == brandId)
+            .CountAsync();
     }
 }

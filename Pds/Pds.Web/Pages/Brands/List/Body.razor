@@ -40,34 +40,34 @@ else
                     </td>
                     <td>
                         <div>
-                            @if (brand.Contents is { Count: > 0 })
+                            @if (brand.ContentsCount > 0)
                                 {
                                     <span class="contents">
-                                        К:@brand.Contents.Count
+                                        К: @brand.ContentsCount
                                     </span>
                                 }
-                                @if (brand.Persons is { Count: > 0 })
+                                @if (brand.PersonsCount > 0 )
                                 {
                                     <span class="contents">
-                                        П:@brand.Persons.Count
+                                        П: @brand.PersonsCount
                                     </span>
                                 }
-                                @if (brand.Bills is { Count: > 0 })
+                                @if (brand.GiftsCount > 0 )
                                 {
                                     <span class="contents">
-                                        Д:@brand.Bills.Count
+                                        G: @brand.GiftsCount
                                     </span>
                                 }
-                                @if (brand.Costs is { Count: > 0 })
+                                @if (brand.BillsSum > 0)
                                 {
                                     <span class="contents">
-                                        Р:@brand.Costs.Count
+                                        Д: @($"{brand.BillsSum:N0}")
                                     </span>
                                 }
-                                @if (brand.Gifts is { Count: > 0 })
+                                @if (brand.CostsSum > 0)
                                 {
                                     <span class="contents">
-                                        G:@brand.Gifts.Count
+                                        Р: @($"{brand.CostsSum:N0}")
                                     </span>
                                 }
                         </div>

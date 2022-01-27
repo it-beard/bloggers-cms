@@ -13,11 +13,7 @@
         <i class="bi bi-pencil-fill"></i>
     </button>
 
-    @if ((CurrentBrand.Bills == null || CurrentBrand.Bills.Count == 0) &&
-         (CurrentBrand.Contents == null || CurrentBrand.Contents.Count== 0) &&
-         (CurrentBrand.Costs == null || CurrentBrand.Costs.Count== 0) &&
-         (CurrentBrand.Gifts == null || CurrentBrand.Gifts.Count== 0) &&
-         (CurrentBrand.Persons == null || CurrentBrand.Persons.Count== 0))
+    @if (CurrentBrand.IsDeletable)
     {
         <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
             <i class="bi bi-trash-fill"></i>
