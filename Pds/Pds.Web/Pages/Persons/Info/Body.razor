@@ -47,6 +47,15 @@ else
                     {
                         <li>Откуда: <b>@person.Location</b></li>
                     }
+                    <li>
+                        Создана: @person.CreatedAt.ToLongStringDate()
+                    </li>
+                    @if (person.UpdatedAt != null)
+                    {
+                        <li class="no-wrap">
+                            Отредактирована: @person.UpdatedAt.Value.ToLongStringDate()
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
@@ -61,7 +70,7 @@ else
                         {
                             <li>
                                 <a class="custom-link" href="content/@content.Id">
-                                    @($"{content.ReleaseDate.ToShortStringDate()} / {content.Title}")
+                                    @($"{content.ReleaseDate.ToLongStringDate()} / {content.Title}")
                                 </a>
                             </li>
                         }

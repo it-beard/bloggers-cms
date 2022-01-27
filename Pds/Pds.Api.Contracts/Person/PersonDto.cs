@@ -11,6 +11,10 @@ public class PersonDto
     public string LastName { get; set; }
 
     public string ThirdName { get; set; }
+    
+    public DateTime CreatedAt { get; set; }
+    
+    public DateTime? UpdatedAt { get; set; }
         
     public string FullName { get; set; }
 

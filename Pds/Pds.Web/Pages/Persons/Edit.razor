@@ -7,6 +7,7 @@
 @using AutoMapper
 @using Microsoft.AspNetCore.Components
 @using System.Linq
+@using Pds.Core.Extensions
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
@@ -30,27 +31,39 @@ else
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
-             @foreach (var brand in brands)
-             {
-                 var id = $"brand_{brand.Id.ToString()}";
-                 <InputCheckbox name="@brand.Id" class="btn-check" @bind-Value="brand.IsSelected" Id="@id" />
-                 <label class="btn btn-secondary" for="@id">@brand.Name</label>
-             }
+            @foreach (var brand in brands)
+            {
+                var id = $"brand_{brand.Id.ToString()}";
+                <InputCheckbox name="@brand.Id" class="btn-check" @bind-Value="brand.IsSelected" Id="@id"/>
+                <label class="btn btn-secondary" for="@id">@brand.Name</label>
+            }
+        </div>
+        
+        <div class="form-group">
+            <div>
+                Создана: @person.CreatedAt.ToLongStringDate()
+            </div>
+            @if (person.UpdatedAt != null)
+            {
+                <div class="no-wrap">
+                    Отредактирована: @person.UpdatedAt.Value.ToLongStringDate()
+                </div>
+            }
         </div>
 
         <div class="form-group">
             <label for="last_name" class="form-label label-required">Фамилия</label>
-            <InputText class="form-control" id="last_name" @bind-Value="person.LastName" />
+            <InputText class="form-control" id="last_name" @bind-Value="person.LastName"/>
         </div>
 
         <div class="form-group">
             <label for="first_name" class="form-label label-required">Имя</label>
-            <InputText class="form-control" id="first_name" @bind-Value="person.FirstName" />
+            <InputText class="form-control" id="first_name" @bind-Value="person.FirstName"/>
         </div>
 
         <div class="form-group">
             <label for="third_name" class="form-label">Отчество</label>
-            <InputText class="form-control" id="third_name" @bind-Value="person.ThirdName" />
+            <InputText class="form-control" id="third_name" @bind-Value="person.ThirdName"/>
         </div>
 
         <div class="form-group">
@@ -67,9 +80,14 @@ else
 
         <div class="form-group">
             <label for="third_name" class="form-label">Темы</label>
-            <InputText class="form-control" id="third_name" @bind-Value="person.Topics" />
+            <InputText class="form-control" id="third_name" @bind-Value="person.Topics"/>
         </div>
-        
+
+        <div class="form-group">
+            <label for="information" class="form-label">Информация</label>
+            <InputTextArea class="form-control" id="information" @bind-Value="person.Info" rows="3"/>
+        </div>
+
         <div class="form-group">
             <label class="form-label person-links">Ссылки:</label>
             @foreach (var resource in person.Resources)
@@ -92,17 +110,12 @@ else
                     </div>
                 </div>
             }
-        
+
             <div @onclick="AddResource" class="margin-top btn btn-primary btn-sm">Добавить ещё</div>
         </div>
 
-        <div class="form-group">
-            <label for="information" class="form-label">Дополнительная информация</label>
-            <InputTextArea class="form-control" id="information" @bind-Value="person.Info" rows="3" />
-        </div>
-        
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
 
         <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
             <button type="submit" class="btn btn-success" disabled="@isSaveButtonDisabled">Сохранить</button>
