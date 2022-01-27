@@ -85,12 +85,14 @@ else
             <div class="info-item">
                 <div class="info-title">Ссылки</div>
                 <div class="info-body">
-                    @foreach (var resource in person.Resources)
-                    {
-                        <div>
-                            <a class="custom-link" href="@resource.Url" target="_blank">@resource.Name</a>
-                        </div>
-                    }
+                    <ul>
+                        @foreach (var resource in person.Resources)
+                        {
+                            <li>
+                                <a class="custom-link" href="@resource.Url" target="_blank">@resource.Name</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         }
