@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
 using Pds.Api.Contracts.Bill;
+using Pds.Api.Contracts.Brand;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Bill;
@@ -121,7 +122,7 @@ public class BillController : ApiControllerBase
     {
         try
         {
-            var brands = await brandService.GetBrandsForListsAsync();
+            var brands = await brandService.GetAllForListsAsync();
             var response = mapper.Map<List<BrandDto>>(brands);
 
             return Ok(response);

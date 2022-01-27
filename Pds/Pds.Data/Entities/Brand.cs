@@ -8,10 +8,9 @@ public class Brand : EntityBase
     [Required]
     [Column(TypeName = "varchar(300)")]
     public string Name { get; set; }
-        
-    [Required]
+    
     [Column(TypeName = "varchar(300)")]
-    public string Url { get; set; }
+    public string Info { get; set; }
 
     public ICollection<Bill> Bills { get; set; }
 
@@ -20,4 +19,6 @@ public class Brand : EntityBase
     public ICollection<Content> Contents { get; set; }
 
     public ICollection<Person> Persons { get; set; }
+
+    public ICollection<Gift> Gifts { get; set; }
 }

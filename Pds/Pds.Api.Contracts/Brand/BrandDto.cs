@@ -1,4 +1,4 @@
-﻿namespace Pds.Api.Contracts;
+﻿namespace Pds.Api.Contracts.Brand;
 
 public class BrandDto
 {

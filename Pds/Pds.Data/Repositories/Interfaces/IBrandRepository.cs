@@ -4,4 +4,5 @@ namespace Pds.Data.Repositories.Interfaces;
 
 public interface IBrandRepository : IRepositoryBase<Brand>
 {
+    Task<List<Brand>> GetAllFullAsync();
 }

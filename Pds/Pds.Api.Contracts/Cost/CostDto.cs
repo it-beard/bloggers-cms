@@ -1,4 +1,5 @@
-﻿using Pds.Core.Enums;
+﻿using Pds.Api.Contracts.Brand;
+using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Cost;
 

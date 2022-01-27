@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
+using Pds.Api.Contracts.Brand;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Content.CreateContent;
 using Pds.Api.Contracts.Content.EditContent;
@@ -72,7 +73,7 @@ public class ContentController : ApiControllerBase
     {
         try
         {
-            var brands = await brandService.GetBrandsForListsAsync();
+            var brands = await brandService.GetAllForListsAsync();
             var response = mapper.Map<List<BrandDto>>(brands);
 
             return Ok(response);

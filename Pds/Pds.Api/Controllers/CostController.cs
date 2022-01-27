@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
+using Pds.Api.Contracts.Brand;
 using Pds.Api.Contracts.Cost;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -90,7 +91,7 @@ public class CostController : ApiControllerBase
     {
         try
         {
-            var brands = await brandService.GetBrandsForListsAsync();
+            var brands = await brandService.GetAllForListsAsync();
             var response = mapper.Map<List<BrandDto>>(brands);
 
             return Ok(response);

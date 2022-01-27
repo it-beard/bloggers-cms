@@ -1,0 +1,97 @@
+﻿@page "/brands"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Web.Common
+@using Pds.Api.Contracts.Brand
+@using static Pds.Web.Common.TitleExtension
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Бренды")</Title>
+
+<h4 class="card-header d-flex justify-content-between align-items-center">
+    Список брендов
+    <a href="/brands/add" class="btn btn-success">Добавить</a>
+</h4>
+@if (brandsInfo == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="client-name-header">Наименование</th>
+                <th>Информация</th>
+                <th class="text-center actions-header">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var brand in brandsInfo.Items)
+            {
+                <tr>
+                    <td class="client-name-row">
+                        <div>@brand.Name</div>
+                        @if (brand.Contents is { Count: > 0 })
+                        {
+                            <span class="contents">
+                                К:@brand.Contents.Count
+                            </span>
+                        }
+                        @if (brand.Persons is { Count: > 0 })
+                        {
+                            <span class="contents">
+                                П:@brand.Persons.Count
+                            </span>
+                        }
+                        @if (brand.Bills is { Count: > 0 })
+                        {
+                            <span class="contents">
+                                Д:@brand.Bills.Count
+                            </span>
+                        }
+                        @if (brand.Costs is { Count: > 0 })
+                        {
+                            <span class="contents">
+                                Р:@brand.Costs.Count
+                            </span>
+                        }
+                        @if (brand.Gifts is { Count: > 0 })
+                        {
+                            <span class="contents">
+                                G:@brand.Gifts.Count
+                            </span>
+                        }
+                    </td>
+                    <td class="comment-row">@brand.Info</td>
+                    <td class="text-center">
+                        <Actions OnBrandUpdate="@OnBrandUpdate" CurrentBrand="@brand"></Actions>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GetBrandsResponse brandsInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        brandsInfo = await GetBrands();
+    }
+
+    private async Task OnBrandUpdate()
+    {
+        brandsInfo = await GetBrands();
+    }
+
+    private async Task<GetBrandsResponse> GetBrands()
+    {
+        return await ApiClient.Get<GetBrandsResponse>(TokenProvider, "brands");
+    }
+}

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Pds.Api.Contracts;
 using Pds.Api.Contracts.Bill;
+using Pds.Api.Contracts.Brand;
 using Pds.Api.Contracts.Client;
 using Pds.Api.Contracts.Content;
 using Pds.Api.Contracts.Content.CreateContent;
@@ -82,6 +83,7 @@ public class ApiMappingProfile : Profile
         CreateMap<Content, GetContentForPayResponse>();
 
         CreateMap<Brand, BrandDto>();
+        CreateMap<Brand, BrandFullDto>();
         CreateMap<Brand, BrandForCheckboxesDto>();
 
         CreateMap<Client, ClientDto>();
@@ -183,11 +185,11 @@ public class ApiMappingProfile : Profile
                 dest => dest.Brands,
                 opt => opt.MapFrom(p => BrandsDtoToBrandsForCheckboxesDto(p.Brands)));
         CreateMap<PersonDto, GetPersonResponse>();
-        CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
-        CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
-        CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
-        CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Person.BrandFilterItem>();
-        CreateMap<Pds.Api.Contracts.BrandDto, Pds.Web.Models.Gift.BrandFilterItem>();
+        CreateMap<BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
+        CreateMap<BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
+        CreateMap<BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();
+        CreateMap<BrandDto, Pds.Web.Models.Person.BrandFilterItem>();
+        CreateMap<BrandDto, Pds.Web.Models.Gift.BrandFilterItem>();
 
         #endregion
 

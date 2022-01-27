@@ -26,7 +26,7 @@ public class ContentService : IContentService
 
     public async Task<Content> GetAsync(Guid contentId)
     {
-        return await unitOfWork.Content.GetByIdFullAsync(contentId);
+        return await unitOfWork.Content.GetFullByIdAsync(contentId);
     }
 
     public async Task<Guid> CreateAsync(CreateContentModel model)

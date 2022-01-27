@@ -4,5 +4,7 @@ namespace Pds.Services.Interfaces;
 
 public interface IBrandService
 {
-    Task<List<Brand>> GetBrandsForListsAsync();
+    Task<List<Brand>> GetAllForListsAsync();
+
+    Task<List<Brand>> GetAllAsync();
 }

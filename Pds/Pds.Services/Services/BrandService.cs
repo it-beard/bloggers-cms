@@ -13,8 +13,13 @@ public class BrandService : IBrandService
         this.unitOfWork = unitOfWork;
     }
 
-    public async Task<List<Brand>> GetBrandsForListsAsync()
+    public async Task<List<Brand>> GetAllForListsAsync()
     {
         return await unitOfWork.Brands.GetAllAsync();
+    }
+
+    public async Task<List<Brand>> GetAllAsync()
+    {
+        return await unitOfWork.Brands.GetAllFullAsync();
     }
 }
