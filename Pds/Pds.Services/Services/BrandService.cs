@@ -104,4 +104,24 @@ public class BrandService : IBrandService
             await unitOfWork.Brands.Delete(brand);
         }
     }
+    
+    public async Task MakeDefaultAsync(Guid brandId)
+    {
+        var brands = await unitOfWork.Brands.GetAllAsync();
+        foreach (var brand in brands)
+        {
+            if (!brand.IsDefault && brand.Id != brandId) continue;
+            
+            if (!brand.IsDefault && brand.Id == brandId)
+            {
+                brand.IsDefault = true;
+                await unitOfWork.Brands.UpdateAsync(brand);
+                continue;
+            }
+
+            // update old default brand
+            brand.IsDefault = false;
+            await unitOfWork.Brands.UpdateAsync(brand);
+        }
+    }
 }

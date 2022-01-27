@@ -9,9 +9,12 @@ namespace Pds.Api.Contracts.Brand;
 public class BrandFullDto
 {
     public Guid Id { get; set; }
+    
     public string Name { get; set; }
     
     public string Info { get; set; }
+    
+    public bool IsDefault { get; set; }
     
     public DateTime CreatedAt { get; set; }
 

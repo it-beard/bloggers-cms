@@ -11,6 +11,8 @@ public class Brand : EntityBase
     
     [Column(TypeName = "varchar(300)")]
     public string Info { get; set; }
+    
+    public bool IsDefault { get; set; }
 
     public ICollection<Bill> Bills { get; set; }
 

@@ -36,7 +36,15 @@ else
             {
                 <tr>
                     <td class="client-name-row">
-                        <div>@brand.Name</div>
+                        
+                        @if (brand.IsDefault)
+                        {
+                            <div class="default-brand">@brand.Name</div>
+                        }
+                        else
+                        {
+                            <div>@brand.Name</div>
+                        }
                     </td>
                     <td>
                         <div>
@@ -84,7 +92,7 @@ else
                             @brand.Info
                         </div>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center actions-header">
                         <Actions OnBrandUpdate="@OnBrandUpdate" CurrentBrand="@brand"></Actions>
                     </td>
                 </tr>

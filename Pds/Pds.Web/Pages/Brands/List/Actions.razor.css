@@ -1,6 +1,6 @@
 ﻿.actions-panel {
     margin: 0 auto;
-    width: 100px;
+    white-space: pre;
 }
 
 button {

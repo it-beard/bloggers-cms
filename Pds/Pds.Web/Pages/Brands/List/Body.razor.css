@@ -23,3 +23,11 @@
     color: #888;
     font-style: italic;
 }
+
+.default-brand {
+    background-color: #6a6a6a;
+    padding: 0px 8px;
+    border-radius: 4px;
+    color: white;
+    display: inline-block;
+}

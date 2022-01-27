@@ -166,11 +166,15 @@ else
     private async Task SetDefaultValues()
     {
         isCreateButtonDisabled = false;
-        gift.BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"); //Default АйТиБорода
+        brands = await GetBrandsAsync();
+        var defaultBrand = brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            gift.BrandId = defaultBrand.Id;
+        }
         gift.ContentId = Guid.Empty;
         gift.Type = GiftType.Book;
         gift.Status = GiftStatus.New;
-        brands = await GetBrandsAsync();
         contents = await GetContentsAsync();
     }
 }

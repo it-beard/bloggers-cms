@@ -18,6 +18,12 @@
         <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
             <i class="bi bi-trash-fill"></i>
         </button>
+    }    
+    @if (!CurrentBrand.IsDefault)
+    {
+        <button title="Сделать брендом по умолчанию" class="btn btn-success btn-sm" @onclick="OnDefault">
+            <i class="bi bi-suit-heart-fill"></i>
+        </button>
     }
 </div>
 
@@ -40,5 +46,11 @@
             await ApiClient.Delete<object>(TokenProvider, $"brands/{CurrentBrand.Id}");
             await OnBrandUpdate.InvokeAsync(); // Update UI
         }
+    }
+    
+    private async Task OnDefault()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"brands/{CurrentBrand.Id}/default", null);
+        await OnBrandUpdate.InvokeAsync(); // Update UI
     }
 }

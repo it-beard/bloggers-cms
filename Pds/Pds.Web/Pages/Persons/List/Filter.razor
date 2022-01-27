@@ -94,14 +94,21 @@ else
                     })
                 .ToList(),
         };
-        SetDefaultFilterValues(filter);
+        
+        SetDefaultFilterValues(filter, brands);
 
         return filter;
     }
 
-    private void SetDefaultFilterValues(FilterSettings filter)
+    private void SetDefaultFilterValues(FilterSettings filter, List<BrandDto> brands)
     {
-        filter.BrandFilterItems.First(b => b.Name == "АйТиБорода").IsSelected = true;
+        // Set default brand
+        var defaultBrand = brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            filter.BrandFilterItems.First(b => b.Id == defaultBrand.Id).IsSelected = true;
+        }
+        
         filter.PersonStatusFilterItems
             .First(u => u.PersonStatus == PersonStatus.Active)
             .IsSelected = true;

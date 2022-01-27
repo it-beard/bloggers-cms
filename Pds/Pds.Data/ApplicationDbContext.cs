@@ -58,7 +58,8 @@ public class ApplicationDbContext : DbContext
             {
                 Id = Guid.Parse("5AA23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
                 Name = "АйТиБорода",
-                Info = "https://youtube.com/itbeard"
+                Info = "https://youtube.com/itbeard",
+                IsDefault = true
             },
             new()
             {

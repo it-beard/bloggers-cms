@@ -11,4 +11,5 @@ public interface IBrandService
     Task<Guid> CreateAsync(Brand brand);
     Task<Guid> EditAsync(EditBrandModel model);
     Task DeleteAsync(Guid brandId);
+    Task MakeDefaultAsync(Guid brandId);
 }

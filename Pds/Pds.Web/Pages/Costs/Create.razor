@@ -134,10 +134,13 @@ else
 
     private async Task SetDefaultValues()
     {
-        isCreateButtonDisabled = false;
-        cost.BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"); //Default АйТиБорода
+        isCreateButtonDisabled = false;brands = await GetBrandsAsync();
+        var defaultBrand = brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            cost.BrandId = defaultBrand.Id;
+        }
         cost.PaidAt = GetCurrentDateWithoutOffset();
-        brands = await GetBrandsAsync();
         contents = await GetContentsAsync();
     }
 

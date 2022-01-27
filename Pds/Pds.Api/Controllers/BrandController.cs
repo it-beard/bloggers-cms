@@ -146,4 +146,23 @@ public class BrandController : ApiControllerBase
             return ExceptionResult(e);
         }
     }
+    /// <summary>
+    /// Make brand as a brand by default
+    /// </summary>
+    /// <param name="brandId"></param>
+    /// <returns></returns>
+    [HttpPut("{brandId}/default")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> MakeDefault(Guid brandId)
+    {
+        try
+        {
+            await brandService.MakeDefaultAsync(brandId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
 }

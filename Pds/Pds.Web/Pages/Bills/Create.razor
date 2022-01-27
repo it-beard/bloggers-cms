@@ -193,10 +193,14 @@ else
     private async Task SetDefaultValues()
     {
         isCreateButtonDisabled = false;
-        bill.BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"); //Default АйТиБорода
+        brands = await GetBrandsAsync();
+        var defaultBrand = brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            bill.BrandId = defaultBrand.Id;
+        }
         bill.ClientId = Guid.Empty;
         bill.PaidAt = GetCurrentDateWithoutOffset();
-        brands = await GetBrandsAsync();
         clients = await GetClientsAsync();
     }
 

@@ -150,9 +150,14 @@ else
     private async Task SetDefaultValues()
     {
         isCreateButtonDisabled = false;
+        person.Brands = await GetBrandsAsync();
+        var defaultBrand = person.Brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            person.Brands.First(b => b.Id == defaultBrand.Id).IsSelected = true;
+        }
         person.Rate = 0;
         person.Resources = new List<ResourceDto>();
-        person.Brands = await GetBrandsAsync();
     }
     
     private void ToggleUnknownPerson()

@@ -131,8 +131,6 @@ else
 
     private void SetDefaultFilterValues(FilterSettings filter)
     {
-        filter.BrandFilterItems.First(b => b.Name == "АйТиБорода").IsSelected = true;
-        
         // Set default "from" filter value
         var fromFilterDateString = StateContainer.Settings.GetByKey(SettingsKeys.FilterContentReleaseDateFrom);
         if (DateTime.TryParse(fromFilterDateString, out var fromFilterDate))

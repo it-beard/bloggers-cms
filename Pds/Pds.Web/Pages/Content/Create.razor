@@ -150,17 +150,7 @@ else
 }
 
 @code {
-    private CreateContentRequest content = new ()
-    {
-        BrandId = Guid.Parse("5aa23fa2-4b73-4a3f-c3d4-08d8d2705c5f"), //Default АйТиБорода
-        Type = ContentType.Integration, //Default
-        SocialMediaType = SocialMediaType.YouTube,  //Default
-        Bill = new CreateContentBillDto()
-        {
-            ContactType = ContactType.Telegram //Default
-        }
-    };
-
+    private CreateContentRequest content = new ();
     private EditContext editContext;
     private List<BrandDto> brands;
     private List<ClientForLookupDto> clients;
@@ -177,12 +167,8 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        isCreateButtonDisabled = false;
-        content.ReleaseDate = GetCurrentDateWithoutOffset();
+        await SetDefaultValues();
         editContext = new EditContext(content);
-        brands = await GetBrands();
-        clients = await GetClients();
-        persons = await GetPersons();
     }
 
     private async Task HandleSubmitAsync()
@@ -203,17 +189,17 @@ else
         }
     }
 
-    private async Task<List<BrandDto>> GetBrands()
+    private async Task<List<BrandDto>> GetBrandsAsync()
     {
         return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
     }
 
-    private async Task<List<ClientForLookupDto>> GetClients()
+    private async Task<List<ClientForLookupDto>> GetClientsAsync()
     {
         return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "content/get-clients");
     }
 
-    private async Task<List<PersonForLookupDto>> GetPersons()
+    private async Task<List<PersonForLookupDto>> GetPersonsAsync()
     {
         return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, "content/get-persons");
     }
@@ -222,5 +208,25 @@ else
     {
         var date = DateTime.Now.Date;
         return new DateTime(date.Ticks);
+    }
+
+    private async Task SetDefaultValues()
+    {
+        isCreateButtonDisabled = false;
+        content.ReleaseDate = GetCurrentDateWithoutOffset();
+        brands = await GetBrandsAsync();
+        var defaultBrand = brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            content.BrandId = defaultBrand.Id;
+        }
+        content.Type = ContentType.Integration;
+        content.SocialMediaType = SocialMediaType.YouTube;
+        content.Bill = new CreateContentBillDto()
+        {
+            ContactType = ContactType.Telegram
+        };
+        clients = await GetClientsAsync();
+        persons = await GetPersonsAsync();
     }
 }
