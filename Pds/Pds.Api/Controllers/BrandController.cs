@@ -126,4 +126,24 @@ public class BrandController : ApiControllerBase
             return ExceptionResult(e);
         }
     }
+    
+    /// <summary>
+    /// Delete specified brand
+    /// </summary>
+    /// <param name="brandId"></param>
+    /// <returns></returns>
+    [HttpDelete("{brandId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete(Guid brandId)
+    {
+        try
+        {
+            await brandService.DeleteAsync(brandId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
 }

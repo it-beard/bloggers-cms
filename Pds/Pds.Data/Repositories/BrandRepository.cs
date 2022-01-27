@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
+using Pds.Services.Models.Brand;
 
 namespace Pds.Data.Repositories;
 
@@ -18,43 +19,38 @@ public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
         return await context.Brands
             .ToListAsync();
     }
-    
-    public async Task<int> GetPersonsCountAsync(Guid brandId)
+
+    public async Task<BrandAdditionalInfoModel> GetAdditionalInfoAsync(Guid brandId)
     {
-        return await context.Brands
-            .Where(b => b.Id == brandId)
-            .SelectMany(b =>b.Persons)
-            .CountAsync();
+        var result = await context.Brands
+            .Select(b => new BrandAdditionalInfoModel
+            {
+                PersonsCount = context.Gifts
+                    .Count(b => b.BrandId == brandId),
+                ContentsCount = context.Contents
+                    .Count(b => b.BrandId == brandId),
+                GiftsCount = context.Gifts
+                    .Count(b => b.BrandId == brandId),
+                CostsSum = context.Costs
+                    .Where(b => b.BrandId == brandId)
+                    .Sum(b => b.Value),
+                BillsSum = context.Bills
+                    .Where(b => b.BrandId == brandId)
+                    .Sum(b => b.Value)
+            }).FirstAsync();
+
+        if (result.PersonsCount +
+            result.ContentsCount +
+            result.CostsSum +
+            result.BillsSum +
+            result.GiftsCount <= 0)
+        {
+            result.IsDeletable = true;
+        }
+        
+        return result;
     }
-    
-    public async Task<int> GetContentsCountAsync(Guid brandId)
-    {
-        return await context.Contents
-            .Where(b => b.BrandId == brandId)
-            .CountAsync();
-    }
-    
-    public async Task<decimal> GetCostsSumAsync(Guid brandId)
-    {
-        return await context.Costs
-            .Where(b => b.BrandId == brandId)
-            .SumAsync(b => b.Value);
-    }
-    
-    public async Task<decimal> GetBillsSumAsync(Guid brandId)
-    {
-        return await context.Bills
-            .Where(b => b.BrandId == brandId)
-            .SumAsync(b => b.Value);
-    }    
-    
-    public async Task<int> GetGiftsCountAsync(Guid brandId)
-    {
-        return await context.Gifts
-            .Where(b => b.BrandId == brandId)
-            .CountAsync();
-    }
-    
+
     public async Task<bool> IsExistsByNameAsync(string name)
     {
         var brand = await context.Brands

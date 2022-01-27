@@ -1,14 +1,11 @@
 ﻿using Pds.Data.Entities;
+using Pds.Services.Models.Brand;
 
 namespace Pds.Data.Repositories.Interfaces;
 
 public interface IBrandRepository : IRepositoryBase<Brand>
 {
     Task<List<Brand>> GetAllAsync();
-    Task<int> GetPersonsCountAsync(Guid brandId);
-    Task<int> GetGiftsCountAsync(Guid brandId);
-    Task<int> GetContentsCountAsync(Guid brandId);
-    Task<decimal> GetCostsSumAsync(Guid brandId);
-    Task<decimal> GetBillsSumAsync(Guid brandId);
+    Task<BrandAdditionalInfoModel> GetAdditionalInfoAsync(Guid brandId);
     Task<bool> IsExistsByNameAsync(string name);
 }

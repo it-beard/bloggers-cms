@@ -35,20 +35,8 @@ public class BrandService : IBrandService
         foreach (var brand in brands)
         {
             var brandModel = mapper.Map<GetBrandModel>(brand);
-            brandModel.PersonsCount = await unitOfWork.Brands.GetPersonsCountAsync(brand.Id);
-            brandModel.ContentsCount = await unitOfWork.Brands.GetContentsCountAsync(brand.Id);
-            brandModel.CostsSum = await unitOfWork.Brands.GetCostsSumAsync(brand.Id);
-            brandModel.BillsSum = await unitOfWork.Brands.GetBillsSumAsync(brand.Id);
-            brandModel.GiftsCount = await unitOfWork.Brands.GetGiftsCountAsync(brand.Id);
-
-            if (brandModel.PersonsCount +
-                brandModel.ContentsCount +
-                brandModel.CostsSum +
-                brandModel.BillsSum +
-                brandModel.GiftsCount <= 0)
-            {
-                brandModel.IsDeletable = true;
-            }
+            var additionalInfo = await unitOfWork.Brands.GetAdditionalInfoAsync(brand.Id);
+            mapper.Map(additionalInfo, brandModel);
             
             brandsModels.Add(brandModel);
         }
@@ -100,5 +88,20 @@ public class BrandService : IBrandService
         var result = await unitOfWork.Brands.UpdateAsync(brand);
 
         return result.Id;
+    }
+    
+    public async Task DeleteAsync(Guid brandId)
+    {
+        var additionalInfo = await unitOfWork.Brands.GetAdditionalInfoAsync(brandId);
+        if (!additionalInfo.IsDeletable)
+        {
+            throw new BrandDeleteException("Нельзя удалить бренд, имеются связанные сущности.");
+        }
+        
+        var brand = await unitOfWork.Brands.GetFirstWhereAsync(b => b.Id == brandId);
+        if (brand != null)
+        {
+            await unitOfWork.Brands.Delete(brand);
+        }
     }
 }

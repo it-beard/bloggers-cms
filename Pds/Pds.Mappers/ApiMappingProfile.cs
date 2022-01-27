@@ -209,6 +209,12 @@ public class ApiMappingProfile : Profile
 
         #endregion
         
+        #region Models to Model
+
+        CreateMap<BrandAdditionalInfoModel, GetBrandModel>();
+
+        #endregion
+        
         #region Entities to Models
 
         CreateMap<Brand, GetBrandModel>();
