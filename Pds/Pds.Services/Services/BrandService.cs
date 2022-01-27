@@ -1,4 +1,5 @@
-﻿using Pds.Data;
+﻿using Pds.Core.Exceptions.Brand;
+using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 
@@ -21,5 +22,24 @@ public class BrandService : IBrandService
     public async Task<List<Brand>> GetAllAsync()
     {
         return await unitOfWork.Brands.GetAllFullAsync();
+    }
+    
+    public async Task<Guid> CreateAsync(Brand brand)
+    {
+        if (brand == null)
+        {
+            throw new ArgumentNullException(nameof(brand));
+        }
+
+        if (await unitOfWork.Clients.IsExistsByNameAsync(brand.Name))
+        {
+            throw new BrandCreateException("Бренд с таким именем существует в системе.");
+        }
+
+        brand.CreatedAt = DateTime.UtcNow;
+        brand.Name = brand.Name.Trim();
+        var result = await unitOfWork.Brands.InsertAsync(brand);
+
+        return result.Id;
     }
 }

@@ -50,4 +50,31 @@ public class BrandController : ApiControllerBase
             return ExceptionResult(e);
         }
     }
+    
+    /// <summary>
+    /// Create a brand
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateBrandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create(CreateBrandRequest request)
+    {
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                var newBrand = mapper.Map<Brand>(request);
+                var brandId = await brandService.CreateAsync(newBrand);
+                return Ok(new CreateBrandResponse{Id = brandId});
+            }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
 }

@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Web.Common
 @using Pds.Api.Contracts.Brand
+@using Pds.Core.Extensions
 @using static Pds.Web.Common.TitleExtension
 
 @inject IApiClient ApiClient
@@ -31,43 +32,58 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var brand in brandsInfo.Items)
+            @foreach (var brand in brandsInfo.Items.OrderBy(b=>b.Name))
             {
                 <tr>
                     <td class="client-name-row">
                         <div>@brand.Name</div>
-                        @if (brand.Contents is { Count: > 0 })
-                        {
-                            <span class="contents">
-                                К:@brand.Contents.Count
-                            </span>
-                        }
-                        @if (brand.Persons is { Count: > 0 })
-                        {
-                            <span class="contents">
-                                П:@brand.Persons.Count
-                            </span>
-                        }
-                        @if (brand.Bills is { Count: > 0 })
-                        {
-                            <span class="contents">
-                                Д:@brand.Bills.Count
-                            </span>
-                        }
-                        @if (brand.Costs is { Count: > 0 })
-                        {
-                            <span class="contents">
-                                Р:@brand.Costs.Count
-                            </span>
-                        }
-                        @if (brand.Gifts is { Count: > 0 })
-                        {
-                            <span class="contents">
-                                G:@brand.Gifts.Count
-                            </span>
-                        }
                     </td>
-                    <td class="comment-row">@brand.Info</td>
+                    <td>
+                        <div>
+                            @if (brand.Contents is { Count: > 0 })
+                                {
+                                    <span class="contents">
+                                        К:@brand.Contents.Count
+                                    </span>
+                                }
+                                @if (brand.Persons is { Count: > 0 })
+                                {
+                                    <span class="contents">
+                                        П:@brand.Persons.Count
+                                    </span>
+                                }
+                                @if (brand.Bills is { Count: > 0 })
+                                {
+                                    <span class="contents">
+                                        Д:@brand.Bills.Count
+                                    </span>
+                                }
+                                @if (brand.Costs is { Count: > 0 })
+                                {
+                                    <span class="contents">
+                                        Р:@brand.Costs.Count
+                                    </span>
+                                }
+                                @if (brand.Gifts is { Count: > 0 })
+                                {
+                                    <span class="contents">
+                                        G:@brand.Gifts.Count
+                                    </span>
+                                }
+                        </div>
+                        <div>  
+                            Создан: @brand.CreatedAt.ToLongStringDate()
+                        </div>
+                        @if (brand.UpdatedAt != null)
+                        {
+                            <div>  
+                                Изменен: @brand.UpdatedAt.Value.ToLongStringDate()
+                            </div>
+                        }
+                        <div class="comment-row">
+                            @brand.Info
+                        </div>
+                    </td>
                     <td class="text-center">
                         <Actions OnBrandUpdate="@OnBrandUpdate" CurrentBrand="@brand"></Actions>
                     </td>

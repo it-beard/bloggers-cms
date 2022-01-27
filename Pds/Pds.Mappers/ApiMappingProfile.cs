@@ -133,6 +133,7 @@ public class ApiMappingProfile : Profile
         CreateMap<CreateCostRequest, Cost>();
         CreateMap<CreateBillRequest, Bill>();
         CreateMap<CreateGiftRequest, Gift>();
+        CreateMap<CreateBrandRequest, Brand>();
         CreateMap<ResourceDto, Resource>()
             .ForMember(
                 dest => dest.CreatedAt,
