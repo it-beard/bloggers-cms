@@ -78,19 +78,20 @@ else
             @foreach (var resource in person.Resources)
             {
                 <div class="margin-top form-row align-items-center">
+                    <div class="margin-bottom">
+                        <div @onclick="@(() => UpdateResource(resource, "Telegram", "https://t.me"))" class="btn btn-primary btn-sm">tg</div>
+                        <div @onclick="@(() => UpdateResource(resource, "Linkedin", "https://linkedin.com/in/"))" class="btn btn-primary btn-sm">lnk</div>
+                        <div @onclick="@(() => UpdateResource(resource, "Facebook", "https://facebook.com/"))" class="btn btn-primary btn-sm">fb</div>
+                        <div @onclick="@(() => UpdateResource(resource, "Instagram", "https://instagram.com/"))" class="btn btn-primary btn-sm">inst</div>
+                        <div @onclick="@(() => UpdateResource(resource, "Twitter", "https://twitter.com/"))" class="btn btn-primary btn-sm">tw</div>
+                        <div @onclick="@(() => UpdateResource(resource, "VK", "https://vk.com/"))" class="btn btn-primary btn-sm">vk</div>
+                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm">Удалить ссылку</div>
+                    </div>
                     <div class="col-auto">
                         <InputText class="form-control mb-2" id="country" @bind-Value="resource.Name" required="required" placeholder="Название" />
                     </div>
                     <div class="col-auto">
                         <InputText class="form-control mb-2" id="city" @bind-Value="resource.Url" required="required" placeholder="Ссылка" />
-                    </div>
-
-                    <div class="margin-top">
-                        <div @onclick="@(e => resource.Url = "https://t.me/")" class="btn btn-primary btn-sm">telegram</div>
-                        <div @onclick="@(e => resource.Url = "https://facebook.com/")" class="btn btn-primary btn-sm">facebook</div>
-                        <div @onclick="@(e => resource.Url = "https://instagram.com/")" class="btn btn-primary btn-sm">instagram</div>
-                        <div @onclick="@(e => resource.Url = "https://vk.com/")" class="btn btn-primary btn-sm">vk</div>
-                        <div @onclick="() => RemoveResource(resource)" class="btn btn-danger btn-sm">Удалить ссылку</div>
                     </div>
                 </div>
             }
@@ -171,6 +172,12 @@ else
     {
         var resource = new ResourceDto();
         person.Resources.Add(resource);
+    }
+    
+    private void UpdateResource(ResourceDto resource, string name, string url)
+    {
+        resource.Url = url;
+        resource.Name = name;
     }
 
     private void RemoveResource(ResourceDto resource)

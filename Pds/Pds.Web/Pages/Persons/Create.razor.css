@@ -27,6 +27,10 @@
     margin-top: 5px;
 }
 
+.margin-bottom {
+    margin-bottom: 5px;
+}
+
 .location {
     margin-right: 10px;
     display: inline-block;
