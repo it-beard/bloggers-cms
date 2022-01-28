@@ -20,6 +20,4 @@ public class CostDto
     public CostContentDto Content { get; set; }
 
     public BrandDto Brand { get; set; }
-
-    public bool IsVisible { get; set; }
 }
