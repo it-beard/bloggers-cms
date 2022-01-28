@@ -84,6 +84,8 @@ a, .btn-link {
 a.custom-link {
     color: #212529;
     text-decoration: none;
+    border-bottom: 2px solid #00000010;
+    padding: 2px 0px;
 }
 
 a.custom-link:hover {

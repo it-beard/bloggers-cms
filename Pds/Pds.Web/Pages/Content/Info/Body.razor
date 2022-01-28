@@ -58,10 +58,12 @@ else
                         </i>
                     }
 
-                    <b>
-                        $@content.Bill.Value.ToString("N0")
-                    </b>
-                    if (content.Costs != null && content.Costs.Count > 0)
+                    <a class="custom-link" href="/bills/@content.Bill.Id/edit">
+                        <b>
+                            $@content.Bill.Value.ToString("N0")
+                        </b>
+                    </a>
+                    if (content.Costs is {Count: > 0 })
                     {
                         {
                             var costsSum = content.Costs.Sum(c => c.Value);
@@ -119,11 +121,13 @@ else
                 <div class="info-title">Клиент</div>
                 <div class="info-body">
                     <div>
-                        <b>@content.Bill.Client.Name</b> / 
+                        <a class="custom-link" href="/clients/@content.Bill.Client.Id">
+                            <b>@content.Bill.Client.Name</b>
+                        </a>/
                         <span>
-                            @content.Bill.ContactName / 
-                            @EnumsTranslator.ContactTypeToRu(content.Bill.ContactType).ToLower(): 
-                            @((MarkupString)ContactBuilder.ToLink(content.Bill.ContactType, content.Bill.Contact))
+                            @content.Bill.ContactName /
+                            @EnumsTranslator.ContactTypeToRu(content.Bill.ContactType).ToLower():
+                            @((MarkupString) ContactBuilder.ToLink(content.Bill.ContactType, content.Bill.Contact))
                         </span>
                     </div>
                 </div>
@@ -136,7 +140,11 @@ else
                 <div class="info-title">Персона</div>
                 <div class="info-body">
                     <div>
-                        <b>@content.Person.FirstName @content.Person.ThirdName @content.Person.LastName</b> /
+                        <b>
+                            <a class="custom-link" href="/persons/@content.Person.Id">
+                                @content.Person.FirstName @content.Person.ThirdName @content.Person.LastName
+                            </a>
+                        </b> /
                         <span>@content.Person.City, @content.Person.Country</span>
                         @if (content.Person.Resources.Count > 0)
                         {
@@ -174,7 +182,9 @@ else
                         @foreach (var cost in content.Costs)
                         {
                             <li>
-                                <b>$@cost.Value.ToString("N0")</b> / @cost.PaidAt.ToShortStringDate() / <i>@cost.Comment</i>
+                                <a class="custom-link" href="/costs/@cost.Id/edit">
+                                    <b>$@cost.Value.ToString("N0")</b> / @cost.PaidAt.ToShortStringDate() / <i>@cost.Comment</i>
+                                </a>
                             </li>
                         }
                         </ul>
