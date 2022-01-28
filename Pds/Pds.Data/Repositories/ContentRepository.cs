@@ -14,14 +14,6 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
     {
         this.context = context;
     }
-        
-    public async Task<List<Content>> GetAllWithBillsAsync()
-    {
-        return await context.Contents.Include(p=>p.Bill)
-            .OrderByDescending(p =>p.ReleaseDate)
-            .ThenBy(p=>p.Title)
-            .ToListAsync();
-    }
 
     public async Task<List<Content>> GetAllFullAsync()
     {
@@ -69,6 +61,14 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
     public async Task<List<Content>> GetAllOrderByReleaseDateDescAsync()
     {
         return await context.Contents
+            .OrderByDescending(p =>p.ReleaseDate)
+            .ToListAsync();
+    }    
+    
+    public async Task<List<Content>> GetContentsForListByBrandId(Guid brandId)
+    {
+        return await context.Contents
+            .Where(c => c.BrandId == brandId && c.Status != ContentStatus.Archived)
             .OrderByDescending(p =>p.ReleaseDate)
             .ToListAsync();
     }

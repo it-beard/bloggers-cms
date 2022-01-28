@@ -109,8 +109,9 @@ else
         isSaveButtonDisabled = false;
         cost = await GetCost();
         brands = await GetBrandsAsync();
-        contents = await GetContentsAsync();
+        contents = await GetContentsAsync(cost.BrandId, cost.ContentId);
         editContext = new EditContext(cost);
+        editContext.OnFieldChanged += EditContext_OnFieldChangedAsync;
         msgStore = new ValidationMessageStore(editContext);
     }
     
@@ -140,14 +141,23 @@ else
         return await ApiClient.Get<List<BrandDto>>(TokenProvider, "costs/get-brands");
     }
 
-    private async Task<List<ContentForLookupDto>> GetContentsAsync()
+    private async Task<List<ContentForLookupDto>> GetContentsAsync(Guid brandId, Guid? giftContentId)
     {
-        return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, "costs/get-contents");
+        return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, $"costs/get-contents/brands/{brandId}/content/{giftContentId}");
     }
 
     private async Task<EditCostRequest> GetCost()
     {
         var clientResponse = await ApiClient.Get<GetCostResponse>(TokenProvider, $"costs/{CostId}");
         return Mapper.Map<EditCostRequest>(clientResponse);
+    }
+    
+    private async void EditContext_OnFieldChangedAsync(object sender, FieldChangedEventArgs e)
+    {
+        if (e.FieldIdentifier.FieldName == "BrandId")
+        {
+            contents = await GetContentsAsync(cost.BrandId, cost.ContentId);
+            editContext.NotifyFieldChanged(new FieldIdentifier(cost, "ContentId"));
+        }
     }
 }

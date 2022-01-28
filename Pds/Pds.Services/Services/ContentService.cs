@@ -172,12 +172,25 @@ public class ContentService : IContentService
             await unitOfWork.Content.UpdateAsync(content);
         }
     }
-
-    public async Task<List<Content>> GetContentsForListsAsync()
+    
+    public async Task<List<Content>> GetContentsForListByBrandId(Guid brandId)
     {
         var contents = new List<Content> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
-        contents.AddRange(await unitOfWork.Content.GetAllOrderByReleaseDateDescAsync());
+        contents.AddRange(await unitOfWork.Content.GetContentsForListByBrandId(brandId));
 
         return contents;
+    }
+    
+    public async Task<List<Content>> GetContentsForListByBrandIdWithSelectedValue(Guid brandId, Guid? selectedContentId)
+    {
+        var initialContents = await GetContentsForListByBrandId(brandId);
+        if (selectedContentId == null || initialContents == null) return initialContents;  
+        
+        // Add first content on top of the list if it possible
+        var firstContent = await unitOfWork.Content.GetFirstWhereAsync(c => c.Id == selectedContentId);
+        initialContents.Remove(firstContent);
+        initialContents = initialContents.Prepend(firstContent).ToList();
+
+        return initialContents;
     }
 }

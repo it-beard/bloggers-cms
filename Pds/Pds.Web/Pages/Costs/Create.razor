@@ -97,6 +97,7 @@ else
     {
         await SetDefaultValues();
         editContext = new EditContext(cost);
+        editContext.OnFieldChanged += EditContext_OnFieldChangedAsync;
         msgStore = new ValidationMessageStore(editContext);
     }
     
@@ -127,9 +128,9 @@ else
         return await ApiClient.Get<List<BrandDto>>(TokenProvider, "costs/get-brands");
     }
 
-    private async Task<List<ContentForLookupDto>> GetContentsAsync()
+    private async Task<List<ContentForLookupDto>> GetContentsAsync(Guid brandId)
     {
-        return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, "costs/get-contents");
+        return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, $"costs/get-contents/brands/{brandId}");
     }
 
     private async Task SetDefaultValues()
@@ -141,12 +142,21 @@ else
             cost.BrandId = defaultBrand.Id;
         }
         cost.PaidAt = GetCurrentDateWithoutOffset();
-        contents = await GetContentsAsync();
+        contents = await GetContentsAsync(cost.BrandId);
     }
 
     private DateTime GetCurrentDateWithoutOffset()
     {
         var date = DateTime.Now.Date;
         return new DateTime(date.Ticks);
+    }
+    
+    private async void EditContext_OnFieldChangedAsync(object sender, FieldChangedEventArgs e)
+    {
+        if (e.FieldIdentifier.FieldName == "BrandId")
+        {
+            contents = await GetContentsAsync(cost.BrandId);
+            editContext.NotifyFieldChanged(new FieldIdentifier(cost, "ContentId"));
+        }
     }
 }

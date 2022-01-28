@@ -103,15 +103,38 @@ public class CostController : ApiControllerBase
     }
 
     /// <summary>
-    /// Return list of contents for lookup box
+    /// Return list of contents for lookup box by brand ID include already bound to cost content
     /// </summary>
-    [HttpGet]
-    [Route("get-contents")]
-    public async Task<IActionResult> GetListOfContents()
+    /// <param name="brandId"></param>
+    /// <param name="costContentId"></param>
+    /// <returns></returns>
+    [HttpGet("get-contents/brands/{brandId}/content/{costContentId?}")]
+    public async Task<IActionResult> GetContentsByBrandIdWithGiftContent(Guid brandId, Guid? costContentId)
     {
         try
         {
-            var contents = await contentService.GetContentsForListsAsync();
+            var contents = await contentService.GetContentsForListByBrandIdWithSelectedValue(brandId, costContentId);
+            var response = mapper.Map<List<ContentForLookupDto>>(contents);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Return list of contents for lookup box
+    /// </summary>
+    /// <param name="brandId"></param>
+    /// <returns></returns>
+    [HttpGet("get-contents/brands/{brandId}")]
+    public async Task<IActionResult> GetContentsByBrandId(Guid brandId)
+    {
+        try
+        {
+            var contents = await contentService.GetContentsForListByBrandId(brandId);
             var response = mapper.Map<List<ContentForLookupDto>>(contents);
 
             return Ok(response);

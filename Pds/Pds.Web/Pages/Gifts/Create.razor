@@ -8,10 +8,12 @@
 @using Pds.Api.Contracts
 @using Pds.Api.Contracts.Brand
 @using Pds.Api.Contracts.Gift
+@using System.Security.Cryptography
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+@inject IJSRuntime JsRuntime
 
 <Title>@WithSuffix("Добавление подарка")</Title>
 
@@ -128,9 +130,10 @@ else
     {
         await SetDefaultValues();
         editContext = new EditContext(gift);
+        editContext.OnFieldChanged += EditContext_OnFieldChangedAsync;
         msgStore = new ValidationMessageStore(editContext);
     }
-    
+
     private async Task HandleSubmitAsync()
     {
         msgStore.Clear();
@@ -158,9 +161,9 @@ else
         return await ApiClient.Get<List<BrandDto>>(TokenProvider, "gifts/get-brands");
     }
 
-    private async Task<List<ContentForLookupDto>> GetContentsAsync()
+    private async Task<List<ContentForLookupDto>> GetContentsAsync(Guid brandId)
     {
-        return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, "gifts/get-contents");
+        return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, $"gifts/get-contents/brands/{brandId}");
     }
 
     private async Task SetDefaultValues()
@@ -175,6 +178,15 @@ else
         gift.ContentId = Guid.Empty;
         gift.Type = GiftType.Book;
         gift.Status = GiftStatus.New;
-        contents = await GetContentsAsync();
+        contents = await GetContentsAsync(gift.BrandId);
+    }
+    
+    private async void EditContext_OnFieldChangedAsync(object sender, FieldChangedEventArgs e)
+    {
+        if (e.FieldIdentifier.FieldName == "BrandId")
+        {
+            contents = await GetContentsAsync(gift.BrandId);
+            editContext.NotifyFieldChanged(new FieldIdentifier(gift, "ContentId"));
+        }
     }
 }
