@@ -20,6 +20,7 @@ public class BillRepository : RepositoryBase<Bill>, IBillRepository
             .Where(b => b.PaymentStatus == PaymentStatus.Paid)
             .Include(b=>b.Content)
             .Include(b=>b.Brand)
+            .Include(b=>b.Client)
             .OrderByDescending(p =>p.PaidAt)
             .ToListAsync();
     }

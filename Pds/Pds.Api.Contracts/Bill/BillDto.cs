@@ -1,4 +1,5 @@
 ﻿using Pds.Api.Contracts.Brand;
+using Pds.Api.Contracts.Client;
 using Pds.Core.Enums;
 
 namespace Pds.Api.Contracts.Bill;
@@ -24,6 +25,8 @@ public class BillDto
     public BillContentDto Content { get; set; }
 
     public BrandDto Brand { get; set; }
+    
+    public ClientDto Client { get; set; }
         
     public bool IsVisible { get; set; }
 }
