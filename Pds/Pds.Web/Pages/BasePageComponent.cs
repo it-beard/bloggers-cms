@@ -23,12 +23,16 @@ public class BasePageComponent: ComponentBase
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
         _pageState.AddPage(_navManager.Uri);
+        base.OnInitialized();
     }
     
     protected void GoBack()
     {
-        _navManager.NavigateTo(_pageState.PreviousPage());
+        _pageState.RemoveCurrent(_navManager.Uri);
+        if (_pageState.CanGoBack())
+        {
+            _navManager.NavigateTo(_pageState.PreviousPage());
+        }
     }
 }

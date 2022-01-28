@@ -2,31 +2,34 @@
 
 public class PageHistoryState
 {
-    private List<string> previousPages;
+    private List<string> pages;
 
     public PageHistoryState()
     {
-        previousPages = new List<string>();
+       pages = new List<string>();
     }
     public void AddPage(string pageName)
     {
-        previousPages.Add(pageName);
+        pages.Add(pageName);
     }
 
     public string PreviousPage()
     {
-        if (previousPages.Count > 1)
-        {
-            // You add a page on initialization, so you need to return the 2nd from the last
-            return previousPages.ElementAt(previousPages.Count - 2);
-        }
-
-        // Can't go back because you didn't navigate enough
-        return previousPages.FirstOrDefault();
+        return pages.Last();
     }
 
     public bool CanGoBack()
     {
-        return previousPages.Count > 1;
+        return pages.Count > 0;
+    }
+    
+    public void RemoveCurrent(string currentPage)
+    {
+        var lastPage = pages.Last();
+        if (lastPage == currentPage)
+        {
+            pages.Remove(pages.Last());
+            RemoveCurrent(currentPage);
+        }
     }
 }
