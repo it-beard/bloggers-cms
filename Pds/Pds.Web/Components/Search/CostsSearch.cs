@@ -1,16 +1,16 @@
-﻿using Calabonga.PredicatesBuilder;
-using System.Linq.Expressions;
-using Pds.Api.Contracts.Bill;
+﻿using System.Linq.Expressions;
+using Calabonga.PredicatesBuilder;
+using Pds.Api.Contracts.Cost;
 using Pds.Core.Extensions;
 
-namespace Pds.Web.Components.Search.Bills;
+namespace Pds.Web.Components.Search;
 
-public class BillsSearch
+public class CostsSearch
 {
-    public Expression<Func<BillDto, bool>> GetSearchPredicate(string searchLine)
+    public Expression<Func<CostDto, bool>> GetSearchPredicate(string searchLine)
     {
         searchLine = searchLine.ToLower();
-        var predicate = PredicateBuilder.False<BillDto>();
+        var predicate = PredicateBuilder.False<CostDto>();
 
         predicate = predicate.Or(c => c.Id.ToShortString().Contains(searchLine));
         predicate = predicate.Or(c => c.Value.ToString("N0").Contains(searchLine));
@@ -25,9 +25,6 @@ public class BillsSearch
         predicate = predicate.Or(r => r.Content != null
                                       && r.Content.Title != null
                                       && r.Content.Title.ToLower().Contains(searchLine));
-        predicate = predicate.Or(r => r.Client != null
-                                      && r.Client.Name != null
-                                      && r.Client.Name.ToLower().Contains(searchLine));
         return predicate;
     }
 }

@@ -41,7 +41,7 @@
 
 @code {
     [Parameter]
-    public EventCallback OnGiftUpdate { get; set; }
+    public EventCallback OnActionsUpdate { get; set; }
     [Parameter]
     public GiftDto CurrentGift { get; set; }
 
@@ -56,19 +56,19 @@
         if (confirmed)
         {
             await ApiClient.Delete<object>(TokenProvider, $"gifts/{CurrentGift.Id}");
-            await OnGiftUpdate.InvokeAsync(); // Update UI
+            await OnActionsUpdate.InvokeAsync(); // Update UI
         }
     }
 
     private async Task OnCompleteAsync()
     {
         await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/complete", null);
-        await OnGiftUpdate.InvokeAsync(); // Update UI
+        await OnActionsUpdate.InvokeAsync(); // Update UI
     }
 
     private async Task OnUncompleteAsync()
     {
         await ApiClient.Put<object, object>(TokenProvider, $"gifts/{CurrentGift.Id}/uncomplete", null);
-        await OnGiftUpdate.InvokeAsync(); // Update UI
+        await OnActionsUpdate.InvokeAsync(); // Update UI
     }
 }

@@ -1,8 +1,8 @@
-﻿using Calabonga.PredicatesBuilder;
+﻿using System.Linq.Expressions;
+using Calabonga.PredicatesBuilder;
 using Pds.Api.Contracts.Person;
-using System.Linq.Expressions;
 
-namespace Pds.Web.Components.Search.Person;
+namespace Pds.Web.Components.Search;
 
 public class PersonsSearch
 {

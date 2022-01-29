@@ -1,9 +1,8 @@
-﻿using Calabonga.PredicatesBuilder;
-using System.Linq.Expressions;
-using Pds.Api.Contracts.Content;
+﻿using System.Linq.Expressions;
+using Calabonga.PredicatesBuilder;
 using Pds.Api.Contracts.Content.GetContents;
 
-namespace Pds.Web.Components.Search.Content;
+namespace Pds.Web.Components.Search;
 
 public class ContentsSearch
 {

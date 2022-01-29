@@ -1,8 +1,8 @@
-﻿using Calabonga.PredicatesBuilder;
+﻿using System.Linq.Expressions;
+using Calabonga.PredicatesBuilder;
 using Pds.Api.Contracts.Gift;
-using System.Linq.Expressions;
 
-namespace Pds.Web.Components.Search.Gift;
+namespace Pds.Web.Components.Search;
 
 public class GiftsSearch
 {

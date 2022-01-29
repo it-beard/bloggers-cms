@@ -3,7 +3,6 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Gift
 @using Pds.Web.Common
-@using Pds.Web.Components.Search.Gift
 @using Pds.Web.Models.Gift
 @using static Pds.Web.Common.TitleExtension 
 
@@ -11,7 +10,7 @@
 @inject IAccessTokenProvider TokenProvider
 
 <Title>@WithSuffix("Подарки")</Title>
-@if (giftsInfo == null)
+@if (gifts == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -29,134 +28,121 @@ else
         </span>
         <a href="/gifts/add" class="btn btn-success" >Добавить</a>
     </h4>
-    <Filter OnFilterUpdate="@FilterUpdated" OnSearch="@OnSearch" ></Filter>
-    <table class="table">
-        <thead>
-        <tr>
-            <th class="paid-date-header">Когда</th>
-            <th class="paid-date-header">Даты</th>
-            <th>Название</th>
-            <th>Бренд</th>
-            <th>Комментарий</th>
-            <th>Адресат</th>
-            <th class="text-center actions-header">Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var gift in giftsList)
-        {
-            <tr class="@GiftHelper.GetGiftBgColorClass(gift.Status)">
-                <td class="release-date-row">
-                    <span>
-                        @gift.SortDate.ToString("dd.MM.yyyy")
-                    </span>
-                </td>
-                <td>
-                    <div>
-                        <span class="create-date">
-                            @gift.CreatedAt.ToString("dd.MM.yyyy")
-                        </span>
-                    </div>
-                    @if (gift.RaffledAt != null)
-                    {
-                        <div>
-                            <span class="raffle-date">
-                                @gift.RaffledAt.Value.ToString("dd.MM.yyyy")
-                            </span>
-                        </div>
-                    }
-                    @if (gift.CompletedAt != null)
-                    {
-                        <div>
-                            <span class="complete-date">
-                                @gift.CompletedAt.Value.ToString("dd.MM.yyyy")
-                            </span>
-                        </div>
-                    }
-                </td>
-                <td>
-                    <span class="gift-type">
-                        @EnumsTranslator.GiftTypeToRu(gift.Type)
-                    </span>
-                    <span>
-                        
-                    </span>
-                    @gift.Title
-                </td>
-                <td>@gift.Brand.Name</td> 
-                <td>
-                    @if (gift.Content != null)
-                    {
-                        <div>
-                            Контент: <a class="custom-link" href="content/@gift.Content.Id">@gift.Content.Title</a>
-                        </div>
-                    }
-                    <div class="comment-row">
-                        @gift.Comment
-                    </div>
-                </td>
-                <td>
-                    @if (!string.IsNullOrWhiteSpace(gift.FirstName))
-                    {
-                        <div>
-                            <i>ФИО:</i> @gift.LastName @gift.FirstName @gift.ThirdName
-                        </div>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(gift.PostalAddress))
-                    {
-                        <div class="comment-row">
-                            <i>Адрес:</i> @gift.PostalAddress
-                        </div>
-                    }
-                </td>
-                <td class="text-center">
-                    <Actions OnGiftUpdate="@GiftsInfoUpdate" CurrentGift="@gift"></Actions>
-                </td>
+    <Filter OnFilterUpdate="@OnFilterUpdate" OnSearch="@OnSearch" ></Filter>
+    @if (isFilterLoaded)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="paid-date-header">Когда</th>
+                <th class="paid-date-header">Даты</th>
+                <th>Название</th>
+                <th>Бренд</th>
+                <th>Комментарий</th>
+                <th>Адресат</th>
+                <th class="text-center actions-header">Действия</th>
             </tr>
-        }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach (var gift in filteredGifts)
+            {
+                <tr class="@GiftHelper.GetGiftBgColorClass(gift.Status)">
+                    <td class="release-date-row">
+                        <span>
+                            @gift.SortDate.ToString("dd.MM.yyyy")
+                        </span>
+                    </td>
+                    <td>
+                        <div>
+                            <span class="create-date">
+                                @gift.CreatedAt.ToString("dd.MM.yyyy")
+                            </span>
+                        </div>
+                        @if (gift.RaffledAt != null)
+                        {
+                            <div>
+                                <span class="raffle-date">
+                                    @gift.RaffledAt.Value.ToString("dd.MM.yyyy")
+                                </span>
+                            </div>
+                        }
+                        @if (gift.CompletedAt != null)
+                        {
+                            <div>
+                                <span class="complete-date">
+                                    @gift.CompletedAt.Value.ToString("dd.MM.yyyy")
+                                </span>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <span class="gift-type">
+                            @EnumsTranslator.GiftTypeToRu(gift.Type)
+                        </span>
+                        <span>
+
+                        </span>
+                        @gift.Title
+                    </td>
+                    <td>@gift.Brand.Name</td>
+                    <td>
+                        @if (gift.Content != null)
+                        {
+                            <div>
+                                Контент: <a class="custom-link" href="content/@gift.Content.Id">@gift.Content.Title</a>
+                            </div>
+                        }
+                        <div class="comment-row">
+                            @gift.Comment
+                        </div>
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(gift.FirstName))
+                        {
+                            <div>
+                                <i>ФИО:</i> @gift.LastName @gift.FirstName @gift.ThirdName
+                            </div>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(gift.PostalAddress))
+                        {
+                            <div class="comment-row">
+                                <i>Адрес:</i> @gift.PostalAddress
+                            </div>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <Actions OnActionsUpdate="@OnActionsUpdate" CurrentGift="@gift"></Actions>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
 }
 
 @code {
-    private GetGiftsResponse giftsInfo;
-    private GiftDto[] giftsList;
-    private GiftsPageSearchSettings searchSettings;
-    private FilterSettings filterSettings;    
-    private int totalElements;
+    private GetGiftsResponse gifts;
+    private GiftDto[] filteredGifts;
+    private string currentSearchText;    
+    private FilterSettings currentFilterSettings;
+    private int totalElements; 
+    private bool isFilterLoaded;
 
     protected override async Task OnInitializedAsync()
     {
-        searchSettings = new GiftsPageSearchSettings
-        {
-            Search = string.Empty
-        };
-
-        filterSettings = new FilterSettings
-        {
-            BrandFilterItems = new List<BrandFilterItem>(),
-            GiftStatusFilterItems = new List<GiftStatusFilterItem>(),
-            GiftTypeFilterItems = new List<GiftTypeFilterItem>()
-        };
-
-        await GiftsInfoUpdate();
+        gifts = await GetGiftsAsync();
     }
 
-    private async Task GiftsInfoUpdate()
-    {
-        giftsInfo = await GetGiftsInfoAsync();
-        //SetDefaultPaging();
-        FilterUpdated(filterSettings);
-    }
-
-    private async Task<GetGiftsResponse> GetGiftsInfoAsync()
+    private async Task<GetGiftsResponse> GetGiftsAsync()
     {
         return await ApiClient.Get<GetGiftsResponse>(TokenProvider, "gifts");
     }
     
-    private void GetGiftsList()
+    private GiftDto[] GetFilteredGiftsList(
+        FilterSettings filterSettings, 
+        GetGiftsResponse gifts)
     {
-        //Filtering
+        // Filtering
         var selectedGiftTypes = filterSettings.GiftTypeFilterItems
             .Where(i => i.IsSelected)
             .Select(i => i.GiftType)
@@ -169,12 +155,8 @@ else
             .Where(i => i.IsSelected)
             .Select(i=>i.Id)
             .ToList();
-        var totalSelectedFiltersCount = 
-            selectedGiftTypes.Count + 
-            selectedGiftStatuses.Count + 
-            selectedBrandsIds.Count;
 
-        var itemsToShow = giftsInfo.Items
+        var itemsToShow = gifts.Items
             .Where(i => 
                 (selectedGiftStatuses.Contains(i.Status) || selectedGiftStatuses.Count == 0) &&
                 (selectedGiftTypes.Contains(i.Type) || selectedGiftTypes.Count == 0) &&
@@ -202,7 +184,6 @@ else
                             || filterSettings.CreatedFrom == null) &&
                 (filterSettings.CreatedTo != null && i.CreatedAt.Date <= filterSettings.CreatedTo.Value.Date 
                             || filterSettings.CreatedTo == null));
-
         
         var query = itemsToShow
             .AsQueryable();
@@ -211,29 +192,41 @@ else
         query = query
             .OrderByDescending(g => g.SortDate);
         
-        //Search
-        var searchLine = searchSettings.Search?.ToLower();
-        if (!string.IsNullOrWhiteSpace(searchLine))
+        // Search
+        if (!string.IsNullOrWhiteSpace(currentSearchText))
         {
-            var searchPredicate = new GiftsSearch().GetSearchPredicate(searchLine);
+            var searchPredicate = new GiftsSearch()
+                .GetSearchPredicate(currentSearchText.ToLower());
             query = query.Where(searchPredicate);
         }
         
-        giftsList = query.ToArray();
-        totalElements = giftsList.Length;
+        return query.ToArray();
     }
     
     private void OnSearch(string searchText)
     {
-        //SetDefaultPaging();
-        searchSettings.Search = searchText;
-        GetGiftsList();
+        currentSearchText = searchText;
+        filteredGifts = GetFilteredGiftsList(currentFilterSettings, gifts);
+        UpdateStatistics(filteredGifts);
+    }
+    
+    private async Task OnActionsUpdate()
+    {
+        isFilterLoaded = false;
+        gifts = await GetGiftsAsync();
+        OnFilterUpdate(currentFilterSettings);
     }
 
-    private void FilterUpdated(FilterSettings filterSettings)
+    private void OnFilterUpdate(FilterSettings filterSettings)
     {
-        this.filterSettings = filterSettings;
-        // SetDefaultPaging();
-        GetGiftsList();
+        currentFilterSettings = filterSettings;
+        filteredGifts = GetFilteredGiftsList(filterSettings, gifts);
+        UpdateStatistics(filteredGifts);
+        isFilterLoaded = true;
+    }
+    
+    private void UpdateStatistics(GiftDto[] filteredGifts)
+    {
+        totalElements = filteredGifts.Length;
     }
 }
