@@ -187,12 +187,24 @@ public class PersonService : IPersonService
         await unitOfWork.Persons.Delete(person);
     }
 
-    public async Task<List<Person>> GetPersonsForListsAsync()
+    public async Task<List<Person>> GetForListsByBrandIdAsync(Guid brandId)
     {
-        var persons = new List<Person> { new() { Id = Guid.Empty } };
-        var personsFromDb = await unitOfWork.Persons.GetForListsAsync();
-        persons.AddRange(personsFromDb);
+        var persons = new List<Person> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
+        persons.AddRange(await unitOfWork.Persons.GetForListByBrandId(brandId));
 
         return persons;
+    }
+    
+    public async Task<List<Person>> GetForListByBrandIdWithSelectedValueAsync(Guid brandId, Guid? selectedPersonId)
+    {
+        var initialPersons = await GetForListsByBrandIdAsync(brandId);
+        if (selectedPersonId == null || initialPersons == null) return initialPersons;  
+        
+        // Add selected person on top of the list if it possible
+        var firstPerson = await unitOfWork.Persons.GetFirstWhereAsync(c => c.Id == selectedPersonId);
+        initialPersons.Remove(firstPerson);
+        initialPersons = initialPersons.Prepend(firstPerson).ToList();
+
+        return initialPersons;
     }
 }

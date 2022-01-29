@@ -85,15 +85,40 @@ public class ContentController : ApiControllerBase
     }
         
     /// <summary>
-    /// Return list of persons for lookup box
+    /// Return list of persons by brand ID for lookup box
     /// </summary>
+    /// <param name="brandId"></param>
+    /// <returns></returns>
     [HttpGet]
-    [Route("get-persons")]
-    public async Task<IActionResult> GetListOfPersons()
+    [Route("get-persons/brands/{brandId}")]
+    public async Task<IActionResult> GetPersonsByBrandId(Guid brandId)
     {
         try
         {
-            var persons = await personService.GetPersonsForListsAsync();
+            var persons = await personService.GetForListsByBrandIdAsync(brandId);
+            var response = mapper.Map<List<PersonForLookupDto>>(persons);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Return list of persons by brand ID and with selected content person for lookup box
+    /// </summary>
+    /// <param name="brandId"></param>
+    /// <param name="contentPersonId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("get-persons/brands/{brandId}/persons/{contentPersonId?}")]
+    public async Task<IActionResult> GetPersonsByBrandIdWithContentPerson(Guid brandId, Guid? contentPersonId)
+    {
+        try
+        {
+            var persons = await personService.GetForListByBrandIdWithSelectedValueAsync(brandId, contentPersonId);
             var response = mapper.Map<List<PersonForLookupDto>>(persons);
 
             return Ok(response);

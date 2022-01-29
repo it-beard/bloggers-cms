@@ -113,7 +113,7 @@ public class CostController : ApiControllerBase
     {
         try
         {
-            var contents = await contentService.GetContentsForListByBrandIdWithSelectedValue(brandId, costContentId);
+            var contents = await contentService.GetForListByBrandIdWithSelectedValueAsync(brandId, costContentId);
             var response = mapper.Map<List<ContentForLookupDto>>(contents);
 
             return Ok(response);
@@ -134,7 +134,7 @@ public class CostController : ApiControllerBase
     {
         try
         {
-            var contents = await contentService.GetContentsForListByBrandId(brandId);
+            var contents = await contentService.GetForListByBrandIdAsync(brandId);
             var response = mapper.Map<List<ContentForLookupDto>>(contents);
 
             return Ok(response);

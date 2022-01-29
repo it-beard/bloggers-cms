@@ -19,5 +19,7 @@ public interface IPersonService
 
     Task DeleteAsync(Guid personId);
 
-    Task<List<Person>> GetPersonsForListsAsync();
+    Task<List<Person>> GetForListsByBrandIdAsync(Guid brandId);
+
+    Task<List<Person>> GetForListByBrandIdWithSelectedValueAsync(Guid brandId, Guid? selectedPersonId);
 }

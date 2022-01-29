@@ -162,11 +162,7 @@ public class ApiMappingProfile : Profile
         CreateMap<EditSettingRequest, EditSettingModel>();
         CreateMap<EditBillRequest, EditBillModel>();
         CreateMap<CreateContentBillDto, CreateContentBillModel>();
-        CreateMap<CreateContentRequest, CreateContentModel>()
-            .ForMember(
-                dest => dest.BrandId,
-                opt => opt
-                    .MapFrom(p => p.BrandId.Value));
+        CreateMap<CreateContentRequest, CreateContentModel>();
         
         CreateMap<EditPersonRequest, EditPersonModel>();
         CreateMap<BrandForCheckboxesDto, BrandForCheckboxesModel>();

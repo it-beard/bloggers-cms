@@ -7,6 +7,9 @@ public class EditContentRequest
 {
     [Required]
     public Guid Id { get; set; }
+    
+    [Required]
+    public Guid BrandId { get; set; }
 
     [Required, EnumDataType(typeof(ContentType))]
     public ContentType Type { get; set; }

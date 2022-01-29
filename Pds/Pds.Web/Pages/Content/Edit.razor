@@ -168,7 +168,7 @@ else
         isEditButtonDisabled = false;
         content = await GetContent();
         clients = await GetClients();
-        persons = await GetPersons();
+        persons = await GetPersons(content.BrandId, content.PersonId);
         editContext = new EditContext(content);
     }
 
@@ -199,8 +199,8 @@ else
         return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "content/get-clients");
     }
 
-    private async Task<List<PersonForLookupDto>> GetPersons()
+    private async Task<List<PersonForLookupDto>> GetPersons(Guid brandId, Guid? contentPersonId)
     {
-        return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, "content/get-persons");
+        return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, $"content/get-persons/brands/{brandId}/persons/{contentPersonId}");
     }
 }

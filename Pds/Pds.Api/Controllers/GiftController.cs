@@ -162,7 +162,7 @@ public class GiftController : ApiControllerBase
     {
         try
         {
-            var contents = await contentService.GetContentsForListByBrandIdWithSelectedValue(brandId, giftContentId);
+            var contents = await contentService.GetForListByBrandIdWithSelectedValueAsync(brandId, giftContentId);
             var response = mapper.Map<List<ContentForLookupDto>>(contents);
 
             return Ok(response);
@@ -183,7 +183,7 @@ public class GiftController : ApiControllerBase
     {
         try
         {
-            var contents = await contentService.GetContentsForListByBrandId(brandId);
+            var contents = await contentService.GetForListByBrandIdAsync(brandId);
             var response = mapper.Map<List<ContentForLookupDto>>(contents);
 
             return Ok(response);

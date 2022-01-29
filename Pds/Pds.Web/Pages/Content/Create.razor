@@ -169,6 +169,7 @@ else
     {
         await SetDefaultValues();
         editContext = new EditContext(content);
+        editContext.OnFieldChanged += EditContext_OnFieldChangedAsync;
     }
 
     private async Task HandleSubmitAsync()
@@ -199,9 +200,9 @@ else
         return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "content/get-clients");
     }
 
-    private async Task<List<PersonForLookupDto>> GetPersonsAsync()
+    private async Task<List<PersonForLookupDto>> GetPersonsAsync(Guid brandId)
     {
-        return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, "content/get-persons");
+        return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, $"content/get-persons/brands/{brandId}");
     }
 
     private DateTime GetCurrentDateWithoutOffset()
@@ -227,6 +228,15 @@ else
             ContactType = ContactType.Telegram
         };
         clients = await GetClientsAsync();
-        persons = await GetPersonsAsync();
+        persons = await GetPersonsAsync(content.BrandId);
+    }
+    
+    private async void EditContext_OnFieldChangedAsync(object sender, FieldChangedEventArgs e)
+    {
+        if (e.FieldIdentifier.FieldName == "BrandId")
+        {
+            persons = await GetPersonsAsync(content.BrandId);
+            editContext.NotifyFieldChanged(new FieldIdentifier(content, "PersonId"));
+        }
     }
 }

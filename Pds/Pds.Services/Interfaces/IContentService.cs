@@ -12,6 +12,6 @@ public interface IContentService
     Task DeleteAsync(Guid clientId);
     Task ArchiveAsync(Guid contentId);
     Task UnarchiveAsync(Guid contentId);
-    Task<List<Content>> GetContentsForListByBrandId(Guid brandId);
-    Task<List<Content>> GetContentsForListByBrandIdWithSelectedValue(Guid brandId, Guid? selectedContentId);
+    Task<List<Content>> GetForListByBrandIdAsync(Guid brandId);
+    Task<List<Content>> GetForListByBrandIdWithSelectedValueAsync(Guid brandId, Guid? selectedContentId);
 }
