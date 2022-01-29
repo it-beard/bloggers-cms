@@ -5,7 +5,7 @@
 @inject NavigationManager Navigation
 @inject IConfiguration Configuration
 
-<RemoteAuthenticatorView Action="@Action">
+<RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="LoginSuccessHandler">
     <LogOut>
         @{
             var authority = Configuration["Auth0:Authority"];
@@ -26,4 +26,8 @@
 
 @code{
     [Parameter] public string Action { get; set; }
+    [Inject] public NavigationManager NavigationManager { get; set; }
+
+    void LoginSuccessHandler(RemoteAuthenticationState state)
+    {}
 }
