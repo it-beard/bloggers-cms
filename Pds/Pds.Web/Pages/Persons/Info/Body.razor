@@ -38,9 +38,13 @@ else
         </div>
         
         <div class="info-item">
-            <div class="info-title">Имя и Фамилия</div>
+            <div class="info-title">Инфо</div>
             <div class="info-body">
                 <b>@person.FullName</b>
+                @if (person.IsContactEstablished)
+                {
+                    <i title="Контакт установлен" class="contact-established bi-check-circle-fill"></i>
+                }
                 <ul>
                     <li>Рейтинг: <b>@person.Rate</b></li>
                     @if (!string.IsNullOrEmpty(person.Location))

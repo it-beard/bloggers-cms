@@ -26,6 +26,8 @@ public class GetPersonResponse
     public string Location { get; set; }
         
     public string Topics { get; set; }
+    
+    public bool IsContactEstablished { get; set; }
 
     public string Info { get; set; }
 

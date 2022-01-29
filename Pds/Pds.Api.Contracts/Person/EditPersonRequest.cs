@@ -22,6 +22,8 @@ public class EditPersonRequest
     public DateTime CreatedAt { get; set; }
     
     public DateTime? UpdatedAt { get; set; }
+    
+    public bool IsContactEstablished { get; set; }
         
     public string Topics { get; set; }
 

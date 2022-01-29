@@ -38,6 +38,11 @@ public class PersonService : IPersonService
         {
             throw new PersonCreateException("Персону нельзя создать без бренда.");
         }
+        
+        if (person.IsContactEstablished && (person.Resources == null || person.Resources.Count == 0))
+        {
+            throw new PersonCreateException("Если установлен контакт, то должна присутствовать как минимум одна ссылка для связи");
+        }
 
         // Restore brands from DB
         var brandsFromApi = person.Brands;
@@ -78,6 +83,11 @@ public class PersonService : IPersonService
         {
             throw new PersonEditException("Персону нельзя создать без бренда.");
         }
+        
+        if (model.IsContactEstablished && (model.Resources == null || model.Resources.Count == 0))
+        {
+            throw new PersonEditException("Если установлен контакт, то должна присутствовать как минимум одна ссылка для связи");
+        }
 
         var person = await unitOfWork.Persons.GetFullByIdAsync(model.Id);
             
@@ -100,6 +110,7 @@ public class PersonService : IPersonService
         person.Rate = model.Rate;
         person.Topics = model.Topics;
         person.Info = model.Info;
+        person.IsContactEstablished = model.IsContactEstablished;
 
         person.Brands = new List<Brand>();
         foreach (var brandId in model.Brands.Where(b=>b.IsSelected).Select(b=>b.Id))

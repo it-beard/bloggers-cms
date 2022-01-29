@@ -29,6 +29,8 @@ public class CreatePersonRequest
     public int? Rate { get; set; }
         
     public bool IsUnknown  { get; set; }
+    
+    public bool IsContactEstablished { get; set; }
         
     [Required]
     public List<ResourceDto> Resources { get; set; }

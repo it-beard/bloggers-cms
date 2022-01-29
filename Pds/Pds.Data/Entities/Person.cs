@@ -36,6 +36,8 @@ public class Person : EntityBase
     public DateTime? ArchivedAt { get; set; }
 
     public DateTime? UnarchivedAt { get; set; }
+    
+    public bool IsContactEstablished { get; set; }
 
     public virtual ICollection<Resource> Resources { get; set; }
 

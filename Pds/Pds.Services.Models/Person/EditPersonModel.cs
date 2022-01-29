@@ -16,6 +16,8 @@ public class EditPersonModel
     public string Topics { get; set; }
 
     public string Info { get; set; }
+    
+    public bool IsContactEstablished { get; set; }
 
     public int? Rate { get; set; }
 

@@ -39,6 +39,11 @@
 
 .rate {
     margin-top: 10px;
+    margin-right: 10px;
     display: inline-block;
     word-wrap: normal;
+}
+
+.contact-established{
+    display: inline-block;
 }

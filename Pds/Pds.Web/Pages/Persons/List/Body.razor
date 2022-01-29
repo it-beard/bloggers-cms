@@ -73,6 +73,10 @@ else
                 <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
                     <td class="person-row">
                         <a class="custom-link" href="persons/@person.Id">@person.FullName</a>
+                        @if (person.IsContactEstablished)
+                        {
+                            <i title="Контакт установлен" class="contact-established bi-check-circle-fill"></i>
+                        }
                         <span class="contents">
                             (@person.Contents.Count)
                         </span>
@@ -184,7 +188,9 @@ else
         var itemsToShow = persons.Items
             .Where(i =>
                 (selectedBrandsIds.Intersect(i.Brands.Select(b => b.Id)).Any() || selectedBrandsIds.Count == 0) &&
-                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0));
+                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
+                (filterSettings.IsContactEstablished && i.IsContactEstablished == filterSettings.IsContactEstablished 
+                    || !filterSettings.IsContactEstablished));
 
         var query = itemsToShow
             .AsQueryable();

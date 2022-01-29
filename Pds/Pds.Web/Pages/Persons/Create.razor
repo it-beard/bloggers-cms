@@ -66,6 +66,10 @@ else
                 <label for="person_rate" class="form-label">Рейтинг: </label>
                 <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
             </div>
+            <div class="contact-established">
+                <InputCheckbox name="is_nds" class="btn-check" @bind-Value="person.IsContactEstablished" Id="is_contact_established"/>
+                <label for="is_contact_established" class="btn btn-sm btn-secondary">Контакт установлен</label>
+            </div>
         </div>
 
         <div class="form-group">
