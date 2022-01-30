@@ -7,4 +7,6 @@ public class FilterSettings
     public List<PersonStatusFilterItem> PersonStatusFilterItems { get; set; }
     
     public bool IsContactEstablished { get; set; }
+    
+    public bool IsUnknownPersons { get; set; }
 }

@@ -63,6 +63,9 @@ else
                     <span class="filter-row-title">Прочее:</span>
                     <InputCheckbox name="is_nds" class="btn-check" @bind-Value="filterSettings.IsContactEstablished" Id="is_contact_established"/>
                     <label for="is_contact_established" class="btn btn-secondary">Контакт установлен</label>
+                    
+                    <InputCheckbox name="is_nds" class="btn-check" @bind-Value="filterSettings.IsUnknownPersons" Id="is_unknown_persons"/>
+                    <label for="is_unknown_persons" class="btn btn-secondary">Неизвестные персоны (темы)</label>
                 </div>
             </EditForm>
         </div>

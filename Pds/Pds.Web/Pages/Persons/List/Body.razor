@@ -190,7 +190,9 @@ else
                 (selectedBrandsIds.Intersect(i.Brands.Select(b => b.Id)).Any() || selectedBrandsIds.Count == 0) &&
                 (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
                 (filterSettings.IsContactEstablished && i.IsContactEstablished == filterSettings.IsContactEstablished 
-                    || !filterSettings.IsContactEstablished));
+                    || !filterSettings.IsContactEstablished) &&
+                (filterSettings.IsUnknownPersons && i.FirstName == "Неизвестно" && i.LastName == "Неизвестно"
+                    || !filterSettings.IsUnknownPersons && (i.FirstName != "Неизвестно" || i.LastName != "Неизвестно")));
 
         var query = itemsToShow
             .AsQueryable();
