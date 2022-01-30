@@ -1,21 +1,5 @@
-﻿.form-group {
-    margin-bottom: 5px;
-}
-
-.filter {
-    padding: 15px 15px 15px 0;
-    border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
-    background-color: rgba(0,0,0,.03);
-    border-bottom: 1px solid rgba(0,0,0,.125);
-}
-
-.filter-row-title {
-    font-size: 0.77rem;
-    padding: 2px 4px;
-    border-radius: 4px;
-    color: #999;
-    width: 100px;
+﻿::deep input.from-date,
+::deep input.to-date{
+    width: 150px;
     display: inline-block;
-    text-align: right;
-    font-style: italic;
 }

@@ -70,3 +70,7 @@
     border-radius: 4px;
     color: #eee;
 }
+
+.comment-body{
+    min-width: 350px;
+}

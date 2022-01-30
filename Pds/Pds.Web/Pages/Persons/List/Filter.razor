@@ -21,38 +21,51 @@
 }
 else
 {
-    <div class="filter">
-        <EditForm EditContext="@editContext">
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Бренд:</span>
-                @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
-                {
-                    var id = $"sm_type_{brandFilterItem.Id.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id" />
-                    <label class="btn btn-secondary" for="@id">
-                        @brandFilterItem.Name
-                    </label>
-                }
-                <SearchComponent Search="SearchOnChanged" />
-            </div>
+    var filterButtonClass = IsMobileFilterOpen ? "bi-caret-up-fill" : "bi-caret-down-fill";
+    var filterPaddingFixClass = IsMobileFilterOpen ? string.Empty : "filter-padding-fix";
+    var openFilterClass = IsMobileFilterOpen ? "filter-main-open" : string.Empty;
+    
+    <div class="@($"filter {filterPaddingFixClass}")">
+        <div class="filter-header">
             
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Статус:</span>
-                @foreach (var statusFilterItem in filterSettings.PersonStatusFilterItems)
-                {
-                    var id = $"status_{statusFilterItem.PersonStatus.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="statusFilterItem.IsSelected" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">
-                        @EnumsTranslator.PersonStatusToRu(statusFilterItem.PersonStatus)
-                    </label>
-                }
-            </div>
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Прочее:</span>
-                <InputCheckbox name="is_nds" class="btn-check" @bind-Value="filterSettings.IsContactEstablished" Id="is_contact_established"/>
-                <label for="is_contact_established" class="btn btn-secondary">Контакт установлен</label>
-            </div>
-        </EditForm>
+            <button title="Фильтр" class="btn btn-success btn-sm button-filter" @onclick="OnButtonFilterClick">
+                <i class="@($"bi {filterButtonClass}")"></i>
+            </button>
+            <SearchComponent Search="SearchOnChanged"/>
+        </div>
+        
+        <div class="@($"filter-main {openFilterClass}")">
+            <EditForm EditContext="@editContext">
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Бренд:</span>
+                    @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
+                    {
+                        var id = $"sm_type_{brandFilterItem.Id.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id" />
+                        <label class="btn btn-secondary" for="@id">
+                            @brandFilterItem.Name
+                        </label>
+                    }
+                </div>
+        
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Статус:</span>
+                    @foreach (var statusFilterItem in filterSettings.PersonStatusFilterItems)
+                    {
+                        var id = $"status_{statusFilterItem.PersonStatus.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="statusFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.PersonStatusToRu(statusFilterItem.PersonStatus)
+                        </label>
+                    }
+                </div>
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Прочее:</span>
+                    <InputCheckbox name="is_nds" class="btn-check" @bind-Value="filterSettings.IsContactEstablished" Id="is_contact_established"/>
+                    <label for="is_contact_established" class="btn btn-secondary">Контакт установлен</label>
+                </div>
+            </EditForm>
+        </div>
     </div>
 }
 
@@ -65,6 +78,7 @@ else
     private EditContext editContext;
     private FilterSettings filterSettings { get; set; }
     private List<BrandDto> brands { get; set; }
+    private bool IsMobileFilterOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,5 +136,10 @@ else
     private async Task<List<BrandDto>> GetBrands()
     {
         return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
+    }
+    
+    private void OnButtonFilterClick()
+    {
+        IsMobileFilterOpen = !IsMobileFilterOpen;
     }
 }

@@ -99,3 +99,65 @@ a.custom-link:hover {
 .pre-span {
     white-space: pre;
 }
+
+/* Filters START */
+.form-group {
+    margin-bottom: 5px;
+}
+
+.filter-row-title {
+    font-size: 0.77rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #999;
+    width: 100px;
+    display: inline-block;
+    text-align: right;
+    font-style: italic;
+}
+
+.filter {
+    padding: 15px 15px 10px 0;
+    border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
+    background-color: rgba(0,0,0,.03);
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.filter-padding-fix {
+    padding-bottom: 10px;
+}
+
+.filter-header .btn {
+    display: none;
+}
+
+.filter-main {
+    display: block;
+}
+
+.filter-main-open {
+    display: block !important;
+}
+
+@media (max-width: 641px) {
+    .filter-header {
+        text-align:  right;
+        margin-bottom: 15px;
+    }
+    
+    .filter-padding-fix {
+        padding-bottom: 0px;
+    }
+
+    .filter-header .btn {
+        display: inline;
+        margin-top: 3px;
+        float: left;
+        margin-left: 10px;
+    }
+
+    .filter-main {
+        display: none;
+    }
+}
+/* Filters START */

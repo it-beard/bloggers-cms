@@ -24,66 +24,78 @@
 }
 else
 {
-    <div class="filter">
-        <EditForm EditContext="@editContext">
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Бренд:</span>
-                @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
-                {
-                    var id = $"sm_type_{brandFilterItem.Id.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">
-                        @brandFilterItem.Name
-                    </label>
-                }
-                <SearchComponent Search="SearchOnChanged" />
-            </div>
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Тип дохода:</span>
-                @foreach (var billTypeFilterItem in filterSettings.BillTypeFilterItems)
-                {
-                    var id = $"bill_type_{billTypeFilterItem.BillType.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="billTypeFilterItem.IsSelected" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">
-                        @EnumsTranslator.BillTypeToRu(billTypeFilterItem.BillType)
-                    </label>
-                }
-            </div>
-
-            @if (filterSettings.BillTypeFilterItems.Any(u => u.IsSelected && u.BillType == BillType.Content))
-            {
+    var filterButtonClass = IsMobileFilterOpen ? "bi-caret-up-fill" : "bi-caret-down-fill";
+    var filterPaddingFixClass = IsMobileFilterOpen ? string.Empty : "filter-padding-fix";
+    var openFilterClass = IsMobileFilterOpen ? "filter-main-open" : string.Empty;
+    
+    <div class="@($"filter {filterPaddingFixClass}")">
+        <div class="filter-header">
+            
+            <button title="Фильтр" class="btn btn-success btn-sm button-filter" @onclick="OnButtonFilterClick">
+                <i class="@($"bi {filterButtonClass}")"></i>
+            </button>
+            <SearchComponent Search="SearchOnChanged"/>
+        </div>
+        
+        <div class="@($"filter-main {openFilterClass}")">
+            <EditForm EditContext="@editContext">
                 <div class="form-group no-wrap">
-                    <span class="filter-row-title">Тип контента:</span>
-                    @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
+                    <span class="filter-row-title">Бренд:</span>
+                    @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
                     {
-                        var id = $"sm_type_{smFilterItem.SocialMediaType.ToString()}";
-                        <InputCheckbox name="@id" class="btn-check" @bind-Value="smFilterItem.IsSelected" Id="@id"/>
+                        var id = $"sm_type_{brandFilterItem.Id.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id"/>
                         <label class="btn btn-secondary" for="@id">
-                            @EnumsTranslator.SocialMediaTypeToRu(smFilterItem.SocialMediaType)
+                            @brandFilterItem.Name
                         </label>
                     }
                 </div>
-            }
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Тип дохода:</span>
+                    @foreach (var billTypeFilterItem in filterSettings.BillTypeFilterItems)
+                    {
+                        var id = $"bill_type_{billTypeFilterItem.BillType.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="billTypeFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.BillTypeToRu(billTypeFilterItem.BillType)
+                        </label>
+                    }
+                </div>
 
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Тип оплаты:</span>
-                @foreach (var paymentTypeFilterItem in filterSettings.PaymentTypeFilterItems)
+                @if (filterSettings.BillTypeFilterItems.Any(u => u.IsSelected && u.BillType == BillType.Content))
                 {
-                    var id = $"payment_type_{paymentTypeFilterItem.PaymentType.ToString()}";
-                    <InputCheckbox name="@id" class="btn-check" @bind-Value="paymentTypeFilterItem.IsSelected" Id="@id"/>
-                    <label class="btn btn-secondary" for="@id">
-                        @EnumsTranslator.PaymentTypeToRu(paymentTypeFilterItem.PaymentType)
-                    </label>
+                    <div class="form-group no-wrap">
+                        <span class="filter-row-title">Тип контента:</span>
+                        @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
+                        {
+                            var id = $"sm_type_{smFilterItem.SocialMediaType.ToString()}";
+                            <InputCheckbox name="@id" class="btn-check" @bind-Value="smFilterItem.IsSelected" Id="@id"/>
+                            <label class="btn btn-secondary" for="@id">
+                                @EnumsTranslator.SocialMediaTypeToRu(smFilterItem.SocialMediaType)
+                            </label>
+                        }
+                    </div>
                 }
-            </div>
-            <div class="form-group no-wrap">
-                <span class="filter-row-title">Когда:</span>
-                <InputDate class="form-control from-date" id="from_date" @bind-Value="filterSettings.From"/>
-                <span class="filter-date-separator">&lt; с | по &gt; </span>
-                <InputDate class="form-control to-date" id="to_date" @bind-Value="filterSettings.To"/>
-            </div>
-        </EditForm>
 
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Тип оплаты:</span>
+                    @foreach (var paymentTypeFilterItem in filterSettings.PaymentTypeFilterItems)
+                    {
+                        var id = $"payment_type_{paymentTypeFilterItem.PaymentType.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="paymentTypeFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.PaymentTypeToRu(paymentTypeFilterItem.PaymentType)
+                        </label>
+                    }
+                </div>
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Когда:</span>
+                    <InputDate class="form-control from-date" id="from_date" @bind-Value="filterSettings.From"/>
+                    <span class="filter-date-separator">&lt; с | по &gt; </span>
+                    <InputDate class="form-control to-date" id="to_date" @bind-Value="filterSettings.To"/>
+                </div>
+            </EditForm>
+        </div>
     </div>
 }
 
@@ -97,6 +109,7 @@ else
     private EditContext editContext;
     private FilterSettings filterSettings { get; set; }
     private List<BrandDto> brands { get; set; }
+    private bool IsMobileFilterOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -173,5 +186,10 @@ else
     private async Task<List<BrandDto>> GetBrands()
     {
         return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
+    }
+    
+    private void OnButtonFilterClick()
+    {
+        IsMobileFilterOpen = !IsMobileFilterOpen;
     }
 }
