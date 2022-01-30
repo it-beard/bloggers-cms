@@ -51,9 +51,15 @@ else
         </div>
 
         <div class="form-group">
-            <InputCheckbox name="isUnknown" class="btn-check" @bind-Value="person.IsUnknown" id="person_isUnknown" 
+            <div class="contact-established">
+                <InputCheckbox name="is_nds" class="btn-check" @bind-Value="person.IsContactEstablished" Id="is_contact_established"/>
+                <label for="is_contact_established" class="btn btn-sm btn-secondary">Контакт установлен</label>
+            </div>
+            <div class="unknown-person">
+                <InputCheckbox name="isUnknown" class="btn-check" @bind-Value="person.IsUnknown" id="person_isUnknown"
                            @onclick="@(_ => ToggleUnknownPerson())"/>
-            <label class="btn btn-secondary btn-sm" for="person_isUnknown">Неизвестная персона</label>
+                <label class="btn btn-secondary btn-sm" for="person_isUnknown">Неизвестная персона</label>
+            </div>
         </div>
 
         <div class="form-group">
@@ -65,10 +71,6 @@ else
             <div class="rate">
                 <label for="person_rate" class="form-label">Рейтинг: </label>
                 <InputNumber id="person_rate" class="form-control person-rate" max="100" min="0" @bind-Value="person.Rate" placeholder="Рейтинг"/>
-            </div>
-            <div class="contact-established">
-                <InputCheckbox name="is_nds" class="btn-check" @bind-Value="person.IsContactEstablished" Id="is_contact_established"/>
-                <label for="is_contact_established" class="btn btn-sm btn-secondary">Контакт установлен</label>
             </div>
         </div>
 
