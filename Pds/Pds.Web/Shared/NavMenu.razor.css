@@ -27,6 +27,7 @@
 
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
+    margin-left: 15px;
 }
 
 .top-row {

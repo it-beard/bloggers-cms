@@ -95,3 +95,7 @@ a.custom-link:hover {
 .comment-row {
     white-space: pre-line;
 }
+
+.pre-span {
+    white-space: pre;
+}

@@ -25,3 +25,10 @@
 .searchcleaner:hover {
     cursor:pointer;
 }
+
+@media (max-width: 641px) {
+    .search-position {
+        float: none;
+        display: inline-block;
+    }
+}
