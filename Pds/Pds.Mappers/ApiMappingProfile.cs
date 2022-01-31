@@ -10,6 +10,9 @@ using Pds.Api.Contracts.Content.GetContent;
 using Pds.Api.Contracts.Content.GetContents;
 using Pds.Api.Contracts.Cost;
 using Pds.Api.Contracts.Dashboard;
+using Pds.Api.Contracts.Dashboard.GetContentStatistics;
+using Pds.Api.Contracts.Dashboard.GetCountriesStatistics;
+using Pds.Api.Contracts.Dashboard.GetMoneyStatistics;
 using Pds.Api.Contracts.Gift;
 using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Settings;
@@ -206,6 +209,8 @@ public class ApiMappingProfile : Profile
         CreateMap<GetBrandModel, BrandFullDto>();
         CreateMap<CountryStatisticsBrandModel, GetCountriesStatisticsBrandDto>();
         CreateMap<CountryStatisticsCountryModel, GetCountriesStatisticsCountryDto>();
+        CreateMap<ContentStatisticsBrandModel, GetContentStatisticsBrandDto>();
+        CreateMap<ContentStatisticsContentModel, GetContentStatisticsContentDto>();
         CreateMap<MoneyStatisticsBrandModel, GetMoneyStatisticsBrandDto>();
 
         #endregion

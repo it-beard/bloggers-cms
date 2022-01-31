@@ -1,4 +1,4 @@
-namespace Pds.Api.Contracts.Dashboard;
+namespace Pds.Api.Contracts.Dashboard.GetMoneyStatistics;
 
 public class GetMoneyStatisticsBrandDto
 {

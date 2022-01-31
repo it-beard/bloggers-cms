@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts.Brand;
 using Pds.Api.Contracts.Dashboard;
+using Pds.Api.Contracts.Dashboard.GetContentStatistics;
+using Pds.Api.Contracts.Dashboard.GetCountriesStatistics;
+using Pds.Api.Contracts.Dashboard.GetMoneyStatistics;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Brand;
@@ -58,6 +61,26 @@ public class DashboardController : ApiControllerBase
         {
             var money = await dashboardService.GetMoneyStatisticsAsync();
             var response = mapper.Map<GetMoneyStatisticsResponse>(money);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Return Content Statistics
+    /// </summary>
+    [HttpGet("content-statistics")]
+    [ProducesResponseType(typeof(GetContentStatisticsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetContentStatistics()
+    {
+        try
+        {
+            var content = await dashboardService.GetContentStatisticsAsync();
+            var response = mapper.Map<GetContentStatisticsResponse>(content);
 
             return Ok(response);
         }

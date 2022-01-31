@@ -4,7 +4,10 @@
 @using static Pds.Web.Common.Constants
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Dashboard
+@using Pds.Api.Contracts.Dashboard.GetContentStatistics
+@using Pds.Api.Contracts.Dashboard.GetCountriesStatistics
+@using Pds.Api.Contracts.Dashboard.GetMoneyStatistics
+@using Pds.Core.Extensions
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -25,6 +28,33 @@
 else
 {
     <div class="statistics-container">
+        @foreach (var brand in contentStatistics.Where(c => c.Contents.Any()))
+        {
+            <div class="brand-content-statistics">
+                <div class="brand-content-statistics-title">
+                    Ближайший контент: @brand.BrandName
+                </div>
+                <div class="brand-content-statistics-body">
+                    @foreach (var content in brand.Contents)
+                    {
+                        <div>
+                            <span class="content-date no-wrap">
+                                @content.ReleaseDate.Date.ToShortStringDateWithDay()
+                            </span>
+                            <span class="content-type">
+                                @EnumsTranslator.SocialMediaTypeToRu(content.SocialMediaType)
+                            </span>
+                            <span class="content-title">
+                                <a class="custom-link" href="content/@content.Id">
+                                    @content.Title
+                                </a>
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        
         @foreach (var brand in moneyStatistics
             .Where(s => s.BillsSumForPreviousMonth > 0 ||
                         s.BillsSumForThisMonth > 0 ||
@@ -59,7 +89,7 @@ else
                         </span>
                     </div>
                 </div>
-                
+
                 <div class="brand-money-statistics-body">
                     <div>
                         <span class="month">
@@ -80,12 +110,12 @@ else
                         </span>
                     </div>
                 </div>
-                
+
                 <div class="brand-money-statistics-body">
                     <div>
                         <span class="month">
-                            <span class="small-title">Доход</span> 
-                            <i>@thisMonthsName @DateTime.UtcNow.Year</i>
+                            <span class="small-title">Доход</span>
+                            <i>@thisMonthsName @DateTime.UtcNow.AddYears(-1).Year</i>
                         </span> -
                         <span class="bills-sum">
                             @brand.BillsSumSameMonthYearAgo.ToString("N0")
@@ -93,8 +123,8 @@ else
                     </div>
                     <div>
                         <span class="month">
-                            <span class="small-title">Расход</span> 
-                            <i>@thisMonthsName @DateTime.UtcNow.Year</i>
+                            <span class="small-title">Расход</span>
+                            <i>@thisMonthsName @DateTime.UtcNow.AddYears(-1).Year</i>
                         </span> -
                         <span class="costs-sum">
                             @brand.CostsSumSameMonthYearAgo.ToString("N0")
@@ -103,7 +133,7 @@ else
                 </div>
             </div>
         }
-        
+
         @foreach (var brand in countriesStatistics.Where(b => b.Countries.Any()))
         {
             <div class="brand-city-statistics">
@@ -114,7 +144,7 @@ else
                     @foreach (var country in brand.Countries)
                     {
                         <li>
-                            @country.CountryName - @country.ActivePersonsCount чел.
+                            @country.Name - @country.ActivePersonsCount чел.
                         </li>
                     }
                 </ul>
@@ -126,11 +156,13 @@ else
 @code {
     private GetCountriesStatisticsResponse countriesStatistics;
     private GetMoneyStatisticsResponse moneyStatistics;
+    private GetContentStatisticsResponse contentStatistics;
 
     protected override async Task OnInitializedAsync()
     {
         countriesStatistics = await GetCountriesStatistics();
         moneyStatistics = await GetMoneyStatistics();
+        contentStatistics = await GetContentStatistics();
     }
 
     private async Task<GetCountriesStatisticsResponse> GetCountriesStatistics()
@@ -141,5 +173,10 @@ else
     private async Task<GetMoneyStatisticsResponse> GetMoneyStatistics()
     {
         return await ApiClient.Get<GetMoneyStatisticsResponse>(TokenProvider, "dashboard/money-statistics");
+    }
+    
+    private async Task<GetContentStatisticsResponse> GetContentStatistics()
+    {
+        return await ApiClient.Get<GetContentStatisticsResponse>(TokenProvider, "dashboard/content-statistics");
     }
 }

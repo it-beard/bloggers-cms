@@ -63,14 +63,14 @@
     margin: 0px 15px;
 }
 
-.month {
+.brand-money-statistics-body .month {
     font-size: 0.89rem;
     background-color: white;
     padding: 2px 4px;
     border-radius: 4px;
 }
 
-.costs-sum {
+.brand-money-statistics-body .costs-sum {
     font-size: 0.89rem;
     background-color: lightcoral;
     padding: 2px 4px;
@@ -78,7 +78,7 @@
     color: white;
 }
 
-.bills-sum {
+.brand-money-statistics-body .bills-sum {
     font-size: 0.89rem;
     background-color: green;
     padding: 2px 4px;
@@ -86,7 +86,46 @@
     color: white;
 }
 
-.small-title {
+.brand-money-statistics-body .small-title {
     display: inline-block;
     width: 45px;
+}
+
+.brand-content-statistics{
+    display: block;
+    margin: 0 15px 15px 0;
+    border-radius: 10px;
+    background-color: lavender;
+    min-width: 230px;
+}
+
+.brand-content-statistics-title {
+    display: block;
+    margin: 10px 10px;
+    border-radius: 6px;
+    background-color: lightgoldenrodyellow;
+    color: black;
+    text-align: center;
+    padding: 5px 0px;
+}
+
+.brand-content-statistics-body {
+    padding: 0 15px 10px 15px;
+    display: block;
+    margin: 0px 15px;
+}
+
+.brand-content-statistics-body .content-date {
+    font-size: 0.89rem;
+    background-color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.brand-content-statistics-body .content-type {
+    font-size: 0.89rem;
+    background-color: cornflowerblue;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
 }

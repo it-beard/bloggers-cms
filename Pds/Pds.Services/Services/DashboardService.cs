@@ -26,4 +26,9 @@ public class DashboardService : IDashboardService
     {
         return await unitOfWork.Dashboard.GetMoneyStatisticsAsync();
     }
+
+    public async Task<List<ContentStatisticsBrandModel>> GetContentStatisticsAsync()
+    {
+        return await unitOfWork.Dashboard.GetContentStatisticsAsync();
+    }
 }

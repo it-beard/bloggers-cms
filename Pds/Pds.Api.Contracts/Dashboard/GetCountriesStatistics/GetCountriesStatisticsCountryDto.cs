@@ -1,8 +1,8 @@
-namespace Pds.Api.Contracts.Dashboard;
+namespace Pds.Api.Contracts.Dashboard.GetCountriesStatistics;
 
 public class GetCountriesStatisticsCountryDto
 {
-    public string CountryName { get; set; }
+    public string Name { get; set; }
     
     public int ActivePersonsCount { get; set; }
 }

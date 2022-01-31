@@ -28,7 +28,7 @@ public class DashboardRepository : IDashboardRepository
                     .OrderByDescending(c => c.Count())
                     .Select(p => new CountryStatisticsCountryModel()
                     {
-                        CountryName = p.Key,
+                        Name = p.Key,
                         ActivePersonsCount = p.Count()
                     })
                     .OrderByDescending(b => b.ActivePersonsCount)
@@ -86,6 +86,34 @@ public class DashboardRepository : IDashboardRepository
                                     b.PaidAt.Value.Date <= lastDayOfSameMonthYearAgo)
                         .Sum(b=>b.Value),
             })
+            .ToListAsync();
+
+        return result;
+    }
+    
+    public async Task<List<ContentStatisticsBrandModel>> GetContentStatisticsAsync()
+    {
+        var result = await context.Brands
+            .Select(b => new ContentStatisticsBrandModel()
+            {
+                BrandName = b.Name,
+                BrandId = b.Id,
+                Contents = b
+                    .Contents.Where(c => c.ReleaseDate >= DateTime.UtcNow.Date && 
+                                         c.ReleaseDate <= DateTime.UtcNow.AddDays(7).Date &&
+                                         c.Status != ContentStatus.Archived)
+                    .Select(c => new ContentStatisticsContentModel
+                    {
+                        Title = c.Title,
+                        Id = c.Id,
+                        ReleaseDate = c.ReleaseDate,
+                        SocialMediaType = c.SocialMediaType,
+                        BillPaymentStatus = c.Bill.PaymentStatus
+                    })
+                    .OrderByDescending(b => b.ReleaseDate)
+                    .ToList()
+            })
+            .Take(7)
             .ToListAsync();
 
         return result;
