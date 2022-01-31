@@ -47,8 +47,12 @@
     text-decoration: none;
 }
 
+.person-row {
+    padding-left: 15px;
+ }
+
 .active {
-    background-color: lightgreen;
+    background-color: aliceblue;
 }
 
 .archived,
@@ -81,4 +85,8 @@
 
 .archived .contact-established {
     color: rgba(86, 86, 86, 0.3);
+}
+
+.actions-row {
+    border-left: 2px dotted rgb(222, 226, 230);
 }

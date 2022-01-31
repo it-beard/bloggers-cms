@@ -33,7 +33,7 @@ else
         <tbody>
             @foreach (var client in clientsInfo.Items)
             {
-                <tr>
+                <tr class="normal">
                     <td class="client-name-row">
                         <a class="custom-link" href="clients/@client.Id">@client.Name</a>
                         @if (client.Bills is { Count: > 0 })
@@ -44,7 +44,7 @@ else
                         }
                     </td>
                     <td class="comment-row">@client.Comment</td>
-                    <td class="text-center">
+                    <td class="text-center actions-row">
                         <Actions OnClientUpdate="@ClientsInfoUpdate" CurrentClient="@client"></Actions>
                     </td>
                 </tr>

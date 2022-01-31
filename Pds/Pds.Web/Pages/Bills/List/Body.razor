@@ -47,7 +47,7 @@ else
             <tbody>
             @foreach (var bill in filteredBills)
             {
-                <tr>
+                <tr class="normal">
                     <td class="paid-date-row">
                         <span>
                             @bill.PaidAt.Date.ToString("dd.MM.yyyy")
@@ -82,7 +82,7 @@ else
                         }
                         @bill.Comment
                     </td>
-                    <td class="text-center actions-header">
+                    <td class="text-center actions-row">
                         <Actions OnActionsUpdate="@OnActionsUpdate" CurrentBill="@bill"></Actions>
                     </td>
                 </tr>

@@ -2,8 +2,9 @@
     margin-bottom: 15px;
 }
 
-.actions-header {
+.actions-row {
     width: 100px;
+    border-left: 2px dotted rgb(222, 226, 230);
 }
 
 .id-header,
@@ -60,6 +61,10 @@
 
 .id-row {
     color: #777;;
+}
+
+.normal {
+    background-color: aliceblue;
 }
 
 .title-overall-info{

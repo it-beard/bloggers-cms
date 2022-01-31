@@ -34,8 +34,8 @@ else
         <tbody>
             @foreach (var brand in brandsInfo.Items.OrderBy(b=>b.Name))
             {
-                <tr>
-                    <td class="client-name-row">
+                <tr class="normal">
+                    <td class="brand-name-row">
                         
                         @if (brand.IsDefault)
                         {
@@ -92,7 +92,7 @@ else
                             @brand.Info
                         </div>
                     </td>
-                    <td class="text-center actions-header">
+                    <td class="text-center actions-row">
                         <Actions OnBrandUpdate="@OnBrandUpdate" CurrentBrand="@brand"></Actions>
                     </td>
                 </tr>

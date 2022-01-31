@@ -72,22 +72,18 @@ else
                 @{
                     var thisMonthsName = new DateTime(2020, DateTime.UtcNow.Month, 1).ToString("MMMM");
                     var previousMonthsName = new DateTime(2020, DateTime.UtcNow.AddMonths(-1).Month, 1).ToString("MMMM");
+                    var thisYear = DateTime.UtcNow.Year;
+                    var previousYear = DateTime.UtcNow.AddYears(-1).Year;
+                    var previousMonthYear = new DateTime(thisYear, DateTime.UtcNow.AddMonths(-1).Month, 1).Year;
                 }
                 <div class="brand-money-statistics-body">
                     <div>
                         <span class="month">
-                            <span class="small-title">Доход</span>
-                            <i>@thisMonthsName</i>
-                        </span> -
+                            @thisMonthsName @thisYear
+                        </span>
                         <span class="bills-sum">
                             @brand.BillsSumForThisMonth.ToString("N0")
                         </span>
-                    </div>
-                    <div>
-                        <span class="month">
-                            <span class="small-title">Расход</span>
-                            <i>@thisMonthsName</i>
-                        </span> -
                         <span class="costs-sum">
                             @brand.CostsSumForThisMonth.ToString("N0")
                         </span>
@@ -97,18 +93,11 @@ else
                 <div class="brand-money-statistics-body">
                     <div>
                         <span class="month">
-                            <span class="small-title">Доход</span>
-                            <i>@previousMonthsName</i>
-                        </span> -
+                            @previousMonthsName @previousMonthYear
+                        </span>
                         <span class="bills-sum">
                             @brand.BillsSumForPreviousMonth.ToString("N0")
                         </span>
-                    </div>
-                    <div>
-                        <span class="month">
-                            <span class="small-title">Расход</span>
-                            <i>@previousMonthsName</i>
-                        </span> -
                         <span class="costs-sum">
                             @brand.CostsSumForPreviousMonth.ToString("N0")
                         </span>
@@ -118,18 +107,11 @@ else
                 <div class="brand-money-statistics-body">
                     <div>
                         <span class="month">
-                            <span class="small-title">Доход</span>
-                            <i>@thisMonthsName @DateTime.UtcNow.AddYears(-1).Year</i>
-                        </span> -
+                            @thisMonthsName @previousYear
+                        </span>
                         <span class="bills-sum">
                             @brand.BillsSumSameMonthYearAgo.ToString("N0")
                         </span>
-                    </div>
-                    <div>
-                        <span class="month">
-                            <span class="small-title">Расход</span>
-                            <i>@thisMonthsName @DateTime.UtcNow.AddYears(-1).Year</i>
-                        </span> -
                         <span class="costs-sum">
                             @brand.CostsSumSameMonthYearAgo.ToString("N0")
                         </span>
@@ -144,14 +126,19 @@ else
                 <div class="brand-city-statistics-title">
                     Персоны: @brand.BrandName
                 </div>
-                <ul class="brand-city-statistics-body">
+                <div class="brand-city-statistics-body">
                     @foreach (var country in brand.Countries)
                     {
-                        <li>
-                            @country.Name - @country.ActivePersonsCount чел.
-                        </li>
+                        <div>
+                            <span class="city-name">
+                                @country.Name
+                            </span>
+                            <span class="persons-count">
+                                @country.ActivePersonsCount чел.
+                            </span>
+                        </div>
                     }
-                </ul>
+                </div>
             </div>
         }
     </div>

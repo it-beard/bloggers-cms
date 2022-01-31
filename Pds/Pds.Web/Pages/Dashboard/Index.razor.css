@@ -14,7 +14,7 @@
     display: block;
     margin: 0 15px 15px 0;
     border-radius: 10px;
-    background-color: lightblue;
+    background-color: bisque;
     min-width: 230px;
 }
 
@@ -23,14 +23,18 @@
     margin-bottom: 0;
 }
 
-.brand-city-statistics-title {
+.brand-city-statistics-title,
+.brand-content-statistics-title,
+.brand-money-statistics-title {
     display: block;
-    margin: 10px 10px;
-    border-radius: 6px;
-    background-color: lightgoldenrodyellow;
+    margin: 5px 10px;
+    border-radius: 0;
     color: black;
     text-align: center;
     padding: 5px 0px;
+    border-bottom: 2px dotted white;
+    font-size: 0.89em;
+    font-weight: bold;
 }
 
 .brand-city-statistics-body {
@@ -39,22 +43,33 @@
     margin: 0px 15px;
 }
 
+.brand-city-statistics-body .city-name {
+    font-size: 0.89rem;
+    background-color: white;
+    padding: 0px 4px;
+    border-radius: 4px;
+    width: 120px;
+    display: inline-block;
+    text-align: center;
+}
+
+.brand-city-statistics-body .persons-count {
+    font-size: 0.89rem;
+    background-color: cornflowerblue;
+    color: white;
+    padding: 0px 4px;
+    border-radius: 4px;
+    width: 70px;
+    display: inline-block;
+    text-align: center;
+}
+
 .brand-money-statistics{
     display: block;
     margin: 0 15px 15px 0;
     border-radius: 10px;
-    background-color: lightgray;
+    background-color: gainsboro;
     min-width: 230px;
-}
-
-.brand-money-statistics-title {
-    display: block;
-    margin: 10px 10px;
-    border-radius: 6px;
-    background-color: lightgoldenrodyellow;
-    color: black;
-    text-align: center;
-    padding: 5px 0px;
 }
 
 .brand-money-statistics-body {
@@ -66,24 +81,33 @@
 .brand-money-statistics-body .month {
     font-size: 0.89rem;
     background-color: white;
-    padding: 2px 4px;
+    padding: 0px 4px;
     border-radius: 4px;
+    width: 120px;
+    display: inline-block;
+    text-align: center;
 }
 
 .brand-money-statistics-body .costs-sum {
     font-size: 0.89rem;
     background-color: lightcoral;
-    padding: 2px 4px;
+    padding: 0px 4px;
     border-radius: 4px;
     color: white;
+    width: 50px;
+    display: inline-block;
+    text-align: center;
 }
 
 .brand-money-statistics-body .bills-sum {
     font-size: 0.89rem;
     background-color: green;
-    padding: 2px 4px;
+    padding: 0px 4px;
     border-radius: 4px;
     color: white;
+    width: 50px;
+    display: inline-block;
+    text-align: center;
 }
 
 .brand-money-statistics-body .small-title {
@@ -97,16 +121,6 @@
     border-radius: 10px;
     background-color: lavender;
     min-width: 230px;
-}
-
-.brand-content-statistics-title {
-    display: block;
-    margin: 10px 10px;
-    border-radius: 6px;
-    background-color: lightgoldenrodyellow;
-    color: black;
-    text-align: center;
-    padding: 5px 0px;
 }
 
 .brand-content-statistics-body {

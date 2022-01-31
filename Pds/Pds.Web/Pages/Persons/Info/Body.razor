@@ -64,12 +64,15 @@ else
             </div>
         </div>
         
-        <div class="info-item">
-            <div class="info-title">Темы</div>
-            <div class="info-body">
-                @person.Topics
+        @if (!string.IsNullOrEmpty(person.Topics))
+        {
+            <div class="info-item">
+                <div class="info-title">Темы</div>
+                <div class="info-body">
+                    @person.Topics
+                </div>
             </div>
-        </div>
+        }
         
         @if (person.Contents.Any())
         {

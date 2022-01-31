@@ -15,8 +15,9 @@
     margin-bottom: 15px;
 }
 
-.actions-header {
+.actions-row {
     width: 100px;
+    border-left: 2px dotted rgb(222, 226, 230);
 }
 
 .id-header,
@@ -70,4 +71,8 @@
     padding: 2px 4px;
     border-radius: 4px;
     color: #eee;
+}
+
+.normal {
+    background-color: aliceblue;
 }

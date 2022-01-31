@@ -25,13 +25,16 @@ else
         <button @onclick="GoBack" class="btn btn-primary" >Назад</button>
     </h4>
     <div class="page-container">
-        <div class="info-item">
-            <div class="info-title">Комментарий</div>
-            <div class="info-body">
-                @client.Comment
+        @if (!string.IsNullOrEmpty(client.Comment))
+        {
+            <div class="info-item">
+                <div class="info-title">Комментарий</div>
+                <div class="info-body">
+                    @client.Comment
+                </div>
             </div>
-        </div>
-        
+        }
+
         @{
             var notPaidBills = client.Bills.Where(b => b.PaymentStatus == PaymentStatus.NotPaid);
             var notPaidBillsCost = notPaidBills.Sum(npb => npb.Value);
