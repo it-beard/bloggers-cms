@@ -14,6 +14,7 @@ public interface IUnitOfWork : IDisposable
     ICostRepository Costs { get; }
     IGiftRepository Gifts { get; }
     ISettingRepository Settings { get; }
+    IDashboardRepository Dashboard { get; }
 
     void Save();
     EntityEntry GetContextEntry(object obj);

@@ -1,0 +1,58 @@
+﻿@page "/"
+@inherits BasePageComponent
+@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.Constants
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Dashboard
+@using Pds.Api.Contracts.Settings
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Главная")</Title>
+
+<h1>Привет!</h1>
+<div>
+    @AppName - система управления контентом, разработанная специально под задачи блогеров.
+</div>
+
+@if (countriesStatistics == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <div>
+        @foreach (var brand in countriesStatistics.Where(b => b.Countries.Any()))
+        {
+            <div>
+                @brand.BrandName
+                <ul>
+                    @foreach (var country in brand.Countries)
+                    {
+                        <li>
+                            @country.CountryName - @country.ActivePersonsCount
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private GetCountriesStatisticsResponse countriesStatistics;
+
+    protected override async Task OnInitializedAsync()
+    {
+        countriesStatistics = await GetCountriesStatistics();
+    }
+
+    private async Task<GetCountriesStatisticsResponse> GetCountriesStatistics()
+    {
+        return await ApiClient.Get<GetCountriesStatisticsResponse>(TokenProvider, "dashboard/countries-statistics");
+    }
+}

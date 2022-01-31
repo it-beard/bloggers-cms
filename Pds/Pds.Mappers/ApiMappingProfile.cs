@@ -9,6 +9,7 @@ using Pds.Api.Contracts.Content.EditContent;
 using Pds.Api.Contracts.Content.GetContent;
 using Pds.Api.Contracts.Content.GetContents;
 using Pds.Api.Contracts.Cost;
+using Pds.Api.Contracts.Dashboard;
 using Pds.Api.Contracts.Gift;
 using Pds.Api.Contracts.Person;
 using Pds.Api.Contracts.Settings;
@@ -18,6 +19,7 @@ using Pds.Services.Models.Brand;
 using Pds.Services.Models.Client;
 using Pds.Services.Models.Content;
 using Pds.Services.Models.Cost;
+using Pds.Services.Models.Dashboard;
 using Pds.Services.Models.Gift;
 using Pds.Services.Models.Person;
 using Pds.Services.Models.Setting;
@@ -202,6 +204,8 @@ public class ApiMappingProfile : Profile
         #region Models to Contracts
 
         CreateMap<GetBrandModel, BrandFullDto>();
+        CreateMap<CountryStatisticsBrandModel, GetCountriesStatisticsBrandDto>();
+        CreateMap<CountryStatisticsCountryModel, GetCountriesStatisticsCountryDto>();
 
         #endregion
         

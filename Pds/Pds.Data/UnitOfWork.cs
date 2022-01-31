@@ -16,6 +16,7 @@ public sealed class UnitOfWork : IUnitOfWork
     private ICostRepository costRepository;
     private IGiftRepository giftRepository;
     private ISettingRepository settingRepository;
+    private IDashboardRepository dashboardRepository;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -31,6 +32,7 @@ public sealed class UnitOfWork : IUnitOfWork
     public ICostRepository Costs => costRepository ??= new CostRepository(context);
     public IGiftRepository Gifts => giftRepository ??= new GiftRepository(context);
     public ISettingRepository Settings => settingRepository ??= new SettingRepository(context);
+    public IDashboardRepository Dashboard => dashboardRepository ??= new DashboardRepository(context);
 
     public void Save()
     {
