@@ -209,9 +209,10 @@ public class ApiMappingProfile : Profile
         CreateMap<GetBrandModel, BrandFullDto>();
         CreateMap<CountryStatisticsBrandModel, GetCountriesStatisticsBrandDto>();
         CreateMap<CountryStatisticsCountryModel, GetCountriesStatisticsCountryDto>();
+        CreateMap<MoneyStatisticsBrandModel, GetMoneyStatisticsBrandDto>();
         CreateMap<ContentStatisticsBrandModel, GetContentStatisticsBrandDto>();
         CreateMap<ContentStatisticsContentModel, GetContentStatisticsContentDto>();
-        CreateMap<MoneyStatisticsBrandModel, GetMoneyStatisticsBrandDto>();
+        CreateMap<ContentStatisticsBillModel, GetContentStatisticsBillDto>();
 
         #endregion
         

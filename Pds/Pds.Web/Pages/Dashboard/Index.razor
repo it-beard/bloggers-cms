@@ -8,6 +8,7 @@
 @using Pds.Api.Contracts.Dashboard.GetCountriesStatistics
 @using Pds.Api.Contracts.Dashboard.GetMoneyStatistics
 @using Pds.Core.Extensions
+@using Pds.Web.Pages.Content
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -44,8 +45,11 @@ else
                             <span class="content-type">
                                 @EnumsTranslator.SocialMediaTypeToRu(content.SocialMediaType)
                             </span>
+                            @{
+                                var additionalClass = ContentHelper.GetContentBgColorClass(content.Status, content.Bill);
+                            }
                             <span class="content-title">
-                                <a class="custom-link" href="content/@content.Id">
+                                <a class="@($"custom-link {additionalClass}")" href="content/@content.Id">
                                     @content.Title
                                 </a>
                             </span>

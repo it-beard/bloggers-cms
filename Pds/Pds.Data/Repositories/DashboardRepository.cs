@@ -108,7 +108,12 @@ public class DashboardRepository : IDashboardRepository
                         Id = c.Id,
                         ReleaseDate = c.ReleaseDate,
                         SocialMediaType = c.SocialMediaType,
-                        BillPaymentStatus = c.Bill.PaymentStatus
+                        Bill = c.Bill == null ? 
+                            null : 
+                            new ContentStatisticsBillModel
+                            {
+                                PaymentStatus = c.Bill.PaymentStatus
+                            }
                     })
                     .OrderBy(b => b.ReleaseDate)
                     .ToList()

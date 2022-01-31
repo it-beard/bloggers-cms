@@ -20,10 +20,14 @@ public static class ContentHelper
 
         return contentStatus switch
         {
-            ContentStatus.Active when bill.PaymentStatus == PaymentStatus.NotPaid => "active-not-paid",
-            ContentStatus.Active when bill.PaymentStatus == PaymentStatus.Paid => "active-paid",
-            ContentStatus.Archived when bill.PaymentStatus == PaymentStatus.Paid => "archived-paid",
-            ContentStatus.Archived when bill.PaymentStatus == PaymentStatus.NotPaid => "archived-not-paid",
+            ContentStatus.Active when bill.PaymentStatus == PaymentStatus.NotPaid => 
+                "active-not-paid",
+            ContentStatus.Active when bill.PaymentStatus == PaymentStatus.Paid => 
+                "active-paid",
+            ContentStatus.Archived when bill.PaymentStatus == PaymentStatus.Paid => 
+                "archived-paid",
+            ContentStatus.Archived when bill.PaymentStatus == PaymentStatus.NotPaid => 
+                "archived-not-paid",
             _ => string.Empty
         };
     }

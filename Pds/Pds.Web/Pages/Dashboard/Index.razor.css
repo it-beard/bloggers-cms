@@ -134,4 +134,17 @@
     display: inline-block;
     width: 73px;
     text-align: center;
+    margin-right: 5px;
+}
+
+.brand-content-statistics-body .active-not-paid {
+    border-color: lightpink;
+}
+
+.brand-content-statistics-body .active-paid {
+    border-color: lightgreen;
+}
+
+.brand-content-statistics-body .free {
+    border-color: lightblue;
 }

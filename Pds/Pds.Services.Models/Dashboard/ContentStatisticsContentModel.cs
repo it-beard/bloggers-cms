@@ -12,5 +12,5 @@ public class ContentStatisticsContentModel
     
     public SocialMediaType SocialMediaType { get; set; }
     
-    public PaymentStatus? BillPaymentStatus { get; set; }
+    public ContentStatisticsBillModel Bill { get; set; }
 }
