@@ -25,11 +25,14 @@ public class DashboardRepository : IDashboardRepository
                 Countries = context
                     .Persons.Where(p => p.Brands.Contains(b) && p.Status != PersonStatus.Archived)
                     .GroupBy(p => p.Country)
+                    .Where(c => !string.IsNullOrWhiteSpace(c.Key) && c.Count() > 1)
+                    .OrderByDescending(c => c.Count())
                     .Select(p => new CountryStatisticsCountryModel()
                     {
                         CountryName = p.Key,
                         ActivePersonsCount = p.Count()
                     })
+                    .OrderByDescending(b =>b.ActivePersonsCount)
                     .ToList()
             }).ToListAsync();
         

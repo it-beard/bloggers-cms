@@ -5,7 +5,6 @@
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Dashboard
-@using Pds.Api.Contracts.Settings
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
@@ -13,7 +12,7 @@
 <Title>@WithSuffix("Главная")</Title>
 
 <h1>Привет!</h1>
-<div>
+<div class="info">
     @AppName - система управления контентом, разработанная специально под задачи блогеров.
 </div>
 
@@ -26,15 +25,19 @@
 else
 {
     <div>
+        <h5>Статистика по персонам и их странам проживания</h5>
+    </div>
+    
+    <div class="statistics-container">
         @foreach (var brand in countriesStatistics.Where(b => b.Countries.Any()))
         {
-            <div>
+            <div class="brand-city-statistics">
                 @brand.BrandName
                 <ul>
                     @foreach (var country in brand.Countries)
                     {
                         <li>
-                            @country.CountryName - @country.ActivePersonsCount
+                            @country.CountryName - @country.ActivePersonsCount чел.
                         </li>
                     }
                 </ul>

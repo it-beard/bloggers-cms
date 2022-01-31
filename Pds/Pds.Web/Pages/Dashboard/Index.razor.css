@@ -1,0 +1,22 @@
+.info {
+    margin-bottom: 10px;
+    border-bottom: 2px solid beige;
+    padding-bottom: 15px;
+}
+
+.statistics-container {
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+.brand-city-statistics {
+    display: block;
+    margin: 0 15px 15px 0;
+    border-radius: 10px;
+    background-color: lightblue;
+    padding: 10px 15px;
+}
+
+.brand-city-statistics ul {
+    margin-bottom: 0;
+}
