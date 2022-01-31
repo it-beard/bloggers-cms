@@ -43,7 +43,20 @@ else
                             </span>
                         }
                     </td>
-                    <td class="comment-row">@client.Comment</td>
+                    <td class="comment-row">
+                        <div title="@client.Comment">
+                            @{
+                                var shortComment = string.Empty;
+                                if (!string.IsNullOrWhiteSpace(client.Comment))
+                                {
+                                    shortComment = client.Comment.Length > 50 ?
+                                        $"{client.Comment[..49]}..." :
+                                        client.Comment;
+                                }
+                            }
+                            @shortComment
+                        </div>
+                    </td>
                     <td class="text-center actions-row">
                         <Actions OnClientUpdate="@ClientsInfoUpdate" CurrentClient="@client"></Actions>
                     </td>

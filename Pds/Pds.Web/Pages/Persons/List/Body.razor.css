@@ -35,10 +35,6 @@
     text-align: center;
  }
 
-.info-row {
-    white-space: pre-line;
-}
-
 .person-row .contents {
     font-size: 0.75rem;
     margin-left: 5px;
