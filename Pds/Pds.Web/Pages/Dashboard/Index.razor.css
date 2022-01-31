@@ -7,7 +7,7 @@
 .statistics-container {
     display: flex;
     align-items: flex-start;
-    align-content: flex-start;
+    flex-wrap: wrap;
 }
 .brand-city-statistics {
     display: block;
@@ -15,6 +15,7 @@
     border-radius: 10px;
     background-color: lightblue;
     padding: 10px 15px;
+    min-width: 230px;
 }
 
 .brand-city-statistics ul {
