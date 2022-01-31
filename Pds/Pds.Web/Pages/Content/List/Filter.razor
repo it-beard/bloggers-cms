@@ -9,14 +9,13 @@
 @using Pds.Api.Contracts.Brand
 @using Pds.Core
 
-@inject IJSRuntime JsRuntime
-@inject NavigationManager NavigationManager
-@inject IAccessTokenProvider TokenProvider
-@inject IApiClient ApiClient
-@inject IMapper Mapper
-@inject StateContainer StateContainer
+@inject IAccessTokenProvider tokenProvider
+@inject IApiClient apiClient
+@inject IMapper mapper
+@inject StateContainer stateContainer
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-@if (brands == null || StateContainer.Settings == null)
+@if (brands == null || stateContainer.Settings == null)
 {
     <p>
         <em>Загрузка фильтр...</em>
@@ -24,9 +23,9 @@
 }
 else
 {
-    var filterButtonClass = IsMobileFilterOpen ? "bi-caret-up-fill" : "bi-caret-down-fill";
-    var filterPaddingFixClass = IsMobileFilterOpen ? string.Empty : "filter-padding-fix";
-    var openFilterClass = IsMobileFilterOpen ? "filter-main-open" : string.Empty;
+    var filterButtonClass = isMobileFilterOpen ? "bi-caret-up-fill" : "bi-caret-down-fill";
+    var filterPaddingFixClass = isMobileFilterOpen ? string.Empty : "filter-padding-fix";
+    var openFilterClass = isMobileFilterOpen ? "filter-main-open" : string.Empty;
     
     <div class="@($"filter {filterPaddingFixClass}")">
         <div class="filter-header">
@@ -93,12 +92,13 @@ else
     private EditContext editContext;
     private FilterSettings filterSettings { get; set; }
     private List<BrandDto> brands { get; set; }
-    private bool IsMobileFilterOpen = false;
+    private bool isMobileFilterOpen = false;
+    private string savedSettingsLocalStorageKey = "contentFilterSettings";
 
     protected override async Task OnInitializedAsync()
     {
         brands = await GetBrands();
-        filterSettings = GetDefaultFilterSettings(brands);
+        filterSettings = await GetDefaultFilterSettings(brands);
         editContext = new EditContext(filterSettings);
         editContext.OnFieldChanged += EditContext_OnFieldChanged;
         await OnFilterUpdate.InvokeAsync(filterSettings); //trigger filter initialize
@@ -106,6 +106,7 @@ else
 
     private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
     {
+        localStorage.SetItemAsync(savedSettingsLocalStorageKey, filterSettings);
         OnFilterUpdate.InvokeAsync(filterSettings);
     }
     
@@ -114,7 +115,7 @@ else
         OnSearch.InvokeAsync(searchText);
     }
 
-    private FilterSettings GetDefaultFilterSettings(List<BrandDto> brands)
+    private async Task<FilterSettings> GetDefaultFilterSettings(List<BrandDto> brands)
     {
         var filter = new FilterSettings
         {
@@ -134,31 +135,38 @@ else
                         IsSelected = false
                     })
                 .ToList(),
-            BrandFilterItems = Mapper.Map<List<BrandFilterItem>>(brands)
+            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands)
         };
         
-        SetDefaultFilterValues(filter);
+        SetDefaultFilterValues(ref filter);
+        filter = await GetSavedFilterValues(filter);
 
         return filter;
     }
 
-    private void SetDefaultFilterValues(FilterSettings filter)
+    private void SetDefaultFilterValues(ref FilterSettings filter)
     {
         // Set default "from" filter value
-        var fromFilterDateString = StateContainer.Settings.GetByKey(SettingsKeys.FilterContentReleaseDateFrom);
+        var fromFilterDateString = stateContainer.Settings.GetByKey(SettingsKeys.FilterContentReleaseDateFrom);
         if (DateTime.TryParse(fromFilterDateString, out var fromFilterDate))
         {
             filter.From = fromFilterDate;
         }
     }
+    
+    private async Task<FilterSettings> GetSavedFilterValues(FilterSettings filter)
+    {
+        var savedFilter = await localStorage.GetItemAsync<FilterSettings>(savedSettingsLocalStorageKey);
+        return savedFilter ?? filter;
+    }
 
     private async Task<List<BrandDto>> GetBrands()
     {
-        return await ApiClient.Get<List<BrandDto>>(TokenProvider, "content/get-brands");
+        return await apiClient.Get<List<BrandDto>>(tokenProvider, "content/get-brands");
     }
     
     private void OnButtonFilterClick()
     {
-        IsMobileFilterOpen = !IsMobileFilterOpen;
+        isMobileFilterOpen = !isMobileFilterOpen;
     }
 }

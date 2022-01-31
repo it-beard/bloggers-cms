@@ -1,4 +1,5 @@
 ﻿global using Newtonsoft.Json;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Pds.Web;
@@ -15,6 +16,7 @@ builder.Services.AddSingleton<StateContainer>();
 builder.Services.AddSingleton<PageHistoryState>();
 builder.Services.AddHeadElementHelper();
 builder.Services.AddCustomAutoMapper();
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddOidcAuthentication(options =>
 {
