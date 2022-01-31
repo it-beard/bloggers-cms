@@ -24,16 +24,93 @@
 }
 else
 {
-    <div>
-        <h5>Статистика по персонам и их странам проживания</h5>
-    </div>
-    
     <div class="statistics-container">
+        @foreach (var brand in moneyStatistics
+            .Where(s => s.BillsSumForPreviousMonth > 0 ||
+                        s.BillsSumForThisMonth > 0 ||
+                        s.CostsSumForPreviousMonth > 0 ||
+                        s.CostsSumForThisMonth > 0))
+        {
+            <div class="brand-money-statistics">
+                <div class="brand-money-statistics-title">
+                    Деньги: @brand.BrandName
+                </div>
+                @{
+                    var thisMonthsName = new DateTime(2020, DateTime.UtcNow.Month, 1).ToString("MMMM");
+                    var previousMonthsName = new DateTime(2020, DateTime.UtcNow.AddMonths(-1).Month, 1).ToString("MMMM");
+                }
+                <div class="brand-money-statistics-body">
+                    <div>
+                        <span class="month">
+                            <span class="small-title">Доход</span>
+                            <i>@thisMonthsName</i>
+                        </span> -
+                        <span class="bills-sum">
+                            @brand.BillsSumForThisMonth.ToString("N0")
+                        </span>
+                    </div>
+                    <div>
+                        <span class="month">
+                            <span class="small-title">Расход</span>
+                            <i>@thisMonthsName</i>
+                        </span> -
+                        <span class="costs-sum">
+                            @brand.CostsSumForThisMonth.ToString("N0")
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="brand-money-statistics-body">
+                    <div>
+                        <span class="month">
+                            <span class="small-title">Доход</span>
+                            <i>@previousMonthsName</i>
+                        </span> -
+                        <span class="bills-sum">
+                            @brand.BillsSumForPreviousMonth.ToString("N0")
+                        </span>
+                    </div>
+                    <div>
+                        <span class="month">
+                            <span class="small-title">Расход</span>
+                            <i>@previousMonthsName</i>
+                        </span> -
+                        <span class="costs-sum">
+                            @brand.CostsSumForPreviousMonth.ToString("N0")
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="brand-money-statistics-body">
+                    <div>
+                        <span class="month">
+                            <span class="small-title">Доход</span> 
+                            <i>@thisMonthsName @DateTime.UtcNow.Year</i>
+                        </span> -
+                        <span class="bills-sum">
+                            @brand.BillsSumSameMonthYearAgo.ToString("N0")
+                        </span>
+                    </div>
+                    <div>
+                        <span class="month">
+                            <span class="small-title">Расход</span> 
+                            <i>@thisMonthsName @DateTime.UtcNow.Year</i>
+                        </span> -
+                        <span class="costs-sum">
+                            @brand.CostsSumSameMonthYearAgo.ToString("N0")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        }
+        
         @foreach (var brand in countriesStatistics.Where(b => b.Countries.Any()))
         {
             <div class="brand-city-statistics">
-                @brand.BrandName
-                <ul>
+                <div class="brand-city-statistics-title">
+                    Персоны: @brand.BrandName
+                </div>
+                <ul class="brand-city-statistics-body">
                     @foreach (var country in brand.Countries)
                     {
                         <li>
@@ -48,14 +125,21 @@ else
 
 @code {
     private GetCountriesStatisticsResponse countriesStatistics;
+    private GetMoneyStatisticsResponse moneyStatistics;
 
     protected override async Task OnInitializedAsync()
     {
         countriesStatistics = await GetCountriesStatistics();
+        moneyStatistics = await GetMoneyStatistics();
     }
 
     private async Task<GetCountriesStatisticsResponse> GetCountriesStatistics()
     {
         return await ApiClient.Get<GetCountriesStatisticsResponse>(TokenProvider, "dashboard/countries-statistics");
+    }
+    
+    private async Task<GetMoneyStatisticsResponse> GetMoneyStatistics()
+    {
+        return await ApiClient.Get<GetMoneyStatisticsResponse>(TokenProvider, "dashboard/money-statistics");
     }
 }

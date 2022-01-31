@@ -7,4 +7,5 @@ namespace Pds.Services.Interfaces;
 public interface IDashboardService
 {
     Task<List<CountryStatisticsBrandModel>> GetCountriesStatisticsAsync();
+    Task<List<MoneyStatisticsBrandModel>> GetMoneyStatisticsAsync();
 }

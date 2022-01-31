@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pds.Core.Enums;
-using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
 using Pds.Services.Models.Dashboard;
 
@@ -9,12 +8,12 @@ namespace Pds.Data.Repositories;
 public class DashboardRepository : IDashboardRepository
 {
     private readonly ApplicationDbContext context;
-        
+
     public DashboardRepository(ApplicationDbContext context)
     {
         this.context = context;
     }
-        
+
     public async Task<List<CountryStatisticsBrandModel>> GetCountriesStatisticsAsync()
     {
         var result = await context.Brands
@@ -32,19 +31,63 @@ public class DashboardRepository : IDashboardRepository
                         CountryName = p.Key,
                         ActivePersonsCount = p.Count()
                     })
-                    .OrderByDescending(b =>b.ActivePersonsCount)
+                    .OrderByDescending(b => b.ActivePersonsCount)
                     .ToList()
             }).ToListAsync();
-        
+
         return result;
     }
 
-    public async Task<Bill> GetFullByIdAsync(Guid billId)
+    public async Task<List<MoneyStatisticsBrandModel>> GetMoneyStatisticsAsync()
     {
-        return await context.Bills
-            .Include(c => c.Content)
-            .Include(c => c.Brand)
-            .Include(c => c.Client)
-            .FirstOrDefaultAsync(c => c.Id == billId);
+        var firstDayOfThisMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+        var firstDayOfPreviousMonth = firstDayOfThisMonth.AddMonths(-1);
+        var lastDayOfPreviousMonth = firstDayOfPreviousMonth.AddMonths(1).AddDays(-1);
+        var firstDayOfSameMonthYearAgo = firstDayOfThisMonth.AddYears(-1);
+        var lastDayOfSameMonthYearAgo = firstDayOfSameMonthYearAgo.AddMonths(1).AddDays(-1);
+        
+        var result = await context.Brands
+            .Select(b => new MoneyStatisticsBrandModel()
+            {
+                BrandName = b.Name,
+                BrandId = b.Id,
+                BillsSumForThisMonth = 
+                    b.Bills
+                        .Where(b => b.PaidAt != null && 
+                                    b.PaidAt.Value.Date >= firstDayOfThisMonth && 
+                                    b.PaidAt.Value.Date <= DateTime.UtcNow)
+                        .Sum(b=>b.Value),
+                BillsSumForPreviousMonth = 
+                    b.Bills
+                        .Where(b => b.PaidAt != null && 
+                                    b.PaidAt.Value.Date >= firstDayOfPreviousMonth && 
+                                    b.PaidAt.Value.Date <= lastDayOfPreviousMonth)
+                        .Sum(b=>b.Value),
+                BillsSumSameMonthYearAgo = 
+                    b.Bills
+                        .Where(b => b.PaidAt != null && 
+                                    b.PaidAt.Value.Date >= firstDayOfSameMonthYearAgo && 
+                                    b.PaidAt.Value.Date <= lastDayOfSameMonthYearAgo)
+                        .Sum(b=>b.Value),
+                CostsSumForThisMonth = 
+                    b.Costs
+                        .Where(b => b.PaidAt.Date >= firstDayOfThisMonth && 
+                                    b.PaidAt.Date <= DateTime.UtcNow)
+                        .Sum(b=>b.Value),
+                CostsSumForPreviousMonth = 
+                    b.Costs
+                        .Where(b => b.PaidAt.Date >= firstDayOfPreviousMonth && 
+                                    b.PaidAt.Date <= lastDayOfPreviousMonth)
+                        .Sum(b=>b.Value) ,
+                CostsSumSameMonthYearAgo = 
+                    b.Bills
+                        .Where(b => b.PaidAt != null && 
+                                    b.PaidAt.Value.Date >= firstDayOfSameMonthYearAgo && 
+                                    b.PaidAt.Value.Date <= lastDayOfSameMonthYearAgo)
+                        .Sum(b=>b.Value),
+            })
+            .ToListAsync();
+
+        return result;
     }
 }

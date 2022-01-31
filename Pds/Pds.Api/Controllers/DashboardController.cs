@@ -46,4 +46,24 @@ public class DashboardController : ApiControllerBase
             return ExceptionResult(e);
         }
     }
+    
+    /// <summary>
+    /// Return Money Statistics
+    /// </summary>
+    [HttpGet("money-statistics")]
+    [ProducesResponseType(typeof(GetMoneyStatisticsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMoneyStatistics()
+    {
+        try
+        {
+            var money = await dashboardService.GetMoneyStatisticsAsync();
+            var response = mapper.Map<GetMoneyStatisticsResponse>(money);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
 }

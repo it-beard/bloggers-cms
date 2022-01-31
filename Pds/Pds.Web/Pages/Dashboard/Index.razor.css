@@ -1,5 +1,5 @@
 .info {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border-bottom: 2px solid beige;
     padding-bottom: 15px;
 }
@@ -9,15 +9,84 @@
     align-items: flex-start;
     flex-wrap: wrap;
 }
-.brand-city-statistics {
+
+.brand-city-statistics{
     display: block;
     margin: 0 15px 15px 0;
     border-radius: 10px;
     background-color: lightblue;
-    padding: 10px 15px;
     min-width: 230px;
 }
 
-.brand-city-statistics ul {
+.brand-city-statistics ul,
+.brand-money-statistics ul {
     margin-bottom: 0;
+}
+
+.brand-city-statistics-title {
+    display: block;
+    margin: 10px 10px;
+    border-radius: 6px;
+    background-color: lightgoldenrodyellow;
+    color: black;
+    text-align: center;
+    padding: 5px 0px;
+}
+
+.brand-city-statistics-body {
+    padding: 0 15px 10px 15px;
+    display: block;
+    margin: 0px 15px;
+}
+
+.brand-money-statistics{
+    display: block;
+    margin: 0 15px 15px 0;
+    border-radius: 10px;
+    background-color: lightgray;
+    min-width: 230px;
+}
+
+.brand-money-statistics-title {
+    display: block;
+    margin: 10px 10px;
+    border-radius: 6px;
+    background-color: lightgoldenrodyellow;
+    color: black;
+    text-align: center;
+    padding: 5px 0px;
+}
+
+.brand-money-statistics-body {
+    padding: 0 15px 10px 15px;
+    display: block;
+    margin: 0px 15px;
+}
+
+.month {
+    font-size: 0.89rem;
+    background-color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.costs-sum {
+    font-size: 0.89rem;
+    background-color: lightcoral;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
+}
+
+.bills-sum {
+    font-size: 0.89rem;
+    background-color: green;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
+}
+
+.small-title {
+    display: inline-block;
+    width: 45px;
 }
