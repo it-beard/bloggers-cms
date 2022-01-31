@@ -110,7 +110,7 @@ public class DashboardRepository : IDashboardRepository
                         SocialMediaType = c.SocialMediaType,
                         BillPaymentStatus = c.Bill.PaymentStatus
                     })
-                    .OrderByDescending(b => b.ReleaseDate)
+                    .OrderBy(b => b.ReleaseDate)
                     .ToList()
             })
             .Take(7)

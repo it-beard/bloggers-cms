@@ -118,14 +118,20 @@
 .brand-content-statistics-body .content-date {
     font-size: 0.89rem;
     background-color: white;
-    padding: 2px 4px;
+    padding: 0px 4px;
     border-radius: 4px;
+    width: 70px;
+    display: inline-block;
+    text-align: center;
 }
 
 .brand-content-statistics-body .content-type {
     font-size: 0.89rem;
     background-color: cornflowerblue;
-    padding: 2px 4px;
+    padding: 0px 4px;
     border-radius: 4px;
     color: white;
+    display: inline-block;
+    width: 73px;
+    text-align: center;
 }
