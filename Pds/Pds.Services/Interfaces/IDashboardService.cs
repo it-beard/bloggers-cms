@@ -9,4 +9,6 @@ public interface IDashboardService
     Task<List<CountryStatisticsBrandModel>> GetCountriesStatisticsAsync();
     Task<List<MoneyStatisticsBrandModel>> GetMoneyStatisticsAsync();
     Task<List<ContentStatisticsBrandModel>> GetContentStatisticsAsync();
+    Task<DateTime?> GetNearestNewEpisodeDateAsync();
+    Task<NearestIntegrationDateModel> GetNearestIntegrationDateAsync();
 }

@@ -13,12 +13,6 @@ public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
     {
         this.context = context;
     }    
-    
-    public async Task<List<Brand>> GetAllAsync()
-    {
-        return await context.Brands
-            .ToListAsync();
-    }
 
     public async Task<BrandAdditionalInfoModel> GetAdditionalInfoAsync(Guid brandId)
     {

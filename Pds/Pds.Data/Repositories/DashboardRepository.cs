@@ -81,8 +81,7 @@ public class DashboardRepository : IDashboardRepository
                         .Sum(b=>b.Value) ,
                 CostsSumSameMonthYearAgo = 
                     b.Costs
-                        .Where(b => b.PaidAt != null && 
-                                    b.PaidAt.Date >= firstDayOfSameMonthYearAgo && 
+                        .Where(b => b.PaidAt.Date >= firstDayOfSameMonthYearAgo && 
                                     b.PaidAt.Date <= lastDayOfSameMonthYearAgo)
                         .Sum(b=>b.Value),
             })

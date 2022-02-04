@@ -6,6 +6,7 @@ using Pds.Api.Contracts.Dashboard;
 using Pds.Api.Contracts.Dashboard.GetContentStatistics;
 using Pds.Api.Contracts.Dashboard.GetCountriesStatistics;
 using Pds.Api.Contracts.Dashboard.GetMoneyStatistics;
+using Pds.Api.Contracts.Dashboard.GetNearestDates;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Brand;
@@ -81,6 +82,33 @@ public class DashboardController : ApiControllerBase
         {
             var content = await dashboardService.GetContentStatisticsAsync();
             var response = mapper.Map<GetContentStatisticsResponse>(content);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Return Content Statistics
+    /// </summary>
+    [HttpGet("nearest-dates")]
+    [ProducesResponseType(typeof(GetNearestDatesResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetNearestDates()
+    {
+        try
+        {
+            var nearestDateForNewEpisode = await dashboardService.GetNearestNewEpisodeDateAsync();
+            var nearestIntegrationDate = await dashboardService.GetNearestIntegrationDateAsync();
+            var response = new GetNearestDatesResponse
+            {
+                NearestDateForNewEpisode = nearestDateForNewEpisode,
+                NearestDateForIntegration = nearestIntegrationDate.Date,
+                ContentIdForIntegration = nearestIntegrationDate.ContentId,
+                ContentTitleForIntegration = nearestIntegrationDate.ContentTitle
+            };
 
             return Ok(response);
         }
