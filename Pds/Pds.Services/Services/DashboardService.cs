@@ -29,10 +29,13 @@ public class DashboardService : IDashboardService
         return await unitOfWork.Dashboard.GetContentStatisticsAsync();
     }
     
-    public async Task<DateTime?> GetNearestNewEpisodeDateAsync()
+    public async Task<DateTime?> GetNearestNewEpisodeDateForDefaultBrandAsync()
     {
+        var defaultBrand = await unitOfWork.Brands
+            .GetFirstWhereAsync(b => b.IsDefault);
         var futureYoutubeContents = await unitOfWork.Content
             .FindAllByWhereAsync(c => 
+                c.BrandId == defaultBrand.Id &&
                 c.ReleaseDate >= DateTime.UtcNow &&
                 c.SocialMediaType == SocialMediaType.YouTube &&
                 c.Status != ContentStatus.Archived);
@@ -44,6 +47,12 @@ public class DashboardService : IDashboardService
         }
 
         var youtubeContents = futureYoutubeContents.ToArray();
+        
+        if ((youtubeContents[0].ReleaseDate - DateTime.UtcNow).TotalDays >= 14)
+        {
+            return DateTime.UtcNow.AddDays(7);
+        }
+        
         for (var i = 0; i <youtubeContents.Length; )
         {
             if (youtubeContents[i+1] == null)
@@ -60,10 +69,13 @@ public class DashboardService : IDashboardService
         return null;
     }
     
-    public async Task<NearestIntegrationDateModel> GetNearestIntegrationDateAsync()
+    public async Task<NearestIntegrationDateModel> GetNearestIntegrationDateForDefaultBrandAsync()
     {
+        var defaultBrand = await unitOfWork.Brands
+            .GetFirstWhereAsync(b => b.IsDefault);
         var nearestExistedEpisodeForIntegration = 
             await unitOfWork.Content.GetFirstWhereAsync(c => 
+                c.BrandId == defaultBrand.Id &&
                 c.ReleaseDate >= DateTime.UtcNow &&
                 c.SocialMediaType == SocialMediaType.YouTube &&
                 c.Type == ContentType.Integration &&
@@ -80,7 +92,7 @@ public class DashboardService : IDashboardService
             };
         }
         
-        var nearestNewEpisodeDate = await GetNearestNewEpisodeDateAsync();
+        var nearestNewEpisodeDate = await GetNearestNewEpisodeDateForDefaultBrandAsync();
         if (nearestNewEpisodeDate != null)
         {
             return new NearestIntegrationDateModel

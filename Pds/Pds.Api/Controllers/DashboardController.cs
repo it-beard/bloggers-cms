@@ -94,14 +94,14 @@ public class DashboardController : ApiControllerBase
     /// <summary>
     /// Return Content Statistics
     /// </summary>
-    [HttpGet("nearest-dates")]
+    [HttpGet("nearest-dates-for-default-brand")]
     [ProducesResponseType(typeof(GetNearestDatesResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetNearestDates()
+    public async Task<IActionResult> GetNearestDatesForDefaultBrand()
     {
         try
         {
-            var nearestDateForNewEpisode = await dashboardService.GetNearestNewEpisodeDateAsync();
-            var nearestIntegrationDate = await dashboardService.GetNearestIntegrationDateAsync();
+            var nearestDateForNewEpisode = await dashboardService.GetNearestNewEpisodeDateForDefaultBrandAsync();
+            var nearestIntegrationDate = await dashboardService.GetNearestIntegrationDateForDefaultBrandAsync();
             var response = new GetNearestDatesResponse
             {
                 NearestDateForNewEpisode = nearestDateForNewEpisode,
