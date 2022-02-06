@@ -7,6 +7,7 @@
 @using Pds.Api.Contracts.Dashboard.GetContentStatistics
 @using Pds.Api.Contracts.Dashboard.GetCountriesStatistics
 @using Pds.Api.Contracts.Dashboard.GetMoneyStatistics
+@using Pds.Api.Contracts.Dashboard.GetNearestDates
 @using Pds.Core.Extensions
 @using Pds.Web.Pages.Content
 
@@ -137,6 +138,44 @@ else
                 </div>
             </div>
         }
+        
+        @if(nearestDates.NearestDateForIntegration != null ||
+            nearestDates.NearestDateForNewEpisode != null)
+        {
+            <div class="nearest-dates">
+                <div class="nearest-dates-title">
+                    Ближайшие даты: @nearestDates.BrandName
+                </div>
+                <div class="nearest-dates-body">
+                    @if (nearestDates.NearestDateForIntegration != null)
+                    {
+                        <div>
+                            <span class="date-type"> Интеграция </span>
+                            <span class="content-date">
+                                @nearestDates.NearestDateForIntegration.Value.ToShortStringDateWithDay()
+                            </span>
+                            <span>
+                                @if (!string.IsNullOrEmpty(nearestDates.ContentTitleForIntegration))
+                                {
+                                    <a class="custom-link" href="content/@nearestDates.ContentIdForIntegration">
+                                        @nearestDates.ContentTitleForIntegration
+                                    </a>
+                                }
+                            </span>
+                        </div>
+                    }
+                    @if (nearestDates.NearestDateForNewEpisode != null)
+                    {
+                        <div>
+                            <span class="date-type"> Выпуск </span>
+                            <span class="content-date">
+                                @nearestDates.NearestDateForNewEpisode.Value.ToShortStringDateWithDay() 
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
     </div>
 }
 
@@ -144,12 +183,14 @@ else
     private GetCountriesStatisticsResponse countriesStatistics;
     private GetMoneyStatisticsResponse moneyStatistics;
     private GetContentStatisticsResponse contentStatistics;
-
+    private GetNearestDatesResponse nearestDates;
+    
     protected override async Task OnInitializedAsync()
     {
         countriesStatistics = await GetCountriesStatistics();
         moneyStatistics = await GetMoneyStatistics();
         contentStatistics = await GetContentStatistics();
+        nearestDates = await GetNearestDatesResponse();
     }
 
     private async Task<GetCountriesStatisticsResponse> GetCountriesStatistics()
@@ -165,5 +206,10 @@ else
     private async Task<GetContentStatisticsResponse> GetContentStatistics()
     {
         return await ApiClient.Get<GetContentStatisticsResponse>(TokenProvider, "dashboard/content-statistics");
+    }
+    
+    private async Task<GetNearestDatesResponse> GetNearestDatesResponse()
+    {
+        return await ApiClient.Get<GetNearestDatesResponse>(TokenProvider, "dashboard/nearest-dates-for-default-brand");
     }
 }

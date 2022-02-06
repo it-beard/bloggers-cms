@@ -2,6 +2,8 @@ namespace Pds.Api.Contracts.Dashboard.GetNearestDates;
 
 public class GetNearestDatesResponse
 {
+    public string BrandName { get; set; }
+    
     public DateTime? NearestDateForIntegration { get; set; }
     
     public DateTime? NearestDateForNewEpisode { get; set; }

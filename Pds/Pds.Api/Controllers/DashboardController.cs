@@ -104,6 +104,7 @@ public class DashboardController : ApiControllerBase
             var nearestIntegrationDate = await dashboardService.GetNearestIntegrationDateForDefaultBrandAsync();
             var response = new GetNearestDatesResponse
             {
+                BrandName = nearestIntegrationDate.BrandName,
                 NearestDateForNewEpisode = nearestDateForNewEpisode,
                 NearestDateForIntegration = nearestIntegrationDate.Date,
                 ContentIdForIntegration = nearestIntegrationDate.ContentId,

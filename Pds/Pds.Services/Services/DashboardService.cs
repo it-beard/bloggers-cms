@@ -53,9 +53,9 @@ public class DashboardService : IDashboardService
             return DateTime.UtcNow.AddDays(7);
         }
         
-        for (var i = 0; i <youtubeContents.Length; )
+        for (var i = 0; i < youtubeContents.Length; i++)
         {
-            if (youtubeContents[i+1] == null)
+            if (i+1 > youtubeContents.Length-1)
             {
                 return youtubeContents[i].ReleaseDate.AddDays(7);
             }
@@ -82,10 +82,12 @@ public class DashboardService : IDashboardService
                 c.Bill == null &&
                 c.Status != ContentStatus.Archived);
 
-        if (nearestExistedEpisodeForIntegration != null)
+        if (nearestExistedEpisodeForIntegration != null ||
+            (nearestExistedEpisodeForIntegration.ReleaseDate- DateTime.UtcNow.Date).TotalDays >= 14)
         {
             return new NearestIntegrationDateModel()
             {
+                BrandName = defaultBrand.Name,
                 Date = nearestExistedEpisodeForIntegration.ReleaseDate,
                 ContentId = nearestExistedEpisodeForIntegration.Id,
                 ContentTitle = nearestExistedEpisodeForIntegration.Title
@@ -97,6 +99,7 @@ public class DashboardService : IDashboardService
         {
             return new NearestIntegrationDateModel
             {
+                BrandName = defaultBrand.Name,
                 Date = nearestNewEpisodeDate
             };
         }

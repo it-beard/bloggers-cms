@@ -17,7 +17,8 @@
 
 .brand-city-statistics-title,
 .brand-content-statistics-title,
-.brand-money-statistics-title {
+.brand-money-statistics-title,
+.nearest-dates-title {
     display: block;
     margin: 5px 10px;
     border-radius: 0;
@@ -31,14 +32,16 @@
 
 .brand-city-statistics-body,
 .brand-content-statistics-body,
-.brand-money-statistics-body {
+.brand-money-statistics-body,
+.nearest-dates-body {
     padding: 0 15px 10px 15px;
     display: block;
 }
 
 .brand-city-statistics,
 .brand-content-statistics,
-.brand-money-statistics {
+.brand-money-statistics,
+.nearest-dates {
     display: block;
     margin: 0 15px 15px 0;
     border-radius: 10px;
@@ -61,13 +64,20 @@
     min-width: 230px;
 }
 
+.nearest-dates {
+    background-color: mistyrose;
+    min-width: 230px;
+}
+
 .brand-city-statistics-body .city-name,
 .brand-city-statistics-body .persons-count,
 .brand-money-statistics-body .month,
 .brand-money-statistics-body .costs-sum,
 .brand-money-statistics-body .bills-sum,
 .brand-content-statistics-body .content-date,
-.brand-content-statistics-body .content-type {
+.brand-content-statistics-body .content-type,
+.nearest-dates .content-date,
+.nearest-dates .date-type {
     font-size: 0.89rem;
     padding: 0px 4px;
     border-radius: 4px;
@@ -124,5 +134,21 @@
 }
 
 .brand-content-statistics-body .free {
+    border-color: lightblue;
+}
+
+.nearest-dates .content-date {
+    background-color: white;
+    width: 70px;
+    margin-right: 5px;
+}
+
+.nearest-dates .date-type {
+    background-color: cornflowerblue;
+    color: white;
+    width: 80px;
+ }
+
+.nearest-dates .custom-link {
     border-color: lightblue;
 }
