@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Pds.Core.Enums;
 using Pds.Core.Exceptions;
 using Pds.Data.Entities;
@@ -58,13 +59,6 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
             .FirstOrDefaultAsync(p => p.Id == contentId);
     }
 
-    public async Task<List<Content>> GetAllOrderByReleaseDateDescAsync()
-    {
-        return await context.Contents
-            .OrderByDescending(p =>p.ReleaseDate)
-            .ToListAsync();
-    }    
-    
     public async Task<List<Content>> GetContentsForListByBrandId(Guid brandId)
     {
         return await context.Contents
@@ -184,5 +178,15 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
             throw new RepositoryException(e.Message, e.InnerException, typeof(Content).ToString());
             // TODO: logging need to be implemented here
         }
+    }
+    
+    public virtual async Task<Content> GetFirstOrderByReleaseDateWhereAsync(Expression<Func<Content, bool>> match)
+    {
+        return await context.Contents.OrderBy( c=> c.ReleaseDate).FirstOrDefaultAsync(match);
+    }
+    
+    public async Task<List<Content>> FindAllOrderByReleaseDateWhereAsync(Expression<Func<Content, bool>> match)
+    {
+        return await context.Set<Content>().OrderBy(c=>c.ReleaseDate).Where(match).ToListAsync();
     }
 }

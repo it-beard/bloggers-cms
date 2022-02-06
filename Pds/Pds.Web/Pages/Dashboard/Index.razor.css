@@ -65,7 +65,7 @@
 }
 
 .nearest-dates {
-    background-color: mistyrose;
+    background-color: lavenderblush;
     min-width: 230px;
 }
 
@@ -117,6 +117,17 @@
     background-color: white;
     width: 70px;
 }
+
+.brand-content-statistics-body .today {
+    border-bottom: 2px dotted white;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.brand-content-statistics-body .today .content-date {
+     background-color: lightcoral;
+     color: white;
+ }
 
 .brand-content-statistics-body .content-type {
     background-color: cornflowerblue;

@@ -34,7 +34,7 @@ public class DashboardService : IDashboardService
         var defaultBrand = await unitOfWork.Brands
             .GetFirstWhereAsync(b => b.IsDefault);
         var futureYoutubeContents = await unitOfWork.Content
-            .FindAllByWhereAsync(c => 
+            .FindAllOrderByReleaseDateWhereAsync(c => 
                 c.BrandId == defaultBrand.Id &&
                 c.ReleaseDate >= DateTime.UtcNow &&
                 c.SocialMediaType == SocialMediaType.YouTube &&
@@ -74,12 +74,12 @@ public class DashboardService : IDashboardService
         var defaultBrand = await unitOfWork.Brands
             .GetFirstWhereAsync(b => b.IsDefault);
         var nearestExistedEpisodeForIntegration = 
-            await unitOfWork.Content.GetFirstWhereAsync(c => 
+            await unitOfWork.Content.GetFirstOrderByReleaseDateWhereAsync(c => 
                 c.BrandId == defaultBrand.Id &&
                 c.ReleaseDate >= DateTime.UtcNow &&
                 c.SocialMediaType == SocialMediaType.YouTube &&
                 c.Type == ContentType.Integration &&
-                c.Bill == null &&
+                c.BillId == null &&
                 c.Status != ContentStatus.Archived);
 
         if (nearestExistedEpisodeForIntegration != null ||

@@ -39,7 +39,8 @@ else
                 <div class="brand-content-statistics-body">
                     @foreach (var content in brand.Contents)
                     {
-                        <div>
+                        var isTodayContent = content.ReleaseDate.Date == DateTime.Now.Date;
+                        <div class="@(isTodayContent ? "today" : string.Empty )">
                             <span class="content-date no-wrap">
                                 @content.ReleaseDate.Date.ToShortStringDateWithDay()
                             </span>
