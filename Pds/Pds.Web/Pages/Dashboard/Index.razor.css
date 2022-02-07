@@ -65,7 +65,7 @@
 }
 
 .nearest-dates {
-    background-color: lavenderblush;
+    background-color: lavender;
     min-width: 230px;
 }
 
@@ -83,6 +83,7 @@
     border-radius: 4px;
     display: inline-block;
     text-align: center;
+    word-wrap: normal;
 }
 
 .brand-city-statistics-body .city-name {
@@ -124,6 +125,10 @@
     margin-bottom: 5px;
 }
 
+.brand-content-statistics-body .not-today {
+    margin-bottom: 5px;
+}
+
 .brand-content-statistics-body .today .content-date {
      background-color: lightcoral;
      color: white;
@@ -162,4 +167,8 @@
 
 .nearest-dates .custom-link {
     border-color: lightblue;
+}
+
+.nearest-dates .integration {
+    margin-bottom: 5px;
 }

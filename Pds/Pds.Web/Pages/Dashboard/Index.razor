@@ -40,7 +40,7 @@ else
                     @foreach (var content in brand.Contents)
                     {
                         var isTodayContent = content.ReleaseDate.Date == DateTime.Now.Date;
-                        <div class="@(isTodayContent ? "today" : string.Empty )">
+                        <div class="@(isTodayContent ? "today" : "not-today" )">
                             <span class="content-date no-wrap">
                                 @content.ReleaseDate.Date.ToShortStringDateWithDay()
                             </span>
@@ -150,7 +150,7 @@ else
                 <div class="nearest-dates-body">
                     @if (nearestDates.NearestDateForIntegration != null)
                     {
-                        <div>
+                        <div class="integration">
                             <span class="date-type"> Интеграция </span>
                             <span class="content-date">
                                 @nearestDates.NearestDateForIntegration.Value.ToShortStringDateWithDay()
