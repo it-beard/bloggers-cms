@@ -15,6 +15,7 @@ public static class EnumsTranslator
             ContentType.EventHosting => "Ведущий",
             ContentType.EventParticipation => "Докладчик",
             ContentType.Exclusive => "Эксклюзив",
+            ContentType.Preroll => "Преролл",
             _ => string.Empty
         };
     }
@@ -62,6 +63,8 @@ public static class EnumsTranslator
             SocialMediaType.Instagram => "Instagram",
             SocialMediaType.Telegram => "Telegram",
             SocialMediaType.Clubhouse => "Clubhouse",
+            SocialMediaType.TikTok => "TikTok",
+            SocialMediaType.Vkontakte => "ВКонтакте",
             _ => string.Empty
         };
     }

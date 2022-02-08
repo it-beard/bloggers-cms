@@ -10,4 +10,5 @@ public enum ContentType
     EventParticipation = 5, // Участник мероприятия
     Exclusive = 6,          // Эксклюзивный контент
     Integration = 7,        // Интеграция
+    Preroll = 8             // Преролл
 }

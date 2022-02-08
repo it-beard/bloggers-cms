@@ -6,5 +6,7 @@ public enum SocialMediaType
     YouTube = 1,
     Telegram = 2,
     Instagram = 3,
-    Clubhouse = 4
+    Clubhouse = 4,
+    TikTok = 5,
+    Vkontakte = 6
 }
