@@ -33,4 +33,12 @@ public class EditBillRequest
     public Guid BrandId { get; set; }
 
     public BillContentDto Content { get; set; }
+    
+    public Guid? ClientId { get; set; }
+
+    public string Contact { get; set; }
+
+    public string ContactName { get; set; }
+
+    public ContactType ContactType { get; set; }
 }

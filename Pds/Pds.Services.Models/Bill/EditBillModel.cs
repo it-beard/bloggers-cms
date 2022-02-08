@@ -21,5 +21,13 @@ public class EditBillModel
 
     public PaymentType PaymentType { get; set; }
 
-    public Guid BrandId { get; set; }
+    public Guid BrandId { get; set; }    
+    
+    public Guid? ClientId { get; set; }
+
+    public string Contact { get; set; }
+
+    public string ContactName { get; set; }
+
+    public ContactType ContactType { get; set; }
 }

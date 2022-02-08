@@ -20,12 +20,6 @@
     margin-right: 10px;
 }
 
-.label-required::after{
-    content: "*";
-    color: red;
-    margin-left: 3px;
-}
-
 .contact-type {
     margin-top: 5px;
 }

@@ -111,12 +111,12 @@ else
         @if (bill.ClientId != Guid.Empty)
         {
             <div class="form-group">
-                <label for="bill_contact_name" class="form-label">ФИО представителя</label>
+                <label for="bill_contact_name" class="form-label">ФИО представителя клиента</label>
                 <InputText class="form-control" id="bill_contact_name" @bind-Value="bill.ContactName"/>
             </div>
 
             <div class="form-group">
-                <label for="bill_contact" class="form-label">Контакт представителя</label>
+                <label for="bill_contact" class="form-label">Контакт представителя клиента</label>
                 <InputText class="form-control" id="bill_contact" @bind-Value="bill.Contact"/>
                 <div class="contact-type">
                     <InputRadioGroup Name="contact-type" @bind-Value="bill.ContactType">

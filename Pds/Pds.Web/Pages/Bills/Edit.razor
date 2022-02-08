@@ -104,6 +104,51 @@ else
             <InputTextArea class="form-control" id="comment" @bind-Value="bill.Comment" rows="3"/>
         </div>
 
+        <div class="form-group">
+            <label for="clients" class="form-label">Клиент</label>
+            <InputSelect class="form-control" id="clients" @bind-Value="bill.ClientId">
+                @foreach (var client in clients)
+                {
+                    if (client.Id == bill.ClientId)
+                    {
+                        
+                        <option value="@client.Id" selected>@client.Name</option>
+                    }
+                    else
+                    {
+                        
+                        <option value="@client.Id">@client.Name</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+        
+        @if (bill.ClientId != null && bill.ClientId != Guid.Empty)
+        {
+            <div class="form-group">
+                <label for="bill_contact_name" class="form-label">ФИО представителя клиента</label>
+                <InputText class="form-control" id="bill_contact_name" @bind-Value="bill.ContactName"/>
+            </div>
+
+            <div class="form-group">
+                <label for="bill_contact" class="form-label">Контакт представителя клиента</label>
+                <InputText class="form-control" id="bill_contact" @bind-Value="bill.Contact"/>
+                <div class="contact-type">
+                    <InputRadioGroup Name="contact-type" @bind-Value="bill.ContactType">
+                        @foreach (var type in (ContactType[])Enum
+                            .GetValues(typeof(ContactType)))
+                        {
+                            var id = $"contact-type{type.ToString()}";
+                            <InputRadio Name="contact-type" class="btn-check" Value="type" id="@id"/>
+                            <label class="btn btn-secondary btn-sm" for="@id">
+                                @EnumsTranslator.ContactTypeToRu(type)
+                            </label>
+                        }
+                    </InputRadioGroup>
+                </div>
+            </div>
+        }
+
         <DataAnnotationsValidator/>
         <ValidationSummary/>
 
@@ -121,12 +166,14 @@ else
     private ValidationMessageStore msgStore;
     private bool isSaveButtonDisabled;
     private List<BrandDto> brands;
+    private List<ClientForLookupDto> clients;
     
     protected override async Task OnInitializedAsync()
     {
         isSaveButtonDisabled = false;
-        bill = await GetBill();
+        bill = await GetBillAsync();
         brands = await GetBrandsAsync();
+        clients = await GetClientsAsync();
         editContext = new EditContext(bill);
         msgStore = new ValidationMessageStore(editContext);
     }
@@ -157,9 +204,14 @@ else
         return await ApiClient.Get<List<BrandDto>>(TokenProvider, "bills/get-brands");
     }
 
-    private async Task<EditBillRequest> GetBill()
+    private async Task<EditBillRequest> GetBillAsync()
     {
         var clientResponse = await ApiClient.Get<GetBillResponse>(TokenProvider, $"bills/{BillId}");
         return Mapper.Map<EditBillRequest>(clientResponse);
+    }
+
+    private async Task<List<ClientForLookupDto>> GetClientsAsync()
+    {
+        return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "bills/get-clients");
     }
 }

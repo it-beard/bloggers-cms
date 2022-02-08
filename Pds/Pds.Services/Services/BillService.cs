@@ -78,6 +78,14 @@ public class BillService : IBillService
         {
             throw new BillEditException($"Модель запроса пуста.");
         }
+        
+        if (model.ClientId != null && model.ClientId != Guid.Empty && 
+            (string.IsNullOrEmpty(model.Contact) || 
+             string.IsNullOrEmpty(model.ContactName) || 
+             model.ContactType == null))
+        {
+            throw new BillEditException($"Заполните контактные данные представителя клиента!");
+        }
 
         var bill = await unitOfWork.Bills.GetFullByIdAsync(model.Id);
             
@@ -103,6 +111,26 @@ public class BillService : IBillService
         bill.ContractDate = model.ContractDate;
         bill.BrandId = model.BrandId;
         bill.UpdatedAt = DateTime.UtcNow;
+        if (model.ClientId != null && model.ClientId != Guid.Empty)
+        {
+            bill.ClientId = model.ClientId;
+            bill.ContactName = model.ContactName;
+            bill.Contact = model.Contact.Replace("@", string.Empty);
+            bill.ContactType = model.ContactType;
+        }
+        else
+        {
+            if (bill.Content != null)
+            {
+                throw new BillEditException(
+                    $"Удалить клиента у дохода со связанным контентом можно " +
+                    $"только через редактирование связанного контента.");
+            }
+            bill.ClientId = null;
+            bill.ContactName = null;
+            bill.Contact = null;
+            bill.ContactType = null;
+        }
 
         var result = await unitOfWork.Bills.UpdateAsync(bill);
 
