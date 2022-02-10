@@ -82,7 +82,7 @@ public class BillService : IBillService
         if (model.ClientId != null && model.ClientId != Guid.Empty && 
             (string.IsNullOrEmpty(model.Contact) || 
              string.IsNullOrEmpty(model.ContactName) || 
-             model.ContactType == null))
+             model.ContactType == null ))
         {
             throw new BillEditException($"Заполните контактные данные представителя клиента!");
         }
