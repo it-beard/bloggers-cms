@@ -29,5 +29,7 @@ public class EditBillModel
 
     public string ContactName { get; set; }
 
+    public string ContactEmail { get; set; }
+
     public ContactType ContactType { get; set; }
 }

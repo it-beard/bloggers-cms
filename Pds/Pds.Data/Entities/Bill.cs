@@ -25,6 +25,9 @@ public class Bill : EntityBase
 
     [Column(TypeName = "varchar(300)")]
     public string Contact { get; set; }
+    
+    [Column(TypeName = "varchar(100)")]
+    public string ContactEmail { get; set; }
 
     [Column(TypeName = "varchar(300)")]
     public string ContactName { get; set; }

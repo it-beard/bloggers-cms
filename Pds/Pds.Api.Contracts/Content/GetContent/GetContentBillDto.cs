@@ -11,6 +11,8 @@ public class GetContentBillDto : IPaymentStatus
     public string Comment { get; set; }
 
     public string Contact { get; set; }
+    
+    public string ContactEmail { get; set; }
         
     public string ContactName { get; set; }
 

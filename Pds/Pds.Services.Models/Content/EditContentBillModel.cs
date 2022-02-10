@@ -8,6 +8,8 @@ public class EditContentBillModel
 
     public string Contact { get; set; }
 
+    public string ContactEmail { get; set; }
+
     public string ContactName { get; set; }
         
     public ContactType ContactType { get; set; }

@@ -37,6 +37,8 @@ public class EditBillRequest
     public Guid? ClientId { get; set; }
 
     public string Contact { get; set; }
+    
+    public string ContactEmail { get; set; }
 
     public string ContactName { get; set; }
 

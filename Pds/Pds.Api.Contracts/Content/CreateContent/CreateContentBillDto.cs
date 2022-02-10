@@ -8,9 +8,10 @@ public class CreateContentBillDto
 {
     [GuidNotEmpty]
     public Guid ClientId { get; set; }
-        
-    [Required]
+    
     public string Contact { get; set; }
+    
+    public string ContactEmail { get; set; }
 
     [Required]
     public string ContactName { get; set; }

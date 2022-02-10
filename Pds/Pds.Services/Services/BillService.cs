@@ -56,6 +56,20 @@ public class BillService : IBillService
         {
             throw new BillCreateException("Счета типа \"Контент\" добавляются через создание контента.");
         }
+        
+        if (bill.ClientId != null && bill.ClientId != Guid.Empty && 
+            (string.IsNullOrEmpty(bill.Contact) && string.IsNullOrEmpty(bill.ContactEmail) || 
+             string.IsNullOrEmpty(bill.ContactName) || 
+             bill.ContactType == null))
+        {
+            throw new BillEditException($"Заполните контактные данные представителя клиента!");
+        }
+        
+        if (!string.IsNullOrWhiteSpace(bill.ContactEmail) &&
+            !bill.ContactEmail.Contains('@'))
+        {
+            throw new BillEditException($"Неверный емейл представителя клиента");
+        }
 
         bill.CreatedAt = DateTime.UtcNow;
         bill.PaymentStatus = PaymentStatus.Paid;
@@ -64,6 +78,7 @@ public class BillService : IBillService
         {
             bill.ClientId = null;
             bill.ContactName = null;
+            bill.ContactEmail = null;
             bill.Contact = null;
             bill.ContactType = null;
         }
@@ -80,11 +95,17 @@ public class BillService : IBillService
         }
         
         if (model.ClientId != null && model.ClientId != Guid.Empty && 
-            (string.IsNullOrEmpty(model.Contact) || 
+            (string.IsNullOrEmpty(model.Contact) && string.IsNullOrEmpty(model.ContactEmail) || 
              string.IsNullOrEmpty(model.ContactName) || 
-             model.ContactType == null ))
+             model.ContactType == null))
         {
             throw new BillEditException($"Заполните контактные данные представителя клиента!");
+        }
+        
+        if (!string.IsNullOrWhiteSpace(model.ContactEmail) &&
+            !model.ContactEmail.Contains('@'))
+        {
+            throw new BillEditException($"Неверный емейл представителя клиента");
         }
 
         var bill = await unitOfWork.Bills.GetFullByIdAsync(model.Id);
@@ -103,7 +124,6 @@ public class BillService : IBillService
         bill.Value = model.Value;
         bill.Comment = model.Comment;
         bill.PaidAt = model.PaidAt;
-        bill.Comment = model.Comment;
         bill.Type = model.Type;
         bill.PaymentType = model.PaymentType;
         bill.IsNeedPayNds = model.IsNeedPayNds;
@@ -116,6 +136,7 @@ public class BillService : IBillService
             bill.ClientId = model.ClientId;
             bill.ContactName = model.ContactName;
             bill.Contact = model.Contact.Replace("@", string.Empty);
+            bill.ContactEmail = model.ContactEmail;
             bill.ContactType = model.ContactType;
         }
         else

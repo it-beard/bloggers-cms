@@ -77,7 +77,6 @@ public static class EnumsTranslator
             ContactType.Telegram => "Telegram",
             ContactType.WhatsApp => "WhatsApp",
             ContactType.Instagram => "Instagram",
-            ContactType.Email => "Емейл",
             ContactType.Phone => "Телефон",
             _ => string.Empty
         };

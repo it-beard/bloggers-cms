@@ -33,7 +33,21 @@ public class ContentService : IContentService
     {
         if (model == null)
         {
-            throw new ArgumentNullException(nameof(model));
+            throw new ContentEditException($"Модель запроса пуста.");
+        }
+        
+        if (model.Bill != null && 
+            string.IsNullOrWhiteSpace(model.Bill.Contact) &&
+            string.IsNullOrWhiteSpace(model.Bill.ContactEmail))
+        {
+            throw new ContentEditException($"Не заполнены контактные данные представителя.");
+        }
+        
+        if (model.Bill != null && 
+            !string.IsNullOrWhiteSpace(model.Bill.ContactEmail) &&
+           !model.Bill.ContactEmail.Contains('@'))
+        {
+            throw new ContentEditException($"Неверный емейл представителя клиента");
         }
 
         var content = new Content
@@ -60,6 +74,7 @@ public class ContentService : IContentService
                 Value = model.Bill.Value,
                 ContentId = content.Id,
                 Contact = model.Bill.Contact.Replace("@", string.Empty),
+                ContactEmail = model.Bill.ContactEmail,
                 ContactName = model.Bill.ContactName,
                 ContactType = model.Bill.ContactType,
                 PaymentStatus = model.Bill.Value == 0 ? PaymentStatus.Paid : PaymentStatus.NotPaid,
@@ -83,6 +98,20 @@ public class ContentService : IContentService
         if (model == null)
         {
             throw new ContentEditException($"Модель запроса пуста.");
+        }     
+        
+        if (model.Bill != null && 
+                  string.IsNullOrWhiteSpace(model.Bill.Contact) &&
+                  string.IsNullOrWhiteSpace(model.Bill.ContactEmail))
+        {
+            throw new ContentEditException($"Не заполнены контактные данные представителя.");
+        }
+        
+        if (model.Bill != null && 
+            !string.IsNullOrWhiteSpace(model.Bill.ContactEmail) &&
+            !model.Bill.ContactEmail.Contains('@'))
+        {
+            throw new ContentEditException($"Неверный емейл представителя клиента");
         }
 
         var content = await unitOfWork.Content.GetByIdWithBillAsync(model.Id);
@@ -110,6 +139,7 @@ public class ContentService : IContentService
         {
             content.Bill.ClientId =  model.Bill.ClientId;
             content.Bill.Contact =  model.Bill.Contact.Replace("@", string.Empty);
+            content.Bill.ContactEmail =  model.Bill.ContactEmail;            
             content.Bill.ContactName =  model.Bill.ContactName;
             content.Bill.ContactType =  model.Bill.ContactType;
             content.Bill.Value =  model.Bill.Value;

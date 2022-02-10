@@ -11,9 +11,8 @@ public class ContactBuilder
             ContactType.Telegram => $"<a href=\"https://t.me/{contact}\" target=\"_blank\">{contact}</a>",
             ContactType.WhatsApp => contact,
             ContactType.Instagram => $"<a href=\"https://instagram.com/{contact}\" target=\"_blank\">{contact}</a>",
-            ContactType.Email => contact,
             ContactType.Phone => contact,
-            _ => string.Empty
+            _ => contact
         };
     }
 }

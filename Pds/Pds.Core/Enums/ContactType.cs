@@ -6,6 +6,5 @@ public enum ContactType
     Telegram = 1,
     Instagram = 2,
     WhatsApp = 3,
-    Email = 4, 
     Phone = 5
 }
