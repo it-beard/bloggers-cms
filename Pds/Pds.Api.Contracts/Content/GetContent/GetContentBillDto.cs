@@ -16,7 +16,7 @@ public class GetContentBillDto : IPaymentStatus
         
     public string ContactName { get; set; }
 
-    public ContactType ContactType { get; set; }
+    public ContactType? ContactType { get; set; }
 
     public PaymentStatus PaymentStatus { get; set; }
 

@@ -124,11 +124,15 @@ else
                         <a class="custom-link" href="/clients/@content.Bill.Client.Id">
                             <b>@content.Bill.Client.Name</b>
                         </a> /
-                        <span>
-                            @content.Bill.ContactName /
-                            @EnumsTranslator.ContactTypeToRu(content.Bill.ContactType).ToLower():
-                            @((MarkupString) ContactBuilder.ToLink(content.Bill.ContactType, content.Bill.Contact))
-                        </span>
+                        @content.Bill.ContactName
+                        @if (!string.IsNullOrEmpty(content.Bill.Contact))
+                        {
+                            <span> /  
+                                @EnumsTranslator.ContactTypeToRu(content.Bill.ContactType).ToLower():
+                                @((MarkupString) ContactBuilder.ToLink(content.Bill.ContactType, content.Bill.Contact))
+                            </span>
+                        }
+                        
                         @if (!string.IsNullOrEmpty(content.Bill.ContactEmail))
                         {
                             <span> / @content.Bill.ContactEmail</span>

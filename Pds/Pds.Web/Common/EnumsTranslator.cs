@@ -69,7 +69,7 @@ public static class EnumsTranslator
         };
     }
 
-    public static string ContactTypeToRu(ContactType type)
+    public static string ContactTypeToRu(ContactType? type)
     {
         return type switch
         {

@@ -74,6 +74,12 @@ public class BillService : IBillService
         bill.CreatedAt = DateTime.UtcNow;
         bill.PaymentStatus = PaymentStatus.Paid;
         bill.Status = BillStatus.Active;
+        bill.Contact = !string.IsNullOrEmpty(bill.Contact)
+            ? bill.Contact.Replace("@", string.Empty)
+            : null;
+        bill.ContactType = !string.IsNullOrEmpty(bill.Contact)
+            ? bill.ContactType
+            : null;
         if (bill.ClientId == Guid.Empty)
         {
             bill.ClientId = null;
@@ -135,9 +141,13 @@ public class BillService : IBillService
         {
             bill.ClientId = model.ClientId;
             bill.ContactName = model.ContactName;
-            bill.Contact = model.Contact.Replace("@", string.Empty);
+            bill.Contact = !string.IsNullOrEmpty(bill.Contact)
+                ? bill.Contact.Replace("@", string.Empty)
+                : null;
             bill.ContactEmail = model.ContactEmail;
-            bill.ContactType = model.ContactType;
+            bill.ContactType = !string.IsNullOrEmpty(bill.Contact)
+                ? bill.ContactType
+                : null;
         }
         else
         {

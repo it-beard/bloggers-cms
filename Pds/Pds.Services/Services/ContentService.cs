@@ -73,10 +73,14 @@ public class ContentService : IContentService
                 CreatedAt = DateTime.UtcNow,
                 Value = model.Bill.Value,
                 ContentId = content.Id,
-                Contact = model.Bill.Contact.Replace("@", string.Empty),
+                Contact = !string.IsNullOrEmpty(model.Bill.Contact) 
+                    ? model.Bill.Contact.Replace("@", string.Empty)
+                    : null,
                 ContactEmail = model.Bill.ContactEmail,
                 ContactName = model.Bill.ContactName,
-                ContactType = model.Bill.ContactType,
+                ContactType = !string.IsNullOrEmpty(model.Bill.Contact) 
+                    ? model.Bill.ContactType
+                    : null,
                 PaymentStatus = model.Bill.Value == 0 ? PaymentStatus.Paid : PaymentStatus.NotPaid,
                 Type = BillType.Content,
                 BrandId = model.BrandId,
@@ -138,10 +142,14 @@ public class ContentService : IContentService
         if (model.Bill != null && content.Bill != null) // Just update existed bill
         {
             content.Bill.ClientId =  model.Bill.ClientId;
-            content.Bill.Contact =  model.Bill.Contact.Replace("@", string.Empty);
+            content.Bill.Contact = !string.IsNullOrEmpty(model.Bill.Contact)
+                ? model.Bill.Contact.Replace("@", string.Empty)
+                : null;
             content.Bill.ContactEmail =  model.Bill.ContactEmail;            
             content.Bill.ContactName =  model.Bill.ContactName;
-            content.Bill.ContactType =  model.Bill.ContactType;
+            content.Bill.ContactType = !string.IsNullOrEmpty(model.Bill.Contact)
+                ? model.Bill.ContactType
+                : null;
             content.Bill.Value =  model.Bill.Value;
             content.Bill.UpdatedAt = DateTime.UtcNow;
         }

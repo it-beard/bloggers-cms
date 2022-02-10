@@ -3,7 +3,7 @@ namespace Pds.Web.Common;
 
 public class ContactBuilder
 {
-    public static string ToLink(ContactType type, string contact)
+    public static string ToLink(ContactType? type, string contact)
     {
         return type switch
         {

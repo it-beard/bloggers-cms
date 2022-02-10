@@ -32,7 +32,7 @@ public class GetBillResponse
     
     public string ContactEmail { get; set; }
 
-    public ContactType ContactType { get; set; }
+    public ContactType? ContactType { get; set; }
 
     public BillContentDto Content { get; set; }
 }
