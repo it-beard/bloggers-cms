@@ -142,7 +142,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         isSaveButtonDisabled = false;
-        gift = await GetGift();
+        gift = await GetGiftAsync();
         brands = await GetBrandsAsync();
         contents = await GetContentsAsync(gift.BrandId, gift.ContentId);
         editContext = new EditContext(gift);
@@ -181,7 +181,7 @@ else
         return await ApiClient.Get<List<ContentForLookupDto>>(TokenProvider, $"gifts/get-contents/brands/{brandId}/content/{giftContentId}");
     }
 
-    private async Task<EditGiftRequest> GetGift()
+    private async Task<EditGiftRequest> GetGiftAsync()
     {
         var clientResponse = await ApiClient.Get<GetGiftResponse>(TokenProvider, $"gifts/{GiftId}");
         return Mapper.Map<EditGiftRequest>(clientResponse);
