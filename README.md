@@ -20,6 +20,12 @@
 - Множество фильтров для сущностей
 - Возможность работать с несколькими Брендами в рамках одного интерфейса
 
+#Настройка и запуст
+1. [Подготовьте SQL-подобную базу данных](https://github.com/it-beard/bloggers-cms/wiki/how-to-create-db)
+2. [Настройте аутентификацию через Auth0](https://github.com/it-beard/bloggers-cms/wiki/Authorisation-configuration)
+3. Запустите проекты Pds.Api (бэкенд-часть CMS) и Pds.Web (фронтенд-часть CMS)
+Миграция база и заполнение её начальными данными произайдут автоматически при первом запуске бэкенда (Pds.Api)
+
 # Ссылки
 Wiki проекта: https://github.com/it-beard/bloggers-cms/wiki  
 Kanban-доска: https://github.com/it-beard/bloggers-cms/projects/1
