@@ -6,6 +6,7 @@
 @using Pds.Web.Common
 @using Pds.Web.Pages.Content
 @using Api.Contracts.Paging
+@using Pds.Core.Constants
 @using Pds.Web.Components.Sorting.QueryCreators
 @using Pds.Web.Components.Sorting.QueryCreators.Person
 @using Pds.Web.Models.Person
@@ -191,8 +192,8 @@ else
                 (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
                 (filterSettings.IsContactEstablished && i.IsContactEstablished == filterSettings.IsContactEstablished 
                     || !filterSettings.IsContactEstablished) &&
-                (filterSettings.IsUnknownPersons && i.FirstName == "Неизвестно" && i.LastName == "Неизвестно"
-                    || !filterSettings.IsUnknownPersons && (i.FirstName != "Неизвестно" || i.LastName != "Неизвестно")));
+                (filterSettings.IsUnknownPersons && i.FirstName == PersonConstants.UnknownPersonMarker && i.LastName == PersonConstants.UnknownPersonMarker
+                    || !filterSettings.IsUnknownPersons && (i.FirstName != PersonConstants.UnknownPersonMarker || i.LastName != PersonConstants.UnknownPersonMarker)));
 
         var query = itemsToShow
             .AsQueryable();

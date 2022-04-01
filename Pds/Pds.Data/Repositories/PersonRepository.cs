@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pds.Core.Constants;
 using Pds.Core.Enums;
 using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
@@ -39,7 +40,9 @@ public class PersonRepository : RepositoryBase<Person>, IPersonRepository
         return await context.Persons
             .Where(p => 
                 p.Brands.Select(b=>b.Id).Contains(brandId) && 
-                p.Status != PersonStatus.Archived)
+                p.Status != PersonStatus.Archived &&
+                p.FirstName != PersonConstants.UnknownPersonMarker &&
+                p.LastName != PersonConstants.UnknownPersonMarker)
             .OrderBy(p =>p.LastName)
             .ThenBy(p=>p.FirstName)
             .ToListAsync();

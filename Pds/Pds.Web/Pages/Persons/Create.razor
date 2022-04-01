@@ -5,6 +5,7 @@
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
 @using Microsoft.AspNetCore.Components
+@using Pds.Core.Constants
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
@@ -172,7 +173,7 @@ else
         person.IsUnknown = !person.IsUnknown;
         if (person.IsUnknown)
         {
-            person.FirstName = person.LastName = "Неизвестно";
+            person.FirstName = person.LastName = PersonConstants.UnknownPersonMarker;
         }
         else
         {
