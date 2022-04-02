@@ -20,6 +20,12 @@
 - Множество фильтров для сущностей
 - Возможность работать с несколькими Брендами в рамках одного интерфейса
 
+<img src="https://github.com/it-beard/bloggers-cms/blob/develop/.github/readme-images/1.png" title="Дашборд" width="800" />
+
+<img src="https://github.com/it-beard/bloggers-cms/blob/develop/.github/readme-images/2.png" title="Список контента" width="800" />
+
+<img src="https://github.com/it-beard/bloggers-cms/blob/develop/.github/readme-images/3.png" title="Настройки" width="800" />
+
 # Настройка и запуск
 1. [Подготовьте SQL-подобную базу данных](https://github.com/it-beard/bloggers-cms/wiki/how-to-create-db)
 2. [Настройте аутентификацию через Auth0](https://github.com/it-beard/bloggers-cms/wiki/Authorisation-configuration)
