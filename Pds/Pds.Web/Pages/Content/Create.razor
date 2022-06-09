@@ -241,10 +241,7 @@ else
         }
         content.Type = ContentType.Integration;
         content.SocialMediaType = SocialMediaType.YouTube;
-        content.Bill = new CreateContentBillDto()
-        {
-            ContactType = ContactType.Telegram
-        };
+        content.Bill = new CreateContentBillDto();
         clients = await GetClientsAsync();
         persons = await GetPersonsAsync(content.BrandId);
     }
