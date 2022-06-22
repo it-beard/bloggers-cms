@@ -82,7 +82,7 @@ public class DashboardService : IDashboardService
                 c.BillId == null &&
                 c.Status != ContentStatus.Archived);
 
-        if (nearestExistedEpisodeForIntegration != null ||
+        if (nearestExistedEpisodeForIntegration != null &&
             (nearestExistedEpisodeForIntegration.ReleaseDate- DateTime.UtcNow.Date).TotalDays >= 14)
         {
             return new NearestIntegrationDateModel()
