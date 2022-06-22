@@ -39,7 +39,10 @@ else
             <tr>
                 <th class="release-date-header">Когда</th>
                 <th>Название</th>
-                <th>Бренд</th>
+                @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                {
+                    <th>Бренд</th>
+                }
                 <th>Клиент</th>
                 <th>Соцсеть</th>
                 <th>Тип</th>
@@ -69,9 +72,12 @@ else
                     <td class="title-row">
                         <a class="custom-link" href="content/@item.Id">@item.Title</a>
                     </td>
-                    <td>
-                        @item.Brand.Name
-                    </td>
+                    @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                    {
+                        <td>
+                            @item.Brand.Name
+                        </td>
+                    }
                     <td>
                         @item.ClientName
                     </td>

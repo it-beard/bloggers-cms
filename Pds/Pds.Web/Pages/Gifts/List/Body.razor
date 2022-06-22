@@ -37,7 +37,10 @@ else
                 <th class="paid-date-header">Когда</th>
                 <th class="paid-date-header">Даты</th>
                 <th>Название</th>
-                <th>Бренд</th>
+                @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                {
+                    <th>Бренд</th>
+                }
                 <th>Комментарий</th>
                 <th>Адресат</th>
                 <th class="text-center actions-header">Действия</th>
@@ -84,7 +87,10 @@ else
                         </span>
                         <a class="custom-link" href="gifts/@gift.Id">@gift.Title</a>
                     </td>
-                    <td>@gift.Brand.Name</td>
+                    @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                    {
+                        <td>@gift.Brand.Name</td>
+                    }
                     <td>
                         @if (gift.Content != null)
                         {

@@ -40,7 +40,10 @@ else
                 <th class="id-header">ID</th>
                 <th class="cost-value-header">Сколько</th>
                 <th class="cost-type-header">Тип</th>
-                <th class="cost-type-header">Бренд</th>
+                @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                {
+                    <th class="cost-type-header">Бренд</th>
+                }
                 <th>Комментарий</th>
                 <th class="text-center actions-header">Действия</th>
             </tr>
@@ -65,7 +68,10 @@ else
                     <td>
                         @EnumsTranslator.CostTypeToRu(cost.Type)
                     </td>
-                    <td>@cost.Brand.Name</td>
+                    @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                    {
+                        <td>@cost.Brand.Name</td>
+                    }
                     <td>
                         @if (cost.Content != null)
                         {
