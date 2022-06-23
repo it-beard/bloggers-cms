@@ -29,7 +29,7 @@ else
         <button @onclick="GoBack" class="btn btn-primary">Назад</button>
     </h4>
 
-    <div class="page-container">
+    <div class="page-container @PersonsHelper.GetBgColorClass(person.Status)">
         <div class="info-item">
             <div class="info-title">Бренды</div>
             <div class="info-body">
