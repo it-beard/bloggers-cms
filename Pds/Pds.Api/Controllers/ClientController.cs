@@ -1,7 +1,10 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
-using Pds.Api.Contracts.Client;
+using Pds.Api.Contracts.Controllers.Client.CreateClient;
+using Pds.Api.Contracts.Controllers.Client.EditClient;
+using Pds.Api.Contracts.Controllers.Client.GetClient;
+using Pds.Api.Contracts.Controllers.Client.GetClients;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Client;
@@ -40,7 +43,7 @@ public class ClientController : ApiControllerBase
 
             var response = new GetClientsResponse
             {
-                Items = mapper.Map<List<ClientDto>>(clients),
+                Items = mapper.Map<List<GetClientsClientDto>>(clients),
                 Total = clients.Count
             };
 

@@ -1,14 +1,14 @@
 ﻿using System.Linq.Expressions;
 using Calabonga.PredicatesBuilder;
-using Pds.Api.Contracts.Person;
+using Pds.Api.Contracts.Controllers.Person.GetPersons;
 
 namespace Pds.Web.Components.Search;
 
 public class PersonsSearch
 {
-    public Expression<Func<PersonDto, bool>> GetSearchPredicate(string searchLine)
+    public Expression<Func<GetPersonsPersonDto, bool>> GetSearchPredicate(string searchLine)
     {
-        var predicate = PredicateBuilder.False<PersonDto>();
+        var predicate = PredicateBuilder.False<GetPersonsPersonDto>();
 
         predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.Location) && c.Location.ToLower().Contains(searchLine));
         predicate = predicate.Or(c => c.FullName.ToLower().Contains(searchLine));

@@ -1,21 +1,44 @@
 ﻿using AutoMapper;
 using Pds.Api.Contracts;
-using Pds.Api.Contracts.Bill;
-using Pds.Api.Contracts.Brand;
-using Pds.Api.Contracts.Client;
-using Pds.Api.Contracts.Content;
-using Pds.Api.Contracts.Content.CreateContent;
-using Pds.Api.Contracts.Content.EditContent;
-using Pds.Api.Contracts.Content.GetContent;
-using Pds.Api.Contracts.Content.GetContents;
-using Pds.Api.Contracts.Cost;
-using Pds.Api.Contracts.Dashboard;
-using Pds.Api.Contracts.Dashboard.GetContentStatistics;
-using Pds.Api.Contracts.Dashboard.GetCountriesStatistics;
-using Pds.Api.Contracts.Dashboard.GetMoneyStatistics;
-using Pds.Api.Contracts.Gift;
-using Pds.Api.Contracts.Person;
-using Pds.Api.Contracts.Settings;
+using Pds.Api.Contracts.Controllers;
+using Pds.Api.Contracts.Controllers.Bill.CreateBill;
+using Pds.Api.Contracts.Controllers.Bill.EditBill;
+using Pds.Api.Contracts.Controllers.Bill.GetBill;
+using Pds.Api.Contracts.Controllers.Bill.GetBills;
+using Pds.Api.Contracts.Controllers.Brand.CreateBrand;
+using Pds.Api.Contracts.Controllers.Brand.EditBrand;
+using Pds.Api.Contracts.Controllers.Brand.GetBrand;
+using Pds.Api.Contracts.Controllers.Brand.GetBrands;
+using Pds.Api.Contracts.Controllers.Client.CreateClient;
+using Pds.Api.Contracts.Controllers.Client.EditClient;
+using Pds.Api.Contracts.Controllers.Client.GetClient;
+using Pds.Api.Contracts.Controllers.Client.GetClients;
+using Pds.Api.Contracts.Controllers.Content;
+using Pds.Api.Contracts.Controllers.Content.CreateContent;
+using Pds.Api.Contracts.Controllers.Content.EditContent;
+using Pds.Api.Contracts.Controllers.Content.GetContent;
+using Pds.Api.Contracts.Controllers.Content.GetContents;
+using Pds.Api.Contracts.Controllers.Cost;
+using Pds.Api.Contracts.Controllers.Cost.CreateCost;
+using Pds.Api.Contracts.Controllers.Cost.EditCost;
+using Pds.Api.Contracts.Controllers.Cost.GetCost;
+using Pds.Api.Contracts.Controllers.Cost.GetCosts;
+using Pds.Api.Contracts.Controllers.Dashboard.GetContentStatistics;
+using Pds.Api.Contracts.Controllers.Dashboard.GetCountriesStatistics;
+using Pds.Api.Contracts.Controllers.Dashboard.GetMoneyStatistics;
+using Pds.Api.Contracts.Controllers.Gift.CreateGift;
+using Pds.Api.Contracts.Controllers.Gift.EditGift;
+using Pds.Api.Contracts.Controllers.Gift.GetGift;
+using Pds.Api.Contracts.Controllers.Gift.GetGifts;
+using Pds.Api.Contracts.Controllers.Person;
+using Pds.Api.Contracts.Controllers.Person.CreatePerson;
+using Pds.Api.Contracts.Controllers.Person.EditPerson;
+using Pds.Api.Contracts.Controllers.Person.GetPerson;
+using Pds.Api.Contracts.Controllers.Person.GetPersons;
+using Pds.Api.Contracts.Controllers.Settings.EditSetting;
+using Pds.Api.Contracts.Controllers.Settings.GetSetting;
+using Pds.Api.Contracts.Controllers.Settings.GetSettings;
+using Pds.Core.Enums;
 using Pds.Data.Entities;
 using Pds.Services.Models.Bill;
 using Pds.Services.Models.Brand;
@@ -26,6 +49,7 @@ using Pds.Services.Models.Dashboard;
 using Pds.Services.Models.Gift;
 using Pds.Services.Models.Person;
 using Pds.Services.Models.Setting;
+using ClientForLookupDto = Pds.Api.Contracts.Controllers.Bill.ClientForLookupDto;
 
 namespace Pds.Mappers;
 
@@ -37,7 +61,7 @@ public class ApiMappingProfile : Profile
 
         CreateMap<Person, GetContentPersonDto>();
         CreateMap<Person, GetContentsPersonDto>();
-        CreateMap<Person, PersonDto>()
+        CreateMap<Person, GetPersonResponse>()
             .ForMember(
                 dest => dest.FullName,
                 opt => opt
@@ -47,7 +71,26 @@ public class ApiMappingProfile : Profile
                 opt => opt
                     .MapFrom(p => string.IsNullOrEmpty(p.City) ? 
                         $"{p.Country}" : 
-                        $"{p.Country}, {p.City}"));
+                        $"{p.Country}, {p.City}"))
+            .ForMember(
+                dest => dest.ContentsCount,
+                opt => opt
+                    .MapFrom(p => p.Contents == null ? 0 : p.Contents.Count));
+        CreateMap<Person, GetPersonsPersonDto>()
+            .ForMember(
+                dest => dest.FullName,
+                opt => opt
+                    .MapFrom(p => $"{p.LastName} {p.FirstName} {p.ThirdName}"))
+            .ForMember(
+                dest => dest.Location,
+                opt => opt
+                    .MapFrom(p => string.IsNullOrEmpty(p.City) ? 
+                        $"{p.Country}" : 
+                        $"{p.Country}, {p.City}"))
+            .ForMember(
+                dest => dest.ContentsCount,
+                opt => opt
+                    .MapFrom(p => p.Contents == null ? 0 : p.Contents.Count));
         CreateMap<Person, PersonForLookupDto>()
             .ForMember(
                 dest => dest.FullName,
@@ -60,11 +103,15 @@ public class ApiMappingProfile : Profile
         CreateMap<Resource, ResourceDto>();
         CreateMap<Resource, GetContentPersonResourceDto>();
             
-        CreateMap<Content, BillContentDto>();
-        CreateMap<Content, CostContentDto>();
+        CreateMap<Content, GetBillContentDto>();
+        CreateMap<Content, EditBillContentDto>();
+        CreateMap<Content, GetBillsContentDto>();
+        CreateMap<Content, GetCostContentDto>();
         CreateMap<Content, PersonContentDto>();
-        CreateMap<Content, GiftContentDto>();
-        CreateMap<Content, Pds.Api.Contracts.Cost.ContentForLookupDto>()
+        CreateMap<Content, GetGiftContentDto>();
+        CreateMap<Content, GetGiftsContentDto>();
+        CreateMap<Content, EditGiftContentDto>();
+        CreateMap<Content, ContentForLookupDto>()
             .ForMember(
                 dest => dest.Title,
                 opt => opt
@@ -72,7 +119,7 @@ public class ApiMappingProfile : Profile
                         s.Title = string.IsNullOrEmpty(p.Title) ? 
                             "Не выбрано" : 
                             $"{p.ReleaseDate:dd.MM} / {p.Title}"));
-        CreateMap<Content, Pds.Api.Contracts.Gift.ContentForLookupDto>()
+        CreateMap<Content, Api.Contracts.Controllers.Gift.ContentForLookupDto>()
             .ForMember(
                 dest => dest.Title,
                 opt => opt
@@ -84,51 +131,74 @@ public class ApiMappingProfile : Profile
             .ForMember(
                 dest => dest.ClientName,
                 opt => opt
-                    .MapFrom(p => p.Bill.Client.Name));
-        CreateMap<Content, GetContentResponse>();
+                    .MapFrom(p => p.Bill.Client.Name))
+            .ForMember(
+                dest => dest.BillPaymentStatus,
+                opt => opt
+                    .MapFrom(p => p.Bill == null ? (PaymentStatus?) null : p.Bill.PaymentStatus));
+        CreateMap<Content, GetContentResponse>() 
+            .ForMember(
+                dest => dest.BillPaymentStatus,
+                opt => opt
+                    .MapFrom(p => p.Bill == null ? (PaymentStatus?) null : p.Bill.PaymentStatus));
         CreateMap<Content, GetContentForPayResponse>();
 
         CreateMap<Brand, BrandDto>();
         CreateMap<Brand, BrandForCheckboxesDto>();
         CreateMap<Brand, GetBrandResponse>();
 
-        CreateMap<Client, ClientDto>();
         CreateMap<Client, GetClientResponse>();
+        CreateMap<Client, GetBillsClientDto>();
         CreateMap<Client, GetContentBillClientDto>();
-        CreateMap<Client, Pds.Api.Contracts.Content.ClientForLookupDto>()
+        CreateMap<Client, GetClientsClientDto>()
+            .ForMember(
+                dest => dest.BillsCount,
+                opt => opt
+                    .MapFrom(p => p.Bills == null ? 0 : p.Bills.Count));
+        CreateMap<Client, GetClientResponse>()
+            .ForMember(
+                dest => dest.BillsCount,
+                opt => opt
+                    .MapFrom(p => p.Bills == null ? 0 : p.Bills.Count));
+        CreateMap<Client, Api.Contracts.Controllers.Content.ClientForLookupDto>()
             .ForMember(
                 dest => dest.Name,
                 opt => opt
                     .MapFrom((p, s) =>
                         s.Name = p.Name ?? "Не выбрано"));
-        CreateMap<Client, Pds.Api.Contracts.Bill.ClientForLookupDto>()
+        CreateMap<Client, ClientForLookupDto>()
             .ForMember(
                 dest => dest.Name,
                 opt => opt
                     .MapFrom((p, s) =>
                         s.Name = p.Name ?? "Не выбрано"));
 
-        CreateMap<Bill, BillDto>();
-        CreateMap<Bill, ClientBillDto>();
+        CreateMap<Bill, GetBillsBillDto>();
+        CreateMap<Bill, GetClientBillDto>();
+        CreateMap<Bill, GetClientsBillDto>();
         CreateMap<Bill, GetBillResponse>();
         CreateMap<Bill, GetContentBillDto>();
         CreateMap<Bill, GetContentsBillDto>();
         CreateMap<Bill, GetContentBillForPayResponse>();
 
-        CreateMap<Cost, CostDto>();
+        CreateMap<Cost, GetCostsCostDto>();
         CreateMap<Cost, GetCostResponse>();
         CreateMap<Cost, GetContentCostDto>();
 
         CreateMap<Brand, BrandDto>();
         
-        CreateMap<Gift, GetGiftResponse>();
-        CreateMap<Gift, GiftDto>() 
+        CreateMap<Gift, GetGiftResponse>() 
+            .ForMember(
+                dest => dest.SortDate,
+                opt => opt
+                    .MapFrom(p => GetSortDateForGiftDto(p)));
+        CreateMap<Gift, GetGiftsGiftDto>() 
             .ForMember(
                 dest => dest.SortDate,
                 opt => opt
                     .MapFrom(p => GetSortDateForGiftDto(p)));
         
-        CreateMap<Setting, SettingDto>();
+        CreateMap<Setting, GetSettingsSettingDto>();
         CreateMap<Setting, GetSettingResponse>();
 
         #endregion
@@ -188,7 +258,6 @@ public class ApiMappingProfile : Profile
             .ForMember(
                 dest => dest.Brands,
                 opt => opt.MapFrom(p => BrandsDtoToBrandsForCheckboxesDto(p.Brands)));
-        CreateMap<PersonDto, GetPersonResponse>();
         CreateMap<GetBrandResponse, EditBrandRequest>();
         CreateMap<BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
         CreateMap<BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
@@ -206,7 +275,7 @@ public class ApiMappingProfile : Profile
         
         #region Models to Contracts
 
-        CreateMap<GetBrandModel, BrandFullDto>();
+        CreateMap<GetBrandModel, GetBrandsBrandDto>();
         CreateMap<CountryStatisticsBrandModel, GetCountriesStatisticsBrandDto>();
         CreateMap<CountryStatisticsCountryModel, GetCountriesStatisticsCountryDto>();
         CreateMap<MoneyStatisticsBrandModel, GetMoneyStatisticsBrandDto>();

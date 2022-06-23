@@ -1,7 +1,10 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
-using Pds.Api.Contracts.Brand;
+using Pds.Api.Contracts.Controllers.Brand.CreateBrand;
+using Pds.Api.Contracts.Controllers.Brand.EditBrand;
+using Pds.Api.Contracts.Controllers.Brand.GetBrand;
+using Pds.Api.Contracts.Controllers.Brand.GetBrands;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Brand;
@@ -41,7 +44,7 @@ public class BrandController : ApiControllerBase
 
             var response = new GetBrandsResponse
             {
-                Items = mapper.Map<List<BrandFullDto>>(brands),
+                Items = mapper.Map<List<GetBrandsBrandDto>>(brands),
                 Total = brands.Count
             };
 

@@ -1,10 +1,11 @@
 ﻿@page "/clients/{clientId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Client
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 @using AutoMapper
+@using Pds.Api.Contracts.Controllers.Client.EditClient
+@using Pds.Api.Contracts.Controllers.Client.GetClient
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient

@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoFixture;
 using NUnit.Framework;
-using Pds.Api.Contracts.Person;
+using Pds.Api.Contracts.Controllers.Person.CreatePerson;
+
 namespace Pds.Api.Tests;
 
 public class CreatePersonRequestTests

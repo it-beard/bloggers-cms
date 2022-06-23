@@ -1,0 +1,185 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Core.Enums
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components
+@using AutoMapper
+@using Pds.Api.Contracts
+@using Pds.Api.Contracts.Controllers
+@using Pds.Web.Models.Gift
+
+@namespace Pds.Web.Pages.Gifts.Components
+
+@inject IAccessTokenProvider tokenProvider
+@inject IApiClient apiClient
+@inject IMapper mapper
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+@if (brands == null)
+{
+    <p>
+        <em>Загрузка фильтр...</em>
+    </p>
+}
+else
+{
+    var filterButtonClass = isMobileFilterOpen ? "bi-caret-up-fill" : "bi-caret-down-fill";
+    var filterPaddingFixClass = isMobileFilterOpen ? string.Empty : "filter-padding-fix";
+    var openFilterClass = isMobileFilterOpen ? "filter-main-open" : string.Empty;
+    
+    <div class="@($"filter {filterPaddingFixClass}")">
+        <div class="filter-header">
+            
+            <button title="Фильтр" class="btn btn-success btn-sm button-filter" @onclick="OnButtonFilterClick">
+                <i class="@($"bi {filterButtonClass}")"></i>
+            </button>
+            <SearchComponent Search="SearchOnChanged"/>
+        </div>
+        
+        <div class="@($"filter-main {openFilterClass}")">
+            <EditForm EditContext="@editContext">
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Бренд:</span>
+                    @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
+                    {
+                        var id = $"sm_type_{brandFilterItem.Id.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @brandFilterItem.Name
+                        </label>
+                    }
+                </div>
+
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Статус:</span>
+                    @foreach (var giftStatusFilterItem in filterSettings.GiftStatusFilterItems)
+                    {
+                        var id = $"gift_status_{giftStatusFilterItem.GiftStatus.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="giftStatusFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.GiftStatusToRu(giftStatusFilterItem.GiftStatus)
+                        </label>
+                    }
+                </div>
+
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Тип подарка:</span>
+                    @foreach (var giftTypeFilterItem in filterSettings.GiftTypeFilterItems)
+                    {
+                        var id = $"gift_type_{giftTypeFilterItem.GiftType.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="giftTypeFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.GiftTypeToRu(giftTypeFilterItem.GiftType)
+                        </label>
+                    }
+                </div>
+
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Создан:</span>
+                    <InputDate class="form-control from-date" id="from_date" @bind-Value="filterSettings.CreatedFrom"/>
+                    <span class="filter-date-separator">&lt; с | по &gt; </span>
+                    <InputDate class="form-control to-date" id="to_date" @bind-Value="filterSettings.CreatedTo"/>
+                </div>
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Разыгран:</span>
+                    <InputDate class="form-control from-date" id="raffled_from_date" @bind-Value="filterSettings.RaffledFrom"/>
+                    <span class="filter-date-separator">&lt; с | по &gt; </span>
+                    <InputDate class="form-control to-date" id="raffled_to_date" @bind-Value="filterSettings.RaffledTo"/>
+                </div>
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Отправлен:</span>
+                    <InputDate class="form-control from-date" id="completed_from_date" @bind-Value="filterSettings.CompletedFrom"/>
+                    <span class="filter-date-separator">&lt; с | по &gt; </span>
+                    <InputDate class="form-control to-date" id="completed_to_date" @bind-Value="filterSettings.CompletedTo"/>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+
+    private EditContext editContext;
+    private FilterSettings filterSettings { get; set; }
+    private List<BrandDto> brands { get; set; }
+    private bool isMobileFilterOpen = false;
+    private string savedSettingsLocalStorageKey = "giftsFilterSettings";
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await GetBrands();
+        filterSettings = await GetFilterSettings(brands);
+        editContext = new EditContext(filterSettings);
+        editContext.OnFieldChanged += EditContext_OnFieldChanged;
+        await OnFilterUpdate.InvokeAsync(filterSettings); //trigger filter initialize
+    }
+
+    private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        localStorage.SetItemAsync(savedSettingsLocalStorageKey, filterSettings);
+        OnFilterUpdate.InvokeAsync(filterSettings);
+    }
+
+    private void SearchOnChanged(string searchText)
+    {
+        OnSearch.InvokeAsync(searchText);
+    }
+
+    private async Task<FilterSettings> GetFilterSettings(List<BrandDto> brands)
+    {
+        var filter = new FilterSettings
+        {
+            GiftStatusFilterItems = ((GiftStatus[]) Enum.GetValues(typeof(GiftStatus)))
+                .Select(gStatus =>
+                    new GiftStatusFilterItem
+                    {
+                        GiftStatus = gStatus,
+                        IsSelected = false
+                    })
+                .ToList(),
+            GiftTypeFilterItems = ((GiftType[]) Enum.GetValues(typeof(GiftType)))
+                .Select(gType =>
+                    new GiftTypeFilterItem
+                    {
+                        GiftType = gType,
+                        IsSelected = false
+                    })
+                .ToList(),
+            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands)
+        };
+        
+        SetDefaultFilterValues(ref filter, brands);
+        filter = await GetSavedFilterValues(filter);
+
+        return filter;
+    }
+
+    private void SetDefaultFilterValues(ref FilterSettings filter, List<BrandDto> brands)
+    {
+        // Set default brand
+        var defaultBrand = brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            filter.BrandFilterItems.First(b => b.Id == defaultBrand.Id).IsSelected = true;
+        }
+    }
+    
+    private async Task<FilterSettings> GetSavedFilterValues(FilterSettings filter)
+    {
+        var savedFilter = await localStorage.GetItemAsync<FilterSettings>(savedSettingsLocalStorageKey);
+        return savedFilter ?? filter;
+    }
+
+    private async Task<List<BrandDto>> GetBrands()
+    {
+        return await apiClient.Get<List<BrandDto>>(tokenProvider, "content/get-brands");
+    }
+    
+    private void OnButtonFilterClick()
+    {
+        isMobileFilterOpen = !isMobileFilterOpen;
+    }
+}

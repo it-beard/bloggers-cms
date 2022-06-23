@@ -1,0 +1,119 @@
+﻿@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Controllers.Content
+@using Pds.Core.Enums
+
+@namespace Pds.Web.Pages.Content.Components
+
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<div class="panel panel-default actions-panel">
+    @{
+        var buttonClass = WithLabels ? "btn with-label" : "btn btn-sm";
+    }
+    @if (CurrentContent.Status == ContentStatus.Active)
+    {
+        <button title="Редактировать" class="@buttonClass btn-primary" @onclick="OnEdit">
+            <i class="bi bi-pencil-fill"></i>
+            @if (WithLabels)
+            {
+                <span>Редактировать</span>
+            }
+        </button>
+    }
+
+    @if (CurrentContent.BillPaymentStatus != null && 
+         CurrentContent.Status == ContentStatus.Active && 
+         CurrentContent.BillPaymentStatus == PaymentStatus.NotPaid)
+    {
+        <button title="Оплатить" class="@buttonClass btn-dark" @onclick="OnPay">
+            <i class="bi bi-credit-card-2-back"></i>
+            @if (WithLabels)
+            {
+               <span>Оплатить</span>
+            }
+        </button>
+    }
+
+    @if (CurrentContent.Status == ContentStatus.Archived)
+    {
+        <button title="Разархивировать" class="@buttonClass btn-success" @onclick="OnUnarchiveAsync">
+            <i class="bi bi-patch-plus-fill"></i>
+            @if (WithLabels)
+            {
+                <span>Разархивировать</span>
+            }
+        </button>
+    }
+
+    @if (CurrentContent.Status == ContentStatus.Active && 
+         (CurrentContent.BillPaymentStatus == null || CurrentContent.BillPaymentStatus == PaymentStatus.Paid))
+    {
+        <button title="Архивировать" class="@buttonClass btn-warning" @onclick="OnArchiveAsync">
+            <i class="bi bi-archive-fill"></i>
+            @if (WithLabels)
+            {
+                <span>Архивировать</span>
+            }
+        </button>
+    }
+
+    @if (CurrentContent.Status == ContentStatus.Active)
+    {
+        <button title="Удалить" class="@buttonClass btn-danger" @onclick="OnDeleteAsync">
+            <i class="bi bi-trash-fill"></i>
+            @if (WithLabels)
+            {
+                <span>Удалить</span>
+            }
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnActionsUpdate { get; set; }
+    [Parameter]
+    public IActionsContent CurrentContent { get; set; }
+    [Parameter]
+    public bool WithLabels { get; set; }
+
+    private void OnEdit()
+    {
+        NavigationManager.NavigateTo($"/content/{CurrentContent.Id}/edit");
+    }
+
+    private async Task OnDeleteAsync()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите удалить \"{CurrentContent.Title}\"?");
+        if (confirmed)
+        {
+            await ApiClient.Delete<object>(TokenProvider, $"content/{CurrentContent.Id}");
+            await OnActionsUpdate.InvokeAsync(); // Update UI
+        }
+    }
+
+    private void OnPay()
+    {
+        NavigationManager.NavigateTo($"/content/{CurrentContent.Id}/pay");
+    }
+
+    private async Task OnArchiveAsync()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать \"{CurrentContent.Title}\"?");
+        if (confirmed)
+        {
+            await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentContent.Id}/archive", null);
+            await OnActionsUpdate.InvokeAsync(); // Update UI
+        }
+    }
+
+    private async Task OnUnarchiveAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"content/{CurrentContent.Id}/unarchive", null);
+        await OnActionsUpdate.InvokeAsync(); // Update UI
+    }
+}

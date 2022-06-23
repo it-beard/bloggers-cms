@@ -4,10 +4,10 @@
 @using static Pds.Web.Common.Constants
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Dashboard.GetContentStatistics
-@using Pds.Api.Contracts.Dashboard.GetCountriesStatistics
-@using Pds.Api.Contracts.Dashboard.GetMoneyStatistics
-@using Pds.Api.Contracts.Dashboard.GetNearestDates
+@using Pds.Api.Contracts.Controllers.Dashboard.GetContentStatistics
+@using Pds.Api.Contracts.Controllers.Dashboard.GetCountriesStatistics
+@using Pds.Api.Contracts.Controllers.Dashboard.GetMoneyStatistics
+@using Pds.Api.Contracts.Controllers.Dashboard.GetNearestDates
 @using Pds.Core.Extensions
 @using Pds.Web.Pages.Content
 
@@ -48,7 +48,7 @@ else
                                 @EnumsTranslator.SocialMediaTypeToRu(content.SocialMediaType)
                             </span>
                             @{
-                                var additionalClass = ContentHelper.GetContentBgColorClass(content.Status, content.Bill);
+                                var additionalClass = DashboardHelper.GetContentBgColorClass(content.Status, content.Bill);
                             }
                             <span class="content-title">
                                 <a class="@($"custom-link {additionalClass}")" href="content/@content.Id">

@@ -1,0 +1,91 @@
+﻿@page "/gifts/{giftId}"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Controllers.Gift.GetGift
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension
+@using Pds.Web.Pages.Gifts.Components
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+@if (gift == null)
+{
+    <p>
+        <em>
+            Подождите, идет загрузка...
+        </em>
+    </p>
+}
+else
+{
+    <Title>@WithSuffix($"Подарок \"{gift.Title}\"")</Title>
+
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        Подарок "@gift.Title"
+        <button @onclick="GoBack" class="btn btn-primary">Назад</button>
+    </h4>
+
+    <div class="page-container">
+        @if (gift.Content != null)
+        {
+            <div class="info-item">
+                <div class="info-title">Контент</div>
+                <div class="info-body">
+                    <a class="custom-link" href="content/@gift.Content.Id">@gift.Content.Title</a>
+                </div>
+            </div>
+        }
+        
+        <div class="info-item">
+            <div class="info-title">Комментарий</div>
+            <div class="info-body">
+                @gift.Comment
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(gift.FirstName))
+        {
+            <div class="info-item">
+                <div class="info-title">Адресат</div>
+                <div class="info-body">
+
+                    <div>
+                        <i>ФИО:</i> @gift.LastName @gift.FirstName @gift.ThirdName
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(gift.PostalAddress))
+                    {
+                        <div class="comment-row">
+                            <i>Адрес:</i> @gift.PostalAddress
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        <div class="info-item">
+            <Actions OnActionsUpdate="@OnActionsUpdateAsync" CurrentGift="@gift" WithLabels="true"></Actions>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string GiftId { get; set; }
+    private GetGiftResponse gift { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        gift = await GetGiftAsync();
+    }
+
+    private async Task<GetGiftResponse> GetGiftAsync()
+    {
+        return await ApiClient.Get<GetGiftResponse>(TokenProvider, $"gifts/{GiftId}");
+    }
+
+    private async Task OnActionsUpdateAsync()
+    {
+        gift = await GetGiftAsync();
+    }
+}

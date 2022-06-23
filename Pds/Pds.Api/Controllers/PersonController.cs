@@ -2,8 +2,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
-using Pds.Api.Contracts.Brand;
-using Pds.Api.Contracts.Person;
+using Pds.Api.Contracts.Controllers;
+using Pds.Api.Contracts.Controllers.Person.CreatePerson;
+using Pds.Api.Contracts.Controllers.Person.EditPerson;
+using Pds.Api.Contracts.Controllers.Person.GetPerson;
+using Pds.Api.Contracts.Controllers.Person.GetPersons;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Person;
@@ -44,7 +47,7 @@ public class PersonController : ApiControllerBase
             var persons = await personService.GetAllAsync();
             var response = new GetPersonsResponse
             {
-                Items = mapper.Map<List<PersonDto>>(persons),
+                Items = mapper.Map<List<GetPersonsPersonDto>>(persons),
                 Total = persons.Count
             };
 
@@ -63,12 +66,12 @@ public class PersonController : ApiControllerBase
     /// <returns></returns>
     [HttpGet("{personId}")]
     [ProducesResponseType(typeof(GetPersonResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPerson(Guid personId)
+    public async Task<IActionResult> Get(Guid personId)
     {
         try
         {
             var person = await personService.GetAsync(personId);
-            var response = mapper.Map<PersonDto>(person);
+            var response = mapper.Map<GetPersonResponse>(person);
 
             return Ok(response);
         }

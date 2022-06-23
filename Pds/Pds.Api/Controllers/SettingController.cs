@@ -2,9 +2,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
-using Pds.Api.Contracts.Bill;
-using Pds.Api.Contracts.Client;
-using Pds.Api.Contracts.Settings;
+using Pds.Api.Contracts.Controllers.Client.EditClient;
+using Pds.Api.Contracts.Controllers.Settings.EditSetting;
+using Pds.Api.Contracts.Controllers.Settings.GetSetting;
+using Pds.Api.Contracts.Controllers.Settings.GetSettings;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Bill;
@@ -63,7 +64,7 @@ public class SettingController : ApiControllerBase
         try
         {
             var settings = await settingService.GetAllAsync();
-            var response = mapper.Map<List<SettingDto>>(settings);
+            var response = mapper.Map<List<GetSettingsSettingDto>>(settings);
             return Ok(response);
         }
         catch (Exception e)

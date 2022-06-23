@@ -1,10 +1,11 @@
 ﻿@page "/brands/{brandId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Brand
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 @using AutoMapper
+@using Pds.Api.Contracts.Controllers.Brand.EditBrand
+@using Pds.Api.Contracts.Controllers.Brand.GetBrand
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient

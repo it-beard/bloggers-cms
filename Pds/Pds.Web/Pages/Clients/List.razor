@@ -1,0 +1,87 @@
+﻿@page "/clients"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Controllers.Client.GetClients
+@using Pds.Web.Common
+@using static Pds.Web.Common.TitleExtension
+@using Pds.Web.Pages.Clients.Components
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Клиенты")</Title>
+
+<h4 class="card-header d-flex justify-content-between align-items-center">
+    Список клиентов
+    <a href="/clients/add" class="btn btn-success">Добавить</a>
+</h4>
+@if (clientsInfo == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="client-name-header">Наименование</th>
+                <th>Комментарий</th>
+                <th class="text-center actions-header">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in clientsInfo.Items)
+            {
+                <tr class="normal">
+                    <td class="client-name-row">
+                        <a class="custom-link" href="clients/@client.Id">@client.Name</a>
+                        @if (client.Bills is { Count: > 0 })
+                        {
+                            <span class="contents">
+                                (@client.Bills.Count)
+                            </span>
+                        }
+                    </td>
+                    <td class="comment-row">
+                        <div title="@client.Comment">
+                            @{
+                                var shortComment = string.Empty;
+                                if (!string.IsNullOrWhiteSpace(client.Comment))
+                                {
+                                    shortComment = client.Comment.Length > 50 ?
+                                        $"{client.Comment[..49]}..." :
+                                        client.Comment;
+                                }
+                            }
+                            @shortComment
+                        </div>
+                    </td>
+                    <td class="text-center actions-row">
+                        <Actions OnActionsUpdate="@OnActionsUpdateAsync" CurrentClient="@client"></Actions>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GetClientsResponse clientsInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientsInfo = await GetClientsInfo();
+    }
+
+    private async Task OnActionsUpdateAsync()
+    {
+        clientsInfo = await GetClientsInfo();
+    }
+
+    private async Task<GetClientsResponse> GetClientsInfo()
+    {
+        return await ApiClient.Get<GetClientsResponse>(TokenProvider, "clients");
+    }
+}

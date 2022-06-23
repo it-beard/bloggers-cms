@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Calabonga.PredicatesBuilder;
-using Pds.Api.Contracts.Content.GetContents;
+using Pds.Api.Contracts.Controllers.Content.GetContents;
 
 namespace Pds.Web.Components.Search;
 

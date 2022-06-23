@@ -1,0 +1,17 @@
+﻿.actions-panel {
+    margin: 0 auto;
+    white-space: pre;
+}
+
+button {
+    margin: 0 5px;
+}
+
+button i{
+    font-size: 0.8rem;
+}
+
+button.with-label i {
+    margin-right: 5px;
+    font-size: 0.8rem;
+}

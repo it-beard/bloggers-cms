@@ -1,0 +1,158 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Web.Common
+@using Pds.Web.Models.Person
+@using Microsoft.AspNetCore.Components
+@using AutoMapper
+@using Pds.Api.Contracts
+@using Pds.Api.Contracts.Controllers
+@using Pds.Core.Enums
+
+@namespace Pds.Web.Pages.Persons.Components
+
+@inject IAccessTokenProvider tokenProvider
+@inject IApiClient apiClient
+@inject IMapper mapper
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+@if (brands == null)
+{
+    <p>
+        <em>Загрузка фильтр...</em>
+    </p>
+}
+else
+{
+    var filterButtonClass = isMobileFilterOpen ? "bi-caret-up-fill" : "bi-caret-down-fill";
+    var filterPaddingFixClass = isMobileFilterOpen ? string.Empty : "filter-padding-fix";
+    var openFilterClass = isMobileFilterOpen ? "filter-main-open" : string.Empty;
+    
+    <div class="@($"filter {filterPaddingFixClass}")">
+        <div class="filter-header">
+            
+            <button title="Фильтр" class="btn btn-success btn-sm button-filter" @onclick="OnButtonFilterClick">
+                <i class="@($"bi {filterButtonClass}")"></i>
+            </button>
+            <SearchComponent Search="SearchOnChanged"/>
+        </div>
+        
+        <div class="@($"filter-main {openFilterClass}")">
+            <EditForm EditContext="@editContext">
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Бренд:</span>
+                    @foreach (var brandFilterItem in filterSettings.BrandFilterItems)
+                    {
+                        var id = $"sm_type_{brandFilterItem.Id.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="brandFilterItem.IsSelected" Id="@id" />
+                        <label class="btn btn-secondary" for="@id">
+                            @brandFilterItem.Name
+                        </label>
+                    }
+                </div>
+        
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Статус:</span>
+                    @foreach (var statusFilterItem in filterSettings.PersonStatusFilterItems)
+                    {
+                        var id = $"status_{statusFilterItem.PersonStatus.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="statusFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.PersonStatusToRu(statusFilterItem.PersonStatus)
+                        </label>
+                    }
+                </div>
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Прочее:</span>
+                    <InputCheckbox name="is_nds" class="btn-check" @bind-Value="filterSettings.IsContactEstablished" Id="is_contact_established"/>
+                    <label for="is_contact_established" class="btn btn-secondary">Контакт установлен</label>
+                    
+                    <InputCheckbox name="is_nds" class="btn-check" @bind-Value="filterSettings.IsUnknownPersons" Id="is_unknown_persons"/>
+                    <label for="is_unknown_persons" class="btn btn-secondary">Неизвестные персоны (темы)</label>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<FilterSettings> OnFilterUpdate { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+
+    private EditContext editContext;
+    private FilterSettings filterSettings { get; set; }
+    private List<BrandDto> brands { get; set; }
+    private bool isMobileFilterOpen = false;
+    private string savedSettingsLocalStorageKey = "personsFilterSettings";
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await GetBrands();
+        filterSettings = await GetFilterSettings(brands);
+        editContext = new EditContext(filterSettings);
+        editContext.OnFieldChanged += EditContext_OnFieldChanged;
+        await OnFilterUpdate.InvokeAsync(filterSettings); //trigger filter initialize
+    }
+
+    private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        localStorage.SetItemAsync(savedSettingsLocalStorageKey, filterSettings);
+        OnFilterUpdate.InvokeAsync(filterSettings);
+    }
+    
+    private void SearchOnChanged(string searchText)
+    {
+        OnSearch.InvokeAsync(searchText);
+    }
+
+    private async Task<FilterSettings> GetFilterSettings(List<BrandDto> brands)
+    {
+        var filter = new FilterSettings
+        {
+            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands),
+            PersonStatusFilterItems = ((PersonStatus[]) Enum.GetValues(typeof(PersonStatus)))
+                .Select(gType =>
+                    new PersonStatusFilterItem()
+                    {
+                        PersonStatus = gType,
+                        IsSelected = false
+                    })
+                .ToList(),
+        };
+        
+        SetDefaultFilterValues(ref filter, brands);
+        filter = await GetSavedFilterValues(filter);
+
+        return filter;
+    }
+
+    private void SetDefaultFilterValues(ref FilterSettings filter, List<BrandDto> brands)
+    {
+        // Set default brand
+        var defaultBrand = brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            filter.BrandFilterItems.First(b => b.Id == defaultBrand.Id).IsSelected = true;
+        }
+        
+        filter.PersonStatusFilterItems
+            .First(u => u.PersonStatus == PersonStatus.Active)
+            .IsSelected = true;
+    }
+    
+    private async Task<FilterSettings> GetSavedFilterValues(FilterSettings filter)
+    {
+        var savedFilter = await localStorage.GetItemAsync<FilterSettings>(savedSettingsLocalStorageKey);
+        return savedFilter ?? filter;
+    }
+
+    private async Task<List<BrandDto>> GetBrands()
+    {
+        return await apiClient.Get<List<BrandDto>>(tokenProvider, "content/get-brands");
+    }
+    
+    private void OnButtonFilterClick()
+    {
+        isMobileFilterOpen = !isMobileFilterOpen;
+    }
+}

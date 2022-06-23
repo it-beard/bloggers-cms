@@ -1,4 +1,4 @@
-using Pds.Api.Contracts.Settings;
+using Pds.Api.Contracts.Controllers.Settings.GetSettings;
 
 namespace Pds.Web;
 

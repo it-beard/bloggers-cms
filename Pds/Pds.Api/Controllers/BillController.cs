@@ -2,8 +2,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
-using Pds.Api.Contracts.Bill;
-using Pds.Api.Contracts.Brand;
+using Pds.Api.Contracts.Controllers;
+using Pds.Api.Contracts.Controllers.Bill;
+using Pds.Api.Contracts.Controllers.Bill.CreateBill;
+using Pds.Api.Contracts.Controllers.Bill.EditBill;
+using Pds.Api.Contracts.Controllers.Bill.GetBill;
+using Pds.Api.Contracts.Controllers.Bill.GetBills;
+using Pds.Api.Contracts.Controllers.Bill.PayBill;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Bill;
@@ -101,7 +106,7 @@ public class BillController : ApiControllerBase
 
             var response = new GetBillsResponse
             {
-                Items = mapper.Map<List<BillDto>>(paidBills),
+                Items = mapper.Map<List<GetBillsBillDto>>(paidBills),
                 Total = paidBills.Count
             };
 

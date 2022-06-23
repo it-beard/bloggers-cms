@@ -1,12 +1,14 @@
 ﻿@page "/persons/{personId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Person
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
 @using AutoMapper
 @using Microsoft.AspNetCore.Components
 @using System.Linq
+@using Pds.Api.Contracts.Controllers.Person
+@using Pds.Api.Contracts.Controllers.Person.EditPerson
+@using Pds.Api.Contracts.Controllers.Person.GetPerson
 @using Pds.Core.Extensions
 
 @inject NavigationManager NavigationManager

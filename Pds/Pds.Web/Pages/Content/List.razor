@@ -1,0 +1,206 @@
+﻿@page "/content"
+@inherits BasePageComponent
+@using Pds.Web.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using static Pds.Web.Common.TitleExtension 
+@using System.Linq
+@using Pds.Api.Contracts.Controllers.Content.GetContents
+@using Pds.Core.Extensions
+@using FilterSettings = Pds.Web.Models.Content.FilterSettings
+@using Pds.Web.Pages.Content.Components
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Контент")</Title>
+
+@if (content == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            Лента контента 
+            <span class="title-overall-info pre-span">
+                @($"{totalElements} шт. / ${totalCost:N0}")
+            </span>
+        </span>
+        <a href="/content/add" class="btn btn-success">Добавить</a>
+    </h4>
+    <Filter OnFilterUpdate="@OnFilterUpdate" OnSearch="@OnSearch"></Filter>
+    @if (isFilterLoaded)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="release-date-header">Когда</th>
+                <th>Название</th>
+                @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                {
+                    <th>Бренд</th>
+                }
+                <th>Клиент</th>
+                <th>Соцсеть</th>
+                <th>Тип</th>
+                <th class="bill-cost-header">Сколько</th>
+                <th class="text-center actions-header">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in filteredContent)
+            {
+                <tr class="@ContentHelper.GetContentBgColorClass(item.Status, item.Bill)">
+                    <td class="release-date-row">
+                        @if (item.EndDate != null)
+                        {
+                            <div>
+                                <span class=" no-wrap">
+                                    @item.EndDate.Value.Date.ToShortStringDateWithDay()
+                                </span>
+                            </div>
+                        }
+                        <div>
+                            <span class="no-wrap">
+                                @item.ReleaseDate.Date.ToShortStringDateWithDay()
+                            </span>
+                        </div>
+                    </td>
+                    <td class="title-row">
+                        <a class="custom-link" href="content/@item.Id">@item.Title</a>
+                    </td>
+                    @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                    {
+                        <td>
+                            @item.Brand.Name
+                        </td>
+                    }
+                    <td>
+                        @item.ClientName
+                    </td>
+                    <td>
+                        @EnumsTranslator.SocialMediaTypeToRu(item.SocialMediaType)
+                    </td>
+                    <td>
+                        @EnumsTranslator.ContentTypeToRu(item.Type)
+                    </td>
+                    <td class="bill-cost-row">
+                        @if (item.Bill != null)
+                        {
+                            if (item.Bill.PaymentType != null)
+                            {
+                                <i class="@ContentHelper.GetPaymentTypeBgColorClass(item.Bill.PaymentType)">
+                                    @EnumsTranslator.PaymentTypeToShortRu(item.Bill.PaymentType)
+                                </i>
+                            }
+                            <span>@item.Bill.Value.ToString("N0")</span>
+                        }
+                        else
+                        {
+                            <span class="free-cost">бесплатно</span>
+                        }
+                    </td>
+                    <td class="text-center actions-row">
+                        <Actions OnActionsUpdate="@OnActionsUpdate" CurrentContent="@item"></Actions>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+    private GetContentsResponse content;
+    private GetContentsContentDto[] filteredContent;
+    private string currentSearchText;    
+    private FilterSettings currentFilterSettings;
+    private int totalElements; 
+    private decimal totalCost;
+    private bool isFilterLoaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        content = await GetContentsAsync();
+    }
+
+    private async Task<GetContentsResponse> GetContentsAsync()
+    {
+        return await ApiClient.Get<GetContentsResponse>(TokenProvider, "content");
+    }
+
+    private GetContentsContentDto[] GetFilteredContentsList(
+        FilterSettings filterSettings, 
+        GetContentsResponse content)
+    {
+        //Filtering
+        var selectedSocialMediaTypes = filterSettings.SocialMediaFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.SocialMediaType)
+            .ToList();
+        var selectedContentTypes = filterSettings.ContentTypeFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.ContentType)
+            .ToList();
+        var selectedBrandsIds = filterSettings.BrandFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i=>i.Id)
+            .ToList();
+
+        var itemsToShow = content.Items
+            .Where(i => 
+                (selectedSocialMediaTypes.Contains(i.SocialMediaType) || selectedSocialMediaTypes.Count == 0) &&
+                (selectedContentTypes.Contains(i.Type) || selectedContentTypes.Count == 0) &&
+                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
+                (filterSettings.From != null && i.ReleaseDate.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
+                (filterSettings.To != null && i.ReleaseDate.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
+
+        var query = itemsToShow
+            .AsQueryable();
+        
+        //Sorting
+        query = query
+            .OrderByDescending(g => g.ReleaseDate);
+        
+        //Search
+        if (!string.IsNullOrWhiteSpace(currentSearchText))
+        {
+            var searchPredicate = new ContentsSearch()
+                .GetSearchPredicate(currentSearchText.ToLower());
+            query = query.Where(searchPredicate);
+        }
+        
+        return query.ToArray();
+    }
+    
+    private void OnSearch(string searchText)
+    {
+        currentSearchText = searchText;
+        filteredContent = GetFilteredContentsList(currentFilterSettings, content);
+        UpdateStatistics(filteredContent);
+    }
+
+    private async Task OnActionsUpdate()
+    {
+        isFilterLoaded = false;
+        content = await GetContentsAsync();
+        OnFilterUpdate(currentFilterSettings);
+    }
+    
+    private void OnFilterUpdate(FilterSettings filterSettings)
+    {
+        currentFilterSettings = filterSettings;
+        filteredContent = GetFilteredContentsList(filterSettings, content);
+        UpdateStatistics(filteredContent);
+        isFilterLoaded = true;
+    }
+
+    private void UpdateStatistics(GetContentsContentDto[] filteredContent)
+    {
+        totalElements = filteredContent.Length;
+        totalCost = filteredContent.Sum(i => i.Bill?.Value) ?? totalCost;
+    }
+}

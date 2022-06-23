@@ -2,8 +2,12 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
-using Pds.Api.Contracts.Brand;
-using Pds.Api.Contracts.Gift;
+using Pds.Api.Contracts.Controllers;
+using Pds.Api.Contracts.Controllers.Gift;
+using Pds.Api.Contracts.Controllers.Gift.CreateGift;
+using Pds.Api.Contracts.Controllers.Gift.EditGift;
+using Pds.Api.Contracts.Controllers.Gift.GetGift;
+using Pds.Api.Contracts.Controllers.Gift.GetGifts;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Gift;
@@ -45,8 +49,8 @@ public class GiftController : ApiControllerBase
     {
         try
         {
-            var bill = await giftService.GetAsync(giftId);
-            var response = mapper.Map<GetGiftResponse>(bill);
+            var gift = await giftService.GetAsync(giftId);
+            var response = mapper.Map<GetGiftResponse>(gift);
 
             return Ok(response);
         }
@@ -71,7 +75,7 @@ public class GiftController : ApiControllerBase
 
             var response = new GetGiftsResponse
             {
-                Items = mapper.Map<List<GiftDto>>(gifts),
+                Items = mapper.Map<List<GetGiftsGiftDto>>(gifts),
                 Total = gifts.Count
             };
 

@@ -1,15 +1,15 @@
 ﻿using System.Linq.Expressions;
 using Calabonga.PredicatesBuilder;
-using Pds.Api.Contracts.Gift;
+using Pds.Api.Contracts.Controllers.Gift.GetGifts;
 
 namespace Pds.Web.Components.Search;
 
 public class GiftsSearch
 {
-    public Expression<Func<GiftDto, bool>> GetSearchPredicate(string searchLine)
+    public Expression<Func<GetGiftsGiftDto, bool>> GetSearchPredicate(string searchLine)
     {
         searchLine = searchLine.ToLower();
-        var predicate = PredicateBuilder.False<GiftDto>();
+        var predicate = PredicateBuilder.False<GetGiftsGiftDto>();
 
         predicate = predicate.Or(c => c.Title.ToLower().Contains(searchLine));
         predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.FirstName) && c.FirstName.ToLower().Contains(searchLine));

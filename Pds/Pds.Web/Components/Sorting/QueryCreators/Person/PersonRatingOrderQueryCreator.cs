@@ -1,10 +1,10 @@
-﻿using Pds.Api.Contracts.Person;
+﻿using Pds.Api.Contracts.Controllers.Person.GetPersons;
 
 namespace Pds.Web.Components.Sorting.QueryCreators.Person;
 
-public partial class PersonRatingOrderQueryCreator : IOrderQuery<PersonDto, PersonDto>
+public partial class PersonRatingOrderQueryCreator : IOrderQuery<GetPersonsPersonDto, GetPersonsPersonDto>
 {
-    public IOrderedQueryable<PersonDto> CreateOrderBy(IQueryable<PersonDto> query, bool ascending)
+    public IOrderedQueryable<GetPersonsPersonDto> CreateOrderBy(IQueryable<GetPersonsPersonDto> query, bool ascending)
     {
         if (ascending)
         {
@@ -16,7 +16,7 @@ public partial class PersonRatingOrderQueryCreator : IOrderQuery<PersonDto, Pers
         }
     }
 
-    public IOrderedQueryable<PersonDto> CreateThenBy(IOrderedQueryable<PersonDto> query, bool ascending)
+    public IOrderedQueryable<GetPersonsPersonDto> CreateThenBy(IOrderedQueryable<GetPersonsPersonDto> query, bool ascending)
     {
         if (ascending)
         {

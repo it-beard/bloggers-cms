@@ -1,0 +1,20 @@
+﻿.delete-button {
+    pointer-events: auto;
+}
+
+.actions-panel {
+    margin: 0 auto;
+    white-space: pre;
+}
+
+button {
+     margin: 0 3px;
+ }
+
+button i{
+    font-size: 0.8rem;
+}
+
+button.with-label i {
+    margin-right: 5px;
+}

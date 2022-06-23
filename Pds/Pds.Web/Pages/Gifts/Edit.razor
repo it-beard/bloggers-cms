@@ -1,13 +1,15 @@
 ﻿@page "/gifts/{giftId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts
 @using Pds.Core.Enums
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 @using AutoMapper
-@using Pds.Api.Contracts.Brand
-@using Pds.Api.Contracts.Gift
+@using Pds.Api.Contracts
+@using Pds.Api.Contracts.Controllers
+@using Pds.Api.Contracts.Controllers.Gift
+@using Pds.Api.Contracts.Controllers.Gift.EditGift
+@using Pds.Api.Contracts.Controllers.Gift.GetGift
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient

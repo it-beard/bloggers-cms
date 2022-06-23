@@ -1,16 +1,16 @@
 ﻿using System.Linq.Expressions;
 using Calabonga.PredicatesBuilder;
-using Pds.Api.Contracts.Cost;
+using Pds.Api.Contracts.Controllers.Cost.GetCosts;
 using Pds.Core.Extensions;
 
 namespace Pds.Web.Components.Search;
 
 public class CostsSearch
 {
-    public Expression<Func<CostDto, bool>> GetSearchPredicate(string searchLine)
+    public Expression<Func<GetCostsCostDto, bool>> GetSearchPredicate(string searchLine)
     {
         searchLine = searchLine.ToLower();
-        var predicate = PredicateBuilder.False<CostDto>();
+        var predicate = PredicateBuilder.False<GetCostsCostDto>();
 
         predicate = predicate.Or(c => c.Id.ToShortString().Contains(searchLine));
         predicate = predicate.Or(c => c.Value.ToString("N0").Contains(searchLine));

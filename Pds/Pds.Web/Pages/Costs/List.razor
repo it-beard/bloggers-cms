@@ -1,0 +1,176 @@
+﻿@page "/costs"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Controllers.Cost.GetCosts
+@using Pds.Core.Extensions
+@using Pds.Web.Common
+@using Pds.Web.Models.Cost
+@using static Pds.Web.Common.TitleExtension 
+@using Pds.Web.Pages.Costs.Components
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Расходы")</Title>
+
+
+@if (costs == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+        Список расходов
+            <span class="title-overall-info pre-span">
+                @($"{totalElements} шт. / ${totalCost:N0}")
+            </span> 
+        </span>
+        <a href="/costs/add" class="btn btn-success" >Добавить</a>
+    </h4>
+    <Filter OnFilterUpdate="@OnFilterUpdate" OnSearch="@OnSearch"></Filter>
+    @if (isFilterLoaded)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="paid-date-header">Когда</th>
+                <th class="id-header">ID</th>
+                <th class="cost-value-header">Сколько</th>
+                <th class="cost-type-header">Тип</th>
+                @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                {
+                    <th class="cost-type-header">Бренд</th>
+                }
+                <th>Комментарий</th>
+                <th class="text-center actions-header">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var cost in filteredCosts)
+            {
+                <tr class="normal">
+                    <td class="paid-date-row">
+                        <span>
+                            @cost.PaidAt.Date.ToString("dd.MM.yyyy")
+                        </span>
+                    </td>
+                    <td>
+                        <span class="id-row">
+                            @cost.Id.ToShortString()
+                        </span>
+                    </td>
+                    <td class="cost-value-row">
+                        <span>@cost.Value.ToString("N0")</span>
+                    </td>
+                    <td>
+                        @EnumsTranslator.CostTypeToRu(cost.Type)
+                    </td>
+                    @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                    {
+                        <td>@cost.Brand.Name</td>
+                    }
+                    <td>
+                        @if (cost.Content != null)
+                        {
+                            <div>
+                                Контент: <a class="custom-link" href="content/@cost.Content.Id">@cost.Content.Title</a>
+                            </div>
+                        }
+                        @cost.Comment
+                    </td>
+                    <td class="text-center action-row">
+                        <Actions OnActionsUpdate="@OnActionsUpdate" CurrentCost="@cost"></Actions>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+    private GetCostsResponse costs;
+    private GetCostsCostDto[] filteredCosts;
+    private string currentSearchText;    
+    private FilterSettings currentFilterSettings;
+    private int totalElements; 
+    private decimal totalCost;
+    private bool isFilterLoaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        costs = await GetCostsAsync();
+    }
+
+    private async Task<GetCostsResponse> GetCostsAsync()
+    {
+        return await ApiClient.Get<GetCostsResponse>(TokenProvider, "costs");
+    }
+
+    private GetCostsCostDto[] GetFilteredCostsList(
+        FilterSettings filterSettings, 
+        GetCostsResponse costs)
+    {
+        // Filtering
+        var selectedCostTypes = filterSettings.CostTypeFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.CostType)
+            .ToList();
+        var selectedBrandsIds = filterSettings.BrandFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i=>i.Id)
+            .ToList();
+
+        var itemsToShow = costs.Items
+            .Where(i =>
+                (selectedCostTypes.Contains(i.Type) || selectedCostTypes.Count == 0) &&
+                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
+                (filterSettings.From != null && i.PaidAt.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
+                (filterSettings.To != null && i.PaidAt.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
+
+        var query = itemsToShow
+            .AsQueryable();
+        
+        // Search
+        if (!string.IsNullOrWhiteSpace(currentSearchText))
+        {
+            var searchPredicate = new CostsSearch()
+                .GetSearchPredicate(currentSearchText.ToLower());
+            query = query.Where(searchPredicate);
+        }
+        
+        return query.ToArray();
+    }
+    
+    private void OnSearch(string searchText)
+    {
+        currentSearchText = searchText;
+        filteredCosts = GetFilteredCostsList(currentFilterSettings, costs);
+        UpdateStatistics(filteredCosts);
+    }
+    
+    private async Task OnActionsUpdate()
+    {
+        isFilterLoaded = false;
+        costs = await GetCostsAsync();
+        OnFilterUpdate(currentFilterSettings);
+    }
+
+    private void OnFilterUpdate(FilterSettings filterSettings)
+    {
+        currentFilterSettings = filterSettings;
+        filteredCosts = GetFilteredCostsList(filterSettings, costs);
+        UpdateStatistics(filteredCosts);
+        isFilterLoaded = true;
+    }
+    
+    private void UpdateStatistics(GetCostsCostDto[] filteredCosts)
+    {
+        totalElements = filteredCosts.Length;
+        totalCost = filteredCosts.Sum(i => i.Value);
+    }
+}

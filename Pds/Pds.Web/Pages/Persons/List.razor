@@ -1,0 +1,302 @@
+﻿@page "/persons"
+@inherits BasePageComponent
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Web.Common
+@using Pds.Web.Pages.Persons.Components
+@using Api.Contracts.Paging
+@using Pds.Api.Contracts.Controllers.Person.GetPersons
+@using Pds.Core.Constants
+@using Pds.Web.Components.Sorting.QueryCreators
+@using Pds.Web.Components.Sorting.QueryCreators.Person
+@using Pds.Web.Models.Person
+@using static Pds.Web.Common.TitleExtension
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Персоны")</Title>
+
+
+@if (persons == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            Список персон
+            <span class="title-overall-info pre-span">
+                @{ var overallCount = $"{totalElements} шт."; }
+                @overallCount
+            </span>
+        </span>
+        <a href="/persons/add" class="btn btn-success">Добавить</a>
+    </h4>
+
+    <Filter OnFilterUpdate="@OnFilterUpdate" OnSearch="@OnSearch"/>
+    if (isFilterLoaded)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="person-header">
+                    <SortingComponent TField="PersonsFieldName"
+                                      OnSortColumn="OnSort"
+                                      FieldName="PersonsFieldName.FullName">Кто</SortingComponent>
+                </th>
+                <th class="rate-header">
+                    <SortingComponent TField="PersonsFieldName"
+                                      OnSortColumn="OnSort"
+                                      FieldName="PersonsFieldName.Rating">Рейтинг</SortingComponent>
+                </th>
+                @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                {
+                    <th>Бренд</th>
+                }
+                <th>
+                    <SortingComponent TField="PersonsFieldName"
+                                      OnSortColumn="OnSort"
+                                      FieldName="PersonsFieldName.Location">Где</SortingComponent>
+                </th>
+                <th class="topics-header">Темы</th>
+                <th>Информация</th>
+                <th>Ссылки</th>
+                <th class="text-center actions-header">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var person in filteredPersons)
+            {
+                <tr class="@PersonsHelper.GetBgColorClass(person.Status)">
+                    <td class="person-row">
+                        <a class="custom-link" href="persons/@person.Id">@person.FullName</a>
+                        @if (person.IsContactEstablished)
+                        {
+                            <i title="Контакт установлен" class="contact-established bi-check-circle-fill"></i>
+                        }
+                        <span class="contents">
+                            (@person.Contents.Count)
+                        </span>
+                    </td>
+                    <td class="rate-row">
+                        @person.Rate
+                    </td>
+                    @if(currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
+                    {
+                        <td>
+                            @((MarkupString)person.Brands.Select(b => b.Name).Aggregate("", (current, pp) => current + $"{pp}<br/>"))
+                        </td>
+                    }
+                    <td class="location-row">
+                        <span class="no-wrap">
+                            @person.Location
+                        </span>
+                    </td>
+                    <td class="topics-row">
+                        @person.Topics
+                    </td>
+                    <td class="comment-row">
+                        <div title="@person.Info">
+                            @{
+                                var shortPersonInfo = string.Empty;
+                                if (!string.IsNullOrWhiteSpace(person.Info))
+                                {
+                                    shortPersonInfo = person.Info.Length > 50 ?
+                                        $"{person.Info[..49]}..." :
+                                        person.Info;
+                                }
+                            }
+                            @shortPersonInfo
+                        </div>
+                    </td>
+                    <td>
+                        @foreach (var resource in person.Resources)
+                        {
+                            <div>
+                                <a class="custom-link" href="@resource.Url" target="_blank">@resource.Name</a>
+                            </div>
+                        }
+                    </td>
+                    <td class="text-center actions-row">
+                        <Actions OnActionsUpdate="@OnActionsUpdate" CurrentPerson="@person"></Actions>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        
+        <CascadingValue Value="isPagingStateHasChanged">
+            <PagingComponent PageSizeList="@pageSizesList"
+                             DefaultPageSize="@defaultPageSite"
+                             TotalItems="totalElements"
+                             Radius="2"
+                             OnPagination="OnPagination"/>
+        </CascadingValue>
+    }
+}
+
+@code {
+    private GetPersonsResponse persons;
+    private GetPersonsPersonDto[] filteredPersons;
+
+    private const int defaultPageSite = 100;
+    private static readonly int[] pageSizesList = {defaultPageSite, 250, 500};
+    private bool isPagingStateHasChanged;
+    private PageSettings currentPageSettings = 
+        new()
+        {
+            Offset = 0, 
+            Limit = defaultPageSite
+        };
+    private OrderSetting<PersonsFieldName>[] currentOrderSettings;
+
+    private string currentSearchText;
+    private FilterSettings currentFilterSettings;
+    private int totalElements;
+    private bool isFilterLoaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        persons = await GetPersonsInfo();
+    }
+
+    private async Task<GetPersonsResponse> GetPersonsInfo()
+    {
+        return await ApiClient.Get<GetPersonsResponse>(TokenProvider, "persons");
+    }
+
+    private GetPersonsPersonDto[] GetFilteredPersonsList(
+        FilterSettings filterSettings,
+        GetPersonsResponse persons,
+        OrderSetting<PersonsFieldName>[] orderSettings,
+        PageSettings pageSettings)
+    {
+        //Filtering
+        var selectedBrandsIds = filterSettings.BrandFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.Id)
+            .ToList();
+
+        var selectedStatuses = filterSettings.PersonStatusFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.PersonStatus)
+            .ToList();
+
+        var itemsToShow = persons.Items
+            .Where(i =>
+                (selectedBrandsIds.Intersect(i.Brands.Select(b => b.Id)).Any() || selectedBrandsIds.Count == 0) &&
+                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
+                (filterSettings.IsContactEstablished && i.IsContactEstablished == filterSettings.IsContactEstablished 
+                    || !filterSettings.IsContactEstablished) &&
+                (filterSettings.IsUnknownPersons && i.FirstName == PersonConstants.UnknownPersonMarker && i.LastName == PersonConstants.UnknownPersonMarker
+                    || !filterSettings.IsUnknownPersons && (i.FirstName != PersonConstants.UnknownPersonMarker || i.LastName != PersonConstants.UnknownPersonMarker)));
+
+        var query = itemsToShow
+            .AsQueryable();
+
+        //Sorting
+        if (orderSettings?.Length > 0)
+        {
+            var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<GetPersonsPersonDto, GetPersonsPersonDto>>
+            {
+                {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
+                {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
+                {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
+            };
+
+            var queryCreator = new OrderQueryCreator<GetPersonsPersonDto, PersonsFieldName>(dictionary);
+            query = queryCreator.Create(orderSettings, query);
+        }
+        else
+        {
+            query = query
+                .OrderBy(p => p.FullName)
+                .ThenBy(p => p.Rate);
+        }
+
+        //Search
+        if (!string.IsNullOrWhiteSpace(currentSearchText))
+        {
+            var searchPredicate = new PersonsSearch()
+                .GetSearchPredicate(currentSearchText.ToLower());
+            query = query.Where(searchPredicate);
+        }
+
+        var personsList = query.ToArray();
+        
+        // Update statistics
+        totalElements = personsList.Length;
+            
+        // Paging
+        personsList = personsList
+            .Skip(pageSettings.Offset)
+            .Take(pageSettings.Limit)
+            .ToArray();
+
+        return personsList;
+    }
+
+    private void OnPagination(PagingEventArgs settings)
+    {
+        isPagingStateHasChanged = false;
+        currentPageSettings = new PageSettings
+        {
+            Limit = settings.PageSize,
+            Offset = settings.PageOffSet
+        };
+        
+        filteredPersons = GetFilteredPersonsList(
+            currentFilterSettings, 
+            persons, 
+            currentOrderSettings,
+            currentPageSettings);
+    }
+
+    private void OnSort(OrderSetting<PersonsFieldName> settings)
+    {
+        currentOrderSettings = new[]
+        {
+            settings
+        };
+
+        filteredPersons = GetFilteredPersonsList(
+            currentFilterSettings, 
+            persons, 
+            currentOrderSettings,
+            currentPageSettings);
+    }
+
+    private void OnSearch(string searchText)
+    {
+        currentSearchText = searchText;
+        filteredPersons = GetFilteredPersonsList(
+            currentFilterSettings, 
+            persons, 
+            currentOrderSettings,
+            currentPageSettings);
+    }
+
+    private async Task OnActionsUpdate()
+    {
+        isFilterLoaded = false;
+        persons = await GetPersonsInfo();
+        OnFilterUpdate(currentFilterSettings);
+    }
+
+    private void OnFilterUpdate(FilterSettings filterSettings)
+    {
+        currentFilterSettings = filterSettings;
+        filteredPersons = GetFilteredPersonsList(
+            filterSettings, 
+            persons, 
+            currentOrderSettings,
+            currentPageSettings);
+        isFilterLoaded = true;
+        isPagingStateHasChanged = true; //return to first page
+    }
+
+}

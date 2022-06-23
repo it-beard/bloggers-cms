@@ -2,8 +2,12 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Pds.Api.Authentication;
 using Pds.Api.Contracts;
-using Pds.Api.Contracts.Brand;
-using Pds.Api.Contracts.Cost;
+using Pds.Api.Contracts.Controllers;
+using Pds.Api.Contracts.Controllers.Cost;
+using Pds.Api.Contracts.Controllers.Cost.CreateCost;
+using Pds.Api.Contracts.Controllers.Cost.EditCost;
+using Pds.Api.Contracts.Controllers.Cost.GetCost;
+using Pds.Api.Contracts.Controllers.Cost.GetCosts;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
 using Pds.Services.Models.Cost;
@@ -70,7 +74,7 @@ public class CostController : ApiControllerBase
 
             var response = new GetCostsResponse
             {
-                Items = mapper.Map<List<CostDto>>(costs),
+                Items = mapper.Map<List<GetCostsCostDto>>(costs),
                 Total = costs.Count
             };
 

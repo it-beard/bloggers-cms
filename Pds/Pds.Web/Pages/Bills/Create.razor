@@ -1,13 +1,14 @@
 ﻿@page "/bills/add"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Bill
 @using Pds.Core.Enums
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 @using Microsoft.AspNetCore.Components
 @using Pds.Api.Contracts
-@using Pds.Api.Contracts.Brand
+@using Pds.Api.Contracts.Controllers
+@using Pds.Api.Contracts.Controllers.Bill
+@using Pds.Api.Contracts.Controllers.Bill.CreateBill
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient

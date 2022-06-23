@@ -2,12 +2,14 @@
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts
-@using Pds.Api.Contracts.Bill
 @using Pds.Core.Enums
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 @using AutoMapper
-@using Pds.Api.Contracts.Brand
+@using Pds.Api.Contracts.Controllers
+@using Pds.Api.Contracts.Controllers.Bill
+@using Pds.Api.Contracts.Controllers.Bill.EditBill
+@using Pds.Api.Contracts.Controllers.Bill.GetBill
 
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient

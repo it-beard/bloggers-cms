@@ -1,0 +1,19 @@
+﻿@using Pds.Api.Contracts.Controllers.Settings
+@namespace Pds.Web.Pages.Settings.Components
+@inject NavigationManager NavigationManager
+
+<div class="panel panel-default actions-panel">
+    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
+        <i class="bi bi-pencil-fill"></i>
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public IActionsSetting CurrentSetting { get; set; }
+
+    private void OnEdit()
+    {
+        NavigationManager.NavigateTo($"/settings/{CurrentSetting.Id}/edit");
+    }
+}
