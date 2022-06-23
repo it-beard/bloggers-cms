@@ -25,3 +25,31 @@
 .contact-established {
     color: rgba(0, 100, 0, 0.6);
 }
+
+.gift-type {
+    font-size: 0.77rem;
+    background-color: darkgray;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: white;
+}
+
+.status-new .info-item .info-body {
+    background-color: lightpink;
+}
+
+.status-raffled .info-item .info-body {
+    background-color: lightblue;
+}
+
+.status-waiting .info-item .info-body {
+    background-color: lightgreen;
+}
+
+.status-strange .info-item .info-body {
+    background-color: #fecd82;
+}
+
+.status-completed .info-item .info-body {
+    background-color: gainsboro;
+}

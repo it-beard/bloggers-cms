@@ -248,7 +248,6 @@ public class ApiMappingProfile : Profile
         #region Contract to Contract
 
         CreateMap<GetContentResponse, EditContentRequest>();
-        CreateMap<GetContentBillDto, EditContentBillDto>();
         CreateMap<GetCostResponse, EditCostRequest>();
         CreateMap<GetBillResponse, EditBillRequest>();
         CreateMap<GetClientResponse, EditClientRequest>();
@@ -259,6 +258,8 @@ public class ApiMappingProfile : Profile
                 dest => dest.Brands,
                 opt => opt.MapFrom(p => BrandsDtoToBrandsForCheckboxesDto(p.Brands)));
         CreateMap<GetBrandResponse, EditBrandRequest>();
+        CreateMap<GetContentBillDto, EditContentBillDto>();
+        CreateMap<GetGiftContentDto, EditGiftContentDto>();
         CreateMap<BrandDto, Pds.Web.Models.Content.BrandFilterItem>();
         CreateMap<BrandDto, Pds.Web.Models.Bill.BrandFilterItem>();
         CreateMap<BrandDto, Pds.Web.Models.Cost.BrandFilterItem>();

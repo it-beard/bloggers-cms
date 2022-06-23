@@ -35,14 +35,13 @@ else
         <table class="table">
             <thead>
             <tr>
-                <th class="paid-date-header">Когда</th>
                 <th class="paid-date-header">Даты</th>
-                <th>Название</th>
+                <th class="gift-title">Название</th>
                 @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
                 {
                     <th>Бренд</th>
                 }
-                <th>Комментарий</th>
+                <th>Информация</th>
                 <th>Адресат</th>
                 <th class="text-center actions-header">Действия</th>
             </tr>
@@ -52,39 +51,45 @@ else
             {
                 <tr class="@GiftHelper.GetGiftBgColorClass(gift.Status)">
                     <td class="release-date-row">
-                        <span>
+                        @{
+                            var title = gift.CreatedAt != gift.SortDate ? 
+                                "Дата выхода связанного контента" : 
+                                "Дата создания";
+                        }
+                        <span class="main-date" title="@title">
                             @gift.SortDate.ToString("dd.MM.yyyy")
                         </span>
-                    </td>
-                    <td>
-                        <div>
-                            <span class="create-date" title="Дата создания">
-                                @gift.CreatedAt.ToString("dd.MM.yyyy")
-                            </span>
+                        <div class="other-dates">
+                            @if (gift.CreatedAt != gift.SortDate)
+                            {
+                                <div>
+                                    <span class="create-date" title="Дата создания">
+                                        @gift.CreatedAt.ToString("dd.MM.yyyy")
+                                    </span>
+                                </div>
+                            }
+                            @if (gift.RaffledAt != null)
+                            {
+                                <div>
+                                    <span class="raffle-date" title="Дата розыгрыша">
+                                        @gift.RaffledAt.Value.ToString("dd.MM.yyyy")
+                                    </span>
+                                </div>
+                            }
+                            @if (gift.CompletedAt != null)
+                            {
+                                <div>
+                                    <span class="complete-date" title="Дата завершения">
+                                        @gift.CompletedAt.Value.ToString("dd.MM.yyyy")
+                                    </span>
+                                </div>
+                            }
                         </div>
-                        @if (gift.RaffledAt != null)
-                        {
-                            <div>
-                                <span class="raffle-date" title="Дата розыгрыша">
-                                    @gift.RaffledAt.Value.ToString("dd.MM.yyyy")
-                                </span>
-                            </div>
-                        }
-                        @if (gift.CompletedAt != null)
-                        {
-                            <div>
-                                <span class="complete-date" title="Дата завершения">
-                                    @gift.CompletedAt.Value.ToString("dd.MM.yyyy")
-                                </span>
-                            </div>
-                        }
                     </td>
+                    
                     <td>
                         <span class="gift-type">
                             @EnumsTranslator.GiftTypeToRu(gift.Type)
-                        </span>
-                        <span>
-
                         </span>
                         <a class="custom-link" href="gifts/@gift.Id">@gift.Title</a>
                     </td>
@@ -99,8 +104,17 @@ else
                                 Контент: <a class="custom-link" href="content/@gift.Content.Id">@gift.Content.Title</a>
                             </div>
                         }
-                        <div class="comment-row">
-                            @gift.Comment
+                        <div class="comment-row" title="@gift.Comment">
+                            @{
+                                var shortComment = string.Empty;
+                                if (!string.IsNullOrWhiteSpace(gift.Comment))
+                                {
+                                    shortComment = gift.Comment.Length > 50 ?
+                                        $"{gift.Comment[..49]}..." :
+                                        gift.Comment;
+                                }
+                            }
+                            @shortComment
                         </div>
                     </td>
                     <td>
@@ -112,8 +126,17 @@ else
                         }
                         @if (!string.IsNullOrWhiteSpace(gift.PostalAddress))
                         {
-                            <div class="comment-row">
-                                <i>Адрес:</i> @gift.PostalAddress
+                            <div class="comment-row" title="@gift.PostalAddress">
+                                @{
+                                    var shortAddress = string.Empty;
+                                    if (!string.IsNullOrWhiteSpace(gift.PostalAddress))
+                                    {
+                                        shortAddress = gift.PostalAddress.Length > 100 ?
+                                            $"{gift.PostalAddress[..99]}..." :
+                                            gift.PostalAddress;
+                                    }
+                                }
+                                <i>Адрес:</i> @shortAddress
                             </div>
                         }
                     </td>

@@ -22,11 +22,11 @@ else
     <Title>@WithSuffix($"Подарок \"{gift.Title}\"")</Title>
 
     <h4 class="card-header d-flex justify-content-between align-items-center">
-        Подарок "@gift.Title"
+        <span>Подарок "@gift.Title" <span class="gift-type"> @EnumsTranslator.GiftTypeToRu(gift.Type) </span></span>
         <button @onclick="GoBack" class="btn btn-primary">Назад</button>
     </h4>
 
-    <div class="page-container">
+    <div class="page-container @GiftHelper.GetGiftBgColorClass(gift.Status)">
         @if (gift.Content != null)
         {
             <div class="info-item">
@@ -37,12 +37,15 @@ else
             </div>
         }
         
-        <div class="info-item">
-            <div class="info-title">Комментарий</div>
-            <div class="info-body">
-                @gift.Comment
+        @if (!string.IsNullOrEmpty(gift.Comment))
+        {
+            <div class="info-item">
+                <div class="info-title">Комментарий</div>
+                <div class="info-body">
+                    @gift.Comment
+                </div>
             </div>
-        </div>
+        }
 
         @if (!string.IsNullOrWhiteSpace(gift.FirstName))
         {

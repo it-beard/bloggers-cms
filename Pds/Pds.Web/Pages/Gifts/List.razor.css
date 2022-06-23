@@ -20,7 +20,7 @@
     text-align: center;
 }
 
-.release-date-row span {
+.release-date-row .main-date {
     font-size: 0.89rem;
     background-color: white;
     padding: 2px 4px;
@@ -93,4 +93,12 @@
     padding: 2px 4px;
     border-radius: 4px;
     color: white;
+}
+
+.other-dates {
+    text-align: right;
+}
+
+.gift-title {
+    min-width: 300px
 }
