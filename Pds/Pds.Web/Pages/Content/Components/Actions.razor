@@ -75,7 +75,8 @@
 
 @code {
     [Parameter]
-    public EventCallback OnActionsUpdate { get; set; }
+    /// bool callback model - IsRedirectNeeded
+    public EventCallback<bool> OnActionsUpdate { get; set; }
     [Parameter]
     public IActionsContent CurrentContent { get; set; }
     [Parameter]
@@ -92,7 +93,7 @@
         if (confirmed)
         {
             await ApiClient.Delete<object>(TokenProvider, $"content/{CurrentContent.Id}");
-            await OnActionsUpdate.InvokeAsync(); // Update UI
+            await OnActionsUpdate.InvokeAsync(true); // Update UI
         }
     }
 

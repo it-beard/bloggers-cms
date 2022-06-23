@@ -8,6 +8,7 @@
 @using Pds.Web.Pages.Content.Components
 
 @inject IApiClient ApiClient
+@inject NavigationManager NavigationManager
 @inject IAccessTokenProvider TokenProvider
 
 @if (content == null)
@@ -220,8 +221,13 @@ else
         return await ApiClient.Get<GetContentResponse>(TokenProvider, $"content/{ContentId}");
     }
 
-    private async Task OnActionsUpdateAsync()
+    private async Task OnActionsUpdateAsync(bool isRedirectNeeded)
     {
+        if (isRedirectNeeded)
+        {
+            NavigationManager.NavigateTo("/content");
+        }
+        
         content = await GetContent();
     }
 }

@@ -35,7 +35,8 @@
 
 @code {
     [Parameter]
-    public EventCallback OnActionsUpdate { get; set; }
+    /// bool callback model - IsRedirectNeeded
+    public EventCallback<bool> OnActionsUpdate { get; set; }
     [Parameter]
     public IActionsClient CurrentClient { get; set; }
     [Parameter]
@@ -52,7 +53,7 @@
         if (confirmed)
         {
             await ApiClient.Delete<object>(TokenProvider, $"clients/{CurrentClient.Id}");
-            await OnActionsUpdate.InvokeAsync(); // Update UI
+            await OnActionsUpdate.InvokeAsync(true); // Update UI
         }
     }
 }

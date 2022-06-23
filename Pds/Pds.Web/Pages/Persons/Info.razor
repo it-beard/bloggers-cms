@@ -3,13 +3,12 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
-@using AutoMapper
 @using Pds.Api.Contracts.Controllers.Person.GetPerson
 @using Pds.Core.Extensions
 @using Pds.Web.Pages.Persons.Components
 
 @inject IApiClient ApiClient
-@inject IMapper Mapper
+@inject NavigationManager NavigationManager
 @inject IAccessTokenProvider TokenProvider
 
 @if (person == null)
@@ -141,8 +140,13 @@ else
         return await ApiClient.Get<GetPersonResponse>(TokenProvider, $"persons/{PersonId}");
     }
 
-    private async Task OnActionsUpdateAsync()
+    private async Task OnActionsUpdateAsync(bool isRedirectNeeded)
     {
+        if (isRedirectNeeded)
+        {
+            NavigationManager.NavigateTo("/persons");
+        }
+        
         person = await GetPersonAsync();
     }
 }

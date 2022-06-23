@@ -7,6 +7,7 @@
 @using Pds.Web.Pages.Gifts.Components
 
 @inject IApiClient ApiClient
+@inject NavigationManager NavigationManager
 @inject IAccessTokenProvider TokenProvider
 
 @if (gift == null)
@@ -87,8 +88,13 @@ else
         return await ApiClient.Get<GetGiftResponse>(TokenProvider, $"gifts/{GiftId}");
     }
 
-    private async Task OnActionsUpdateAsync()
+    private async Task OnActionsUpdateAsync(bool isRedirectNeeded)
     {
+        if (isRedirectNeeded)
+        {
+            NavigationManager.NavigateTo("/gifts");
+        }
+        
         gift = await GetGiftAsync();
     }
 }
