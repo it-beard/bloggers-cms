@@ -18,15 +18,17 @@ public class CostRepository : RepositoryBase<Cost>, ICostRepository
         return await context.Costs
             .Include(c => c.Brand)
             .Include(c => c.Content)
+            .Where(b => !b.Brand.IsArchived)
             .FirstOrDefaultAsync(c => c.Id == costId);
     }
 
     public async Task<List<Cost>> GetAllOrderByDateDescAsync()
     {
         return await context.Costs
-            .Include(b=>b.Content)
-            .Include(b=>b.Brand)
-            .OrderByDescending(p =>p.PaidAt)
+            .Include(b => b.Content)
+            .Include(b => b.Brand)
+            .Where(b => !b.Brand.IsArchived)
+            .OrderByDescending(p => p.PaidAt)
             .ToListAsync();
     }
 }

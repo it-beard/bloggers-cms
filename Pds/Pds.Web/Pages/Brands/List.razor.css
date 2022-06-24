@@ -33,10 +33,17 @@
     display: inline-block;
 }
 
-.normal {
+.brand-name-row {
+    padding-left: 15px;
+}
+
+.active {
     background-color: aliceblue;
 }
 
-.brand-name-row {
-    padding-left: 15px;
+.archived,
+.archived a,
+.archived span {
+    background-color: gainsboro;
+    color: #bbb !important;
 }

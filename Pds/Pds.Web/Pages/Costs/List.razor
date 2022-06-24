@@ -128,7 +128,7 @@ else
         var itemsToShow = costs.Items
             .Where(i =>
                 (selectedCostTypes.Contains(i.Type) || selectedCostTypes.Count == 0) &&
-                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
+                (selectedBrandsIds.Contains(i.Brand.Id)) &&
                 (filterSettings.From != null && i.PaidAt.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
                 (filterSettings.To != null && i.PaidAt.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
 

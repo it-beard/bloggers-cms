@@ -150,7 +150,7 @@ else
                 (i.Content != null && selectedSocialMediaTypes.Contains(i.Content.SocialMediaType) || selectedSocialMediaTypes.Count == 0) &&
                 (selectedPaymentTypes.Contains(i.PaymentType) || selectedPaymentTypes.Count == 0) &&
                 (selectedBillTypes.Contains(i.Type) || selectedBillTypes.Count == 0) &&
-                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
+                (selectedBrandsIds.Contains(i.Brand.Id)) &&
                 (filterSettings.From != null && i.PaidAt.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
                 (filterSettings.To != null && i.PaidAt.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
 

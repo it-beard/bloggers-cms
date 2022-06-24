@@ -35,7 +35,7 @@ else
         <tbody>
             @foreach (var brand in brandsInfo.Items.OrderBy(b=>b.Name))
             {
-                <tr class="normal">
+                <tr class="@BrandsHelper.GetBgColorClass(brand.IsArchived)">
                     <td class="brand-name-row">
                         
                         @if (brand.IsDefault)
@@ -51,31 +51,31 @@ else
                         <div>
                             @if (brand.ContentsCount > 0)
                                 {
-                                    <span class="contents">
+                                    <span class="contents" title="Кол-во контента">
                                         К: @brand.ContentsCount
                                     </span>
                                 }
                                 @if (brand.PersonsCount > 0 )
                                 {
-                                    <span class="contents">
+                                    <span class="contents" title="Кол-во персон">
                                         П: @brand.PersonsCount
                                     </span>
                                 }
                                 @if (brand.GiftsCount > 0 )
                                 {
-                                    <span class="contents">
+                                    <span class="contents" title="Кол-во подарков">
                                         G: @brand.GiftsCount
                                     </span>
                                 }
                                 @if (brand.BillsSum > 0)
                                 {
-                                    <span class="contents">
+                                    <span class="contents" title="Сумма доходов">
                                         Д: @($"{brand.BillsSum:N0}")
                                     </span>
                                 }
                                 @if (brand.CostsSum > 0)
                                 {
-                                    <span class="contents">
+                                    <span class="contents" title="Сумма расходов">
                                         Р: @($"{brand.CostsSum:N0}")
                                     </span>
                                 }
@@ -94,7 +94,7 @@ else
                         </div>
                     </td>
                     <td class="text-center actions-row">
-                        <Actions OnBrandUpdate="@OnBrandUpdate" CurrentBrand="@brand"></Actions>
+                        <Actions OnActionsUpdate="@OnActionsUpdateAsync" CurrentBrand="@brand"></Actions>
                     </td>
                 </tr>
             }
@@ -110,7 +110,7 @@ else
         brandsInfo = await GetBrands();
     }
 
-    private async Task OnBrandUpdate()
+    private async Task OnActionsUpdateAsync()
     {
         brandsInfo = await GetBrands();
     }

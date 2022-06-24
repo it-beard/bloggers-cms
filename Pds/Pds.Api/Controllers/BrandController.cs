@@ -168,4 +168,44 @@ public class BrandController : ApiControllerBase
             return ExceptionResult(e);
         }
     }
+    
+    /// <summary>
+    /// Archive specified brand
+    /// </summary>
+    /// <param name="brandId"></param>
+    /// <returns></returns>
+    [HttpPut("{brandId}/archive")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Archive(Guid brandId)
+    {
+        try
+        {
+            await brandService.ArchiveAsync(brandId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
+    /// <summary>
+    /// Unarchive specified brand
+    /// </summary>
+    /// <param name="brandId"></param>
+    /// <returns></returns>
+    [HttpPut("{brandId}/unarchive")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Unarchive(Guid brandId)
+    {
+        try
+        {
+            await brandService.UnarchiveAsync(brandId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
 }

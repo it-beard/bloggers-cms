@@ -64,7 +64,7 @@
 
     private async Task OnArchiveAsync()
     {
-        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать {CurrentCost.Id.ToShortString()}?");
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать {CurrentCost.Id}?");
         if (confirmed)
         {
             await ApiClient.Put<object, object>(TokenProvider, $"costs/{CurrentCost.Id}/archive", null);

@@ -46,6 +46,15 @@ public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
         
         return result;
     }
+    
+    public async Task<List<Brand>> GetAllNotArchived()
+    {
+        var result = await context.Brands
+            .Where(b => !b.IsArchived)
+            .ToListAsync();
+
+        return result;
+    }
 
     public async Task<bool> IsExistsByNameAsync(string name)
     {

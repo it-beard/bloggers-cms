@@ -25,7 +25,7 @@ public class BrandService : IBrandService
 
     public async Task<List<Brand>> GetAllForListsAsync()
     {
-        return await unitOfWork.Brands.GetAllAsync();
+        return await unitOfWork.Brands.GetAllNotArchived();
     }
 
     public async Task<List<GetBrandModel>> GetAllAsync()
@@ -121,6 +121,33 @@ public class BrandService : IBrandService
 
             // update old default brand
             brand.IsDefault = false;
+            await unitOfWork.Brands.UpdateAsync(brand);
+        }
+    }
+    
+    public async Task ArchiveAsync(Guid brandId)
+    {
+        var brand = await unitOfWork.Brands.GetFirstWhereAsync(p => p.Id == brandId);
+        if (brand.IsDefault)
+        {
+            throw new BrandArchiveException("Нельзя архивировать бренд \"по умолчанию\"");
+        }
+        
+        if (brand != null)
+        {
+            brand.IsArchived = true;
+            brand.UpdatedAt = DateTime.UtcNow;
+            await unitOfWork.Brands.UpdateAsync(brand);
+        }
+    }
+
+    public async Task UnarchiveAsync(Guid brandId)
+    {
+        var brand = await unitOfWork.Brands.GetFirstWhereAsync(p => p.Id == brandId);
+        if (brand != null)
+        {
+            brand.IsArchived = false;
+            brand.UpdatedAt = DateTime.UtcNow;
             await unitOfWork.Brands.UpdateAsync(brand);
         }
     }

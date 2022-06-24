@@ -190,7 +190,7 @@ else
             .Where(i => 
                 (selectedGiftStatuses.Contains(i.Status) || selectedGiftStatuses.Count == 0) &&
                 (selectedGiftTypes.Contains(i.Type) || selectedGiftTypes.Count == 0) &&
-                (selectedBrandsIds.Contains(i.Brand.Id)  || selectedBrandsIds.Count == 0) &&
+                (selectedBrandsIds.Contains(i.Brand.Id)) &&
                 
                 (filterSettings.CompletedFrom != null && 
                     i.CompletedAt != null && 

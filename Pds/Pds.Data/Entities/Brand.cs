@@ -13,6 +13,8 @@ public class Brand : EntityBase
     public string Info { get; set; }
     
     public bool IsDefault { get; set; }
+    
+    public bool IsArchived { get; set; }
 
     public ICollection<Bill> Bills { get; set; }
 

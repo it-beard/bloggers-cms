@@ -21,6 +21,7 @@ public class BillRepository : RepositoryBase<Bill>, IBillRepository
             .Include(b=>b.Content)
             .Include(b=>b.Brand)
             .Include(b=>b.Client)
+            .Where(b => !b.Brand.IsArchived)
             .OrderByDescending(p =>p.PaidAt)
             .ToListAsync();
     }
@@ -31,6 +32,7 @@ public class BillRepository : RepositoryBase<Bill>, IBillRepository
             .Include(c => c.Content)
             .Include(c => c.Brand)
             .Include(c => c.Client)
+            .Where(b => !b.Brand.IsArchived)
             .FirstOrDefaultAsync(c => c.Id == billId);
     }
 }

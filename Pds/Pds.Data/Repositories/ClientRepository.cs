@@ -23,7 +23,8 @@ public class ClientRepository : RepositoryBase<Client>, IClientRepository
     public async Task<List<Client>> GetAllWithBillsOrderByNameAsync()
     {
         return await context.Clients
-            .Include(c=>c.Bills)
+            .Include(c=>c.Bills
+                .Where(b => !b.Brand.IsArchived))
             .OrderBy(p =>p.Name)
             .ToListAsync();
     }

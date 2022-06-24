@@ -188,7 +188,7 @@ else
 
         var itemsToShow = persons.Items
             .Where(i =>
-                (selectedBrandsIds.Intersect(i.Brands.Select(b => b.Id)).Any() || selectedBrandsIds.Count == 0) &&
+                (selectedBrandsIds.Intersect(i.Brands.Select(b => b.Id)).Any()) &&
                 (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
                 (filterSettings.IsContactEstablished && i.IsContactEstablished == filterSettings.IsContactEstablished 
                     || !filterSettings.IsContactEstablished) &&

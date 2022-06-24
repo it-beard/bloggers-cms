@@ -17,12 +17,13 @@ public class DashboardRepository : IDashboardRepository
     public async Task<List<CountryStatisticsBrandModel>> GetCountriesStatisticsAsync()
     {
         var result = await context.Brands
+            .Where(b => !b.IsArchived)
             .Select(b => new CountryStatisticsBrandModel()
             {
                 BrandName = b.Name,
                 BrandId = b.Id,
-                Countries = context
-                    .Persons.Where(p => p.Brands.Contains(b) && p.Status != PersonStatus.Archived)
+                Countries = context.Persons
+                    .Where(p => p.Brands.Contains(b) && p.Status != PersonStatus.Archived)
                     .GroupBy(p => p.Country)
                     .Where(c => !string.IsNullOrWhiteSpace(c.Key) && c.Count() > 1)
                     .OrderByDescending(c => c.Count())
@@ -47,6 +48,7 @@ public class DashboardRepository : IDashboardRepository
         var lastDayOfSameMonthYearAgo = firstDayOfSameMonthYearAgo.AddMonths(1).AddDays(-1);
         
         var result = await context.Brands
+            .Where(b => !b.IsArchived)
             .Select(b => new MoneyStatisticsBrandModel()
             {
                 BrandName = b.Name,
@@ -93,6 +95,7 @@ public class DashboardRepository : IDashboardRepository
     public async Task<List<ContentStatisticsBrandModel>> GetContentStatisticsAsync()
     {
         var result = await context.Brands
+            .Where(b => !b.IsArchived)
             .Select(b => new ContentStatisticsBrandModel()
             {
                 BrandName = b.Name,

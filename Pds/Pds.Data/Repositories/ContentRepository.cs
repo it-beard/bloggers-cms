@@ -25,6 +25,7 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
             .Include(p => p.Person)
             .ThenInclude(p => p.Resources)
             .Include(p => p.Costs)
+            .Where(b => !b.Brand.IsArchived)
             .OrderByDescending(p =>p.ReleaseDate)
             .ThenBy(p=>p.Title)
             .ToListAsync();
@@ -39,6 +40,7 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
             .Include(p => p.Person)
             .ThenInclude(p => p.Resources)
             .Include(p => p.Costs)
+            .Where(b => !b.Brand.IsArchived)
             .OrderByDescending(p =>p.ReleaseDate)
             .ThenBy(p=>p.Title)
             .FirstOrDefaultAsync(p => p.Id == contentId);
@@ -47,7 +49,9 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
     public async Task<Content> GetByIdWithBillAsync(Guid contentId)
     {
         return await context.Contents
+            .Include(p => p.Brand)
             .Include(p => p.Bill)
+            .Where(b => !b.Brand.IsArchived)
             .FirstOrDefaultAsync(p => p.Id == contentId);
     }
         
@@ -56,13 +60,14 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
         return await context.Contents
             .Include(p => p.Bill)
             .Include(p => p.Costs)
+            .Where(b => !b.Brand.IsArchived)
             .FirstOrDefaultAsync(p => p.Id == contentId);
     }
 
     public async Task<List<Content>> GetContentsForListByBrandId(Guid brandId)
     {
         return await context.Contents
-            .Where(c => c.BrandId == brandId && c.Status != ContentStatus.Archived)
+            .Where(c => c.BrandId == brandId && c.Status != ContentStatus.Archived && !c.Brand.IsArchived)
             .OrderByDescending(p =>p.ReleaseDate)
             .ToListAsync();
     }
@@ -182,11 +187,18 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
     
     public virtual async Task<Content> GetFirstOrderByReleaseDateWhereAsync(Expression<Func<Content, bool>> match)
     {
-        return await context.Contents.OrderBy( c=> c.ReleaseDate).FirstOrDefaultAsync(match);
+        return await context.Contents
+            .Include(b => b.Brand)
+            .Where(b => !b.Brand.IsArchived)
+            .OrderBy( c=> c.ReleaseDate)
+            .FirstOrDefaultAsync(match);
     }
     
     public async Task<List<Content>> FindAllOrderByReleaseDateWhereAsync(Expression<Func<Content, bool>> match)
     {
-        return await context.Set<Content>().OrderBy(c=>c.ReleaseDate).Where(match).ToListAsync();
+        return await context.Set<Content>()
+            .OrderBy(c=>c.ReleaseDate)
+            .Where(match)
+            .ToListAsync();
     }
 }

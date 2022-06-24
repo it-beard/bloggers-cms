@@ -8,50 +8,87 @@
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <div class="panel panel-default actions-panel">
-    <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEdit">
-        <i class="bi bi-pencil-fill"></i>
-    </button>
+    @if (!CurrentBrand.IsArchived)
+    {
+        <button title="Редактировать" class="btn btn-primary btn-sm" @onclick="OnEditAsync">
+            <i class="bi bi-pencil-fill"></i>
+        </button>
+    }
+    
+    @if (!CurrentBrand.IsArchived && !CurrentBrand.IsDefault)
+    {
+        <button title="Сделать брендом по умолчанию" class="btn btn-success btn-sm" @onclick="OnDefaultAsync">
+            <i class="bi bi-suit-heart-fill"></i>
+        </button>
+    }
 
+    @if (CurrentBrand.IsArchived)
+    {
+        <button title="Разархивировать" class="btn btn-success btn-sm" @onclick="OnUnarchiveAsync">
+            <i class="bi bi-patch-plus-fill"></i>
+        </button>
+    }
+
+    @if (!CurrentBrand.IsArchived && !CurrentBrand.IsDefault)
+    {
+        <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchiveAsync">
+            <i class="bi bi-archive-fill"></i>
+        </button>
+    }
+        
     @if (CurrentBrand.IsDeletable)
     {
-        <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDelete">
+        <button title="Удалить" class="btn btn-danger btn-sm" @onclick="OnDeleteAsync">
             <i class="bi bi-trash-fill"></i>
-        </button>
-    }    
-    @if (!CurrentBrand.IsDefault)
-    {
-        <button title="Сделать брендом по умолчанию" class="btn btn-success btn-sm" @onclick="OnDefault">
-            <i class="bi bi-suit-heart-fill"></i>
         </button>
     }
 </div>
 
 @code {
     [Parameter]
-    public EventCallback OnBrandUpdate { get; set; }
+    public EventCallback OnActionsUpdate { get; set; }
     [Parameter]
     public IActionsBrand CurrentBrand { get; set; }
 
-    private void OnEdit()
+    private void OnEditAsync()
     {
         NavigationManager.NavigateTo($"/brands/{CurrentBrand.Id}/edit");
     }
 
-    private async Task OnDelete()
+    private async Task OnDeleteAsync()
     {
         var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите удалить {CurrentBrand.Name}?");
         if (confirmed)
         {
             await ApiClient.Delete<object>(TokenProvider, $"brands/{CurrentBrand.Id}");
-            await OnBrandUpdate.InvokeAsync(); // Update UI
+            await OnActionsUpdate.InvokeAsync(); // Update UI
         }
     }
     
-    private async Task OnDefault()
+    private async Task OnDefaultAsync()
     {
         await ApiClient.Put<object, object>(TokenProvider, $"brands/{CurrentBrand.Id}/default", null);
-        await OnBrandUpdate.InvokeAsync(); // Update UI
+        await OnActionsUpdate.InvokeAsync(); // Update UI
+    }
+    
+    private async Task OnArchiveAsync()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать {CurrentBrand.Id}?");
+        if (confirmed)
+        {
+            await ApiClient.Put<object, object>(TokenProvider, $"brands/{CurrentBrand.Id}/archive", null);
+            await localStorage.ClearAsync();
+            await OnActionsUpdate.InvokeAsync(); // Update UI
+        }
+    }
+
+    private async Task OnUnarchiveAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"brands/{CurrentBrand.Id}/unarchive", null);
+        await localStorage.ClearAsync();
+        await OnActionsUpdate.InvokeAsync(); // Update UI
     }
 }

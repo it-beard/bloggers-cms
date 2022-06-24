@@ -17,8 +17,9 @@ public class GiftRepository : RepositoryBase<Gift>, IGiftRepository
     public async Task<List<Gift>> GetAllFullAsync()
     {
         return await context.Gifts
-            .Include(b=>b.Content)
-            .Include(b=>b.Brand)
+            .Include(b => b.Content)
+            .Include(b => b.Brand)
+            .Where(g => !g.Brand.IsArchived)
             .OrderByDescending(p =>p.CreatedAt)
             .ToListAsync();
     }
@@ -28,6 +29,7 @@ public class GiftRepository : RepositoryBase<Gift>, IGiftRepository
         return await context.Gifts
             .Include(c => c.Content)
             .Include(c => c.Brand)
+            .Where(g => !g.Brand.IsArchived)
             .FirstOrDefaultAsync(c => c.Id == giftId);
     }
 }

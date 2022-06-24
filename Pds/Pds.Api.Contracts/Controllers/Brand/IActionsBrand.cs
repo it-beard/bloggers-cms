@@ -9,4 +9,6 @@ public interface IActionsBrand
     bool IsDefault { get; set; }
     
     bool IsDeletable { get; set; }
+    
+    bool IsArchived { get; set; }
 }

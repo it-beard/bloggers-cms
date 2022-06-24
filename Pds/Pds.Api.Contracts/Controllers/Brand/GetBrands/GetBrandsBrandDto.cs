@@ -25,4 +25,6 @@ public class GetBrandsBrandDto : IActionsBrand
     public int GiftsCount { get; set; }
     
     public  bool IsDeletable { get; set; }
+    
+    public  bool IsArchived { get; set; }
 }
