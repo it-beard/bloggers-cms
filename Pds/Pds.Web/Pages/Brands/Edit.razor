@@ -11,6 +11,7 @@
 @inject IApiClient ApiClient
 @inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <Title>@WithSuffix("Редактирование бренда")</Title>
 
@@ -75,6 +76,7 @@ else
             isCreateButtonDisabled = false;
             if (result.IsSuccessStatusCode)
             {
+                await localStorage.ClearAsync();
                 NavigationManager.NavigateTo("/brands");
             }
             else

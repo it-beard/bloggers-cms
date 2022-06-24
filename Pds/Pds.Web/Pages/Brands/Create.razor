@@ -8,6 +8,7 @@
 @inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <Title>@WithSuffix("Добавление бренда")</Title>
 
@@ -69,6 +70,7 @@ else
             isCreateButtonDisabled = false;
             if (result.IsSuccessStatusCode)
             {
+                await localStorage.ClearAsync();
                 NavigationManager.NavigateTo("/brands");
             }
             else
