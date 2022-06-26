@@ -33,6 +33,8 @@ public class Bill : EntityBase
     public string ContactName { get; set; }
 
     public ContactType? ContactType { get; set; }
+
+    public bool IsContactAgent { get; set; }
         
     [Column(TypeName = "varchar(50)")]
     public string ContractNumber { get; set; }

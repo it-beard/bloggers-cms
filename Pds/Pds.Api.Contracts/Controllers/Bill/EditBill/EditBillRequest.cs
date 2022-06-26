@@ -43,4 +43,6 @@ public class EditBillRequest
     public string ContactName { get; set; }
 
     public ContactType? ContactType { get; set; }
+
+    public bool IsContactAgent { get; set; }
 }

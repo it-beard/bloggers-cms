@@ -85,6 +85,7 @@ public class ContentService : IContentService
                 Type = BillType.Content,
                 BrandId = model.BrandId,
                 ClientId = model.Bill.ClientId,
+                IsContactAgent = model.Bill.IsContactAgent,
                 Comment = $"Created automatically  for content with id {content.Id} ({content.Title})"
             };
 
@@ -150,6 +151,7 @@ public class ContentService : IContentService
             content.Bill.ContactType = !string.IsNullOrEmpty(model.Bill.Contact)
                 ? model.Bill.ContactType
                 : null;
+            content.Bill.IsContactAgent = model.Bill.IsContactAgent;
             content.Bill.Value =  model.Bill.Value;
             content.Bill.UpdatedAt = DateTime.UtcNow;
         }

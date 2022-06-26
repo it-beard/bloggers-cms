@@ -123,16 +123,28 @@ else
                     <div>
                         <a class="custom-link" href="/clients/@content.Bill.Client.Id">
                             <b>@content.Bill.Client.Name</b>
-                        </a> /
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-title">Контакт</div>
+                <div class="info-body contact-info">
+                    <div>
+                        @if (content.Bill.IsContactAgent)
+                        {
+                            <i class="payment-type white">агент</i>
+                        }
                         @content.Bill.ContactName
                         @if (!string.IsNullOrEmpty(content.Bill.Contact))
                         {
-                            <span> /  
+                            <span> /
                                 @EnumsTranslator.ContactTypeToRu(content.Bill.ContactType).ToLower():
                                 @((MarkupString) ContactBuilder.ToLink(content.Bill.ContactType, content.Bill.Contact))
                             </span>
                         }
-                        
+
                         @if (!string.IsNullOrEmpty(content.Bill.ContactEmail))
                         {
                             <span> / @content.Bill.ContactEmail</span>
@@ -141,7 +153,7 @@ else
                 </div>
             </div>
         }
-        
+
         @if (content.Person != null)
         {
             <div class="info-item">

@@ -86,7 +86,7 @@ public class BillService : IBillService
             bill.ContactName = null;
             bill.ContactEmail = null;
             bill.Contact = null;
-            bill.ContactType = null;
+            bill.IsContactAgent = false;
         }
         var result = await unitOfWork.Bills.InsertAsync(bill);
 
@@ -148,6 +148,7 @@ public class BillService : IBillService
             bill.ContactType = !string.IsNullOrEmpty(bill.Contact)
                 ? bill.ContactType
                 : null;
+            bill.IsContactAgent = model.IsContactAgent;
         }
         else
         {

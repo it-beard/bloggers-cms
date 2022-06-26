@@ -32,4 +32,6 @@ public class EditBillModel
     public string ContactEmail { get; set; }
 
     public ContactType ContactType { get; set; }
+
+    public bool IsContactAgent { get; set; }
 }

@@ -14,6 +14,8 @@ public class CreateContentBillModel
         
     public ContactType ContactType { get; set; }
 
+    public bool IsContactAgent { get; set; }
+
     public decimal Value { get; set; }
         
 }

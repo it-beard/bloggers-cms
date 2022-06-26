@@ -34,5 +34,7 @@ public class GetBillResponse
 
     public ContactType? ContactType { get; set; }
 
+    public bool IsContactAgent { get; set; }
+
     public GetBillContentDto Content { get; set; }
 }

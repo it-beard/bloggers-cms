@@ -137,6 +137,11 @@ else
                     <label for="bill_contact_name" class="form-label">Емейл представителя клиента</label>
                     <InputText class="form-control" id="bill_contact_name" @bind-Value="bill.ContactEmail"/>
                 </div>
+                
+                <div class="multi-group-block">
+                    <InputCheckbox name="bill_isContactAgent" class="btn-check" @bind-Value="bill.IsContactAgent" Id="bill_isContactAgent"/>
+                    <label class="btn btn-secondary btn-free btn-sm" for="bill_isContactAgent">Агент</label>
+                </div>
             </div>
 
             <div class="form-group">

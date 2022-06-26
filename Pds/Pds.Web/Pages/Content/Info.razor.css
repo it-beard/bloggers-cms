@@ -47,7 +47,8 @@
     background-color: gainsboro;
 }
 
-.bill-cost i.payment-type {
+.bill-cost i.payment-type,
+.contact-info i.payment-type {
     font-size: 0.8rem;
     padding: 2px 4px;
     border-radius: 4px;
@@ -56,7 +57,8 @@
     margin-right: 5px
 }
 
-.bill-cost i.white {
+.bill-cost i.white,
+.contact-info i.white {
     background-color: white;
     color: black;
 }
