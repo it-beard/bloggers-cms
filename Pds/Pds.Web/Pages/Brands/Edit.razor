@@ -77,7 +77,7 @@ else
             if (result.IsSuccessStatusCode)
             {
                 await localStorage.ClearAsync();
-                NavigationManager.NavigateTo("/brands");
+                GoBack("/brands");
             }
             else
             {

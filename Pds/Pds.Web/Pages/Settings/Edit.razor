@@ -79,6 +79,7 @@ else
             isCreateButtonDisabled = false;
             if (result.IsSuccessStatusCode)
             {
+                GoBack("/persons");
                 NavigationManager.NavigateTo("/settings", forceLoad: true);
             }
             else

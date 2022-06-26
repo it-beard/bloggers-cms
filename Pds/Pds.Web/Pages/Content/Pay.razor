@@ -113,7 +113,7 @@ else
         {
             isCreateButtonDisabled = true;
             await ApiClient.Put<object, PayBillPayload>(TokenProvider, $"bills/{content.Bill.Id}/pay", paymentPayload);
-            NavigationManager.NavigateTo("/content");
+            GoBack("/content");
         }
     }
 

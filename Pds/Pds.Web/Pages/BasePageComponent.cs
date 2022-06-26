@@ -27,12 +27,24 @@ public class BasePageComponent: ComponentBase
         base.OnInitialized();
     }
     
-    protected void GoBack()
+    protected void GoBack(string defaultBackPath)
     {
         _pageState.RemoveCurrent(_navManager.Uri);
         if (_pageState.CanGoBack())
         {
             _navManager.NavigateTo(_pageState.PreviousPage());
         }
+        else
+        {
+            if (!string.IsNullOrEmpty(defaultBackPath))
+            {
+                _navManager.NavigateTo(defaultBackPath);
+            }
+        }
+    }
+    
+    protected void GoBack()
+    {
+        GoBack(null);
     }
 }
