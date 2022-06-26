@@ -7,7 +7,6 @@
 @using Pds.Web.Pages.Gifts.Components
 
 @inject IApiClient ApiClient
-@inject NavigationManager NavigationManager
 @inject IAccessTokenProvider TokenProvider
 
 @if (gift == null)
@@ -24,7 +23,7 @@ else
 
     <h4 class="card-header d-flex justify-content-between align-items-center">
         <span>Подарок "@gift.Title" <span class="gift-type"> @EnumsTranslator.GiftTypeToRu(gift.Type) </span></span>
-        <button @onclick="GoBack" class="btn btn-primary">Назад</button>
+        <button @onclick='() => GoBack("/gifts")' class="btn btn-primary">Назад</button>
     </h4>
 
     <div class="page-container @GiftHelper.GetGiftBgColorClass(gift.Status)">
@@ -92,7 +91,7 @@ else
     {
         if (isRedirectNeeded)
         {
-            NavigationManager.NavigateTo("/gifts");
+            GoBack("/gifts");
         }
         
         gift = await GetGiftAsync();

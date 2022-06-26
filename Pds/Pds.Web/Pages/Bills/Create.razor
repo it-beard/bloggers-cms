@@ -5,12 +5,10 @@
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 @using Microsoft.AspNetCore.Components
-@using Pds.Api.Contracts
 @using Pds.Api.Contracts.Controllers
 @using Pds.Api.Contracts.Controllers.Bill
 @using Pds.Api.Contracts.Controllers.Bill.CreateBill
 
-@inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
@@ -26,7 +24,7 @@ else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
         Фиксация дохода
-        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+        <button @onclick='() => GoBack("/bills")' class="btn btn-primary"> Назад </button>
     </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">

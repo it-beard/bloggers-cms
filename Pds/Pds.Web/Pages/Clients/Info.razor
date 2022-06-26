@@ -8,7 +8,6 @@
 @using Pds.Web.Pages.Clients.Components
 
 @inject IApiClient ApiClient
-@inject NavigationManager NavigationManager
 @inject IAccessTokenProvider TokenProvider
 
 @if (client == null)
@@ -101,7 +100,7 @@ else
     {
         if (isRedirectNeeded)
         {
-            NavigationManager.NavigateTo("/clients");
+            GoBack("/clients");
         }
         
         client = await GetClient();

@@ -5,16 +5,12 @@
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 @using Microsoft.AspNetCore.Components
-@using Pds.Api.Contracts
-@using System.Security.Cryptography
 @using Pds.Api.Contracts.Controllers
 @using Pds.Api.Contracts.Controllers.Gift
 @using Pds.Api.Contracts.Controllers.Gift.CreateGift
 
-@inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
-@inject IJSRuntime JsRuntime
 
 <Title>@WithSuffix("Добавление подарка")</Title>
 
@@ -28,7 +24,7 @@ else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
         Добавление подарка
-        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+        <button @onclick='() => GoBack("/gifts")' class="btn btn-primary"> Назад </button>
     </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">

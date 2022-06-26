@@ -1,7 +1,6 @@
 ﻿@page "/costs/{costId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts
 @using Pds.Core.Enums
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
@@ -11,7 +10,6 @@
 @using Pds.Api.Contracts.Controllers.Cost.EditCost
 @using Pds.Api.Contracts.Controllers.Cost.GetCost
 
-@inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
@@ -28,7 +26,7 @@ else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
         Редактирование расхода
-        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+        <button @onclick='() => GoBack("/costs")' class="btn btn-primary"> Назад </button>
     </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">

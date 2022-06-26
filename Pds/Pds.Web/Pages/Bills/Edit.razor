@@ -1,7 +1,6 @@
 ﻿@page "/bills/{billId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts
 @using Pds.Core.Enums
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
@@ -11,7 +10,6 @@
 @using Pds.Api.Contracts.Controllers.Bill.EditBill
 @using Pds.Api.Contracts.Controllers.Bill.GetBill
 
-@inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
@@ -28,7 +26,7 @@ else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
         Редактирование дохода
-        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+        <button @onclick='() => GoBack("/bills")' class="btn btn-primary"> Назад </button>
     </h4>
     @if (bill.Content?.Id != null && bill.Content.Title != null)
     {

@@ -25,6 +25,11 @@ public class PageHistoryState
     
     public void RemoveCurrent(string currentPage)
     {
+        if (pages.Count == 0)
+        {
+            return;
+        }
+        
         var lastPage = pages.Last();
         if (lastPage == currentPage)
         {

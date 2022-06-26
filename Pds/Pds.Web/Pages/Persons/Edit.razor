@@ -11,7 +11,6 @@
 @using Pds.Api.Contracts.Controllers.Person.GetPerson
 @using Pds.Core.Extensions
 
-@inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
@@ -28,7 +27,7 @@ else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
         Редактирование персоны
-        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+        <button @onclick='() => GoBack("/persons")' class="btn btn-primary"> Назад </button>
     </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">

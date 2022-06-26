@@ -10,7 +10,6 @@
 @using Pds.Api.Contracts.Controllers.Content.EditContent
 @using Pds.Api.Contracts.Controllers.Content.GetContent
 
-@inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
@@ -19,7 +18,7 @@
 
 <h4 class="card-header d-flex justify-content-between align-items-center">
     Редактирование контента
-    <button @onclick="GoBack" class="btn btn-primary">Назад</button>
+    <button @onclick='() => GoBack("/content")' class="btn btn-primary">Назад</button>
 </h4>
 @if (content == null || clients == null || persons == null)
 {

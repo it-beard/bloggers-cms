@@ -36,10 +36,7 @@ public class BasePageComponent: ComponentBase
         }
         else
         {
-            if (!string.IsNullOrEmpty(defaultBackPath))
-            {
-                _navManager.NavigateTo(defaultBackPath);
-            }
+            _navManager.NavigateTo(!string.IsNullOrEmpty(defaultBackPath) ? defaultBackPath : "/");
         }
     }
     

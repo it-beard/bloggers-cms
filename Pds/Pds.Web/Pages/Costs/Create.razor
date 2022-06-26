@@ -1,7 +1,6 @@
 ﻿@page "/costs/add"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts
 @using Pds.Api.Contracts.Controllers
 @using Pds.Api.Contracts.Controllers.Cost
 @using Pds.Api.Contracts.Controllers.Cost.CreateCost
@@ -9,7 +8,6 @@
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
 
-@inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
@@ -25,7 +23,7 @@ else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
         Фиксация расхода
-        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+        <button @onclick='() => GoBack("/costs")' class="btn btn-primary"> Назад </button>
     </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">

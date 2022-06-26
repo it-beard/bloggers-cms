@@ -8,7 +8,6 @@
 @using Pds.Api.Contracts.Controllers.Person.CreatePerson
 @using Pds.Core.Constants
 
-@inject NavigationManager NavigationManager
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
 
@@ -24,7 +23,7 @@ else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
         Добавление персоны
-        <button @onclick="GoBack" class="btn btn-primary"> Назад </button>
+        <button @onclick='() => GoBack("/persons")' class="btn btn-primary"> Назад </button>
     </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
