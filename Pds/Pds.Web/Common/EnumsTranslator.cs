@@ -87,9 +87,9 @@ public static class EnumsTranslator
         return type switch
         {
             PaymentType.Other => "Прочее",
-            PaymentType.BankAccount => "ИП",
-            PaymentType.Tinkoff => "Тинькофф",
-            PaymentType.Yoomoney => "ЮМани",
+            PaymentType.BankAccount => "Юр. счёт",
+            PaymentType.PersonalAccount => "Личный счёт",
+            PaymentType.Crypto => "Крипта",
             PaymentType.Barter => "Бартер",
             PaymentType.Cash => "Наличные",
             _ => string.Empty
@@ -101,9 +101,9 @@ public static class EnumsTranslator
         return type switch
         {
             PaymentType.Other => "дрг",
-            PaymentType.BankAccount => "ип",
-            PaymentType.Tinkoff => "тин",
-            PaymentType.Yoomoney => "юмн",
+            PaymentType.BankAccount => "юр",
+            PaymentType.PersonalAccount => "лчн",
+            PaymentType.Crypto => "крп",
             PaymentType.Barter => "брт",
             PaymentType.Cash => "нал",
             _ => string.Empty
