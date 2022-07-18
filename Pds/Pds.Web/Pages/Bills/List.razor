@@ -120,7 +120,11 @@ else
     
     private string GetPaymentTypeClass(PaymentType? type)
     {
-        return type == PaymentType.BankAccount ? "yellow" : "red";
+        return type == PaymentType.BankAccount ? 
+                    "yellow" : 
+                    type == PaymentType.Crypto ? 
+                        "blue" : 
+                        "red";
     }
 
     private GetBillsBillDto[] GetFilteredBillsList(

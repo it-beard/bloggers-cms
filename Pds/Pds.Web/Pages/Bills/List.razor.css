@@ -59,6 +59,11 @@
     color: white;
 }
 
+.bill-cost-row i.blue{
+    background-color: #44aefb;
+    color: white;
+}
+
 .id-row {
     color: #777;;
 }
