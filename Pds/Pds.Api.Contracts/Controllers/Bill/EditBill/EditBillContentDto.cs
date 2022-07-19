@@ -7,6 +7,7 @@ public class EditBillContentDto
     public Guid Id { get; set; }
 
     public string Title { get; set; }
+    
 
     public SocialMediaType SocialMediaType { get; set; }
 }

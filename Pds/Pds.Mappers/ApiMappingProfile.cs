@@ -249,7 +249,10 @@ public class ApiMappingProfile : Profile
 
         CreateMap<GetContentResponse, EditContentRequest>();
         CreateMap<GetCostResponse, EditCostRequest>();
+        
         CreateMap<GetBillResponse, EditBillRequest>();
+        CreateMap<GetBillContentDto, EditBillContentDto>();
+        
         CreateMap<GetClientResponse, EditClientRequest>();
         CreateMap<GetSettingResponse, EditSettingRequest>();
         CreateMap<GetGiftResponse, EditGiftRequest>();
