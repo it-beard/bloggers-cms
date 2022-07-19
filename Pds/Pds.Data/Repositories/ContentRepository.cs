@@ -40,6 +40,7 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
             .Include(p => p.Person)
             .ThenInclude(p => p.Resources)
             .Include(p => p.Costs)
+            .Include(p => p.Gifts)
             .Where(b => !b.Brand.IsArchived)
             .OrderByDescending(p =>p.ReleaseDate)
             .ThenBy(p=>p.Title)

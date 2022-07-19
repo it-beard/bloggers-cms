@@ -175,11 +175,7 @@ public class ContentService : IContentService
 
     public async Task DeleteAsync(Guid clientId)
     {
-        var content = await unitOfWork.Content.GetByIdWithBillWithCostsAsync(clientId);
-        var bill = content?.BillId != null ? 
-            await unitOfWork.Bills.GetFirstWhereAsync(b => b.Id == content.BillId) : 
-            null;
-
+        var content = await unitOfWork.Content.GetFullByIdAsync(clientId);
         if (content == null)
         {
             throw new ContentDeleteException("Контент не найден.");
