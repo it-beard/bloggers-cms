@@ -120,16 +120,27 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
 
             context.Contents.Remove(content);
             await context.SaveChangesAsync();
+            
             if (content.Bill != null)
             {
                 context.Bills.Remove(content.Bill);
                 await context.SaveChangesAsync();
             }
+            
             if (content.Costs.Count > 0)
             {
                 foreach (var cost in content.Costs)
                 {
                     context.Costs.Remove(cost);
+                    await context.SaveChangesAsync();
+                }
+            }
+            
+            if (content.Gifts.Count > 0)
+            {
+                foreach (var gift in content.Gifts)
+                {
+                    context.Gifts.Remove(gift);
                     await context.SaveChangesAsync();
                 }
             }

@@ -39,4 +39,6 @@ public class Content : EntityBase
     public virtual Person Person { get; set; }
 
     public ICollection<Cost> Costs { get; set; }
+    
+    public ICollection<Gift> Gifts { get; set; }
 }
