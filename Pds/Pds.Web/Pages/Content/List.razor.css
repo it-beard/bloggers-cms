@@ -106,3 +106,10 @@
     color: #eee;
 }
 
+.small-label {
+    font-style: italic;
+    font-size: 10px;
+    width: 45px;
+    display: inline-block;
+}
+

@@ -43,7 +43,7 @@ else
                 {
                     <th>Бренд</th>
                 }
-                <th>Клиент</th>
+                <th>Инфо</th>
                 <th>Соцсеть</th>
                 <th>Тип</th>
                 <th class="bill-cost-header">Сколько</th>
@@ -82,7 +82,8 @@ else
                             @if (item.Client != null)
                             {
                                 <div>
-                                    Клиент: <a class="custom-link" href="clients/@item.Client.Id">@item.Client.Name</a>
+                                    <span class="small-label">Клиент:</span> 
+                                    <a class="custom-link" href="clients/@item.Client.Id">@item.Client.Name</a>
                                 </div>
                             }
                         
@@ -90,7 +91,8 @@ else
                             @if (item.Person != null)
                             {
                                 <div>
-                                    Персона: <a class="custom-link" href="persons/@item.Person.Id">@item.Person.FirstName @item.Person.LastName</a>
+                                    <span class="small-label">Персона:</span> 
+                                    <a class="custom-link" href="persons/@item.Person.Id">@item.Person.FirstName @item.Person.LastName</a>
                                 </div> 
                             }
                         </div>
