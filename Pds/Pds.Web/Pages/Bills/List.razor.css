@@ -84,3 +84,22 @@
 .comment-body{
     min-width: 350px;
 }
+
+.active {
+    background-color: aliceblue;
+}
+
+.archived,
+.archived a,
+.archived span,
+.archived .rate-row {
+    background-color: gainsboro;
+    color: #bbb !important;
+}
+
+.archived:hover,
+.archived:hover a,
+.archived:hover span,
+.archived:hover .rate-row {
+    color: black !important;
+}

@@ -51,7 +51,7 @@ else
             <tbody>
             @foreach (var bill in filteredBills)
             {
-                <tr class="normal">
+                <tr class="@BillsHelper.GetBgColorClass(bill.Status) normal">
                     <td class="paid-date-row">
                         <span>
                             @bill.PaidAt.Date.ToString("dd.MM.yyyy")

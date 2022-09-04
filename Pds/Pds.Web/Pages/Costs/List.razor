@@ -52,7 +52,7 @@ else
             <tbody>
             @foreach (var cost in filteredCosts)
             {
-                <tr class="normal">
+                <tr class="@CostsHelper.GetBgColorClass(cost.Status) normal">
                     <td class="paid-date-row">
                         <span>
                             @cost.PaidAt.Date.ToString("dd.MM.yyyy")
@@ -82,7 +82,7 @@ else
                         }
                         @cost.Comment
                     </td>
-                    <td class="text-center action-row">
+                    <td class="text-center actions-row">
                         <Actions OnActionsUpdate="@OnActionsUpdate" CurrentCost="@cost"></Actions>
                     </td>
                 </tr>
