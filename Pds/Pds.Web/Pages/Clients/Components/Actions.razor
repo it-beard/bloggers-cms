@@ -1,6 +1,8 @@
 ﻿@using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Controllers.Client
+@using Pds.Core.Enums
+@using Pds.Core.Extensions
 
 @namespace Pds.Web.Pages.Clients.Components
 
@@ -13,22 +15,48 @@
     @{
         var buttonClass = WithLabels ? "btn with-label" : "btn btn-sm";
     }
-    <button title="Редактировать" class="@buttonClass btn-primary" @onclick="OnEdit">
-        <i class="bi bi-pencil-fill"></i>
-        @if (WithLabels)
-        {
-            <span>Редактировать</span>
-        }
-    </button>
+    
+    @if (CurrentClient.Status == ClientStatus.Active)
+    {
+        <button title="Редактировать" class="@buttonClass btn-primary" @onclick="OnEdit">
+            <i class="bi bi-pencil-fill"></i>
+            @if (WithLabels)
+            {
+                <span>Редактировать</span>
+            }
+        </button>
+    }
 
-    @if (CurrentClient.BillsCount == 0)
+    @if (CurrentClient.Status == ClientStatus.Archived)
+    {
+        <button title="Разархивировать" class="btn btn-success btn-sm" @onclick="OnUnarchiveAsync">
+            <i class="bi bi-patch-plus-fill"></i>
+            @if (WithLabels)
+            {
+                <span>Разархивировать</span>
+            }
+        </button>
+    }
+
+    @if (CurrentClient.Status == ClientStatus.Active)
+    {
+        <button title="Архивировать" class="btn btn-warning btn-sm" @onclick="OnArchiveAsync">
+            <i class="bi bi-archive-fill"></i>
+            @if (WithLabels)
+            {
+                <span>Архивировать</span>
+            }
+        </button>
+    }
+
+    @if (CurrentClient.BillsCount == 0 && CurrentClient.Status == ClientStatus.Active)
     {
         <button title="Удалить" class="@buttonClass btn-danger" @onclick="OnDelete">
             <i class="bi bi-trash-fill"></i>
-                                          @if (WithLabels)
-        {
-            <span>Удалить</span>
-        }
+            @if (WithLabels)
+            {
+                <span>Удалить</span>
+            }
     </button>
     }
 </div>
@@ -55,5 +83,21 @@
             await ApiClient.Delete<object>(TokenProvider, $"clients/{CurrentClient.Id}");
             await OnActionsUpdate.InvokeAsync(true); // Update UI
         }
+    }
+    
+    private async Task OnArchiveAsync()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Уверены, что хотите архивировать {CurrentClient.Id.ToShortString()}?");
+        if (confirmed)
+        {
+            await ApiClient.Put<object, object>(TokenProvider, $"clients/{CurrentClient.Id}/archive", null);
+            await OnActionsUpdate.InvokeAsync(); // Update UI
+        }
+    }
+
+    private async Task OnUnarchiveAsync()
+    {
+        await ApiClient.Put<object, object>(TokenProvider, $"clients/{CurrentClient.Id}/unarchive", null);
+        await OnActionsUpdate.InvokeAsync(); // Update UI
     }
 }

@@ -31,3 +31,22 @@
 .actions-row {
     border-left: 2px dotted rgb(222, 226, 230);
 }
+
+.active {
+    background-color: aliceblue;
+}
+
+.archived,
+.archived a,
+.archived span,
+.archived .rate-row {
+    background-color: gainsboro;
+    color: #bbb !important;
+}
+
+.archived:hover,
+.archived:hover a,
+.archived:hover span,
+.archived:hover .rate-row {
+    color: black !important;
+}

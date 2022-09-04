@@ -80,6 +80,46 @@ public class ClientController : ApiControllerBase
             return ExceptionResult(e);
         }
     }
+    
+    /// <summary>
+    /// Archive specified client
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    [HttpPut("{clientId}/archive")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Archive(Guid clientId)
+    {
+        try
+        {
+            await clientService.ArchiveAsync(clientId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+
+    /// <summary>
+    /// Unarchive specified client
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    [HttpPut("{clientId}/unarchive")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Unarchive(Guid clientId)
+    {
+        try
+        {
+            await clientService.UnarchiveAsync(clientId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
 
     /// <summary>
     /// Delete specified client

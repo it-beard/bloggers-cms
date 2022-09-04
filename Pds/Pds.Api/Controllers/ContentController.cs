@@ -138,7 +138,29 @@ public class ContentController : ApiControllerBase
     {
         try
         {
-            var clients = await clientService.GetClientsForListsAsync();
+            var clients = await clientService.GetForListsAsync();
+            var response = mapper.Map<List<ClientForLookupDto>>(clients);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return ExceptionResult(e);
+        }
+    }
+    
+    /// <summary>
+    /// Return list of clients with selected content client for lookup box
+    /// </summary>
+    /// <param name="contentClientId"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("get-clients/clients/{contentClientId?}")]
+    public async Task<IActionResult> GetClientsWithContentClient(Guid? contentClientId)
+    {
+        try
+        {
+            var clients = await clientService.GetForListWithSelectedValueAsync(contentClientId);
             var response = mapper.Map<List<ClientForLookupDto>>(clients);
 
             return Ok(response);

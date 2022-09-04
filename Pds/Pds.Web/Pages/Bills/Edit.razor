@@ -185,7 +185,7 @@ else
         isSaveButtonDisabled = false;
         bill = await GetBillAsync();
         brands = await GetBrandsAsync();
-        clients = await GetClientsAsync();
+        clients = await GetClientsAsync(bill.ClientId);
         editContext = new EditContext(bill);
         msgStore = new ValidationMessageStore(editContext);
     }
@@ -222,8 +222,8 @@ else
         return Mapper.Map<EditBillRequest>(clientResponse);
     }
 
-    private async Task<List<ClientForLookupDto>> GetClientsAsync()
+    private async Task<List<ClientForLookupDto>> GetClientsAsync(Guid? contentClientId)
     {
-        return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, "bills/get-clients");
+        return await ApiClient.Get<List<ClientForLookupDto>>(TokenProvider, $"bills/get-clients/clients/{contentClientId}");
     }
 }

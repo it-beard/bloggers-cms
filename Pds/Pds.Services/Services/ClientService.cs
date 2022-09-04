@@ -59,10 +59,15 @@ public class ClientService : IClientService
         {
             throw new ClientEditException($"Клиент с id {model.Id} не найден.");
         }
+        
+        if (client.Status == ClientStatus.Archived)
+        {
+            throw new ClientEditException($"Нельзя редактировать архивного клиента!");
+        }
 
         if (client.Name != model.Name && await unitOfWork.Clients.IsExistsByNameAsync(model.Name))
         {
-            throw new ClientCreateException("Клиент с таким именем существует в системе.");
+            throw new ClientEditException("Клиент с таким именем существует в системе.");
         }
 
         client.UpdatedAt = DateTime.UtcNow;
@@ -73,9 +78,31 @@ public class ClientService : IClientService
 
         return result.Id;
     }
+    
+    public async Task ArchiveAsync(Guid clientId)
+    {
+        var client = await unitOfWork.Clients.GetFirstWhereAsync(p => p.Id == clientId);
+        if (client != null)
+        {
+            client.Status = ClientStatus.Archived;
+            client.UpdatedAt = DateTime.UtcNow;
+            await unitOfWork.Clients.UpdateAsync(client);
+        }
+    }
+
+    public async Task UnarchiveAsync(Guid clientId)
+    {
+        var client = await unitOfWork.Clients.GetFirstWhereAsync(p => p.Id == clientId);
+        if (client is {Status: ClientStatus.Archived})
+        {
+            client.Status = ClientStatus.Active;
+            client.UpdatedAt = DateTime.UtcNow;
+            await unitOfWork.Clients.UpdateAsync(client);
+        }
+    }
 
     public async Task DeleteAsync(Guid clientId)
-    {
+    { 
         var client = await unitOfWork.Clients.GetFullByIdAsync(clientId);
         if (client.Bills != null && client.Bills.Count > 0)
         {
@@ -88,11 +115,24 @@ public class ClientService : IClientService
         }
     }
 
-    public async Task<List<Client>> GetClientsForListsAsync()
+    public async Task<List<Client>> GetForListsAsync()
     {
         var clients = new List<Client> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
-        clients.AddRange(await unitOfWork.Clients.GetAllOrderByNameAsync());
+        clients.AddRange(await unitOfWork.Clients.GetAllActiveOrderByNameAsync());
 
         return clients;
+    }
+    
+    public async Task<List<Client>> GetForListWithSelectedValueAsync(Guid? selectedClientId)
+    {
+        var initialClients = await GetForListsAsync();
+        if (selectedClientId == null || initialClients == null) return initialClients;  
+        
+        // Add selected client on top of the list if it possible
+        var firstClient = await unitOfWork.Clients.GetFirstWhereAsync(c => c.Id == selectedClientId);
+        initialClients.Remove(firstClient);
+        initialClients = initialClients.Prepend(firstClient).ToList();
+
+        return initialClients;
     }
 }

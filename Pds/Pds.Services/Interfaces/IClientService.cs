@@ -10,10 +10,16 @@ public interface IClientService
     Task<List<Client>> GetAllAsync();
 
     Task<Guid> CreateAsync(Client client);
+    
+    Task ArchiveAsync(Guid clientId);
+    
+    Task UnarchiveAsync(Guid clientId);
 
     Task DeleteAsync(Guid ClientId);
 
-    Task<List<Client>> GetClientsForListsAsync();
+    Task<List<Client>> GetForListsAsync();
+    
+    Task<List<Client>> GetForListWithSelectedValueAsync(Guid? selectedClientId);
 
     Task<Guid> EditAsync(EditClientModel model);
 }

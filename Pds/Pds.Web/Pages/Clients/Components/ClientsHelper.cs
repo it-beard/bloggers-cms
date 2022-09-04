@@ -8,4 +8,14 @@ public static class ClientsHelper
     {
         return type == PaymentType.BankAccount ? "white" : "red";
     }
+    
+    public static string GetBgColorClass(ClientStatus clientStatus)
+    {
+        return clientStatus switch
+        {
+            ClientStatus.Active => "active",
+            ClientStatus.Archived => "archived",
+            _ => string.Empty
+        };
+    }
 }

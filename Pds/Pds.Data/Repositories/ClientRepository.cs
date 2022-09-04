@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pds.Core.Enums;
 using Pds.Data.Entities;
 using Pds.Data.Repositories.Interfaces;
 
@@ -13,9 +14,10 @@ public class ClientRepository : RepositoryBase<Client>, IClientRepository
         this.context = context;
     }
         
-    public async Task<List<Client>> GetAllOrderByNameAsync()
+    public async Task<List<Client>> GetAllActiveOrderByNameAsync()
     {
         return await context.Clients
+            .Where(c => c.Status == ClientStatus.Active)
             .OrderBy(p =>p.Name)
             .ToListAsync();
     }

@@ -35,7 +35,7 @@ else
         <tbody>
             @foreach (var client in clientsInfo.Items)
             {
-                <tr class="normal">
+                <tr class="@ClientsHelper.GetBgColorClass(client.Status) normal">
                     <td class="client-name-row">
                         <a class="custom-link" href="clients/@client.Id">@client.Name</a>
                         @if (client.Bills is { Count: > 0 })

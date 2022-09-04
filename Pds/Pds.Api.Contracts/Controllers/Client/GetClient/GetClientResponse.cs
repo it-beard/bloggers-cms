@@ -1,4 +1,6 @@
-﻿namespace Pds.Api.Contracts.Controllers.Client.GetClient;
+﻿using Pds.Core.Enums;
+
+namespace Pds.Api.Contracts.Controllers.Client.GetClient;
 
 public class GetClientResponse : IActionsClient
 {
@@ -9,6 +11,8 @@ public class GetClientResponse : IActionsClient
     public string Comment { get; set; }
 
     public string Country { get; set; }
+
+    public ClientStatus Status { get; set; }
     
     public int BillsCount { get; set; }
         
