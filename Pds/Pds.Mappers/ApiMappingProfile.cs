@@ -60,6 +60,7 @@ public class ApiMappingProfile : Profile
         #region Entities to Contracts
 
         CreateMap<Person, GetContentPersonDto>();
+        CreateMap<Client, GetContentsClientDto>();
         CreateMap<Person, GetContentsPersonDto>();
         CreateMap<Person, GetPersonResponse>()
             .ForMember(
@@ -129,9 +130,9 @@ public class ApiMappingProfile : Profile
                             $"{p.ReleaseDate:dd.MM} / {p.Title}"));
         CreateMap<Content, GetContentsContentDto>()
             .ForMember(
-                dest => dest.ClientName,
+                dest => dest.Client,
                 opt => opt
-                    .MapFrom(p => p.Bill.Client.Name))
+                    .MapFrom(p => p.Bill.Client))
             .ForMember(
                 dest => dest.BillPaymentStatus,
                 opt => opt

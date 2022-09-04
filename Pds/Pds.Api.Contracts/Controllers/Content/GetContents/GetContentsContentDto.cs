@@ -10,7 +10,7 @@ public class GetContentsContentDto : IActionsContent
         
     public ContentStatus Status { get; set; }
         
-    public string ClientName { get; set; }
+    public GetContentsClientDto Client { get; set; }
         
     public DateTime ReleaseDate { get; set; }
 

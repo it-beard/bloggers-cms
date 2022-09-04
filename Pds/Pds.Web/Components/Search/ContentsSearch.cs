@@ -12,14 +12,15 @@ public class ContentsSearch
         var predicate = PredicateBuilder.False<GetContentsContentDto>();
 
         predicate = predicate.Or(c => c.Title.ToLower().Contains(searchLine));
-        predicate = predicate.Or(c => c.ClientName != null 
-                                      && c.ClientName.ToLower().Contains(searchLine));
         predicate = predicate.Or(c => c.EndDate != null 
                                       && !string.IsNullOrWhiteSpace(c.EndDate.Value.ToString("dd.MM.yyyy")) 
                                       && c.EndDate.Value.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
         predicate = predicate.Or(c => !string.IsNullOrWhiteSpace(c.ReleaseDate.ToString("dd.MM.yyyy")) 
                                       && c.ReleaseDate.ToString("dd.MM.yyyy").ToLower().Contains(searchLine));
 
+        predicate = predicate.Or(r => r.Client != null 
+                                      && r.Client.Name != null 
+                                      && r.Client.Name.ToLower().Contains(searchLine));
         predicate = predicate.Or(r => r.Brand != null 
                                       && r.Brand.Name != null
                                       && r.Brand.Name.ToLower().Contains(searchLine));

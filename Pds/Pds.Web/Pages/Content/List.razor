@@ -79,7 +79,21 @@ else
                         </td>
                     }
                     <td>
-                        @item.ClientName
+                            @if (item.Client != null)
+                            {
+                                <div>
+                                    Клиент: <a class="custom-link" href="clients/@item.Client.Id">@item.Client.Name</a>
+                                </div>
+                            }
+                        
+                        <div>
+                            @if (item.Person != null)
+                            {
+                                <div>
+                                    Персона: <a class="custom-link" href="persons/@item.Person.Id">@item.Person.FirstName @item.Person.LastName</a>
+                                </div> 
+                            }
+                        </div>
                     </td>
                     <td>
                         @EnumsTranslator.SocialMediaTypeToRu(item.SocialMediaType)
