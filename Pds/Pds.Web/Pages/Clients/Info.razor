@@ -21,10 +21,19 @@ else
     <Title>@WithSuffix($"Клиент \"{client.Name}\"")</Title>
     
     <h4 class="card-header d-flex justify-content-between align-items-center">
-        Клиент "@client.Name"
+        Клиент "@client.Name" 
         <button @onclick="GoBack" class="btn btn-primary" >Назад</button>
     </h4>
     <div class="page-container">
+        @if (!string.IsNullOrEmpty(client.Country))
+        {
+            <div class="info-item">
+                <div class="info-title">Страна</div>
+                <div class="info-body">
+                    @client.Country
+                </div>
+            </div>
+        }
         @if (!string.IsNullOrEmpty(client.Comment))
         {
             <div class="info-item">
