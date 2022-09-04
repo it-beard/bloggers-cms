@@ -169,8 +169,7 @@ else
     
     private async Task<FilterSettings> GetSavedFilterValues(FilterSettings filter)
     {
-        var savedFilter = await localStorage.GetItemAsync<FilterSettings>(savedSettingsLocalStorageKey);
-        return savedFilter ?? filter;
+        return await LocalStorageFilterHelper<FilterSettings>.GetSavedFilterValues(filter, localStorage, savedSettingsLocalStorageKey);
     }
 
     private async Task<List<BrandDto>> GetBrands()

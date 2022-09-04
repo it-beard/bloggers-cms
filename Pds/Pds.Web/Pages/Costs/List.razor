@@ -124,11 +124,16 @@ else
             .Where(i => i.IsSelected)
             .Select(i=>i.Id)
             .ToList();
+        var selectedStatuses = filterSettings.CostStatusFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.CostStatus)
+            .ToList();
 
         var itemsToShow = costs.Items
             .Where(i =>
                 (selectedCostTypes.Contains(i.Type) || selectedCostTypes.Count == 0) &&
                 (selectedBrandsIds.Contains(i.Brand.Id)) &&
+                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
                 (filterSettings.From != null && i.PaidAt.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
                 (filterSettings.To != null && i.PaidAt.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
 

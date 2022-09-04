@@ -1,6 +1,4 @@
-﻿using Pds.Core.Enums;
-
-namespace Pds.Web.Pages.Settings.Brands.Components;
+﻿namespace Pds.Web.Pages.Settings.Brands.Components;
 
 public static class BrandsHelper
 {

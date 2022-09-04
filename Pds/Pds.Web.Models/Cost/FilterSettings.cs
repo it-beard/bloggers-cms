@@ -4,6 +4,7 @@ public class FilterSettings
 {
     public List<CostTypeFilterItem> CostTypeFilterItems { get; set; }
     public List<BrandFilterItem> BrandFilterItems { get; set; }
+    public List<CostStatusFilterItem> CostStatusFilterItems { get; set; }
 
     public DateTime? From { get; set; }
 

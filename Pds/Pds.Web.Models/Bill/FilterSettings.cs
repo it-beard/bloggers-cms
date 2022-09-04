@@ -6,7 +6,6 @@ public class FilterSettings
     public List<BillTypeFilterItem> BillTypeFilterItems { get; set; }
     public List<PaymentTypeFilterItem> PaymentTypeFilterItems { get; set; }
     public List<BrandFilterItem> BrandFilterItems { get; set; }
-    
     public List<BillStatusFilterItem> BillStatusFilterItems { get; set; }
 
     public DateTime? From { get; set; }

@@ -61,6 +61,18 @@ else
                         </label>
                     }
                 </div>
+                
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Статус:</span>
+                    @foreach (var statusFilterItem in filterSettings.CostStatusFilterItems)
+                    {
+                        var id = $"status_{statusFilterItem.CostStatus.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="statusFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.CostStatusToRu(statusFilterItem.CostStatus)
+                        </label>
+                    }
+                </div>
 
                 <div class="form-group no-wrap">
                     <span class="filter-row-title">Когда:</span>
@@ -118,7 +130,15 @@ else
                         IsSelected = false
                     })
                 .ToList(),
-            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands)
+            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands),
+            CostStatusFilterItems = ((CostStatus[]) Enum.GetValues(typeof(CostStatus)))
+                .Select(gType =>
+                    new CostStatusFilterItem()
+                    {
+                        CostStatus = gType,
+                        IsSelected = false
+                    })
+                .ToList()
         };
         
         SetDefaultFilterValues(ref filter, brands);
@@ -142,12 +162,15 @@ else
         {
             filter.From = fromFilterDate;
         }
+        
+        filter.CostStatusFilterItems
+            .First(u => u.CostStatus == CostStatus.Active)
+            .IsSelected = true;
     }
     
     private async Task<FilterSettings> GetSavedFilterValues(FilterSettings filter)
     {
-        var savedFilter = await localStorage.GetItemAsync<FilterSettings>(savedSettingsLocalStorageKey);
-        return savedFilter ?? filter;
+        return await LocalStorageFilterHelper<FilterSettings>.GetSavedFilterValues(filter, localStorage, savedSettingsLocalStorageKey);
     }
 
     private async Task<List<BrandDto>> GetBrands()

@@ -9,6 +9,8 @@
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject IJSRuntime JsRuntime
 
 <Title>@WithSuffix("Настройки")</Title>
 
@@ -53,6 +55,9 @@ else
             }
         </tbody>
     </table>
+    <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+        <button @onclick='CleanFilterSettingsAsync' class="btn btn-warning right">Сбросить настройки фильтров</button>
+    </div>
 }
 
 @code {
@@ -63,9 +68,14 @@ else
         settings = await GetSettingsInfo();
     }
 
-    private async Task SettingsUpdate()
+    private async Task CleanFilterSettingsAsync()
     {
-        settings = await GetSettingsInfo();
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Вы уверены, что хотите обнулить настройки фильтров?");
+        if (confirmed)
+        {
+            await localStorage.ClearAsync();
+            await JsRuntime.InvokeVoidAsync("alert", "Настройки фильтров сброшены.");
+        }
     }
 
     private async Task<GetSettingsResponse> GetSettingsInfo()
