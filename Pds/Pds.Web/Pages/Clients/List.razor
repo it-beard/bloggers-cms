@@ -27,6 +27,7 @@ else
         <thead>
             <tr>
                 <th class="client-name-header">Наименование</th>
+                <th class="country-name-header">Страна</th>
                 <th>Комментарий</th>
                 <th class="text-center actions-header">Действия</th>
             </tr>
@@ -44,6 +45,11 @@ else
                             </span>
                         }
                     </td>
+                    
+                    <td class="client-name-row">
+                        @client.Country
+                    </td>
+                    
                     <td class="comment-row">
                         <div title="@client.Comment">
                             @{

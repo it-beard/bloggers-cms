@@ -31,6 +31,11 @@ else
             <label for="first_name" class="form-label label-required">Наименование</label>
             <InputText class="form-control" id="first_name" @bind-Value="client.Name"/>
         </div>
+        
+        <div class="form-group">
+            <label for="first_name" class="form-label">Страна: </label>
+            <InputText class="form-control person-country" id="first_name" @bind-Value="client.Country"/>
+        </div>
 
         <div class="form-group">
             <label for="information" class="form-label">Комментарий</label>

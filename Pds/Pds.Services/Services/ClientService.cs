@@ -1,4 +1,5 @@
-﻿using Pds.Core.Exceptions.Client;
+﻿using Pds.Core.Enums;
+using Pds.Core.Exceptions.Client;
 using Pds.Data;
 using Pds.Data.Entities;
 using Pds.Services.Interfaces;
@@ -39,6 +40,7 @@ public class ClientService : IClientService
 
         client.CreatedAt = DateTime.UtcNow;
         client.Name = client.Name.Trim();
+        client.Status = ClientStatus.Active;
         var result = await unitOfWork.Clients.InsertAsync(client);
 
         return result.Id;
@@ -66,6 +68,7 @@ public class ClientService : IClientService
         client.UpdatedAt = DateTime.UtcNow;
         client.Name = model.Name.Trim();
         client.Comment = model.Comment;
+        client.Country = model.Country;
         var result = await unitOfWork.Clients.UpdateAsync(client);
 
         return result.Id;

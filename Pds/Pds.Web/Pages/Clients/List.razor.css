@@ -9,6 +9,9 @@
 .client-name-header{
     width: 200px;
 }
+.country-name-header{
+    width: 120px;
+}
 
 .client-name-row .contents{
     font-size: 0.75rem;
