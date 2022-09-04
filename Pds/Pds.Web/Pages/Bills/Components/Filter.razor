@@ -50,6 +50,7 @@ else
                         </label>
                     }
                 </div>
+                
                 <div class="form-group no-wrap">
                     <span class="filter-row-title">Тип дохода:</span>
                     @foreach (var billTypeFilterItem in filterSettings.BillTypeFilterItems)
@@ -88,6 +89,19 @@ else
                         </label>
                     }
                 </div>
+                
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Статус:</span>
+                    @foreach (var statusFilterItem in filterSettings.BillStatusFilterItems)
+                    {
+                        var id = $"status_{statusFilterItem.BillStatus.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="statusFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.BillStatusToRu(statusFilterItem.BillStatus)
+                        </label>
+                    }
+                </div>
+                
                 <div class="form-group no-wrap">
                     <span class="filter-row-title">Когда:</span>
                     <InputDate class="form-control from-date" id="from_date" @bind-Value="filterSettings.From"/>
@@ -160,7 +174,15 @@ else
                         IsSelected = false
                     })
                 .ToList(),
-            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands)
+            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands),
+            BillStatusFilterItems = ((BillStatus[]) Enum.GetValues(typeof(BillStatus)))
+                .Select(gType =>
+                    new BillStatusFilterItem()
+                    {
+                        BillStatus = gType,
+                        IsSelected = false
+                    })
+                .ToList(),
         };
         
         SetDefaultFilterValues(ref filter, brands);
@@ -184,6 +206,10 @@ else
         {
             filter.From = fromFilterDate;
         }
+        
+        filter.BillStatusFilterItems
+            .First(u => u.BillStatus == BillStatus.Active)
+            .IsSelected = true;
     }
     
     private async Task<FilterSettings> GetSavedFilterValues(FilterSettings filter)

@@ -1,15 +1,18 @@
-﻿@page "/brands/add"
+﻿@page "/settings/brands/{brandId}/edit"
 @inherits BasePageComponent
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Pds.Api.Contracts.Controllers.Brand.CreateBrand
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension 
+@using AutoMapper
+@using Pds.Api.Contracts.Controllers.Brand.EditBrand
+@using Pds.Api.Contracts.Controllers.Brand.GetBrand
 
 @inject IApiClient ApiClient
+@inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<Title>@WithSuffix("Добавление бренда")</Title>
+<Title>@WithSuffix("Редактирование бренда")</Title>
 
 @if (brand == null)
 {
@@ -20,8 +23,8 @@
 else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
-        Добавление бренда
-        <button @onclick='() => GoBack("/brands")' class="btn btn-primary" >Назад</button>
+        Редактирование бренда
+        <button @onclick='() => GoBack("/brands")' class="btn btn-primary">Назад</button>
     </h4>
 
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
@@ -39,20 +42,23 @@ else
         <ValidationSummary/>
 
         <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Создать</button>
+            <button type="submit" class="btn btn-success" disabled="@isCreateButtonDisabled">Сохранить</button>
         </div>
     </EditForm>
 }
 
 @code {
-    private CreateBrandRequest brand = new();
+    [Parameter]
+    public string BrandId { get; set; }
+    private EditBrandRequest brand;
     private EditContext editContext;
     private ValidationMessageStore msgStore;
     private bool isCreateButtonDisabled;
     
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         isCreateButtonDisabled = false;
+        brand = await GetBrand();
         editContext = new EditContext(brand);
         msgStore = new ValidationMessageStore(editContext);
     }
@@ -65,17 +71,23 @@ else
         if (isValid)
         {
             isCreateButtonDisabled = true;
-            var result = await ApiClient.Post<object, CreateBrandRequest>(TokenProvider, "brands", brand);
+            var result = await ApiClient.Put<object, EditBrandRequest>(TokenProvider, "brands", brand);
             isCreateButtonDisabled = false;
             if (result.IsSuccessStatusCode)
             {
                 await localStorage.ClearAsync();
-                GoBack("/brands");
+                GoBack("/settings/brands");
             }
             else
             {
                 result.AddErrors(msgStore, editContext);
             }
         }
+    }
+
+    private async Task<EditBrandRequest> GetBrand()
+    {
+        var brandResponse = await ApiClient.Get<GetBrandResponse>(TokenProvider, $"brands/{BrandId}");
+        return Mapper.Map<EditBrandRequest>(brandResponse);
     }
 }

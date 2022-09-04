@@ -40,5 +40,16 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
     <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE" />
     <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
+    <_ContentIncludedByDefault Remove="Pages\Brands\Components\Actions.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Brands\Create.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Brands\Edit.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Brands\List.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\Settings\Brands\Components\Actions.razor" />
+    <AdditionalFiles Include="Pages\Settings\Brands\Create.razor" />
+    <AdditionalFiles Include="Pages\Settings\Brands\Edit.razor" />
+    <AdditionalFiles Include="Pages\Settings\Brands\List.razor" />
   </ItemGroup>
 </Project>

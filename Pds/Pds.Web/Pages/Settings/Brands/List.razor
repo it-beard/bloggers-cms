@@ -1,0 +1,125 @@
+﻿@page "/settings/brands"
+@inherits BasePageComponent
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Pds.Api.Contracts.Controllers.Brand.GetBrands
+@using Pds.Web.Common
+@using Pds.Core.Extensions
+@using static Pds.Web.Common.TitleExtension
+@using Pds.Web.Pages.Settings.Brands.Components
+
+@inject IApiClient ApiClient
+@inject IAccessTokenProvider TokenProvider
+
+<Title>@WithSuffix("Бренды")</Title>
+
+<h4 class="card-header d-flex justify-content-between align-items-center">
+    Список брендов
+    <a href="/settings/brands/add" class="btn btn-success">Добавить</a>
+</h4>
+@if (brandsInfo == null)
+{
+    <p>
+        <em>Загрузка...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="client-name-header">Наименование</th>
+            <th>Информация</th>
+            <th class="text-center actions-header">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var brand in brandsInfo.Items.OrderBy(b=>b.Name))
+        {
+            <tr class="@BrandsHelper.GetBgColorClass(brand.IsArchived)">
+                <td class="brand-name-row">
+                        
+                    @if (brand.IsDefault)
+                    {
+                        <div class="default-brand">@brand.Name</div>
+                    }
+                    else
+                    {
+                        <div>@brand.Name</div>
+                    }
+                </td>
+                <td>
+                    <div>
+                        @if (brand.ContentsCount > 0)
+                        {
+                            <span class="contents" title="Кол-во контента">
+                                К: @brand.ContentsCount
+                            </span>
+                        }
+                        @if (brand.PersonsCount > 0 )
+                        {
+                            <span class="contents" title="Кол-во персон">
+                                П: @brand.PersonsCount
+                            </span>
+                        }
+                        @if (brand.GiftsCount > 0 )
+                        {
+                            <span class="contents" title="Кол-во подарков">
+                                G: @brand.GiftsCount
+                            </span>
+                        }
+                        @if (brand.BillsSum > 0)
+                        {
+                            <span class="contents" title="Сумма доходов">
+                                Д: @($"{brand.BillsSum:N0}")
+                            </span>
+                        }
+                        @if (brand.CostsSum > 0)
+                        {
+                            <span class="contents" title="Сумма расходов">
+                                Р: @($"{brand.CostsSum:N0}")
+                            </span>
+                        }
+                    </div>
+                    <div class="date-style">  
+                        Создан: @brand.CreatedAt.ToLongStringDate()
+                    </div>
+                    @if (brand.UpdatedAt != null)
+                    {
+                        <div class="date-style">  
+                            Изменен: @brand.UpdatedAt.Value.ToLongStringDate()
+                        </div>
+                    }
+                    <div class="comment-row">
+                        @brand.Info
+                    </div>
+                </td>
+                <td class="text-center actions-row">
+                    <Actions OnActionsUpdate="@OnActionsUpdateAsync" CurrentBrand="@brand"></Actions>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+        <button @onclick='() => GoBack("/settings")' class="btn btn-primary right">Назад</button>
+    </div>
+}
+
+@code {
+    private GetBrandsResponse brandsInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        brandsInfo = await GetBrands();
+    }
+
+    private async Task OnActionsUpdateAsync()
+    {
+        brandsInfo = await GetBrands();
+    }
+
+    private async Task<GetBrandsResponse> GetBrands()
+    {
+        return await ApiClient.Get<GetBrandsResponse>(TokenProvider, "brands");
+    }
+}

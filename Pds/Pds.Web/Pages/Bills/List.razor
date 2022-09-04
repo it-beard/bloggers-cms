@@ -148,6 +148,10 @@ else
             .Where(i => i.IsSelected)
             .Select(i=>i.Id)
             .ToList();
+        var selectedStatuses = filterSettings.BillStatusFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.BillStatus)
+            .ToList();
 
         var itemsToShow = bills.Items
             .Where(i => 
@@ -155,6 +159,7 @@ else
                 (selectedPaymentTypes.Contains(i.PaymentType) || selectedPaymentTypes.Count == 0) &&
                 (selectedBillTypes.Contains(i.Type) || selectedBillTypes.Count == 0) &&
                 (selectedBrandsIds.Contains(i.Brand.Id)) &&
+                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
                 (filterSettings.From != null && i.PaidAt.Date >= filterSettings.From.Value.Date || filterSettings.From == null) &&
                 (filterSettings.To != null && i.PaidAt.Date <= filterSettings.To.Value.Date || filterSettings.To == null));
 

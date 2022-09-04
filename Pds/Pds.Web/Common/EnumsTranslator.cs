@@ -31,9 +31,9 @@ public static class EnumsTranslator
         };
     }
 
-    public static string GiftStatusToRu(GiftStatus type)
+    public static string GiftStatusToRu(GiftStatus status)
     {
-        return type switch
+        return status switch
         {
             GiftStatus.New => "Новый",
             GiftStatus.Raffled => "Разыгран",
@@ -44,12 +44,42 @@ public static class EnumsTranslator
         };
     }
     
-    public static string PersonStatusToRu(PersonStatus type)
+    public static string PersonStatusToRu(PersonStatus status)
     {
-        return type switch
+        return status switch
         {
             PersonStatus.Active => "Активный",
             PersonStatus.Archived => "Архивный",
+            _ => string.Empty
+        };
+    }
+    
+    public static string BillStatusToRu(BillStatus status)
+    {
+        return status switch
+        {
+            BillStatus.Active => "Активный",
+            BillStatus.Archived => "Архивный",
+            _ => string.Empty
+        };
+    }
+    
+    public static string CostStatusToRu(CostStatus status)
+    {
+        return status switch
+        {
+            CostStatus.Active => "Активный",
+            CostStatus.Archived => "Архивный",
+            _ => string.Empty
+        };
+    }
+    
+    public static string ClientStatusToRu(ClientStatus status)
+    {
+        return status switch
+        {
+            ClientStatus.Active => "Активный",
+            ClientStatus.Archived => "Архивный",
             _ => string.Empty
         };
     }
