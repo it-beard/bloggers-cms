@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Api.Contracts.Controllers.Client.GetClients
 @using Pds.Web.Common
+@using Pds.Web.Models.Client
 @using static Pds.Web.Common.TitleExtension
 @using Pds.Web.Pages.Clients.Components
 
@@ -11,11 +12,8 @@
 
 <Title>@WithSuffix("Клиенты")</Title>
 
-<h4 class="card-header d-flex justify-content-between align-items-center">
-    Список клиентов
-    <a href="/clients/add" class="btn btn-success">Добавить</a>
-</h4>
-@if (clientsInfo == null)
+
+@if (clients == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -23,17 +21,31 @@
 }
 else
 {
-    <table class="table">
-        <thead>
+    <h4 class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            Список клиентов
+            <span class="title-overall-info pre-span">
+                @($"{totalElements} шт.")
+            </span>
+        </span>
+        <a href="/clients/add" class="btn btn-success">Добавить</a>
+    </h4>
+    
+    <Filter OnFilterUpdate="@OnFilterUpdate" OnSearch="@OnSearch"></Filter>
+    
+    @if (isFilterLoaded)
+    {
+        <table class="table">
+            <thead>
             <tr>
                 <th class="client-name-header">Наименование</th>
                 <th class="country-name-header">Страна</th>
                 <th>Комментарий</th>
                 <th class="text-center actions-header">Действия</th>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var client in clientsInfo.Items)
+            </thead>
+            <tbody>
+            @foreach (var client in filteredClients)
             {
                 <tr class="@ClientsHelper.GetBgColorClass(client.Status) normal">
                     <td class="client-name-row">
@@ -45,11 +57,11 @@ else
                             </span>
                         }
                     </td>
-                    
+
                     <td class="client-name-row">
                         @client.Country
                     </td>
-                    
+
                     <td class="comment-row">
                         <div title="@client.Comment">
                             @{
@@ -69,25 +81,81 @@ else
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    }
 }
 
 @code {
-    private GetClientsResponse clientsInfo;
+    private GetClientsResponse clients;
+    private GetClientsClientDto[] filteredClients;
+    private string currentSearchText;    
+    private FilterSettings currentFilterSettings;
+    private int totalElements;
+    private bool isFilterLoaded;
 
     protected override async Task OnInitializedAsync()
     {
-        clientsInfo = await GetClientsInfo();
+        clients = await GetClientsAsync();
     }
 
-    private async Task OnActionsUpdateAsync()
-    {
-        clientsInfo = await GetClientsInfo();
-    }
-
-    private async Task<GetClientsResponse> GetClientsInfo()
+    private async Task<GetClientsResponse> GetClientsAsync()
     {
         return await ApiClient.Get<GetClientsResponse>(TokenProvider, "clients");
+    }
+
+    private GetClientsClientDto[] GetFilteredClientsList(
+        FilterSettings filterSettings, 
+        GetClientsResponse clients)
+    {
+        // Filtering
+        var selectedStatuses = filterSettings.ClientStatusFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.ClientStatus)
+            .ToList();
+
+        var itemsToShow = clients.Items
+            .Where(i =>
+                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0));
+
+        var query = itemsToShow
+            .AsQueryable();
+        
+        // Search
+        if (!string.IsNullOrWhiteSpace(currentSearchText))
+        {
+            var searchPredicate = new ClientsSearch()
+                .GetSearchPredicate(currentSearchText.ToLower());
+            query = query.Where(searchPredicate);
+        }
+        
+        return query.ToArray();
+    }
+    
+    private void OnSearch(string searchText)
+    {
+        currentSearchText = searchText;
+        filteredClients = GetFilteredClientsList(currentFilterSettings, clients);
+        UpdateStatistics(filteredClients);
+    }
+    
+    private async Task OnActionsUpdateAsync()
+    {
+        isFilterLoaded = false;
+        clients = await GetClientsAsync();
+        OnFilterUpdate(currentFilterSettings);
+    }
+
+    private void OnFilterUpdate(FilterSettings filterSettings)
+    {
+        currentFilterSettings = filterSettings;
+        filteredClients = GetFilteredClientsList(filterSettings, clients);
+        UpdateStatistics(filteredClients);
+        isFilterLoaded = true;
+    }
+    
+    private void UpdateStatistics(GetClientsClientDto[] filteredClients)
+    {
+        totalElements = filteredClients.Length;
     }
 }

@@ -32,6 +32,15 @@
     border-left: 2px dotted rgb(222, 226, 230);
 }
 
+.title-overall-info{
+    font-style: italic;
+    font-size: 1rem;
+    background-color: green;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #eee;
+}
+
 .active {
     background-color: aliceblue;
 }
