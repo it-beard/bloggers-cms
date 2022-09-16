@@ -130,8 +130,11 @@ public class ClientService : IClientService
         
         // Add selected client on top of the list if it possible
         var firstClient = await unitOfWork.Clients.GetFirstWhereAsync(c => c.Id == selectedClientId);
-        initialClients.Remove(firstClient);
-        initialClients = initialClients.Prepend(firstClient).ToList();
+        if (firstClient != null)
+        {
+            initialClients.Remove(firstClient);
+            initialClients = initialClients.Prepend(firstClient).ToList();
+        }
 
         return initialClients;
     }
