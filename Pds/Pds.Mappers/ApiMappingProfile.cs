@@ -66,12 +66,12 @@ public class ApiMappingProfile : Profile
             .ForMember(
                 dest => dest.FullName,
                 opt => opt
-                    .MapFrom(p => $"{p.LastName} {p.FirstName} {p.ThirdName}"))
+                    .MapFrom(p => $"{p.LastName} {p.FirstName} {p.ThirdName}".Trim()))
             .ForMember(
                 dest => dest.Location,
                 opt => opt
-                    .MapFrom(p => string.IsNullOrEmpty(p.City) ? 
-                        $"{p.Country}" : 
+                    .MapFrom(p => string.IsNullOrEmpty(p.City) ?
+                        $"{p.Country}" :
                         $"{p.Country}, {p.City}"))
             .ForMember(
                 dest => dest.ContentsCount,
@@ -81,12 +81,12 @@ public class ApiMappingProfile : Profile
             .ForMember(
                 dest => dest.FullName,
                 opt => opt
-                    .MapFrom(p => $"{p.LastName} {p.FirstName} {p.ThirdName}"))
+                    .MapFrom(p => $"{p.LastName} {p.FirstName} {p.ThirdName}".Trim()))
             .ForMember(
                 dest => dest.Location,
                 opt => opt
-                    .MapFrom(p => string.IsNullOrEmpty(p.City) ? 
-                        $"{p.Country}" : 
+                    .MapFrom(p => string.IsNullOrEmpty(p.City) ?
+                        $"{p.Country}" :
                         $"{p.Country}, {p.City}"))
             .ForMember(
                 dest => dest.ContentsCount,
@@ -96,14 +96,14 @@ public class ApiMappingProfile : Profile
             .ForMember(
                 dest => dest.FullName,
                 opt => opt
-                    .MapFrom((p,s) => 
-                        s.FullName = string.IsNullOrEmpty(p.FirstName) ? 
-                            "Не выбрано" : 
-                            $"{p.LastName} {p.FirstName} {p.ThirdName}"));
+                    .MapFrom((p,s) =>
+                        s.FullName = string.IsNullOrEmpty(p.FirstName) ?
+                            "Не выбрано" :
+                            $"{p.LastName} {p.FirstName} {p.ThirdName}".Trim()));
 
         CreateMap<Resource, ResourceDto>();
         CreateMap<Resource, GetContentPersonResourceDto>();
-            
+
         CreateMap<Content, GetBillContentDto>();
         CreateMap<Content, EditBillContentDto>();
         CreateMap<Content, GetBillsContentDto>();
@@ -117,16 +117,16 @@ public class ApiMappingProfile : Profile
                 dest => dest.Title,
                 opt => opt
                     .MapFrom((p, s) =>
-                        s.Title = string.IsNullOrEmpty(p.Title) ? 
-                            "Не выбрано" : 
+                        s.Title = string.IsNullOrEmpty(p.Title) ?
+                            "Не выбрано" :
                             $"{p.ReleaseDate:dd.MM} / {p.Title}"));
         CreateMap<Content, Api.Contracts.Controllers.Gift.ContentForLookupDto>()
             .ForMember(
                 dest => dest.Title,
                 opt => opt
                     .MapFrom((p, s) =>
-                        s.Title = string.IsNullOrEmpty(p.Title) ? 
-                            "Не выбрано" : 
+                        s.Title = string.IsNullOrEmpty(p.Title) ?
+                            "Не выбрано" :
                             $"{p.ReleaseDate:dd.MM} / {p.Title}"));
         CreateMap<Content, GetContentsContentDto>()
             .ForMember(
@@ -137,7 +137,7 @@ public class ApiMappingProfile : Profile
                 dest => dest.BillPaymentStatus,
                 opt => opt
                     .MapFrom(p => p.Bill == null ? (PaymentStatus?) null : p.Bill.PaymentStatus));
-        CreateMap<Content, GetContentResponse>() 
+        CreateMap<Content, GetContentResponse>()
             .ForMember(
                 dest => dest.BillPaymentStatus,
                 opt => opt
@@ -187,18 +187,18 @@ public class ApiMappingProfile : Profile
         CreateMap<Cost, GetContentCostDto>();
 
         CreateMap<Brand, BrandDto>();
-        
-        CreateMap<Gift, GetGiftResponse>() 
+
+        CreateMap<Gift, GetGiftResponse>()
             .ForMember(
                 dest => dest.SortDate,
                 opt => opt
                     .MapFrom(p => GetSortDateForGiftDto(p)));
-        CreateMap<Gift, GetGiftsGiftDto>() 
+        CreateMap<Gift, GetGiftsGiftDto>()
             .ForMember(
                 dest => dest.SortDate,
                 opt => opt
                     .MapFrom(p => GetSortDateForGiftDto(p)));
-        
+
         CreateMap<Setting, GetSettingsSettingDto>();
         CreateMap<Setting, GetSettingResponse>();
 
@@ -220,13 +220,13 @@ public class ApiMappingProfile : Profile
             .ForMember(
                 dest => dest.Brands,
                 opt => opt
-                    .MapFrom(p => 
+                    .MapFrom(p =>
                         BrandsForCheckboxesDtoToBrandsCollection(
-                            p.Brands.Where( 
+                            p.Brands.Where(
                                 c => c.IsSelected).ToList())));
 
         #endregion
-            
+
         #region Contracts to Models
 
         CreateMap<EditContentBillDto, EditContentBillModel>();
@@ -239,7 +239,7 @@ public class ApiMappingProfile : Profile
         CreateMap<EditBillRequest, EditBillModel>();
         CreateMap<CreateContentBillDto, CreateContentBillModel>();
         CreateMap<CreateContentRequest, CreateContentModel>();
-        
+
         CreateMap<EditPersonRequest, EditPersonModel>();
         CreateMap<BrandForCheckboxesDto, BrandForCheckboxesModel>();
         CreateMap<ResourceDto, EditResourcePersonModel>();
@@ -250,10 +250,10 @@ public class ApiMappingProfile : Profile
 
         CreateMap<GetContentResponse, EditContentRequest>();
         CreateMap<GetCostResponse, EditCostRequest>();
-        
+
         CreateMap<GetBillResponse, EditBillRequest>();
         CreateMap<GetBillContentDto, EditBillContentDto>();
-        
+
         CreateMap<GetClientResponse, EditClientRequest>();
         CreateMap<GetSettingResponse, EditSettingRequest>();
         CreateMap<GetGiftResponse, EditGiftRequest>();
@@ -277,7 +277,7 @@ public class ApiMappingProfile : Profile
         CreateMap<EditContentBillModel, Bill>();
 
         #endregion
-        
+
         #region Models to Contracts
 
         CreateMap<GetBrandModel, GetBrandsBrandDto>();
@@ -289,13 +289,13 @@ public class ApiMappingProfile : Profile
         CreateMap<ContentStatisticsBillModel, GetContentStatisticsBillDto>();
 
         #endregion
-        
+
         #region Models to Model
 
         CreateMap<BrandAdditionalInfoModel, GetBrandModel>();
 
         #endregion
-        
+
         #region Entities to Models
 
         CreateMap<Brand, GetBrandModel>();
@@ -307,11 +307,11 @@ public class ApiMappingProfile : Profile
     {
         return brands.Select(b => new Brand {Id = b.Id}).ToList();
     }
-        
+
     private List<BrandForCheckboxesDto> BrandsDtoToBrandsForCheckboxesDto(List<BrandDto> brands)
     {
         return brands
-            .Select(b => 
+            .Select(b =>
                 new BrandForCheckboxesDto
                 {
                     Id = b.Id,
