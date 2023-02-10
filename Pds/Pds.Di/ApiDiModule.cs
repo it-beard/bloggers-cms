@@ -10,39 +10,28 @@ public class ApiDiModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {
-        Pds.Data.AssemblyRunner.Run();
-        Pds.Services.AssemblyRunner.Run();
-        var assemblies = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .OrderByDescending(a => a.FullName)
-            .ToArray();
-
-        ServicesRegister(ref builder, assemblies);
-        RepositoriesRegister(ref builder, assemblies);
-        UnitOfWorkRegister(ref builder);
-        UnitOfWorkRegister(ref builder);
+        ServicesRegister(builder);
+        RepositoriesRegister(builder);
+        UnitOfWorkRegister(builder);
     }
 
-    private void ServicesRegister(ref ContainerBuilder builder, Assembly[] assemblies)
+    private void ServicesRegister(ContainerBuilder builder)
     {
-        var servicesAssembly = assemblies.FirstOrDefault(t => t.FullName.ToLower().Contains("pds.services,"));
+        var servicesAssembly = typeof(Services.AssemblyRunner).Assembly;
         builder.RegisterAssemblyTypes(servicesAssembly)
             .Where(t => t.Name.EndsWith("Service"))
             .AsImplementedInterfaces();
     }
 
-    private void RepositoriesRegister(ref ContainerBuilder builder, Assembly[] assemblies)
+    private void RepositoriesRegister(ContainerBuilder builder)
     {
-        builder.RegisterGeneric(typeof(RepositoryBase<>))
-            .As(typeof(IRepositoryBase<>));
-
-        var dataAssembly = assemblies.FirstOrDefault(t => t.FullName.ToLower().Contains("pds.data,"));
+        var dataAssembly = typeof(Pds.Data.AssemblyRunner).Assembly;
         builder.RegisterAssemblyTypes(dataAssembly)
             .Where(t => t.Name.EndsWith("Repository"))
             .AsImplementedInterfaces();
     }
         
-    private void UnitOfWorkRegister(ref ContainerBuilder builder)
+    private void UnitOfWorkRegister(ContainerBuilder builder)
     {
         builder.RegisterType(typeof(UnitOfWork))
             .As(typeof(IUnitOfWork));
