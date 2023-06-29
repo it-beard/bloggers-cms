@@ -128,10 +128,10 @@ else
             }
             </tbody>
         </table>
-        
+
         <CascadingValue Value="isPagingStateHasChanged">
             <PagingComponent PageSizeList="@pageSizesList"
-                             DefaultPageSize="@defaultPageSite"
+                             DefaultPageSize="@DefaultPageSite"
                              TotalItems="totalElements"
                              Radius="2"
                              OnPagination="OnPagination"/>
@@ -143,14 +143,14 @@ else
     private GetPersonsResponse persons;
     private GetPersonsPersonDto[] filteredPersons;
 
-    private const int defaultPageSite = 100;
-    private static readonly int[] pageSizesList = {defaultPageSite, 250, 500};
+    private const int DefaultPageSite = 100;
+    private readonly int[] pageSizesList = {25, 50, DefaultPageSite, 250, 500};
     private bool isPagingStateHasChanged;
-    private PageSettings currentPageSettings = 
+    private PageSettings currentPageSettings =
         new()
         {
-            Offset = 0, 
-            Limit = defaultPageSite
+            Offset = 0,
+            Limit = DefaultPageSite
         };
     private OrderSetting<PersonsFieldName>[] currentOrderSettings;
 
@@ -190,7 +190,7 @@ else
             .Where(i =>
                 (selectedBrandsIds.Intersect(i.Brands.Select(b => b.Id)).Any()) &&
                 (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
-                (filterSettings.IsContactEstablished && i.IsContactEstablished == filterSettings.IsContactEstablished 
+                (filterSettings.IsContactEstablished && i.IsContactEstablished == filterSettings.IsContactEstablished
                     || !filterSettings.IsContactEstablished) &&
                 (filterSettings.IsUnknownPersons && i.FirstName == PersonConstants.UnknownPersonMarker && i.LastName == PersonConstants.UnknownPersonMarker
                     || !filterSettings.IsUnknownPersons && (i.FirstName != PersonConstants.UnknownPersonMarker || i.LastName != PersonConstants.UnknownPersonMarker)));
@@ -204,7 +204,7 @@ else
             var dictionary = new Dictionary<PersonsFieldName, IOrderQuery<GetPersonsPersonDto, GetPersonsPersonDto>>
             {
                 {PersonsFieldName.FullName, new PersonFullNameOrderQueryCreator()},
-                {PersonsFieldName.Rating, new PersonRatingOrderQueryCreator()},
+                {PersonsFieldName.Rating, new PersonRateOrderQueryCreator()},
                 {PersonsFieldName.Location, new PersonLocationOrderQueryCreator()}
             };
 
@@ -227,10 +227,7 @@ else
         }
 
         var personsList = query.ToArray();
-        
-        // Update statistics
-        totalElements = personsList.Length;
-            
+
         // Paging
         personsList = personsList
             .Skip(pageSettings.Offset)
@@ -248,10 +245,10 @@ else
             Limit = settings.PageSize,
             Offset = settings.PageOffSet
         };
-        
+
         filteredPersons = GetFilteredPersonsList(
-            currentFilterSettings, 
-            persons, 
+            currentFilterSettings,
+            persons,
             currentOrderSettings,
             currentPageSettings);
     }
@@ -264,8 +261,8 @@ else
         };
 
         filteredPersons = GetFilteredPersonsList(
-            currentFilterSettings, 
-            persons, 
+            currentFilterSettings,
+            persons,
             currentOrderSettings,
             currentPageSettings);
     }
@@ -274,10 +271,11 @@ else
     {
         currentSearchText = searchText;
         filteredPersons = GetFilteredPersonsList(
-            currentFilterSettings, 
-            persons, 
+            currentFilterSettings,
+            persons,
             currentOrderSettings,
             currentPageSettings);
+        UpdateStatistics(filteredPersons);
     }
 
     private async Task OnActionsUpdate()
@@ -291,12 +289,18 @@ else
     {
         currentFilterSettings = filterSettings;
         filteredPersons = GetFilteredPersonsList(
-            filterSettings, 
-            persons, 
+            filterSettings,
+            persons,
             currentOrderSettings,
             currentPageSettings);
+        UpdateStatistics(filteredPersons);
         isFilterLoaded = true;
         isPagingStateHasChanged = true; //return to first page
+    }
+
+    private void UpdateStatistics(GetPersonsPersonDto[] filteredPersons)
+    {
+        totalElements = filteredPersons.Length;
     }
 
 }

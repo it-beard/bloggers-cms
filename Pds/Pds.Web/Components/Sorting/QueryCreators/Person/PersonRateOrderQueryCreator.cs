@@ -2,7 +2,7 @@
 
 namespace Pds.Web.Components.Sorting.QueryCreators.Person;
 
-public partial class PersonRatingOrderQueryCreator : IOrderQuery<GetPersonsPersonDto, GetPersonsPersonDto>
+public partial class PersonRateOrderQueryCreator : IOrderQuery<GetPersonsPersonDto, GetPersonsPersonDto>
 {
     public IOrderedQueryable<GetPersonsPersonDto> CreateOrderBy(IQueryable<GetPersonsPersonDto> query, bool ascending)
     {

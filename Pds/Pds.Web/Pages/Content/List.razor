@@ -2,10 +2,13 @@
 @inherits BasePageComponent
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.TitleExtension
 @using System.Linq
 @using Pds.Api.Contracts.Controllers.Content.GetContents
+@using Pds.Api.Contracts.Paging
 @using Pds.Core.Extensions
+@using Pds.Web.Components.Sorting.QueryCreators
+@using Pds.Web.Components.Sorting.QueryCreators.Content
 @using FilterSettings = Pds.Web.Models.Content.FilterSettings
 @using Pds.Web.Pages.Content.Components
 
@@ -24,7 +27,7 @@ else
 {
     <h4 class="card-header d-flex justify-content-between align-items-center">
         <span>
-            Лента контента 
+            Лента контента
             <span class="title-overall-info pre-span">
                 @($"{totalElements} шт. / ${totalCost:N0}")
             </span>
@@ -37,7 +40,14 @@ else
         <table class="table">
             <thead>
             <tr>
-                <th class="release-date-header">Когда</th>
+                <th class="release-date-header">
+                    <SortingComponent
+                        TField="ContentFieldName"
+                        OnSortColumn="OnSort"
+                        FieldName="ContentFieldName.ReleaseDate">
+                        Когда
+                    </SortingComponent>
+                </th>
                 <th>Название</th>
                 @if (currentFilterSettings.BrandFilterItems.Count(f => f.IsSelected) != 1)
                 {
@@ -46,7 +56,14 @@ else
                 <th>Инфо</th>
                 <th>Соцсеть</th>
                 <th>Тип</th>
-                <th class="bill-cost-header">Сколько</th>
+                <th class="bill-cost-header">
+                    <SortingComponent
+                        TField="ContentFieldName"
+                        OnSortColumn="OnSort"
+                        FieldName="ContentFieldName.BillValue">
+                        Сколько
+                    </SortingComponent>
+                </th>
                 <th class="text-center actions-header">Действия</th>
             </tr>
             </thead>
@@ -82,18 +99,18 @@ else
                             @if (item.Client != null)
                             {
                                 <div>
-                                    <span class="small-label">Клиент:</span> 
+                                    <span class="small-label">Клиент:</span>
                                     <a class="custom-link" href="clients/@item.Client.Id">@item.Client.Name</a>
                                 </div>
                             }
-                        
+
                         <div>
                             @if (item.Person != null)
                             {
                                 <div>
-                                    <span class="small-label">Персона:</span> 
+                                    <span class="small-label">Персона:</span>
                                     <a class="custom-link" href="persons/@item.Person.Id">@item.Person.FirstName @item.Person.LastName</a>
-                                </div> 
+                                </div>
                             }
                         </div>
                     </td>
@@ -126,15 +143,35 @@ else
             }
             </tbody>
         </table>
+
+        <CascadingValue Value="isPagingStateHasChanged">
+            <PagingComponent PageSizeList="@pageSizesList"
+                             DefaultPageSize="@DefaultPageSite"
+                             TotalItems="totalElements"
+                             Radius="2"
+                             OnPagination="OnPagination"/>
+        </CascadingValue>
     }
 }
 
 @code {
     private GetContentsResponse content;
     private GetContentsContentDto[] filteredContent;
-    private string currentSearchText;    
+
+    private const int DefaultPageSite = 100;
+    private readonly int[] pageSizesList = {25, 50, DefaultPageSite, 250, 500};
+    private bool isPagingStateHasChanged;
+    private PageSettings currentPageSettings =
+        new()
+        {
+            Offset = 0,
+            Limit = DefaultPageSite
+        };
+    private OrderSetting<ContentFieldName>[] currentOrderSettings;
+
+    private string currentSearchText;
     private FilterSettings currentFilterSettings;
-    private int totalElements; 
+    private int totalElements;
     private decimal totalCost;
     private bool isFilterLoaded;
 
@@ -149,8 +186,10 @@ else
     }
 
     private GetContentsContentDto[] GetFilteredContentsList(
-        FilterSettings filterSettings, 
-        GetContentsResponse content)
+        FilterSettings filterSettings,
+        GetContentsResponse content,
+        OrderSetting<ContentFieldName>[] orderSettings,
+        PageSettings pageSettings)
     {
         //Filtering
         var selectedSocialMediaTypes = filterSettings.SocialMediaFilterItems
@@ -167,7 +206,7 @@ else
             .ToList();
 
         var itemsToShow = content.Items
-            .Where(i => 
+            .Where(i =>
                 (selectedSocialMediaTypes.Contains(i.SocialMediaType) || selectedSocialMediaTypes.Count == 0) &&
                 (selectedContentTypes.Contains(i.Type) || selectedContentTypes.Count == 0) &&
                 (selectedBrandsIds.Contains(i.Brand.Id)) &&
@@ -176,11 +215,25 @@ else
 
         var query = itemsToShow
             .AsQueryable();
-        
+
         //Sorting
-        query = query
-            .OrderByDescending(g => g.ReleaseDate);
-        
+        if (orderSettings?.Length > 0)
+        {
+            var dictionary = new Dictionary<ContentFieldName, IOrderQuery<GetContentsContentDto, GetContentsContentDto>>
+            {
+                {ContentFieldName.ReleaseDate, new ContentReleaseDateOrderQueryCreator()},
+                {ContentFieldName.BillValue, new ContentBillValueOrderQueryCreator()},
+            };
+
+            var queryCreator = new OrderQueryCreator<GetContentsContentDto, ContentFieldName>(dictionary);
+            query = queryCreator.Create(orderSettings, query);
+        }
+        else
+        {
+            query = query
+                .OrderByDescending(g => g.ReleaseDate);
+        }
+
         //Search
         if (!string.IsNullOrWhiteSpace(currentSearchText))
         {
@@ -188,14 +241,56 @@ else
                 .GetSearchPredicate(currentSearchText.ToLower());
             query = query.Where(searchPredicate);
         }
-        
-        return query.ToArray();
+
+        var contentList = query.ToArray();
+
+        // Paging
+        contentList = contentList
+            .Skip(pageSettings.Offset)
+            .Take(pageSettings.Limit)
+            .ToArray();
+
+        return contentList;
     }
-    
+
+    private void OnPagination(PagingEventArgs settings)
+    {
+        isPagingStateHasChanged = false;
+        currentPageSettings = new PageSettings
+        {
+            Limit = settings.PageSize,
+            Offset = settings.PageOffSet
+        };
+
+        filteredContent = GetFilteredContentsList(
+            currentFilterSettings,
+            content,
+            currentOrderSettings,
+            currentPageSettings);
+    }
+
+    private void OnSort(OrderSetting<ContentFieldName> settings)
+    {
+        currentOrderSettings = new[]
+        {
+            settings
+        };
+
+        filteredContent = GetFilteredContentsList(
+            currentFilterSettings,
+            content,
+            currentOrderSettings,
+            currentPageSettings);
+    }
+
     private void OnSearch(string searchText)
     {
         currentSearchText = searchText;
-        filteredContent = GetFilteredContentsList(currentFilterSettings, content);
+        filteredContent = GetFilteredContentsList(
+            currentFilterSettings,
+            content,
+            currentOrderSettings,
+            currentPageSettings);
         UpdateStatistics(filteredContent);
     }
 
@@ -205,13 +300,18 @@ else
         content = await GetContentsAsync();
         OnFilterUpdate(currentFilterSettings);
     }
-    
+
     private void OnFilterUpdate(FilterSettings filterSettings)
     {
         currentFilterSettings = filterSettings;
-        filteredContent = GetFilteredContentsList(filterSettings, content);
+        filteredContent = GetFilteredContentsList(
+            filterSettings,
+            content,
+            currentOrderSettings,
+            currentPageSettings);
         UpdateStatistics(filteredContent);
         isFilterLoaded = true;
+        isPagingStateHasChanged = true; //return to first page
     }
 
     private void UpdateStatistics(GetContentsContentDto[] filteredContent)
