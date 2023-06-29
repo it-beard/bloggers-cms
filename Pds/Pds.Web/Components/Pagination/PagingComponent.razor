@@ -5,7 +5,7 @@
         @foreach (var page in pages)
         {
             <li class="page-item">
-                <button class="btn btn-sm btn-paging 
+                <button class="btn btn-sm btn-paging
                     @(page.Active ? "btn-primary" : "btn-outline-primary")
                     @(page.Enabled ? null : "disabled")"
                         @onclick="@(() => OnChangePage(page))">
@@ -33,10 +33,10 @@
 </nav>
 
 @code{
-    private int[] _pageSizeList;
-    private int _totalItems;
-    private int _defaultPageSize;
-    private int _radius;
+    private int[] pageSizeList;
+    private int totalItems;
+    private int defaultPageSize;
+    private int radius;
 
     [Parameter]
     public EventCallback<PagingEventArgs> OnPagination { get; set; }
@@ -44,50 +44,50 @@
     [Parameter]
     public int[] PageSizeList
     {
-        get => _pageSizeList;
+        get => pageSizeList;
         set
         {
             var array = value.Where(item => item >= 1).ToArray();
-            _pageSizeList = array.Length == 0 ? new [] { 10 } : array;
+            pageSizeList = array.Length == 0 ? new [] { 10 } : array;
         }
     }
 
     [Parameter]
     public int? DefaultPageSize
     {
-        get => _defaultPageSize;
+        get => defaultPageSize;
         set
         {
             if (value < 1)
-                _defaultPageSize = 1;
+                defaultPageSize = 1;
             else
-                _defaultPageSize = value ?? 10;
+                defaultPageSize = value ?? 10;
         }
     }
 
     [Parameter]
     public int? TotalItems
     {
-        get => _totalItems;
+        get => totalItems;
         set
         {
             if (value < 0)
-                _totalItems = 0;
+                totalItems = 0;
             else
-                _totalItems = value ?? 0;
+                totalItems = value ?? 0;
         }
     }
 
     [Parameter]
     public int? Radius
     {
-        get => _radius;
+        get => radius;
         set
         {
             if (value < 1)
-                _radius = 2;
+                radius = 2;
             else
-                _radius = value ?? 2;
+                radius = value ?? 2;
         }
     }
 

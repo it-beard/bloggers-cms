@@ -1,8 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Options
 
 @inject NavigationManager Navigation
-@inject SignOutSessionStateManager SignOutManager
+@inject IOptionsSnapshot<RemoteAuthenticationOptions<ApiAuthorizationProviderOptions>> OptionsSnapshot
 
 <AuthorizeView>
     <Authorized>
@@ -18,15 +19,19 @@
             <span>
                 Привет, гость!
             </span>
-            <a class="btn btn-primary btn-sm" href="authentication/login?returnUrl=@Navigation.Uri">Войти</a>
+            <a class="btn btn-primary btn-sm" @onclick="Login">Войти</a>
         </div>
     </NotAuthorized>
 </AuthorizeView>
 
 @code{
-    private async Task BeginSignOut(MouseEventArgs args)
+    private void BeginSignOut(MouseEventArgs args)
     {
-        await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+
+    private void Login(MouseEventArgs args)
+    {
+        Navigation.NavigateToLogin(OptionsSnapshot.Get(Options.DefaultName).AuthenticationPaths.LogInPath);
     }
 }
