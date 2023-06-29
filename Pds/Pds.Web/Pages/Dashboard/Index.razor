@@ -1,6 +1,6 @@
 ﻿@page "/"
 @inherits BasePageComponent
-@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.TitleExtension
 @using static Pds.Web.Common.Constants
 @using Pds.Web.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -60,7 +60,7 @@ else
                 </div>
             </div>
         }
-        
+
         @foreach (var brand in moneyStatistics
             .Where(s => s.BillsSumForPreviousMonth > 0 ||
                         s.BillsSumForThisMonth > 0 ||
@@ -73,10 +73,10 @@ else
                 </div>
                 @{
                     var thisMonthsName = new DateTime(2020, DateTime.UtcNow.Month, 1).ToString("MMMM");
-                    var previousMonthsName = new DateTime(2020, DateTime.UtcNow.AddMonths(-1).Month, 1).ToString("MMMM");
+                    var previousMonthsName = new DateTime(2020, DateTime.UtcNow.Month, 1).AddMonths(-1).ToString("MMMM");
                     var thisYear = DateTime.UtcNow.Year;
                     var previousYear = DateTime.UtcNow.AddYears(-1).Year;
-                    var previousMonthYear = new DateTime(thisYear, DateTime.UtcNow.AddMonths(-1).Month, 1).Year;
+                    var previousMonthYear = new DateTime(thisYear, DateTime.UtcNow.Month, 1).AddMonths(-1).Year;
                 }
                 <div class="brand-money-statistics-body">
                     <div>
@@ -90,7 +90,7 @@ else
                             @brand.CostsSumForThisMonth.ToString("N0")
                         </span>
                     </div>
-                
+
                     <div>
                         <span class="month">
                             @previousMonthsName @previousMonthYear
@@ -102,7 +102,7 @@ else
                             @brand.CostsSumForPreviousMonth.ToString("N0")
                         </span>
                     </div>
-                    
+
                     <div>
                         <span class="month">
                             @thisMonthsName @previousYear
@@ -139,7 +139,7 @@ else
                 </div>
             </div>
         }
-        
+
         @if(nearestDates.NearestDateForIntegration != null ||
             nearestDates.NearestDateForNewEpisode != null)
         {
@@ -170,7 +170,7 @@ else
                         <div>
                             <span class="date-type"> Выпуск </span>
                             <span class="content-date">
-                                @nearestDates.NearestDateForNewEpisode.Value.ToShortStringDateWithDay() 
+                                @nearestDates.NearestDateForNewEpisode.Value.ToShortStringDateWithDay()
                             </span>
                         </div>
                     }
@@ -185,7 +185,7 @@ else
     private GetMoneyStatisticsResponse moneyStatistics;
     private GetContentStatisticsResponse contentStatistics;
     private GetNearestDatesResponse nearestDates;
-    
+
     protected override async Task OnInitializedAsync()
     {
         countriesStatistics = await GetCountriesStatistics();
@@ -198,17 +198,17 @@ else
     {
         return await ApiClient.Get<GetCountriesStatisticsResponse>(TokenProvider, "dashboard/countries-statistics");
     }
-    
+
     private async Task<GetMoneyStatisticsResponse> GetMoneyStatistics()
     {
         return await ApiClient.Get<GetMoneyStatisticsResponse>(TokenProvider, "dashboard/money-statistics");
     }
-    
+
     private async Task<GetContentStatisticsResponse> GetContentStatistics()
     {
         return await ApiClient.Get<GetContentStatisticsResponse>(TokenProvider, "dashboard/content-statistics");
     }
-    
+
     private async Task<GetNearestDatesResponse> GetNearestDatesResponse()
     {
         return await ApiClient.Get<GetNearestDatesResponse>(TokenProvider, "dashboard/nearest-dates-for-default-brand");
