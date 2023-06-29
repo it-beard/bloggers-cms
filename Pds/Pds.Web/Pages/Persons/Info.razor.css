@@ -16,7 +16,7 @@
 }
 
 .info-item .info-body {
-    background-color: aliceblue;                      
+    background-color: aliceblue;
     padding: 10px 15px 10px 15px;
     border-radius: 0 0 5px 5px;
     margin-bottom: 10px;
@@ -24,6 +24,7 @@
 
 .contact-established {
     color: rgba(0, 100, 0, 0.6);
+    margin-left: 5px;
 }
 
 .active .info-item .info-body {
