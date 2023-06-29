@@ -38,7 +38,7 @@ public class PersonService : IPersonService
         {
             throw new PersonCreateException("Персону нельзя создать без бренда.");
         }
-        
+
         if (person.IsContactEstablished && (person.Resources == null || person.Resources.Count == 0))
         {
             throw new PersonCreateException("Если установлен контакт, то должна присутствовать как минимум одна ссылка для связи");
@@ -62,7 +62,9 @@ public class PersonService : IPersonService
         person.CreatedAt = DateTime.UtcNow;
         foreach (var resource in person.Resources)
         {
-            if (!string.IsNullOrEmpty(resource.Url))
+            if (!string.IsNullOrEmpty(resource.Url)
+                && resource.Url.Contains("://")
+                && !resource.Url.Contains("youtube"))
             {
                 resource.Url = resource.Url.Replace("@", string.Empty);
             }
@@ -78,19 +80,19 @@ public class PersonService : IPersonService
         {
             throw new PersonEditException($"Модель запроса пуста.");
         }
-            
+
         if (!model.Brands.Any(b =>b.IsSelected))
         {
             throw new PersonEditException("Персону нельзя создать без бренда.");
         }
-        
+
         if (model.IsContactEstablished && (model.Resources == null || model.Resources.Count == 0))
         {
             throw new PersonEditException("Если установлен контакт, то должна присутствовать как минимум одна ссылка для связи");
         }
 
         var person = await unitOfWork.Persons.GetFullByIdAsync(model.Id);
-            
+
         if (person == null)
         {
             throw new PersonEditException($"Персона с id {model.Id} не найдена.");
@@ -130,12 +132,21 @@ public class PersonService : IPersonService
             else
             {
                 resource.Name = resourceModel.Name;
-                resource.Url = resourceModel.Url.Replace("@", string.Empty);
+                if (!string.IsNullOrEmpty(resourceModel.Url)
+                    && resourceModel.Url.Contains("://")
+                    && !resourceModel.Url.Contains("youtube"))
+                {
+                    resource.Url = resourceModel.Url.Replace("@", string.Empty);
+                }
+                else
+                {
+                    resource.Url = resourceModel.Url;
+                }
                 resource.UpdatedAt = DateTime.UtcNow;
                 unitOfWork.GetContextEntry(resource).State = EntityState.Modified;
             }
         }
-        
+
         // Add new resources
         foreach (var newResourceModel in model.Resources.Where(r => r.Id == Guid.Empty))
         {
@@ -205,12 +216,12 @@ public class PersonService : IPersonService
 
         return persons;
     }
-    
+
     public async Task<List<Person>> GetForListByBrandIdWithSelectedValueAsync(Guid brandId, Guid? selectedPersonId)
     {
         var initialPersons = await GetForListsByBrandIdAsync(brandId);
-        if (selectedPersonId == null || initialPersons == null) return initialPersons;  
-        
+        if (selectedPersonId == null || initialPersons == null) return initialPersons;
+
         // Add selected person on top of the list if it possible
         var firstPerson = await unitOfWork.Persons.GetFirstWhereAsync(c => c.Id == selectedPersonId);
         initialPersons.Remove(firstPerson);
