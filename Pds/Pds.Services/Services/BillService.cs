@@ -56,15 +56,15 @@ public class BillService : IBillService
         {
             throw new BillCreateException("Счета типа \"Контент\" добавляются через создание контента.");
         }
-        
-        if (bill.ClientId != null && bill.ClientId != Guid.Empty && 
-            (string.IsNullOrEmpty(bill.Contact) && string.IsNullOrEmpty(bill.ContactEmail) || 
-             string.IsNullOrEmpty(bill.ContactName) || 
+
+        if (bill.ClientId != null && bill.ClientId != Guid.Empty &&
+            (string.IsNullOrEmpty(bill.Contact) && string.IsNullOrEmpty(bill.ContactEmail) ||
+             string.IsNullOrEmpty(bill.ContactName) ||
              bill.ContactType == null))
         {
             throw new BillEditException($"Заполните контактные данные представителя клиента!");
         }
-        
+
         if (!string.IsNullOrWhiteSpace(bill.ContactEmail) &&
             !bill.ContactEmail.Contains('@'))
         {
@@ -92,22 +92,21 @@ public class BillService : IBillService
 
         return result.Id;
     }
-        
+
     public async Task<Guid> EditAsync(EditBillModel model)
     {
         if (model == null)
         {
-            throw new BillEditException($"Модель запроса пуста.");
+            throw new BillEditException("Модель запроса пуста.");
         }
-        
-        if (model.ClientId != null && model.ClientId != Guid.Empty && 
-            (string.IsNullOrEmpty(model.Contact) && string.IsNullOrEmpty(model.ContactEmail) || 
-             string.IsNullOrEmpty(model.ContactName) || 
-             model.ContactType == null))
+
+        if (model.ClientId != null && model.ClientId != Guid.Empty &&
+            (string.IsNullOrEmpty(model.Contact) && string.IsNullOrEmpty(model.ContactEmail) ||
+             string.IsNullOrEmpty(model.ContactName)))
         {
             throw new BillEditException($"Заполните контактные данные представителя клиента!");
         }
-        
+
         if (!string.IsNullOrWhiteSpace(model.ContactEmail) &&
             !model.ContactEmail.Contains('@'))
         {
@@ -115,7 +114,7 @@ public class BillService : IBillService
         }
 
         var bill = await unitOfWork.Bills.GetFullByIdAsync(model.Id);
-            
+
         if (bill == null)
         {
             throw new BillEditException($"Доход с id {model.Id} не найден.");
@@ -194,17 +193,17 @@ public class BillService : IBillService
     public async Task DeleteAsync(Guid billId)
     {
         var bill = await unitOfWork.Bills.GetFirstWhereAsync(p => p.Id == billId);
-            
+
         if (bill == null)
         {
             throw new BillDeleteException($"Доход с id {billId} не найден.");
         }
-            
+
         if (bill.Status == BillStatus.Archived)
         {
             throw new BillDeleteException($"Нельзя удалить архивный доход.");
         }
-            
+
         if (bill.Content != null)
         {
             throw new BillDeleteException($"Доход, привязанный к контенту, удаляется только через контент.");

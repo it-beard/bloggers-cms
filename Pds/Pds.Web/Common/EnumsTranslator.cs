@@ -19,7 +19,7 @@ public static class EnumsTranslator
             _ => string.Empty
         };
     }
-    
+
     public static string GiftTypeToRu(GiftType type)
     {
         return type switch
@@ -43,7 +43,7 @@ public static class EnumsTranslator
             _ => string.Empty
         };
     }
-    
+
     public static string PersonStatusToRu(PersonStatus status)
     {
         return status switch
@@ -53,7 +53,7 @@ public static class EnumsTranslator
             _ => string.Empty
         };
     }
-    
+
     public static string BillStatusToRu(BillStatus status)
     {
         return status switch
@@ -63,7 +63,7 @@ public static class EnumsTranslator
             _ => string.Empty
         };
     }
-    
+
     public static string CostStatusToRu(CostStatus status)
     {
         return status switch
@@ -73,7 +73,7 @@ public static class EnumsTranslator
             _ => string.Empty
         };
     }
-    
+
     public static string ClientStatusToRu(ClientStatus status)
     {
         return status switch
@@ -94,7 +94,7 @@ public static class EnumsTranslator
             SocialMediaType.Telegram => "Telegram",
             SocialMediaType.Clubhouse => "Clubhouse",
             SocialMediaType.TikTok => "TikTok",
-            SocialMediaType.Vkontakte => "ВКонтакте",
+            SocialMediaType.Twitter => "Twitter",
             _ => string.Empty
         };
     }

@@ -7,61 +7,57 @@ namespace Pds.Data;
 public sealed class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext context;
-    private IPersonRepository personRepository;
-    private IResourceRepository resourceRepository;
-    private IContentRepository contentRepository;
-    private IBrandRepository brandRepository;
-    private IClientRepository clientRepository;
-    private IBillRepository billRepository;
-    private ICostRepository costRepository;
-    private IGiftRepository giftRepository;
-    private ISettingRepository settingRepository;
-    private IDashboardRepository dashboardRepository;
+    private readonly Lazy<IPersonRepository> personRepository;
+    private readonly Lazy<IResourceRepository> resourceRepository;
+    private readonly Lazy<IContentRepository> contentRepository;
+    private readonly Lazy<IBrandRepository> brandRepository;
+    private readonly Lazy<IClientRepository> clientRepository;
+    private readonly Lazy<IBillRepository> billRepository;
+    private readonly Lazy<ICostRepository> costRepository;
+    private readonly Lazy<IGiftRepository> giftRepository;
+    private readonly Lazy<ISettingRepository> settingRepository;
+    private readonly Lazy<IDashboardRepository> dashboardRepository;
 
-    public UnitOfWork(ApplicationDbContext context)
+    public UnitOfWork(
+        ApplicationDbContext context,
+        Lazy<IPersonRepository> personRepository,
+        Lazy<IResourceRepository> resourceRepository,
+        Lazy<IContentRepository> contentRepository,
+        Lazy<IBrandRepository> brandRepository,
+        Lazy<IClientRepository> clientRepository,
+        Lazy<IBillRepository> billRepository,
+        Lazy<ICostRepository> costRepository,
+        Lazy<IGiftRepository> giftRepository,
+        Lazy<ISettingRepository> settingRepository,
+        Lazy<IDashboardRepository> dashboardRepository
+    )
     {
         this.context = context;
+        this.personRepository = personRepository;
+        this.resourceRepository = resourceRepository;
+        this.contentRepository = contentRepository;
+        this.brandRepository = brandRepository;
+        this.clientRepository = clientRepository;
+        this.billRepository = billRepository;
+        this.costRepository = costRepository;
+        this.giftRepository = giftRepository;
+        this.settingRepository = settingRepository;
+        this.dashboardRepository = dashboardRepository;
     }
 
-    public IPersonRepository Persons => personRepository ??= new PersonRepository(context);
-    public IResourceRepository Resources => resourceRepository ??= new ResourceRepository(context);
-    public IContentRepository Content => contentRepository ??= new ContentRepository(context);
-    public IBrandRepository Brands => brandRepository ??= new BrandRepository(context);
-    public IClientRepository Clients => clientRepository ??= new ClientRepository(context);
-    public IBillRepository Bills => billRepository ??= new BillRepository(context);
-    public ICostRepository Costs => costRepository ??= new CostRepository(context);
-    public IGiftRepository Gifts => giftRepository ??= new GiftRepository(context);
-    public ISettingRepository Settings => settingRepository ??= new SettingRepository(context);
-    public IDashboardRepository Dashboard => dashboardRepository ??= new DashboardRepository(context);
-
-    public void Save()
-    {
-        context.SaveChanges();
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+    public IPersonRepository Persons => personRepository.Value;
+    public IResourceRepository Resources => resourceRepository.Value;
+    public IContentRepository Content => contentRepository.Value;
+    public IBrandRepository Brands => brandRepository.Value;
+    public IClientRepository Clients => clientRepository.Value;
+    public IBillRepository Bills => billRepository.Value;
+    public ICostRepository Costs => costRepository.Value;
+    public IGiftRepository Gifts => giftRepository.Value;
+    public ISettingRepository Settings => settingRepository.Value;
+    public IDashboardRepository Dashboard => dashboardRepository.Value;
 
     public EntityEntry GetContextEntry(object obj)
     {
         return context.Entry(obj);
-    }
-
-    private bool disposed = false;
-
-    private void Dispose(bool disposing)
-    {
-        if (!this.disposed)
-        {
-            if (disposing)
-            {
-                context.Dispose();
-            }
-        }
-
-        this.disposed = true;
     }
 }
