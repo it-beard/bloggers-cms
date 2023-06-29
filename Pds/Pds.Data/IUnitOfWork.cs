@@ -3,7 +3,7 @@ using Pds.Data.Repositories.Interfaces;
 
 namespace Pds.Data;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork
 {
     IPersonRepository Persons { get; }
     IResourceRepository Resources { get; }
@@ -15,7 +15,6 @@ public interface IUnitOfWork : IDisposable
     IGiftRepository Gifts { get; }
     ISettingRepository Settings { get; }
     IDashboardRepository Dashboard { get; }
-
-    void Save();
+    
     EntityEntry GetContextEntry(object obj);
 }
