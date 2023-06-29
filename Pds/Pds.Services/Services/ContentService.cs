@@ -35,15 +35,15 @@ public class ContentService : IContentService
         {
             throw new ContentEditException($"Модель запроса пуста.");
         }
-        
-        if (model.Bill != null && 
+
+        if (model.Bill != null &&
             string.IsNullOrWhiteSpace(model.Bill.Contact) &&
             string.IsNullOrWhiteSpace(model.Bill.ContactEmail))
         {
             throw new ContentEditException($"Не заполнены контактные данные представителя.");
         }
-        
-        if (model.Bill != null && 
+
+        if (model.Bill != null &&
             !string.IsNullOrWhiteSpace(model.Bill.ContactEmail) &&
            !model.Bill.ContactEmail.Contains('@'))
         {
@@ -62,7 +62,8 @@ public class ContentService : IContentService
             Comment = model.Comment,
             ReleaseDate = model.ReleaseDate.Date,
             EndDate = model.EndDate?.Date,
-            PersonId = model.PersonId
+            PersonId = model.PersonId,
+            IsFilmed = model.IsFilmed,
         };
 
         if (!model.IsFree)
@@ -73,12 +74,12 @@ public class ContentService : IContentService
                 CreatedAt = DateTime.UtcNow,
                 Value = model.Bill.Value,
                 ContentId = content.Id,
-                Contact = !string.IsNullOrEmpty(model.Bill.Contact) 
+                Contact = !string.IsNullOrEmpty(model.Bill.Contact)
                     ? model.Bill.Contact.Replace("@", string.Empty)
                     : null,
                 ContactEmail = model.Bill.ContactEmail,
                 ContactName = model.Bill.ContactName,
-                ContactType = !string.IsNullOrEmpty(model.Bill.Contact) 
+                ContactType = !string.IsNullOrEmpty(model.Bill.Contact)
                     ? model.Bill.ContactType
                     : null,
                 PaymentStatus = model.Bill.Value == 0 ? PaymentStatus.Paid : PaymentStatus.NotPaid,
@@ -103,16 +104,16 @@ public class ContentService : IContentService
         if (model == null)
         {
             throw new ContentEditException($"Модель запроса пуста.");
-        }     
-        
-        if (model.Bill != null && 
+        }
+
+        if (model.Bill != null &&
                   string.IsNullOrWhiteSpace(model.Bill.Contact) &&
                   string.IsNullOrWhiteSpace(model.Bill.ContactEmail))
         {
             throw new ContentEditException($"Не заполнены контактные данные представителя.");
         }
-        
-        if (model.Bill != null && 
+
+        if (model.Bill != null &&
             !string.IsNullOrWhiteSpace(model.Bill.ContactEmail) &&
             !model.Bill.ContactEmail.Contains('@'))
         {
@@ -120,7 +121,7 @@ public class ContentService : IContentService
         }
 
         var content = await unitOfWork.Content.GetByIdWithBillAsync(model.Id);
-            
+
         if (content == null)
         {
             throw new ContentEditException($"Контент с id {model.Id} не найден.");
@@ -138,6 +139,7 @@ public class ContentService : IContentService
         content.Comment = model.Comment;
         content.ReleaseDate = model.ReleaseDate.Date;
         content.EndDate = model.EndDate?.Date;
+        content.IsFilmed = model.IsFilmed;
         content.PersonId = model.PersonId != null && model.PersonId.Value == Guid.Empty ? null : model.PersonId;
 
         if (model.Bill != null && content.Bill != null) // Just update existed bill
@@ -146,7 +148,7 @@ public class ContentService : IContentService
             content.Bill.Contact = !string.IsNullOrEmpty(model.Bill.Contact)
                 ? model.Bill.Contact.Replace("@", string.Empty)
                 : null;
-            content.Bill.ContactEmail =  model.Bill.ContactEmail;            
+            content.Bill.ContactEmail =  model.Bill.ContactEmail;
             content.Bill.ContactName =  model.Bill.ContactName;
             content.Bill.ContactType = !string.IsNullOrEmpty(model.Bill.Contact)
                 ? model.Bill.ContactType
@@ -208,7 +210,7 @@ public class ContentService : IContentService
             await unitOfWork.Content.UpdateAsync(content);
         }
     }
-    
+
     public async Task<List<Content>> GetForListByBrandIdAsync(Guid brandId)
     {
         var contents = new List<Content> {new() {Id = Guid.Empty}}; //Add empty as a first element of list
@@ -216,12 +218,12 @@ public class ContentService : IContentService
 
         return contents;
     }
-    
+
     public async Task<List<Content>> GetForListByBrandIdWithSelectedValueAsync(Guid brandId, Guid? selectedContentId)
     {
         var initialContents = await GetForListByBrandIdAsync(brandId);
-        if (selectedContentId == null || initialContents == null) return initialContents;  
-        
+        if (selectedContentId == null || initialContents == null) return initialContents;
+
         // Add selected content on top of the list if it possible
         var firstContent = await unitOfWork.Content.GetFirstWhereAsync(c => c.Id == selectedContentId);
         initialContents.Remove(firstContent);

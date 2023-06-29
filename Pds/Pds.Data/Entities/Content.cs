@@ -26,6 +26,9 @@ public class Content : EntityBase
 
     public DateTime? EndDate { get; set; }
 
+    [Required]
+    public bool IsFilmed { get; set; }
+
     public Guid? BillId { get; set; }
 
     public Guid BrandId { get; set; }
@@ -39,6 +42,6 @@ public class Content : EntityBase
     public virtual Person Person { get; set; }
 
     public ICollection<Cost> Costs { get; set; }
-    
+
     public ICollection<Gift> Gifts { get; set; }
 }

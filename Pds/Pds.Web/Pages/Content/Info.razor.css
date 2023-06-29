@@ -16,7 +16,6 @@
 }
 
 .info-item .info-body {
-    background-color: orchid;
     padding: 10px 15px 10px 15px;
     border-radius: 0 0 5px 5px;
     margin-bottom: 10px;
@@ -28,6 +27,10 @@
 
 .active-not-paid .info-item .info-body {
     background-color: lightpink;
+}
+
+.not-filmed .info-item .info-body {
+    background-color: #d7b6fe;
 }
 
 .free .info-item .info-body {

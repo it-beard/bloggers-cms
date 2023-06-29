@@ -7,9 +7,12 @@ public class EditContentRequest
 {
     [Required]
     public Guid Id { get; set; }
-    
+
     [Required]
     public Guid BrandId { get; set; }
+
+    [Required]
+    public string BrandName { get; set; }
 
     [Required, EnumDataType(typeof(ContentType))]
     public ContentType Type { get; set; }
@@ -27,9 +30,11 @@ public class EditContentRequest
 
     public DateTime? EndDate { get; set; }
 
+    public bool IsFilmed { get; set; }
+
     public bool IsFree { get; set; }
 
-        
+
     public Guid? BillId { get; set; }
 
     [ValidateComplexType]

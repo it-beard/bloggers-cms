@@ -141,7 +141,12 @@ public class ApiMappingProfile : Profile
             .ForMember(
                 dest => dest.BillPaymentStatus,
                 opt => opt
-                    .MapFrom(p => p.Bill == null ? (PaymentStatus?) null : p.Bill.PaymentStatus));
+                    .MapFrom(p => p.Bill == null ? (PaymentStatus?) null : p.Bill.PaymentStatus))
+            .ForMember(
+                dest => dest.BrandName,
+                opt => opt
+                    .MapFrom(p => p.Brand == null ? string.Empty : p.Brand.Name));
+
         CreateMap<Content, GetContentForPayResponse>();
 
         CreateMap<Brand, BrandDto>();

@@ -90,6 +90,11 @@
     color: #bbb !important;
 }
 
+.not-filmed,
+.not-filmed a {
+    background-color: #d7b6fe;
+}
+
 .archived-free:hover,
 .archived-paid:hover,
 .archived-free:hover a,

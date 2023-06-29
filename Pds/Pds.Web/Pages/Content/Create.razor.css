@@ -27,3 +27,25 @@
 .btn-free {
     margin-right: 10px;
 }
+
+::deep .content-title {
+    width: calc(100% - 140px);
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.content-label {
+    display: block;
+}
+
+@media (max-width: 971px) {
+    ::deep .content-title {
+        width: 100%;
+        display: block;
+        margin-right: 0px;
+    }
+
+    .btn-filmed{
+        margin-top: 10px;
+    }
+}

@@ -9,17 +9,19 @@ public class EditContentModel
     public ContentType Type { get; set; }
 
     public SocialMediaType SocialMediaType { get; set; }
-        
+
     public string Title { get; set; }
 
     public string Comment { get; set; }
-        
+
     public DateTime ReleaseDate { get; set; }
 
     public DateTime? EndDate { get; set; }
-        
+
     public bool IsContentFree { get; set; }
-        
+
+    public bool IsFilmed { get; set; }
+
     public EditContentBillModel Bill { get; set; }
 
     public Guid? PersonId { get; set; }

@@ -70,7 +70,7 @@ else
             <tbody>
             @foreach (var item in filteredContent)
             {
-                <tr class="@ContentHelper.GetContentBgColorClass(item.Status, item.Bill)">
+                <tr class="@ContentHelper.GetContentBgColorClass(item.Status, item.Bill, item.IsFilmed)">
                     <td class="release-date-row">
                         @if (item.EndDate != null)
                         {

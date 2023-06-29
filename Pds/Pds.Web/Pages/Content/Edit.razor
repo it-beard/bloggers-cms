@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Pds.Core.Enums
 @using Pds.Web.Common
-@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.TitleExtension
 @using AutoMapper
 @using Microsoft.AspNetCore.Components
 @using Pds.Api.Contracts.Controllers.Content
@@ -30,6 +30,12 @@ else
 {
     <EditForm EditContext="@editContext" OnSubmit="@HandleSubmitAsync">
         <div class="form-group">
+            <label for="brand_name" class="form-label">Бренд: </label>
+            <button type="button" class="btn btn-secondary btn-sm" id="brand_name" disabled>
+                @content.BrandName
+            </button>
+        </div>
+        <div class="form-group no-wrap">
             <InputRadioGroup Name="social-media-type" @bind-Value="content.SocialMediaType">
                 @foreach (var socialMediaType in (SocialMediaType[])Enum
                     .GetValues(typeof(SocialMediaType)))
@@ -43,7 +49,7 @@ else
             </InputRadioGroup>
         </div>
 
-        <div class="form-group">
+        <div class="form-group no-wrap">
             <InputRadioGroup Name="type" @bind-Value="content.Type">
                 @foreach (var type in (ContentType[])Enum
                     .GetValues(typeof(ContentType)))
@@ -58,8 +64,19 @@ else
         </div>
 
         <div class="form-group">
-            <label for="title" class="form-label label-required">Заголовок</label>
-            <InputText class="form-control" id="title" @bind-Value="content.Title"/>
+            <label for="title" class="form-label label-required content-label">Заголовок</label>
+            <InputText class="form-control content-title" id="title" @bind-Value="content.Title"/>
+
+            <InputCheckbox name="isFilmed" class="btn-check" @bind-Value="content.IsFilmed" Id="content_is_filmed"/>
+            <label class="btn btn-secondary btn-filmed" for="content_is_filmed">Контент отснят</label>
+        </div>
+
+        <div class="form-group">
+            <label for="release_date" class="form-label label-required">Дата выхода:</label>
+            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
+
+            <label for="release_date" class="form-label">Продлится до:</label>
+            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDate"/>
         </div>
 
         <div class="form-group">
@@ -68,15 +85,9 @@ else
                 <label for="bill_cost" class="form-label label-required">Стоимость USD:</label>
                 <InputNumber class="form-control bill-cost" id="bill_cost" @bind-Value="content.Bill.Value"/>
             }
-            
+
             <InputCheckbox name="isFree" class="btn-check" @bind-Value="content.IsFree" Id="content_is_free"/>
             <label class="btn btn-secondary btn-free btn-sm" for="content_is_free">Бесплатно</label>
-
-            <label for="release_date" class="form-label label-required">Когда:</label>
-            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.ReleaseDate"/>
-
-            <label for="release_date" class="form-label">Продлится до:</label>
-            <InputDate class="form-control release-date" id="release_date" @bind-Value="content.EndDate"/>
         </div>
 
         @if (!content.IsFree)
@@ -103,12 +114,12 @@ else
                     <label for="bill_contact_name" class="form-label label-required">ФИО представителя клиента</label>
                     <InputText class="form-control" id="bill_contact_name" @bind-Value="content.Bill.ContactName"/>
                 </div>
-                
+
                 <div class="multi-group-block">
                     <label for="bill_contact_name" class="form-label">Емейл представителя клиента</label>
                     <InputText class="form-control" id="bill_contact_name" @bind-Value="content.Bill.ContactEmail"/>
                 </div>
-                
+
                 <div class="multi-group-block">
                     <InputCheckbox name="bill_isContactAgent" class="btn-check" @bind-Value="content.Bill.IsContactAgent" Id="bill_isContactAgent"/>
                     <label class="btn btn-secondary btn-free btn-sm" for="bill_isContactAgent">Агент</label>
@@ -174,7 +185,7 @@ else
     private EditContext editContext;
     private ValidationMessageStore msgStore;
     private bool isEditButtonDisabled;
-    
+
     protected override async Task OnInitializedAsync()
     {
         isEditButtonDisabled = false;

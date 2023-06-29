@@ -24,6 +24,8 @@ public class CreateContentRequest
 
     public DateTime? EndDate { get; set; }
 
+    public bool IsFilmed { get; set; }
+
     public bool IsFree { get; set; }
 
     [ValidateComplexType]

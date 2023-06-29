@@ -4,7 +4,7 @@
 @using Pds.Api.Contracts.Controllers.Content.GetContent
 @using Pds.Core.Extensions
 @using Pds.Web.Common
-@using static Pds.Web.Common.TitleExtension 
+@using static Pds.Web.Common.TitleExtension
 @using Pds.Web.Pages.Content.Components
 
 @inject IApiClient ApiClient
@@ -19,21 +19,21 @@
 else
 {
     <Title>@WithSuffix($"Контент \"{content.Title}\"")</Title>
-    
+
     <h4 class="card-header d-flex justify-content-between align-items-center">
         Контент "@content.Title"
         <button @onclick='() => GoBack("/content")' class="btn btn-primary" >Назад</button>
     </h4>
-    <div class="page-container @ContentHelper.GetContentBgColorClass(content.Status, content.Bill)">
+    <div class="page-container @ContentHelper.GetContentBgColorClass(content.Status, content.Bill, content.IsFilmed)">
         <div class="info-item">
             <div class="info-title">Тип</div>
             <div class="info-body">
-                @content.Brand.Name / 
-                @EnumsTranslator.SocialMediaTypeToRu(content.SocialMediaType) / 
+                @content.Brand.Name /
+                @EnumsTranslator.SocialMediaTypeToRu(content.SocialMediaType) /
                 @EnumsTranslator.ContentTypeToRu(content.Type)
             </div>
         </div>
-        
+
         <div class="info-item">
             <div class="info-title">Когда</div>
             <div class="info-body">
@@ -44,7 +44,7 @@ else
                 }
             </div>
         </div>
-        
+
         <div class="info-item">
             <div class="info-title">Оплата</div>
             <div class="info-body bill-cost">
@@ -85,7 +85,7 @@ else
                     {
                         <span class="nds">с НДС</span>
                     }
-                    
+
                     if (content.Bill.PaymentType != null)
                     {
                         if (!string.IsNullOrWhiteSpace(content.Bill.Comment))
@@ -126,7 +126,7 @@ else
                     </div>
                 </div>
             </div>
-            
+
             <div class="info-item">
                 <div class="info-title">Контакт</div>
                 <div class="info-body contact-info">
@@ -238,7 +238,7 @@ else
         {
             GoBack("/content");
         }
-        
+
         content = await GetContent();
     }
 }
