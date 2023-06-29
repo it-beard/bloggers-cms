@@ -75,13 +75,13 @@ else
                         @if (item.EndDate != null)
                         {
                             <div>
-                                <span class=" no-wrap">
+                                <span class=" no-wrap" title="@item.EndDate.Value.Date.ToLongStringDate()">
                                     @item.EndDate.Value.Date.ToShortStringDateWithDay()
                                 </span>
                             </div>
                         }
                         <div>
-                            <span class="no-wrap">
+                            <span class="no-wrap" title="@item.ReleaseDate.Date.ToLongStringDate()">
                                 @item.ReleaseDate.Date.ToShortStringDateWithDay()
                             </span>
                         </div>

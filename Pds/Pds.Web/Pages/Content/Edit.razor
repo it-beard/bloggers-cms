@@ -9,10 +9,12 @@
 @using Pds.Api.Contracts.Controllers.Content
 @using Pds.Api.Contracts.Controllers.Content.EditContent
 @using Pds.Api.Contracts.Controllers.Content.GetContent
+@using Pds.Core
 
 @inject IApiClient ApiClient
 @inject IMapper Mapper
 @inject IAccessTokenProvider TokenProvider
+@inject StateContainer StateContainer
 
 <Title>@WithSuffix("Редактирование контента")</Title>
 
@@ -20,7 +22,7 @@
     Редактирование контента
     <button @onclick='() => GoBack("/content")' class="btn btn-primary">Назад</button>
 </h4>
-@if (content == null || clients == null || persons == null)
+@if (content == null || clients == null || persons == null || StateContainer.Settings == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -185,6 +187,7 @@ else
     private EditContext editContext;
     private ValidationMessageStore msgStore;
     private bool isEditButtonDisabled;
+    private DateTime originalReleaseDate;
 
     protected override async Task OnInitializedAsync()
     {
@@ -193,7 +196,9 @@ else
         clients = await GetClientsAsync(content.Bill?.ClientId);
         persons = await GetPersonsAsync(content.BrandId, content.PersonId);
         editContext = new EditContext(content);
+        editContext.OnFieldChanged += EditContext_OnFieldChangedAsync;
         msgStore = new ValidationMessageStore(editContext);
+        originalReleaseDate = content.ReleaseDate;
     }
 
     private async Task HandleSubmitAsync()
@@ -235,5 +240,24 @@ else
     private async Task<List<PersonForLookupDto>> GetPersonsAsync(Guid brandId, Guid? contentPersonId)
     {
         return await ApiClient.Get<List<PersonForLookupDto>>(TokenProvider, $"content/get-persons/brands/{brandId}/persons/{contentPersonId}");
+    }
+
+    private void EditContext_OnFieldChangedAsync(object sender, FieldChangedEventArgs e)
+    {
+        if (e.FieldIdentifier.FieldName == "IsFilmed")
+        {
+
+            if (content.IsFilmed)
+            {
+                content.ReleaseDate = originalReleaseDate;
+            }
+            else
+            {
+                // Set default "Release dat" for not filmed content
+                var releaseDateString = StateContainer.Settings.GetByKey(SettingsKeys.NotFilmedContentDefaultReleaseDate);
+                content.ReleaseDate = DateTime.TryParse(releaseDateString, out var releaseDate) ? releaseDate : originalReleaseDate;
+            }
+            editContext.NotifyFieldChanged(new FieldIdentifier(content, "ReleaseDate"));
+        }
     }
 }

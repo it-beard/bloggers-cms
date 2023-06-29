@@ -4,12 +4,14 @@
 @using Pds.Api.Contracts.Controllers
 @using Pds.Api.Contracts.Controllers.Content
 @using Pds.Api.Contracts.Controllers.Content.CreateContent
+@using Pds.Core
 @using Pds.Core.Enums
 @using Pds.Web.Common
 @using static Pds.Web.Common.TitleExtension
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+@inject StateContainer StateContainer
 
 <Title>@WithSuffix("Добавление контента")</Title>
 
@@ -17,7 +19,7 @@
     Добавление контента
     <button @onclick='() => GoBack("/content")' class="btn btn-primary" >Назад</button>
 </h4>
-@if (brands == null || clients == null || persons == null)
+@if (brands == null || clients == null || persons == null || StateContainer.Settings == null)
 {
     <p>
         <em>Загрузка...</em>
@@ -262,6 +264,22 @@ else
         {
             persons = await GetPersonsAsync(content.BrandId);
             editContext.NotifyFieldChanged(new FieldIdentifier(content, "PersonId"));
+        }
+
+        if (e.FieldIdentifier.FieldName == "IsFilmed")
+        {
+
+            if (content.IsFilmed)
+            {
+                content.ReleaseDate = DateTime.UtcNow;
+            }
+            else
+            {
+                // Set default "Release dat" for not filmed content
+                var releaseDateString = StateContainer.Settings.GetByKey(SettingsKeys.NotFilmedContentDefaultReleaseDate);
+                content.ReleaseDate = DateTime.TryParse(releaseDateString, out var releaseDate) ? releaseDate : DateTime.UtcNow;
+            }
+            editContext.NotifyFieldChanged(new FieldIdentifier(content, "ReleaseDate"));
         }
     }
 }

@@ -11,7 +11,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Person> Persons { get; set; }
-    
+
     public DbSet<Resource> Resources { get; set; }
     public DbSet<Content> Contents { get; set; }
     public DbSet<Bill> Bills { get; set; }
@@ -44,7 +44,7 @@ public class ApplicationDbContext : DbContext
             .HasOne(a => a.Bill)
             .WithOne(a => a.Content)
             .HasForeignKey<Bill>(c => c.ContentId);
-        
+
         modelBuilder.Entity<Setting>()
             .HasIndex(u => u.Key)
                 .IsUnique();
@@ -119,6 +119,13 @@ public class ApplicationDbContext : DbContext
                 Key = SettingsKeys.FilterCostsDateFrom,
                 Value = string.Empty,
                 Description = "Значение по умолчанию для фильтра \"Расходы -> Когда -> С\""
+            },
+            new()
+            {
+                Id = Guid.Parse("7BB23FA2-4B73-4A3F-C3D4-08D8D2705C5F"),
+                Key = SettingsKeys.NotFilmedContentDefaultReleaseDate,
+                Value = "12/14/2030",
+                Description = "Значение по умолчанию даты выхода неснятого контента"
             }
         };
 

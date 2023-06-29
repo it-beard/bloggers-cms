@@ -9,4 +9,5 @@ public class SettingsKeys
     public static string FilterContentReleaseDateFrom = "FilterContentReleaseDateFrom";
     public static string FilterBillsDateFrom = "FilterBillsDateFrom";
     public static string FilterCostsDateFrom = "FilterCostsDateFrom";
+    public static string NotFilmedContentDefaultReleaseDate = "NotFilmedContentDefaultReleaseDate";
 }
