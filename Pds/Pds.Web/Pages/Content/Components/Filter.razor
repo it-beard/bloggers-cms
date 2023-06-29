@@ -27,16 +27,16 @@ else
     var filterButtonClass = isMobileFilterOpen ? "bi-caret-up-fill" : "bi-caret-down-fill";
     var filterPaddingFixClass = isMobileFilterOpen ? string.Empty : "filter-padding-fix";
     var openFilterClass = isMobileFilterOpen ? "filter-main-open" : string.Empty;
-    
+
     <div class="@($"filter {filterPaddingFixClass}")">
         <div class="filter-header">
-            
+
             <button title="Фильтр" class="btn btn-success btn-sm button-filter" @onclick="OnButtonFilterClick">
                 <i class="@($"bi {filterButtonClass}")"></i>
             </button>
             <SearchComponent Search="SearchOnChanged"/>
         </div>
-        
+
         <div class="@($"filter-main {openFilterClass}")">
             <EditForm EditContext="@editContext">
                 <div class="form-group no-wrap">
@@ -50,6 +50,19 @@ else
                         </label>
                     }
                 </div>
+
+                <div class="form-group no-wrap">
+                    <span class="filter-row-title">Статус:</span>
+                    @foreach (var statusFilterItem in filterSettings.ContentStatusFilterItems)
+                    {
+                        var id = $"status_{statusFilterItem.ContentStatus.ToString()}";
+                        <InputCheckbox name="@id" class="btn-check" @bind-Value="statusFilterItem.IsSelected" Id="@id"/>
+                        <label class="btn btn-secondary" for="@id">
+                            @EnumsTranslator.ContentStatusToRu(statusFilterItem.ContentStatus)
+                        </label>
+                    }
+                </div>
+
                 <div class="form-group no-wrap">
                     <span class="filter-row-title">Соцсеть:</span>
                     @foreach (var smFilterItem in filterSettings.SocialMediaFilterItems)
@@ -99,7 +112,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         brands = await GetBrands();
-        filterSettings = await GetDefaultFilterSettings(brands);
+        filterSettings = await GetFilterSettings(brands);
         editContext = new EditContext(filterSettings);
         editContext.OnFieldChanged += EditContext_OnFieldChanged;
         await OnFilterUpdate.InvokeAsync(filterSettings); //trigger filter initialize
@@ -110,13 +123,13 @@ else
         localStorage.SetItemAsync(savedSettingsLocalStorageKey, filterSettings);
         OnFilterUpdate.InvokeAsync(filterSettings);
     }
-    
+
     private void SearchOnChanged(string searchText)
     {
         OnSearch.InvokeAsync(searchText);
     }
 
-    private async Task<FilterSettings> GetDefaultFilterSettings(List<BrandDto> brands)
+    private async Task<FilterSettings> GetFilterSettings(List<BrandDto> brands)
     {
         var filter = new FilterSettings
         {
@@ -136,9 +149,17 @@ else
                         IsSelected = false
                     })
                 .ToList(),
-            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands)
+            BrandFilterItems = mapper.Map<List<BrandFilterItem>>(brands),
+            ContentStatusFilterItems = ((ContentStatus[]) Enum.GetValues(typeof(ContentStatus)))
+                .Select(gType =>
+                    new ContentStatusFilterItem()
+                    {
+                        ContentStatus = gType,
+                        IsSelected = false
+                    })
+                .ToList(),
         };
-        
+
         SetDefaultFilterValues(ref filter);
         filter = await GetSavedFilterValues(filter);
 
@@ -147,14 +168,25 @@ else
 
     private void SetDefaultFilterValues(ref FilterSettings filter)
     {
+        // Set default brand
+        var defaultBrand = brands.FirstOrDefault(b => b.IsDefault);
+        if (defaultBrand != null)
+        {
+            filter.BrandFilterItems.First(b => b.Id == defaultBrand.Id).IsSelected = true;
+        }
+
         // Set default "from" filter value
         var fromFilterDateString = stateContainer.Settings.GetByKey(SettingsKeys.FilterContentReleaseDateFrom);
         if (DateTime.TryParse(fromFilterDateString, out var fromFilterDate))
         {
             filter.From = fromFilterDate;
         }
+
+        filter.ContentStatusFilterItems
+            .First(u => u.ContentStatus == ContentStatus.Active)
+            .IsSelected = true;
     }
-    
+
     private async Task<FilterSettings> GetSavedFilterValues(FilterSettings filter)
     {
         return await LocalStorageFilterHelper<FilterSettings>.GetSavedFilterValues(filter, localStorage, savedSettingsLocalStorageKey);
@@ -164,7 +196,7 @@ else
     {
         return await apiClient.Get<List<BrandDto>>(tokenProvider, "content/get-brands");
     }
-    
+
     private void OnButtonFilterClick()
     {
         isMobileFilterOpen = !isMobileFilterOpen;

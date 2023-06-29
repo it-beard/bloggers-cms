@@ -192,6 +192,10 @@ else
         PageSettings pageSettings)
     {
         //Filtering
+        var selectedStatuses = filterSettings.ContentStatusFilterItems
+            .Where(i => i.IsSelected)
+            .Select(i => i.ContentStatus)
+            .ToList();
         var selectedSocialMediaTypes = filterSettings.SocialMediaFilterItems
             .Where(i => i.IsSelected)
             .Select(i => i.SocialMediaType)
@@ -207,6 +211,7 @@ else
 
         var itemsToShow = content.Items
             .Where(i =>
+                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
                 (selectedSocialMediaTypes.Contains(i.SocialMediaType) || selectedSocialMediaTypes.Count == 0) &&
                 (selectedContentTypes.Contains(i.Type) || selectedContentTypes.Count == 0) &&
                 (selectedBrandsIds.Contains(i.Brand.Id)) &&

@@ -44,6 +44,16 @@ public static class EnumsTranslator
         };
     }
 
+    public static string ContentStatusToRu(ContentStatus status)
+    {
+        return status switch
+        {
+            ContentStatus.Active => "Активный",
+            ContentStatus.Archived => "Архивный",
+            _ => string.Empty
+        };
+    }
+
     public static string PersonStatusToRu(PersonStatus status)
     {
         return status switch
