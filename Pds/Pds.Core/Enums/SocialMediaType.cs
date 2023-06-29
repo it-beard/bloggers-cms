@@ -8,5 +8,5 @@ public enum SocialMediaType
     Instagram = 3,
     Clubhouse = 4,
     TikTok = 5,
-    Vkontakte = 6
+    Twitter = 6
 }
