@@ -48,7 +48,7 @@ Wiki проекта: https://github.com/it-beard/bloggers-cms/wiki
 Kanban-доска: https://github.com/it-beard/bloggers-cms/projects/1
 
 # Общение
-По всем вопросам "[сюда](https://tm.me/iamitbeard)"
+По всем вопросам [сюда](https://tm.me/iamitbeard)
 
 # Лицензия
 
