@@ -59,11 +59,9 @@ _Миграция базы данных произайдёт автоматич�
    - Параметр `ConnectionStrings:DefaultConnection` содержит строку подключения к базе данных.
 
 # Полезные ссылки
-Настройка аутентификации в CMS через Auth0: https://github.com/it-beard/bloggers-cms/wiki/Authorisation-configuration
-
-Wiki проекта: https://github.com/it-beard/bloggers-cms/wiki  
-
-Kanban-доска: https://github.com/orgs/it-beard/projects/4
+- Настройка аутентификации в CMS через Auth0: https://github.com/it-beard/bloggers-cms/wiki/Authorisation-configuration
+- Wiki проекта: https://github.com/it-beard/bloggers-cms/wiki  
+- Kanban-доска: https://github.com/orgs/it-beard/projects/4
 
 # Общение
 По всем вопросам [сюда](https://tm.me/iamitbeard)
