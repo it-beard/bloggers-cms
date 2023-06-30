@@ -4,7 +4,7 @@
 
 [![Deploy apps to Production](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml/badge.svg?branch=main)](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml)
 
-**Bloggers CMS** - это система управления контентом, разрабатываемая специально под задачи блогеров. Платформа создается как часть экосистемы вокруг проекта ["АйТиБорода"](https://itbeard.com).   
+**Bloggers CMS** - это система управления контентом, разрабатываемая специально под задачи блогеров.  
 Работает на базе технологий **.NET 7** и **Blazor WebAssembly**
 
 CMS позволяет вести учёт:
