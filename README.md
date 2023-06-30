@@ -60,7 +60,9 @@ _Миграция базы данных произайдёт автоматич�
 
 # Полезные ссылки
 Настройка аутентификации в CMS через Auth0: https://github.com/it-beard/bloggers-cms/wiki/Authorisation-configuration
+
 Wiki проекта: https://github.com/it-beard/bloggers-cms/wiki  
+
 Kanban-доска: https://github.com/orgs/it-beard/projects/4
 
 # Общение
