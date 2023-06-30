@@ -26,7 +26,7 @@ public class BasePageComponent: ComponentBase
         _pageState.AddPage(_navManager.Uri);
         base.OnInitialized();
     }
-    
+
     protected void GoBack(string defaultBackPath)
     {
         _pageState.RemoveCurrent(_navManager.Uri);
@@ -39,7 +39,7 @@ public class BasePageComponent: ComponentBase
             _navManager.NavigateTo(!string.IsNullOrEmpty(defaultBackPath) ? defaultBackPath : "/");
         }
     }
-    
+
     protected void GoBack()
     {
         GoBack(null);
