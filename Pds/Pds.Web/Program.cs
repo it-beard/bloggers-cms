@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Pds.Web;
 using Pds.Web.Common;
+using Pds.Web.Common.AppStart;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -17,12 +18,7 @@ builder.Services.AddSingleton<PageHistoryState>();
 builder.Services.AddHeadElementHelper();
 builder.Services.AddCustomAutoMapper();
 builder.Services.AddBlazoredLocalStorage();
-
-builder.Services.AddOidcAuthentication(options =>
-{
-    builder.Configuration.Bind("Auth0", options.ProviderOptions);
-    options.ProviderOptions.ResponseType = "code";
-});
+builder.Services.AddCustomAuthentication(builder.Configuration);
 
 await builder.Build().RunAsync();
 

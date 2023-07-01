@@ -8,10 +8,19 @@
 <AuthorizeView>
     <Authorized>
         <div class="login-panel">
-            <span>
-                @context.User.Identity.Name
-            </span>
-            <a href="#" class="btn btn-primary btn-sm" @onclick="BeginSignOut">Выйти</a>
+            @if (context.User.IsInRole("fake"))
+            {
+                <span>
+                    Добро пожаловать!
+                </span>
+            }
+            else
+            {
+                <span>
+                    @context.User.Identity.Name
+                </span>
+                <a href="#" class="btn btn-primary btn-sm" @onclick="BeginSignOut">Выйти</a>
+            }
         </div>
     </Authorized>
     <NotAuthorized>

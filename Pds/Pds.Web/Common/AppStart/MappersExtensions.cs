@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Pds.Mappers;
-namespace Pds.Web.Common;
+namespace Pds.Web.Common.AppStart;
 
 public static class MappersExtensions
 {

@@ -35,6 +35,12 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 // each controller has own/explicit Route attribute and is not covered by MapControllerRoute
-app.MapControllers().RequireAuthorization();
+var endpointBuilder = app.MapControllers();
+if (auth0Settings.Enabled)
+{
+    endpointBuilder.RequireAuthorization();
+}
+
 app.Run();
