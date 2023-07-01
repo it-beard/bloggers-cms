@@ -1,6 +1,3 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
 using Pds.Api.Contracts.Controllers.Client.CreateClient;
 using Pds.Api.Contracts.Controllers.Client.EditClient;
 using Pds.Api.Contracts.Controllers.Client.GetClient;
@@ -11,7 +8,6 @@ using Pds.Services.Models.Client;
 namespace Pds.Api.Controllers;
 
 [Route("api/clients")]
-[CustomAuthorize]
 public class ClientController : ApiControllerBase
 {
     private readonly ILogger<ClientController> logger;
