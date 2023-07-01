@@ -15,10 +15,10 @@ public static class AuthenticationExtensions
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(bearerOptions =>
+            .AddJwtBearer(options =>
             {
-                bearerOptions.Authority = configuration.Authority;
-                bearerOptions.Audience = configuration.ApiIdentifier;
+                options.Authority = configuration.Authority;
+                options.Audience = configuration.ApiIdentifier;
             });
     }
     
