@@ -1,6 +1,3 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
 using Pds.Api.Contracts.Controllers.Brand.CreateBrand;
 using Pds.Api.Contracts.Controllers.Brand.EditBrand;
 using Pds.Api.Contracts.Controllers.Brand.GetBrand;
@@ -12,7 +9,6 @@ using Pds.Services.Models.Brand;
 namespace Pds.Api.Controllers;
 
 [Route("api/brands")]
-[CustomAuthorize]
 public class BrandController : ApiControllerBase
 {
     private readonly ILogger<ClientController> logger;

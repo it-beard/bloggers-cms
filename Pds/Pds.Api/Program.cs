@@ -1,6 +1,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Pds.Api.AppStart;
+using Pds.Api.Authentication;
 using Pds.Di;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,10 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new ApiDiModule()));
 
 //Add services
-builder.Services.AddCustomAuth0Authentication(builder.Configuration);
+var auth0Settings = builder.Configuration.GetSection(Auth0Settings.ConfigSectionPath).Get<Auth0Settings>();
+builder.Services.AddCustomAuthentication(auth0Settings);
+builder.Services.AddCustomAuthorization(auth0Settings);
+
 builder.Services.AddCustomPdsCorsPolicy(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddCustomSwagger();
@@ -31,5 +35,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapCustomControllers(builder.Configuration);
+app.MapCustomControllers(auth0Settings);
+
 app.Run();

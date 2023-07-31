@@ -1,20 +1,13 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
-using Pds.Api.Contracts;
 using Pds.Api.Contracts.Controllers.Client.EditClient;
 using Pds.Api.Contracts.Controllers.Settings.EditSetting;
 using Pds.Api.Contracts.Controllers.Settings.GetSetting;
 using Pds.Api.Contracts.Controllers.Settings.GetSettings;
-using Pds.Data.Entities;
 using Pds.Services.Interfaces;
-using Pds.Services.Models.Bill;
 using Pds.Services.Models.Setting;
 
 namespace Pds.Api.Controllers;
 
 [Route("api/settings")]
-[CustomAuthorize]
 public class SettingController : ApiControllerBase
 {
     private readonly ILogger<PersonController> logger;

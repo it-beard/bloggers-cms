@@ -1,7 +1,3 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
-using Pds.Api.Contracts;
 using Pds.Api.Contracts.Controllers;
 using Pds.Api.Contracts.Controllers.Person.CreatePerson;
 using Pds.Api.Contracts.Controllers.Person.EditPerson;
@@ -13,7 +9,6 @@ using Pds.Services.Models.Person;
 namespace Pds.Api.Controllers;
 
 [Route("api/persons")]
-[CustomAuthorize]
 public class PersonController : ApiControllerBase
 {
     private readonly ILogger<PersonController> logger;
