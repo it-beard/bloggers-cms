@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +25,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Pds.Api.Contracts\Pds.Api.Contracts.csproj" />
     <ProjectReference Include="..\Pds.Mappers\Pds.Mappers.csproj" />
@@ -52,4 +53,11 @@
     <AdditionalFiles Include="Pages\Settings\Brands\Edit.razor" />
     <AdditionalFiles Include="Pages\Settings\Brands\List.razor" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+  </ItemGroup>
+  
 </Project>
