@@ -1,7 +1,3 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
-using Pds.Api.Contracts;
 using Pds.Api.Contracts.Controllers;
 using Pds.Api.Contracts.Controllers.Content;
 using Pds.Api.Contracts.Controllers.Content.CreateContent;
@@ -13,7 +9,6 @@ using Pds.Services.Models.Content;
 namespace Pds.Api.Controllers;
 
 [Route("api/content")]
-[CustomAuthorize]
 public class ContentController : ApiControllerBase
 {
     private readonly ILogger<PersonController> logger;

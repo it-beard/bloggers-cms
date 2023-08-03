@@ -4,18 +4,15 @@ namespace Pds.Api.AppStart;
 
 public static class MapControllersExtension
 {
-    public static void MapCustomControllers(this WebApplication app, IConfiguration configuration)
+    public static ControllerActionEndpointConventionBuilder  MapCustomControllers(this WebApplication app, Auth0Settings auth0Settings)
     {
-        var auth0Settings = new Auth0Settings();
-        configuration.GetSection("Auth0").Bind(auth0Settings);
+        var endpointBuilder = app.MapControllers();
 
         if (auth0Settings.Enabled)
         {
-            app.MapControllers();
+            endpointBuilder.RequireAuthorization();
         }
-        else
-        {
-            app.MapControllers().AllowAnonymous();
-        }
+        
+        return endpointBuilder;
     }
 }

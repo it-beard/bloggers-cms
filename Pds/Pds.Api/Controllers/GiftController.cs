@@ -1,7 +1,3 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
-using Pds.Api.Contracts;
 using Pds.Api.Contracts.Controllers;
 using Pds.Api.Contracts.Controllers.Gift;
 using Pds.Api.Contracts.Controllers.Gift.CreateGift;
@@ -15,7 +11,6 @@ using Pds.Services.Models.Gift;
 namespace Pds.Api.Controllers;
 
 [Route("api/gifts")]
-[CustomAuthorize]
 public class GiftController : ApiControllerBase
 {
     private readonly ILogger<PersonController> logger;

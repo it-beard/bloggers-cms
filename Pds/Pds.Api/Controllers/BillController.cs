@@ -1,7 +1,3 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
-using Pds.Api.Contracts;
 using Pds.Api.Contracts.Controllers;
 using Pds.Api.Contracts.Controllers.Bill;
 using Pds.Api.Contracts.Controllers.Bill.CreateBill;
@@ -15,7 +11,6 @@ using Pds.Services.Models.Bill;
 namespace Pds.Api.Controllers;
 
 [Route("api/bills")]
-[CustomAuthorize]
 public class BillController : ApiControllerBase
 {
     private readonly ILogger<PersonController> logger;

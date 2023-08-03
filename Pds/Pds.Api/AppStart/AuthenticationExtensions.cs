@@ -6,23 +6,31 @@ public static class AuthenticationExtensions
 {
     private const string CorsPolicy = "PdsCorsPolicy";
 
-    public static void AddCustomAuth0Authentication(this IServiceCollection services, IConfiguration configuration)
+    public static void AddCustomAuthentication(this IServiceCollection services, Auth0Settings configuration)
     {
         services
             .AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
-                options.Authority = configuration["Auth0:Authority"];
-                options.Audience = configuration["Auth0:ApiIdentifier"];
+                options.Authority = configuration.Authority;
+                options.Audience = configuration.ApiIdentifier;
             });
-
-        var auth0Settings = new Auth0Settings();
-        configuration.GetSection("Auth0").Bind(auth0Settings);
-        services.AddSingleton(auth0Settings);
+    }
+    
+    public static void AddCustomAuthorization(this IServiceCollection services, Auth0Settings configuration)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .RequireClaim("azp", configuration.AllowedAppId)
+                .Build();
+        });
     }
 
     public static void AddCustomPdsCorsPolicy(this IServiceCollection services, IConfiguration configuration)

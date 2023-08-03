@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using Pds.Core.Exceptions;
-using Microsoft.AspNetCore.Mvc;
+
 namespace Pds.Api.Controllers;
 
 [ApiController]
@@ -11,11 +11,11 @@ public abstract class ApiControllerBase : ControllerBase
     {
         return exception switch
         {
-            _ when exception is RepositoryException => 
+            RepositoryException => 
                 StatusCode((int) HttpStatusCode.BadRequest, $"DB error: {exception.Message}" + 
                                                             Environment.NewLine + 
                                                             $"{exception.InnerException.Message}"),
-            _ when exception is IApiException apiException => 
+            IApiException apiException => 
                 StatusCode((int) HttpStatusCode.BadRequest, apiException.Errors),
 
             _ => 

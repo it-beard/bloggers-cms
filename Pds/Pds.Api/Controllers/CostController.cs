@@ -1,7 +1,3 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
-using Pds.Api.Contracts;
 using Pds.Api.Contracts.Controllers;
 using Pds.Api.Contracts.Controllers.Cost;
 using Pds.Api.Contracts.Controllers.Cost.CreateCost;
@@ -14,7 +10,6 @@ using Pds.Services.Models.Cost;
 namespace Pds.Api.Controllers;
 
 [Route("api/costs")]
-[CustomAuthorize]
 public class CostController : ApiControllerBase
 {
     private readonly ILogger<PersonController> logger;

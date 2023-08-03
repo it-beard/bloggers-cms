@@ -1,18 +1,12 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Pds.Api.Authentication;
 using Pds.Api.Contracts.Controllers.Dashboard.GetContentStatistics;
 using Pds.Api.Contracts.Controllers.Dashboard.GetCountriesStatistics;
 using Pds.Api.Contracts.Controllers.Dashboard.GetMoneyStatistics;
 using Pds.Api.Contracts.Controllers.Dashboard.GetNearestDates;
-using Pds.Data.Entities;
 using Pds.Services.Interfaces;
-using Pds.Services.Models.Brand;
 
 namespace Pds.Api.Controllers;
 
 [Route("api/dashboard")]
-[CustomAuthorize]
 public class DashboardController : ApiControllerBase
 {
     private readonly ILogger<ClientController> logger;

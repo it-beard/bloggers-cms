@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Pds.Mappers;
+﻿using Pds.Mappers;
 namespace Pds.Api.AppStart;
 
 public static class MappersExtensions
