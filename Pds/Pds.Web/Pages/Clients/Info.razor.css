@@ -30,5 +30,11 @@
 }
 
 .info-body ul {
-    margin-bottom: 0rem;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+.bill-cost li {
+    margin-bottom: 15px;
+    list-style: none;
 }

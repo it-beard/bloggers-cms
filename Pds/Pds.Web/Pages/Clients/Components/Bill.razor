@@ -1,6 +1,7 @@
 ﻿@using Pds.Web.Common
 @using Pds.Core.Extensions
 @using Pds.Api.Contracts.Controllers.Client
+@using Pds.Core.Enums
 
 @namespace Pds.Web.Pages.Clients.Components
 
@@ -16,12 +17,15 @@
     $@Item.Value.ToString("N0")
 </b>
 
-@if (Item.PaymentType != null)
+
+@switch (Item.PaymentStatus)
 {
-    if (Item.PaidAt != null)
-    {
-        <span> / @Item.PaidAt.Value.ToLongStringDate()</span>
-    }
+    case PaymentStatus.Paid when Item.PaidAt != null:
+        <span> / оплачено: @Item.PaidAt.Value.ToLongStringDate()</span>
+        break;
+    case PaymentStatus.NotPaid when Item.CreatedAt != null:
+        <span> / создано: @Item.CreatedAt.Value.ToLongStringDate()</span>
+        break;
 }
 
 @if (Item.IsNeedPayNds)

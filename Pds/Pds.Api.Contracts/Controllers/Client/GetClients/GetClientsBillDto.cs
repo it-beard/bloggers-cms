@@ -6,6 +6,8 @@ public class GetClientsBillDto : IClientForBill
 {
     public Guid Id { get; set; }
 
+    public DateTime? CreatedAt { get; set; }
+
     public decimal Value { get; set; }
 
     public PaymentStatus PaymentStatus { get; set; }
