@@ -43,8 +43,8 @@ public class PersonServiceTest
         var result = await service.CreateAsync(newPerson);
 
         // assert
-        Assert.NotNull(result);
-        Assert.AreEqual(expectedId, result);
+        Assert.That(result, !Is.Null);
+        Assert.Equals(expectedId, result);
         personRepositoryMock.Verify(x => x.InsertAsync(newPerson), Times.Once);
     }
 
