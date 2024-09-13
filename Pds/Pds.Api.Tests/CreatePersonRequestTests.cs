@@ -20,7 +20,7 @@ public class CreatePersonRequestTests
         var isModelStateValid = Validator.TryValidateObject(request, context, results, true);
 
         // assert
-        Assert.False(isModelStateValid);
+        Assert.That(isModelStateValid, Is.False);
     }
 
     [Test]
@@ -41,6 +41,6 @@ public class CreatePersonRequestTests
         var isModelStateValid = Validator.TryValidateObject(request, context, results, true);
 
         // assert
-        Assert.True(isModelStateValid);
+        Assert.That(isModelStateValid, Is.True);
     }
 }
