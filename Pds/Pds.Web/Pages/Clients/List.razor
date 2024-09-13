@@ -30,9 +30,9 @@ else
         </span>
         <a href="/clients/add" class="btn btn-success">Добавить</a>
     </h4>
-    
+
     <Filter OnFilterUpdate="@OnFilterUpdate" OnSearch="@OnSearch"></Filter>
-    
+
     @if (isFilterLoaded)
     {
         <table class="table">
@@ -89,7 +89,7 @@ else
 @code {
     private GetClientsResponse clients;
     private GetClientsClientDto[] filteredClients;
-    private string currentSearchText;    
+    private string currentSearchText;
     private FilterSettings currentFilterSettings;
     private int totalElements;
     private bool isFilterLoaded;
@@ -105,7 +105,7 @@ else
     }
 
     private GetClientsClientDto[] GetFilteredClientsList(
-        FilterSettings filterSettings, 
+        FilterSettings filterSettings,
         GetClientsResponse clients)
     {
         // Filtering
@@ -116,11 +116,17 @@ else
 
         var itemsToShow = clients.Items
             .Where(i =>
-                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0));
+                (selectedStatuses.Contains(i.Status) || selectedStatuses.Count == 0) &&
+                (filterSettings.From != null && i.Bills != null && i.Bills.Any(bill =>
+                        bill.ContractDate != null && bill.ContractDate >= filterSettings.From.Value) ||
+                    filterSettings.From == null) &&
+                (filterSettings.To != null && i.Bills != null && i.Bills.Any(bill =>
+                        bill.ContractDate != null && bill.ContractDate <= filterSettings.To.Value) ||
+                    filterSettings.To == null));
 
         var query = itemsToShow
             .AsQueryable();
-        
+
         // Search
         if (!string.IsNullOrWhiteSpace(currentSearchText))
         {
@@ -128,17 +134,17 @@ else
                 .GetSearchPredicate(currentSearchText.ToLower());
             query = query.Where(searchPredicate);
         }
-        
+
         return query.ToArray();
     }
-    
+
     private void OnSearch(string searchText)
     {
         currentSearchText = searchText;
         filteredClients = GetFilteredClientsList(currentFilterSettings, clients);
         UpdateStatistics(filteredClients);
     }
-    
+
     private async Task OnActionsUpdateAsync()
     {
         isFilterLoaded = false;
@@ -153,7 +159,7 @@ else
         UpdateStatistics(filteredClients);
         isFilterLoaded = true;
     }
-    
+
     private void UpdateStatistics(GetClientsClientDto[] filteredClients)
     {
         totalElements = filteredClients.Length;

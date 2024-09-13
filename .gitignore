@@ -357,3 +357,4 @@ MigrationBackup/
 
 .idea/
 *.DS_Store
+.aider*
