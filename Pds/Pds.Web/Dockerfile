@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["Pds.Web/Pds.Web.csproj", "Pds.Web/"]
 COPY ["Pds.Api.Contracts/Pds.Api.Contracts.csproj", "Pds.Api.Contracts/"]
