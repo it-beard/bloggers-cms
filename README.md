@@ -76,8 +76,8 @@ The project settings are located in the file `bloggers-cms/Pds/Pds.Api/appsettin
 
 # Useful Links
 
-- Setting up CMS authentication via Auth0: [https://github.com/it-beard/bloggers-cms/docs/auth0.md](https://github.com/it-beard/bloggers-cms/docs/auth0.md)
-- Project Docs: [https://github.com/it-beard/bloggers-cms/docs](https://github.com/it-beard/bloggers-cms/docs) 
+- [Setting up CMS authentication via Auth0](https://github.com/it-beard/bloggers-cms/tree/main/docs/auth0.md)
+- [Project Docs](https://github.com/it-beard/bloggers-cms/tree/main/docs/) 
 - For all questions, use [discussions](https://github.com/it-beard/bloggers-cms/discussions)
 
 # License
