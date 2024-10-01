@@ -9,6 +9,8 @@
 
 @inject IApiClient ApiClient
 @inject IAccessTokenProvider TokenProvider
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject IJSRuntime JsRuntime
 
 <Title>@WithSuffix("Бренды")</Title>
 
@@ -101,6 +103,7 @@ else
         </tbody>
     </table>
     <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+        <button @onclick="OnClearLocalStorageAsync" class="btn btn-warning">Очистить localStore</button>
         <button @onclick='() => GoBack("/settings")' class="btn btn-primary right">Назад</button>
     </div>
 }
@@ -121,5 +124,15 @@ else
     private async Task<GetBrandsResponse> GetBrands()
     {
         return await ApiClient.Get<GetBrandsResponse>(TokenProvider, "brands");
+    }
+
+    private async Task OnClearLocalStorageAsync()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Вы уверены, что хотите очистить localStorage?");
+        if (confirmed)
+        {
+            await localStorage.ClearAsync();
+            await JsRuntime.InvokeVoidAsync("location.reload");
+        }
     }
 }
