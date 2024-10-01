@@ -35,7 +35,8 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<Person>()
             .Property(b => b.Status)
-            .HasDefaultValue(PersonStatus.Active);
+            .HasDefaultValue(PersonStatus.Active)
+            .HasSentinel(PersonStatus.Unspecified);
 
         modelBuilder.Entity<Content>()
             .Property(b => b.SocialMediaType);
