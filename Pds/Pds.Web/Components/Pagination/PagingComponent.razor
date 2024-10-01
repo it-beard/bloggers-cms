@@ -42,15 +42,7 @@
     public EventCallback<PagingEventArgs> OnPagination { get; set; }
 
     [Parameter]
-    public int[] PageSizeList
-    {
-        get => pageSizeList;
-        set
-        {
-            var array = value.Where(item => item >= 1).ToArray();
-            pageSizeList = array.Length == 0 ? new [] { 10 } : array;
-        }
-    }
+    public int[] PageSizeList { get; set; }
 
     [Parameter]
     public int? DefaultPageSize
@@ -101,8 +93,19 @@
 
     private List<PageModel> pages;
 
+    public int[] PageSizeListValues
+    {
+        get => pageSizeList;
+        set
+        {
+            var array = value.Where(item => item >= 1).ToArray();
+            pageSizeList = array.Length == 0 ? new [] { 10 } : array;
+        }
+    }
+
     protected override void OnInitialized()
     {
+        PageSizeListValues = PageSizeList;
         currentPageSize = DefaultPageSize.Value;
         SetDefaultPagination();
     }
