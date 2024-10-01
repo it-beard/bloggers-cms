@@ -18,6 +18,7 @@ public class PersonRepository : RepositoryBase<Person>, IPersonRepository
     public async Task<List<Person>> GetAllFullAsync()
     {
         return await context.Persons
+            .AsSplitQuery()
             .Include(p=>p.Brands)
             .Include(p=>p.Resources)
             .Include(p=>p.Contents)
@@ -30,6 +31,7 @@ public class PersonRepository : RepositoryBase<Person>, IPersonRepository
     public async Task<Person> GetFullByIdAsync(Guid personId)
     {
         return await context.Persons
+            .AsSplitQuery()
             .Include(p=>p.Brands)
             .Include(p=>p.Resources)
             .Include(p=>p.Contents)

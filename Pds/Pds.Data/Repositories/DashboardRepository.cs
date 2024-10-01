@@ -120,6 +120,7 @@ public class DashboardRepository : IDashboardRepository
                     .OrderBy(b => b.ReleaseDate)
                     .ToList()
             })
+            .OrderByDescending(b => b.Contents.Count)
             .Take(7)
             .ToListAsync();
 

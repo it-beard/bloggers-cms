@@ -17,22 +17,14 @@ public class BrandRepository : RepositoryBase<Brand>, IBrandRepository
     public async Task<BrandAdditionalInfoModel> GetAdditionalInfoAsync(Guid brandId)
     {
         var result = await context.Brands
+            .Where(b => b.Id == brandId)
             .Select(b => new BrandAdditionalInfoModel
             {
-                PersonsCount = context.Brands
-                    .Where(b => b.Id == brandId)
-                    .SelectMany(b => b.Persons)
-                    .Count(),
-                ContentsCount = context.Contents
-                    .Count(b => b.BrandId == brandId),
-                GiftsCount = context.Gifts
-                    .Count(b => b.BrandId == brandId),
-                CostsSum = context.Costs
-                    .Where(b => b.BrandId == brandId)
-                    .Sum(b => b.Value),
-                BillsSum = context.Bills
-                    .Where(b => b.BrandId == brandId)
-                    .Sum(b => b.Value)
+                PersonsCount = b.Persons.Count(), 
+                ContentsCount = context.Contents.Count(c => c.BrandId == brandId),
+                GiftsCount = context.Gifts.Count(g => g.BrandId == brandId),
+                CostsSum = context.Costs.Where(c => c.BrandId == brandId).Sum(c => c.Value),
+                BillsSum = context.Bills.Where(b => b.BrandId == brandId).Sum(b => b.Value)
             }).FirstAsync();
 
         if (result.PersonsCount +

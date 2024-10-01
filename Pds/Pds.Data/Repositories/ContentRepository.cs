@@ -19,11 +19,12 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
     public async Task<List<Content>> GetAllFullAsync()
     {
         return await context.Contents
+            .AsSplitQuery()
             .Include(p => p.Bill)
-            .ThenInclude(p => p.Client)
+                .ThenInclude(p => p.Client)
             .Include(p => p.Brand)
             .Include(p => p.Person)
-            .ThenInclude(p => p.Resources)
+                .ThenInclude(p => p.Resources)
             .Include(p => p.Costs)
             .Where(b => !b.Brand.IsArchived)
             .OrderByDescending(p =>p.ReleaseDate)
@@ -34,11 +35,12 @@ public class ContentRepository : RepositoryBase<Content>, IContentRepository
     public async Task<Content> GetFullByIdAsync(Guid contentId)
     {
         return await context.Contents
+            .AsSplitQuery()
             .Include(p => p.Bill)
-            .ThenInclude(p => p.Client)
+                .ThenInclude(p => p.Client)
             .Include(p => p.Brand)
             .Include(p => p.Person)
-            .ThenInclude(p => p.Resources)
+                .ThenInclude(p => p.Resources)
             .Include(p => p.Costs)
             .Include(p => p.Gifts)
             .Where(b => !b.Brand.IsArchived)
