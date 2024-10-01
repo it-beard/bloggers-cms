@@ -51,7 +51,7 @@ else
         
                 <div class="form-group no-wrap">
                     <span class="filter-row-title">Статус:</span>
-                    @foreach (var statusFilterItem in filterSettings.PersonStatusFilterItems)
+                    @foreach (var statusFilterItem in filterSettings.PersonStatusFilterItems.Where(item => item.PersonStatus != PersonStatus.Unspecified))
                     {
                         var id = $"status_{statusFilterItem.PersonStatus.ToString()}";
                         <InputCheckbox name="@id" class="btn-check" @bind-Value="statusFilterItem.IsSelected" Id="@id"/>

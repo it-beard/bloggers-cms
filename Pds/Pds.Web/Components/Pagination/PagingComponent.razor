@@ -17,7 +17,7 @@
             <select class="btn btn-sm page-size-selector" @onchange="@OnChangePageSize">
                 @foreach (var pageSize in PageSizeList)
                 {
-                    if (pageSize == DefaultPageSize.Value)
+                    if (pageSize == DefaultPageSize)
                     {
                         <option class="paging-item" value="@pageSize" selected>@pageSize</option>
                     }
@@ -34,9 +34,6 @@
 
 @code{
     private int[] pageSizeList;
-    private int totalItems;
-    private int defaultPageSize;
-    private int radius;
 
     [Parameter]
     public EventCallback<PagingEventArgs> OnPagination { get; set; }
@@ -45,43 +42,13 @@
     public int[] PageSizeList { get; set; }
 
     [Parameter]
-    public int? DefaultPageSize
-    {
-        get => defaultPageSize;
-        set
-        {
-            if (value < 1)
-                defaultPageSize = 1;
-            else
-                defaultPageSize = value ?? 10;
-        }
-    }
+    public int DefaultPageSize { get; set; } = 10;
 
     [Parameter]
-    public int? TotalItems
-    {
-        get => totalItems;
-        set
-        {
-            if (value < 0)
-                totalItems = 0;
-            else
-                totalItems = value ?? 0;
-        }
-    }
+    public int TotalItems { get; set; } = 0;
 
     [Parameter]
-    public int? Radius
-    {
-        get => radius;
-        set
-        {
-            if (value < 1)
-                radius = 2;
-            else
-                radius = value ?? 2;
-        }
-    }
+    public int Radius { get; set; } = 2;
 
     [CascadingParameter]
     public bool IsPagingStateHasChanged { get; set; }
@@ -106,12 +73,22 @@
     protected override void OnInitialized()
     {
         PageSizeListValues = PageSizeList;
-        currentPageSize = DefaultPageSize.Value;
+        currentPageSize = DefaultPageSize;
         SetDefaultPagination();
     }
 
     protected override void OnParametersSet()
     {
+        // Ensure properties have valid values
+        if (DefaultPageSize < 1)
+            DefaultPageSize = 1;
+
+        if (TotalItems < 0)
+            TotalItems = 0;
+
+        if (Radius < 1)
+            Radius = 2;
+
         totalPages = (int)Math.Ceiling((double)TotalItems / currentPageSize);
         if (totalPages <= 1 || IsPagingStateHasChanged)
             currentPage = 1;
@@ -122,7 +99,7 @@
     {
         var isPageSizeChanged = int.TryParse(e.Value.ToString(), out currentPageSize);
         if (!isPageSizeChanged)
-            currentPageSize = DefaultPageSize.Value;
+            currentPageSize = DefaultPageSize;
 
         SetDefaultPagination();
         PaginationInvoke();
