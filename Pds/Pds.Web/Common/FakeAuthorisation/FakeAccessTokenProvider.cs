@@ -5,11 +5,29 @@ public class FakeAccessTokenProvider : IAccessTokenProvider
 {
     public ValueTask<AccessTokenResult> RequestAccessToken(AccessTokenRequestOptions options)
     {
-        return new ValueTask<AccessTokenResult>(new AccessTokenResult( AccessTokenResultStatus.Success, new AccessToken(), "/"));
+        return new ValueTask<AccessTokenResult>(new AccessTokenResult(
+            AccessTokenResultStatus.Success,
+            new AccessToken(),
+            "/",
+            new InteractiveRequestOptions
+            {
+                Interaction = InteractionType.GetToken,
+                ReturnUrl = "/"
+            }
+        ));
     }
 
     ValueTask<AccessTokenResult> IAccessTokenProvider.RequestAccessToken()
     {
-        return new ValueTask<AccessTokenResult>(new AccessTokenResult( AccessTokenResultStatus.Success, new AccessToken(), "/"));
+        return new ValueTask<AccessTokenResult>(new AccessTokenResult(
+            AccessTokenResultStatus.Success,
+            new AccessToken(),
+            "/",
+            new InteractiveRequestOptions
+            {
+                Interaction = InteractionType.GetToken,
+                ReturnUrl = "/"
+            }
+        ));
     }
 }
