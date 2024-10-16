@@ -60,6 +60,7 @@ public class PersonService : IPersonService
         person.LastName = person.LastName.Trim();
         person.Brands = brandsFromBd;
         person.CreatedAt = DateTime.UtcNow;
+        person.Status = PersonStatus.Active;
         foreach (var resource in person.Resources)
         {
             if (!string.IsNullOrEmpty(resource.Url)
