@@ -29,7 +29,7 @@ else
         <span>
             Лента контента
             <span class="title-overall-info pre-span">
-                @($"{totalElements} шт. / ${totalCost:N0}")
+                @($"{totalItems} шт. / ${totalItemsCost:N0}")
             </span>
         </span>
         <a href="/content/add" class="btn btn-success">Добавить</a>
@@ -144,10 +144,10 @@ else
             </tbody>
         </table>
 
-        <CascadingValue Value="isPagingStateHasChanged">
+        <CascadingValue Value="isMoveToFirstPage">
             <PagingComponent PageSizeList="@pageSizesList"
                              DefaultPageSize="@DefaultPageSite"
-                             TotalItems="totalElements"
+                             TotalItems="totalItems"
                              Radius="2"
                              OnPagination="OnPagination"/>
         </CascadingValue>
@@ -159,8 +159,8 @@ else
     private GetContentsContentDto[] filteredContent;
 
     private const int DefaultPageSite = 100;
-    private readonly int[] pageSizesList = {25, 50, DefaultPageSite, 250, 500};
-    private bool isPagingStateHasChanged;
+    private readonly int[] pageSizesList = [5, 10, 25, 50, DefaultPageSite, 250, 500];
+    private bool isMoveToFirstPage;
     private PageSettings currentPageSettings =
         new()
         {
@@ -171,8 +171,8 @@ else
 
     private string currentSearchText;
     private FilterSettings currentFilterSettings;
-    private int totalElements;
-    private decimal totalCost;
+    private int totalItems;
+    private decimal totalItemsCost;
     private bool isFilterLoaded;
 
     protected override async Task OnInitializedAsync()
@@ -189,7 +189,9 @@ else
         FilterSettings filterSettings,
         GetContentsResponse content,
         OrderSetting<ContentFieldName>[] orderSettings,
-        PageSettings pageSettings)
+        PageSettings pageSettings,
+        //by default always move to first page if filter changed
+        bool isMoveToFirstPageParam = true)
     {
         //Filtering
         var selectedStatuses = filterSettings.ContentStatusFilterItems
@@ -249,18 +251,27 @@ else
 
         var contentList = query.ToArray();
 
+        // Statistics
+        totalItems = contentList.Length;
+        totalItemsCost = contentList.Sum(i => i.Bill?.Value) ?? totalItemsCost;
+
         // Paging
+        isMoveToFirstPage = isMoveToFirstPageParam;
+        if (isMoveToFirstPage)
+        {
+            pageSettings.Offset = 0; // move results to start
+        }
         contentList = contentList
             .Skip(pageSettings.Offset)
             .Take(pageSettings.Limit)
             .ToArray();
+
 
         return contentList;
     }
 
     private void OnPagination(PagingEventArgs settings)
     {
-        isPagingStateHasChanged = false;
         currentPageSettings = new PageSettings
         {
             Limit = settings.PageSize,
@@ -271,7 +282,8 @@ else
             currentFilterSettings,
             content,
             currentOrderSettings,
-            currentPageSettings);
+            currentPageSettings,
+            false);
     }
 
     private void OnSort(OrderSetting<ContentFieldName> settings)
@@ -296,7 +308,6 @@ else
             content,
             currentOrderSettings,
             currentPageSettings);
-        UpdateStatistics(filteredContent);
     }
 
     private async Task OnActionsUpdate()
@@ -314,14 +325,6 @@ else
             content,
             currentOrderSettings,
             currentPageSettings);
-        UpdateStatistics(filteredContent);
         isFilterLoaded = true;
-        isPagingStateHasChanged = true; //return to first page
-    }
-
-    private void UpdateStatistics(GetContentsContentDto[] filteredContent)
-    {
-        totalElements = filteredContent.Length;
-        totalCost = filteredContent.Sum(i => i.Bill?.Value) ?? totalCost;
     }
 }

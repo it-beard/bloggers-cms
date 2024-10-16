@@ -30,7 +30,7 @@ else
         <span>
             Список персон
             <span class="title-overall-info pre-span">
-                @{ var overallCount = $"{totalElements} шт."; }
+                @{ var overallCount = $"{totalItems} шт."; }
                 @overallCount
             </span>
         </span>
@@ -129,10 +129,10 @@ else
             </tbody>
         </table>
 
-        <CascadingValue Value="isPagingStateHasChanged">
+        <CascadingValue Value="isMoveToFirstPage">
             <PagingComponent PageSizeList="@pageSizesList"
                              DefaultPageSize="@DefaultPageSite"
-                             TotalItems="totalElements"
+                             TotalItems="totalItems"
                              Radius="2"
                              OnPagination="OnPagination"/>
         </CascadingValue>
@@ -144,8 +144,8 @@ else
     private GetPersonsPersonDto[] filteredPersons;
 
     private const int DefaultPageSite = 100;
-    private readonly int[] pageSizesList = {25, 50, DefaultPageSite, 250, 500};
-    private bool isPagingStateHasChanged;
+    private readonly int[] pageSizesList = [5, 10, 25, 50, DefaultPageSite, 250, 500];
+    private bool isMoveToFirstPage;
     private PageSettings currentPageSettings =
         new()
         {
@@ -156,7 +156,7 @@ else
 
     private string currentSearchText;
     private FilterSettings currentFilterSettings;
-    private int totalElements;
+    private int totalItems;
     private bool isFilterLoaded;
 
     protected override async Task OnInitializedAsync()
@@ -173,7 +173,9 @@ else
         FilterSettings filterSettings,
         GetPersonsResponse persons,
         OrderSetting<PersonsFieldName>[] orderSettings,
-        PageSettings pageSettings)
+        PageSettings pageSettings,
+        //by default always move to first page if filter changed
+        bool isMoveToFirstPageParam = true)
     {
         //Filtering
         var selectedBrandsIds = filterSettings.BrandFilterItems
@@ -228,7 +230,15 @@ else
 
         var personsList = query.ToArray();
 
+        // Statistics
+        totalItems = personsList.Length;
+
         // Paging
+        isMoveToFirstPage = isMoveToFirstPageParam;
+        if (isMoveToFirstPage)
+        {
+            pageSettings.Offset = 0; // move results to start
+        }
         personsList = personsList
             .Skip(pageSettings.Offset)
             .Take(pageSettings.Limit)
@@ -239,7 +249,6 @@ else
 
     private void OnPagination(PagingEventArgs settings)
     {
-        isPagingStateHasChanged = false;
         currentPageSettings = new PageSettings
         {
             Limit = settings.PageSize,
@@ -250,7 +259,8 @@ else
             currentFilterSettings,
             persons,
             currentOrderSettings,
-            currentPageSettings);
+            currentPageSettings,
+            false);
     }
 
     private void OnSort(OrderSetting<PersonsFieldName> settings)
@@ -275,7 +285,6 @@ else
             persons,
             currentOrderSettings,
             currentPageSettings);
-        UpdateStatistics(filteredPersons);
     }
 
     private async Task OnActionsUpdate()
@@ -293,14 +302,6 @@ else
             persons,
             currentOrderSettings,
             currentPageSettings);
-        UpdateStatistics(filteredPersons);
         isFilterLoaded = true;
-        isPagingStateHasChanged = true; //return to first page
     }
-
-    private void UpdateStatistics(GetPersonsPersonDto[] filteredPersons)
-    {
-        totalElements = filteredPersons.Length;
-    }
-
 }

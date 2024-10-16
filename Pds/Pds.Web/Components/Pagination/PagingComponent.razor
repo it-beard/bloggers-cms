@@ -51,7 +51,7 @@
     public int Radius { get; set; } = 2;
 
     [CascadingParameter]
-    public bool IsPagingStateHasChanged { get; set; }
+    public bool IsMoveToFirstPage { get; set; }
 
     private int pageOffset;
     private int currentPage;
@@ -90,7 +90,7 @@
             Radius = 2;
 
         totalPages = (int)Math.Ceiling((double)TotalItems / currentPageSize);
-        if (totalPages <= 1 || IsPagingStateHasChanged)
+        if (totalPages <= 1 || IsMoveToFirstPage)
             currentPage = 1;
         LoadPages();
     }
