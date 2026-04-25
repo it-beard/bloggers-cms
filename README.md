@@ -4,83 +4,81 @@
 
 [![Deploy apps to Production](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml/badge.svg?branch=main)](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml)
 
-**Bloggers CMS** is a content management system specifically developed for bloggers' needs.  
-It is powered by **.NET 8** and **Blazor WebAssembly** technologies.
+**Bloggers CMS** — это система управления контентом, специально разработанная с учетом потребностей блогеров.
+Он работает на базе технологий **.NET 8** и **Blazor WebAssembly**.
 
-The CMS allows you to keep track of:
-- Content & content participants
-- Clients
-- Income and expenses
-- Gifts and contests
+Система управления контентом (CMS) позволяет отслеживать:
+- Контент и участники контента
+- Клиенты
+- Доходы и расходы
+- Подарки и конкурсы
 
-Additional features:
-- Authentication system based on Auth0 (can be disabled)
-- Flexible internal settings system
-- Flexible entity filters
-- Ability to manage multiple _Brands_ within a single interface
-   - "Brand" is an entity to which content, content participants, income, and expenses are linked. This can be a separate YouTube channel, blogger, project, company, etc.
-- Minor recommendation capabilities
-
+Дополнительные функции:
+- Система аутентификации на базе Auth0 (можно отключить)
+- Гибкая система внутренних настроек
+- Гибкие фильтры объектов
+- Возможность управлять несколькими _брендами_ через единый интерфейс
+- «Бренд» — это объект, с которым связаны контент, участники контента, доходы и расходы. Это может быть отдельный канал на YouTube, блогер, проект, компания и т. д.
+- Незначительные возможности по предоставлению рекомендаций
 <img src="https://github.com/it-beard/bloggers-cms/blob/develop/.github/readme-images/1.png" title="Dashboard" width="800" />
 
 <img src="https://github.com/it-beard/bloggers-cms/blob/develop/.github/readme-images/2.png" title="Content List" width="800" />
 
 <img src="https://github.com/it-beard/bloggers-cms/blob/develop/.github/readme-images/3.png" title="Settings" width="800" />
 
-## Install and run
-### Without Docker
-1. [Install and configure the SQL database](https://github.com/it-beard/bloggers-cms/tree/develop/docs/database-setup.md)
-2. Disable Auth0 authentication
-   - By default, the CMS includes [Auth0 authentication](https://auth0.com/), which requires additional [configuration](https://github.com/it-beard/bloggers-cms/tree/develop/docs/auth0.md).
-   - To disable Auth0 authentication, set the parameter `Auth0:Enabled` to `false` in the following files:
-       -  `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.Production.json` - disables authentication on the frontend side
-       -  `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.LocalDevelopment.json` - disables authentication on the local frontend instance (localhost)
-       -  `bloggers-cms/Pds/Pds.Api/appsettings.json` - disables authentication on the backend side
-3. Configure the CMS according to the description in the "**Settings**" section.
-4. Run the `Pds.Api` and `Pds.Web` projects ([how to run .NET application](https://github.com/it-beard/bloggers-cms/tree/develop/docs/run.md))
+## Установить и запустить
+### Без Docker
+1. [Установить и настроить базу данных SQL](https://github.com/it-beard/bloggers-cms/tree/develop/docs/database-setup.md)
+2. Отключить аутентификацию Auth0
+   - По умолчанию CMS включает [Аутентификация Auth0](https://auth0.com/), что требует дополнительных [настройка](https://github.com/it-beard/bloggers-cms/tree/develop/docs/auth0.md).
+   - Чтобы отключить аутентификацию Auth0, установите параметр `Auth0:Enabled` до `false` в следующих файлах:
+       -  `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.Production.json` - отключает аутентификацию на стороне интерфейса
+       -  `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.LocalDevelopment.json` - отключает аутентификацию на локальном экземпляре интерфейса (localhost)
+       -  `bloggers-cms/Pds/Pds.Api/appsettings.json` - отключает аутентификацию на стороне сервера
+3. Настройте CMS в соответствии с инструкциями, приведенными в "**Settings**" раздел.
+4. Запустить `Pds.Api` и `Pds.Web` проекты ([Как запустить приложение .NET](https://github.com/it-beard/bloggers-cms/tree/develop/docs/run.md))
        
-_The database migration will occur automatically when you first run the `Pds.Api` project._
+_Миграция базы данных произойдет автоматически при первом запуске `Pds.Api` проект._
 
-### With Docker
+### С помощью Docker
 
-To run the application in Docker, simply enter the command:
+Чтобы запустить приложение в Docker, просто введите команду:
 `docker compose -f "./Pds/.run/docker-compose.yaml" up -d`
 
-#### Features of the Application in Docker:
+#### Особенности приложения в Docker:
 
-1. By default, [Auth0 authentication](https://auth0.com/) is **disabled**.
-2. Data from the database is stored in a dedicated volume, which allows preserving state even after restarting/recreating containers.
-3. There is no TLS/SSL support; therefore, everything works over HTTP.
-4. The application is running in **Development** mode.
-5. The frontend is available at [http://localhost:5000](http://localhost:5000).
-6. Blazor is hosted using [NGINX](https://www.nginx.com/).
+1. По умолчанию, [Аутентификация Auth0](https://auth0.com/) является **неработающий**.
+2. Данные из базы данных хранятся в отдельном томе, что позволяет сохранять состояние даже после перезапуска или воссоздания контейнеров.
+3. Поддержка TLS/SSL отсутствует; поэтому всё работает по протоколу HTTP.
+4. Приложение работает в режиме **Разработка**.
+5. Фронтенд доступен по адресу [http://localhost:5000](http://localhost:5000).
+6. Blazor размещается с помощью [NGINX](https://www.nginx.com/).
 
-## Settings
+## Настройки
 
-### Settings for Pds.Web 
-This is the frontend of Bloggers CMS, running on Blazor WebAssembly.
+### Настройки Pds.Web
+Это интерфейс системы управления контентом Bloggers CMS, работающий на Blazor WebAssembly.
+Основные настройки находятся в файлах `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.Production.json` (используемый в производстве) и `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.LocalDevelopment.json` (используется при локальном запуске):
+   - Этот `Auth0` раздел содержит [Auth0](https://auth0.com) параметры аутентификации.
+   - Этот `BackendApi:Url` параметр содержит URL-адрес развернутого экземпляра `Pds.Api`.
 
-The main settings are located in the files `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.Production.json` (used in production) and `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.LocalDevelopment.json` (used when running locally):
-   - The `Auth0` section contains [Auth0](https://auth0.com) authentication settings.
-   - The `BackendApi:Url` parameter contains the URL of the deployed instance of `Pds.Api`.
+### Настройки Pds.Api
+Это бэкэнд-API системы управления контентом Bloggers, работающей на платформе .NET.
 
-### Settings for Pds.Api 
-This is the backend API of Bloggers CMS, running on .NET.
+Настройки проекта находятся в файле `bloggers-cms/Pds/Pds.Api/appsettings.json`:
+   - Этот `Logging` В этом разделе находятся настройки ведения журнала. Значения по умолчанию, как правило, не требуют изменения.
+   - Этот `AllowedOrigins` В этом разделе приведен список корневых URL-адресов разрешенных интерфейсных приложений. Добавьте сюда корневую ссылку на развернутый экземпляр `Pds.Web`.
+   - Этот `Auth0` раздел содержит [Auth0](https://auth0.com) параметры аутентификации.
+   - Этот `ConnectionStrings:DefaultConnection` Параметр содержит строку подключения к базе данных.
 
-The project settings are located in the file `bloggers-cms/Pds/Pds.Api/appsettings.json`:
-   - The `Logging` section contains logging settings. Default values usually do not require changes.
-   - The `AllowedOrigins` section contains a list of root URLs of allowed frontend applications. Add the root link to your deployed instance of `Pds.Web` here.
-   - The `Auth0` section contains [Auth0](https://auth0.com) authentication settings.
-   - The `ConnectionStrings:DefaultConnection` parameter contains the connection string to the database.
+## Полезные ссылки
 
-## Useful Links
+- [Настройка аутентификации через Auth0](https://github.com/it-beard/bloggers-cms/tree/main/develop/auth0.md)
+- [Настройка базы данных](https://github.com/it-beard/bloggers-cms/tree/develop/docs/database-setup.md)
+- [Рекомендации по публикации материалов](https://github.com/it-beard/bloggers-cms/tree/develop/docs/code-guidelines.md)
+- [Вся документация по проекту](https://github.com/it-beard/bloggers-cms/tree/develop/docs/) 
+- По всем вопросам обращайтесь [обсуждения](https://github.com/it-beard/bloggers-cms/discussions)
 
-- [Setting for authentication via Auth0](https://github.com/it-beard/bloggers-cms/tree/main/develop/auth0.md)
-- [Database setup](https://github.com/it-beard/bloggers-cms/tree/develop/docs/database-setup.md)
-- [Contributing guidelines](https://github.com/it-beard/bloggers-cms/tree/develop/docs/code-guidelines.md)
-- [All project's docs](https://github.com/it-beard/bloggers-cms/tree/develop/docs/) 
-- For all questions, use [discussions](https://github.com/it-beard/bloggers-cms/discussions)
+## Лицензия
 
-## License
-
-Apache License 2.0, see [LICENSE](LICENSE) for details.
+Apache License 2.0, см. [ЛИЦЕНЗИЯ](LICENSE) подробнее.
