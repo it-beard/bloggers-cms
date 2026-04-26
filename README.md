@@ -5,7 +5,7 @@
 [![Deploy apps to Production](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml/badge.svg?branch=main)](https://github.com/itbeard/bloggers-cms/actions/workflows/deployment-prod-action.yml)
 
 **Bloggers CMS** — это система управления контентом, специально разработанная с учетом потребностей блогеров.
-Он работает на базе технологий **.NET 8** и **Blazor WebAssembly**.
+Она работает на базе технологий **.NET 8** и **Blazor WebAssembly**.
 
 Система управления контентом (CMS) позволяет отслеживать:
 - Контент и участники контента
