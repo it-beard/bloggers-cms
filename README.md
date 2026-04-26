@@ -35,7 +35,7 @@
        -  `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.Production.json` - отключает аутентификацию на стороне интерфейса
        -  `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.LocalDevelopment.json` - отключает аутентификацию на локальном экземпляре интерфейса (localhost)
        -  `bloggers-cms/Pds/Pds.Api/appsettings.json` - отключает аутентификацию на стороне сервера
-3. Настройте CMS в соответствии с инструкциями, приведенными в "**Settings**" раздел.
+3. Настройте CMS в соответствии с инструкциями, приведенными в разделе "**Settings**".
 4. Запустить `Pds.Api` и `Pds.Web` проекты ([Как запустить приложение .NET](https://github.com/it-beard/bloggers-cms/tree/develop/docs/run.md))
        
 _Миграция базы данных произойдет автоматически при первом запуске `Pds.Api` проект._
