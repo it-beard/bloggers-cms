@@ -30,7 +30,7 @@
 ### Без Docker
 1. [Установить и настроить базу данных SQL](https://github.com/it-beard/bloggers-cms/tree/develop/docs/database-setup.md)
 2. Отключить аутентификацию Auth0
-   - По умолчанию CMS включает [Аутентификация Auth0](https://auth0.com/), что требует дополнительных [настройка](https://github.com/it-beard/bloggers-cms/tree/develop/docs/auth0.md).
+   - По умолчанию CMS включает [аутентификацию Auth0](https://auth0.com/), что требует дополнительных [настроек](https://github.com/it-beard/bloggers-cms/tree/develop/docs/auth0.md).
    - Чтобы отключить аутентификацию Auth0, установите параметр `Auth0:Enabled` до `false` в следующих файлах:
        -  `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.Production.json` - отключает аутентификацию на стороне интерфейса
        -  `bloggers-cms/Pds/Pds.Web/wwwroot/appsettings.LocalDevelopment.json` - отключает аутентификацию на локальном экземпляре интерфейса (localhost)
